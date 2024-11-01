@@ -55,7 +55,7 @@ export default function Navbar() {
             <Link href="/pages/Proyectos">Proyectos</Link>
           </li>
           <li className="hover:-translate-y-1 hover:underline">
-            <Link href="/About">Servicios</Link>
+            <Link href="/pages/Servicios">Servicios</Link>
           </li>
           <li className="hover:-translate-y-1 hover:underline">
             <Link href="/pages/SobreNosotros">Sobre Nosotros</Link>
