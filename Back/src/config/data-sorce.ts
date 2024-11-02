@@ -1,4 +1,5 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ServiceDetail } from 'src/modules/service-details/entities/service-detail.entity';
 
 
 
@@ -9,8 +10,10 @@ export const dataSource = TypeOrmModule.forRoot({
     username: 'backend_rer6_user',
     password: '7lQXiIYcMmA6uhefifvvwtuwbgdz3qLU',
     database: 'backend_rer6',
-    entities: [], 
+    entities: [ServiceDetail], 
     synchronize: true,
+    logging: true,
+    dropSchema: false,
     ssl: {
         rejectUnauthorized: false, 
     },
