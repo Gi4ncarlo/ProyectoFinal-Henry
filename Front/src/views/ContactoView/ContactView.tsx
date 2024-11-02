@@ -1,7 +1,7 @@
-import { NextPage } from 'next';
+
 import Image from "next/image";
 
-const Contact: NextPage = () => {
+const ContactView = () => {
   return (
     <div className="min-h-screen grid grid-cols-1 place-items-center lg:grid-cols-2 bg-[url('/images/fondo_contacto.jpg')] bg-cover bg-center h-screen">
       <div className="container bg-white m-auto mt-12 p-2 max-w-full shadow-sm rounded-sm lg:m-0 lg:p-8 lg:max-w-lg lg:shadow-lg lg:rounded-lg">
@@ -83,4 +83,4 @@ const Contact: NextPage = () => {
   );
 };
 
-export default Contact;
+export default ContactView;

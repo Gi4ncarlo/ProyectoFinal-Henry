@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
-const Services = () => {
+const ServiciosComponent = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   
   useEffect(() => {
@@ -258,4 +258,4 @@ const Services = () => {
   );
 };
 
-export default Services;
+export default ServiciosComponent;
