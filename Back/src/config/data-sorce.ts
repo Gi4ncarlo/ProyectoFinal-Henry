@@ -10,7 +10,7 @@ export const dataSource = TypeOrmModule.forRoot({
     username: 'backend_rer6_user',
     password: '7lQXiIYcMmA6uhefifvvwtuwbgdz3qLU',
     database: 'backend_rer6',
-    entities: [ServiceDetail], 
+    entities: ['dist/**/*.entity.{ts,js}'], 
     synchronize: true,
     logging: true,
     dropSchema: false,
