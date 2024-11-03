@@ -16,6 +16,7 @@ jobs:
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
+          branch_name=${GITHUB_REF##*/}
           curl -X POST -H "Content-Type: application/json" \
-          -d "{\"content\": \"Nuevo commit en el repositorio: **${{ github.repository }}**\nAutor: **${{ github.event.head_commit.author.name }}**\nMensaje: **${{ github.event.head_commit.message }}**\nEnlace: [Ver Commit](${{ github.event.head_commit.url }})\"}" \
+          -d "{\"content\": \"Nuevo commit en el repositorio: **${{ github.repository }}**\nAutor: **${{ github.event.head_commit.author.name }}**\nMensaje: **${{ github.event.head_commit.message }}**\nRama: **$branch_name**\nEnlace: [Ver Commit](${{ github.event.head_commit.url }})\"}" \
           $DISCORD_WEBHOOK_URL
