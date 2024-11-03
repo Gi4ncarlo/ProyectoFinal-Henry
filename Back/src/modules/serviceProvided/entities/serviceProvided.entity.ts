@@ -1,7 +1,7 @@
 import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
 import { v4 as uuid } from 'uuid';
 @Entity()
-export class ServiceProvidedEntity {
+export class ServiceProvided {
     @PrimaryGeneratedColumn('uuid')
     id: string = uuid()
     @Column()

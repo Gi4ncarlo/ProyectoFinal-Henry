@@ -1,11 +1,10 @@
-import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, Post, Put, Res } from "@nestjs/common";
+import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, Post, Res } from "@nestjs/common";
 import { ServiceProvidedService } from "./serviceProvided.service";
 import { Response } from "express";
 import { UpdateServiceProvidedDto } from "./Dtos/serviceProvided.dto";
-import { CreateServiceDetailDto } from "../service-details/dto/create-service-detail.dto";
-import { ServiceProvidedEntity } from "./entities/serviceProvided.entity";
+import { ServiceProvided } from "./entities/serviceProvided.entity";
 
-@Controller('')
+@Controller('serviceProvided')
 export class ServiceProvidedController {
     constructor(
         private readonly serviceProvidedService: ServiceProvidedService
@@ -30,7 +29,7 @@ export class ServiceProvidedController {
         }
     }
     @Post()
-    async createServiceProvided(@Res() res: Response, @Body() createServiceProvidedDto: Omit<ServiceProvidedEntity, 'id'>) {
+    async createServiceProvided(@Res() res: Response, @Body() createServiceProvidedDto: Omit<ServiceProvided, 'id'>) {
         try {
             const data = await this.serviceProvidedService.createServiceProvidedService(createServiceProvidedDto);
             return res.status(200).json({

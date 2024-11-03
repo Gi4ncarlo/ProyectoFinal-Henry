@@ -2,11 +2,11 @@ import { Injectable } from "@nestjs/common";
 import { serviceProvidedRepository } from "./serviceProvided.repository";
 import { UpdateServiceProvidedDto } from "./Dtos/serviceProvided.dto";
 import { CreateServiceDetailDto } from "../service-details/dto/create-service-detail.dto";
-import { ServiceProvidedEntity } from "./entities/serviceProvided.entity";
+import { ServiceProvided } from "./entities/serviceProvided.entity";
 
 @Injectable()
 export class ServiceProvidedService {
-    
+
 
     constructor(
         private readonly serviceProvidedRepository: serviceProvidedRepository
@@ -20,7 +20,7 @@ export class ServiceProvidedService {
     async updateServiceProvidedService(id: string, updateServiceProvidedDto: UpdateServiceProvidedDto) {
         return await this.serviceProvidedRepository.updateServiceProvidedRepository(id, updateServiceProvidedDto);
     }
-    async createServiceProvidedService(createServiceProvidedDto: Omit<ServiceProvidedEntity, 'id'>) {
+    async createServiceProvidedService(createServiceProvidedDto: Omit<ServiceProvided, 'id'>) {
         return await this.serviceProvidedRepository.createServiceProvidedRepository(createServiceProvidedDto);
     }
 

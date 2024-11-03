@@ -1,5 +1,4 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ServiceDetail } from 'src/modules/service-details/entities/service-detail.entity';
 
 
 

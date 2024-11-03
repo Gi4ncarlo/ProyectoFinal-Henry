@@ -1,17 +1,16 @@
 import { HttpException, Injectable, ParseUUIDPipe } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { ServiceProvidedEntity } from "./entities/serviceProvided.entity";
+import { ServiceProvided } from "./entities/serviceProvided.entity";
 import { Repository } from "typeorm";
 import { UpdateServiceProvidedDto } from "./Dtos/serviceProvided.dto";
-import { CreateServiceDetailDto } from "../service-details/dto/create-service-detail.dto";
 
 @Injectable()
 export class serviceProvidedRepository {
 
 
     constructor(
-        @InjectRepository(ServiceProvidedEntity)
-        private readonly serviceProvidedRepository: Repository<ServiceProvidedEntity>,
+        @InjectRepository(ServiceProvided)
+        private readonly serviceProvidedRepository: Repository<ServiceProvided>,
     ) { }
     async getAllServiceProvidedRepository() {
         try {
@@ -29,7 +28,7 @@ export class serviceProvidedRepository {
         }
     }
 
-    async createServiceProvidedRepository(createServiceProvidedDto: Omit<ServiceProvidedEntity, 'id'>) {
+    async createServiceProvidedRepository(createServiceProvidedDto: Omit<ServiceProvided, 'id'>) {
         try {
             const newServiceProvided = await this.serviceProvidedRepository.create(createServiceProvidedDto);
             return await this.serviceProvidedRepository.save(newServiceProvided);
