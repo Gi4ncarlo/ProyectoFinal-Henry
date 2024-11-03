@@ -5,7 +5,7 @@ on:
     branches:
       - Develop # Cambia esta línea si quieres monitorear otra rama
       - Back
-      - Front
+      - Front-v2
 
 jobs:
   notify:
