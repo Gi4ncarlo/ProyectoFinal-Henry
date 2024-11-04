@@ -32,7 +32,7 @@ export default function RegisterForm() {
   }
 
   return (
-    <div className="w-full max-w-md mx-auto p-6 border rounded-lg shadow-lg bg-white">
+    <div className="w-full max-w-md mx-auto mt-24 p-6 border rounded-lg shadow-lg bg-white">
       <h2 className="text-2xl font-bold text-center mb-4">Registro</h2>
       <p className="text-gray-600 text-center mb-6">Crea tu cuenta para servicios de jardinería</p>
       
