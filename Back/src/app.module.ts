@@ -4,6 +4,7 @@ import { ServiceDetailsModule } from './modules/service-details/service-details.
 import { GardenerModule } from './modules/gardener/gardener.module';
 import { ServicesOrderModule } from './modules/services-order/services-order.module';
 import { ServiceProvidedModule } from './modules/serviceProvided/serviceProvided.module';
+import { UserModule } from './modules/user/user.module';
 
 
 @Module({
@@ -11,6 +12,7 @@ import { ServiceProvidedModule } from './modules/serviceProvided/serviceProvided
     dataSource,
     ServiceDetailsModule,
     GardenerModule,
+    UserModule,
     ServicesOrderModule,
     ServiceProvidedModule
   ],

@@ -1,12 +1,7 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
-<<<<<<< HEAD
-=======
 import { Gardener } from 'src/modules/gardener/entities/gardener.entity';
 import { ServiceDetail } from 'src/modules/service-details/entities/service-detail.entity';
 import { ServicesOrderEntity } from 'src/modules/services-order/entities/services-order.entity';
->>>>>>> 468deda780dc019956728c3fd58cebcdeb05dae2
-
-
 
 export const dataSource = TypeOrmModule.forRoot({
     type: 'postgres',
@@ -15,14 +10,10 @@ export const dataSource = TypeOrmModule.forRoot({
     username: 'backend_rer6_user',
     password: '7lQXiIYcMmA6uhefifvvwtuwbgdz3qLU',
     database: 'backend_rer6',
-<<<<<<< HEAD
-    entities: ['dist/**/*.entity.{ts,js}'], 
-=======
     entities: ['dist/**/*.entity{.ts,.js}'], 
->>>>>>> 468deda780dc019956728c3fd58cebcdeb05dae2
     synchronize: true,
-    logging: true,
-    dropSchema: false,
+    logging: false,
+    dropSchema: true,
     ssl: {
         rejectUnauthorized: false, 
     },
