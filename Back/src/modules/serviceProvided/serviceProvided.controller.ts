@@ -40,16 +40,16 @@ export class ServiceProvidedController {
             return res.status(400).json(error);
         }
     }
-    @Patch('/:id')
-    async updateServiceProvided(@Res() res: Response, @Param('id', ParseUUIDPipe) id: string, @Body() updateServiceProvidedDto: UpdateServiceProvidedDto) {
-        try {
-            const data = await this.serviceProvidedService.updateServiceProvidedService(id, updateServiceProvidedDto);
-            return res.status(200).json({
-                service: data,
-                message: 'Servicio actualizado con exito'
-            });
-        } catch (error) {
-            return res.status(400).json(error);
-        }
-    }
+    // @Patch('/:id')
+    // async updateServiceProvided(@Res() res: Response, @Param('id', ParseUUIDPipe) id: string, @Body() updateServiceProvidedDto: UpdateServiceProvidedDto) {
+    //     try {
+    //         const data = await this.serviceProvidedService.updateServiceProvidedService(id, updateServiceProvidedDto);
+    //         return res.status(200).json({
+    //             service: data,
+    //             message: 'Servicio actualizado con exito'
+    //         });
+    //     } catch (error) {
+    //         return res.status(400).json(error);
+    //     }
+    // }
 }

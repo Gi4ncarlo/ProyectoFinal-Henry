@@ -36,12 +36,12 @@ export class serviceProvidedRepository {
             throw new HttpException(error, 400);
         }
     }
-    async updateServiceProvidedRepository(id: string, updateServiceProvidedDto: UpdateServiceProvidedDto) {
-        const data = await this.getServiceProvidedByIdRepository(id);
-        if (!data) {
-            throw new HttpException('Servicio no encontrado', 400);
-        }
-        return await this.serviceProvidedRepository.save({ ...data, ...updateServiceProvidedDto });
+    // async updateServiceProvidedRepository(id: string, updateServiceProvidedDto: UpdateServiceProvidedDto) {
+    //     const data = await this.getServiceProvidedByIdRepository(id);
+    //     if (!data) {
+    //         throw new HttpException('Servicio no encontrado', 400);
+    //     }
+    //     return await this.serviceProvidedRepository.save({ ...data, ...updateServiceProvidedDto });
 
-    }
+    // }
 }

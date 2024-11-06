@@ -17,9 +17,9 @@ export class ServiceProvidedService {
     async getServiceProvidedByIdService(id: string) {
         return await this.serviceProvidedRepository.getServiceProvidedByIdRepository(id);
     }
-    async updateServiceProvidedService(id: string, updateServiceProvidedDto: UpdateServiceProvidedDto) {
-        return await this.serviceProvidedRepository.updateServiceProvidedRepository(id, updateServiceProvidedDto);
-    }
+    // async updateServiceProvidedService(id: string, updateServiceProvidedDto: UpdateServiceProvidedDto) {
+    //     return await this.serviceProvidedRepository.updateServiceProvidedRepository(id, updateServiceProvidedDto);
+    // }
     async createServiceProvidedService(createServiceProvidedDto: Omit<ServiceProvided, 'id'>) {
         return await this.serviceProvidedRepository.createServiceProvidedRepository(createServiceProvidedDto);
     }
