@@ -1,4 +1,5 @@
-import { IsArray, IsNotEmpty, IsString } from "class-validator"
+import { IsArray, IsNotEmpty, IsNumber, IsString } from "class-validator"
+import { Categories } from "../enums/categories.enum";
 
 export class CreateServiceProvidedDto {
     @IsNotEmpty()
@@ -6,11 +7,11 @@ export class CreateServiceProvidedDto {
     detailService: string
 
     @IsNotEmpty()
-    @IsString()
-    price: string
+    @IsNumber({ maxDecimalPlaces: 2 })
+    price: number;
 
     @IsArray()
-    categories: string[]
+    categories: Array<Categories>[]
 }
 
 export class UpdateServiceProvidedDto {

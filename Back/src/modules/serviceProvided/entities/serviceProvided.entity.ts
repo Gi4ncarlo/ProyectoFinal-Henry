@@ -3,6 +3,7 @@ import { ServicesOrderEntity } from "src/modules/services-order/entities/service
 import { User } from "src/modules/user/entities/user.entity";
 import { Column, Entity, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { v4 as uuid } from 'uuid';
+import { Categories } from "../enums/categories.enum";
 @Entity()
 export class ServiceProvided {
     @PrimaryGeneratedColumn('uuid')
@@ -12,12 +13,19 @@ export class ServiceProvided {
     detailService: string
 
     @Column()
-    price: string
+    price: number
 
     @Column({
         type: 'simple-array',
     })
-    categories: string[]
+
+    @Column({
+        type: 'enum',
+        enum: Categories,
+        default: Categories.GROWER
+      })
+      categories: Categories[];
+
 
     @ManyToMany(() => Gardener, (gardener) => gardener.serviceProvided, { onDelete: "CASCADE" })
     @JoinTable()
