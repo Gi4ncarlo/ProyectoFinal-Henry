@@ -7,10 +7,13 @@ import { v4 as uuid } from 'uuid';
 export class ServiceProvided {
     @PrimaryGeneratedColumn('uuid')
     id: string = uuid()
+
     @Column()
     detailService: string
+
     @Column()
     price: string
+
     @Column({
         type: 'simple-array',
     })

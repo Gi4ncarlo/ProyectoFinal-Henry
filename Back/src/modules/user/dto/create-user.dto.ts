@@ -1,10 +1,7 @@
-import { IsEmail, IsEnum, IsInt, IsNotEmpty, IsOptional, IsPhoneNumber, IsString, Min } from 'class-validator';
+import { IsEmail, IsEnum, IsInt, IsNotEmpty, IsPhoneNumber, IsString, Min, Matches } from 'class-validator';
 import { Role } from '../enums/role.enum';
 
 export class CreateUserDto {
-  @IsNotEmpty()
-  @IsString()
-  id: string;
 
   @IsNotEmpty()
   @IsString()
@@ -12,7 +9,22 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   @IsString()
+  username: string;
+
+  @Matches(
+    /^(?=.[a-z])(?=.[A-Z])(?=.\d)(?=.[=!@#$%^&])[A-Za-z\d=!@#$%^&]{8,15}$/,
+    {
+        message : 
+        "La contraseña debe contener una minuscula, una mayuscula, un numero, un simbolo"
+    }
+)
+  @IsNotEmpty()
+  @IsString()
   password: string;
+
+  @IsNotEmpty()
+  @IsString()
+  passwordConfirm: string;
 
   @IsNotEmpty()
   @IsInt()
@@ -27,7 +39,6 @@ export class CreateUserDto {
   @IsEmail({}, { message: 'Email must be valid' })
   email: string;
 
-  @IsOptional()
   @IsEnum(Role, { message: 'Role must be either User, Admin or Gardener' })
-  role?: Role = Role.User;
+  role: Role = Role.User;
 }
