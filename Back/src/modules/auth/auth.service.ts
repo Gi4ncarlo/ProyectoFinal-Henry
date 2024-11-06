@@ -40,6 +40,8 @@ export class AuthService {
             signUpUser.email,
         );
 
+        console.log( userFinded)
+
         if(userFinded){
             throw new BadRequestException('User already exists')
         }

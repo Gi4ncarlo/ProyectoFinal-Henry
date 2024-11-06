@@ -17,7 +17,8 @@ export class AuthController {
   @Post('signup')
   @HttpCode(HttpStatus.CREATED)
   async signUp(@Body() signUpUser: SignUpAuthDto){
-     const user = await this.authService.signUp(signUpUser);
+    console.log("Ta petando?")
+     const user = await this.authService.signUp(signUpUser)
      return new UserResponseDto(user);
   }
 
