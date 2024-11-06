@@ -1,4 +1,7 @@
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Gardener } from "src/modules/gardener/entities/gardener.entity";
+import { ServicesOrderEntity } from "src/modules/services-order/entities/services-order.entity";
+import { User } from "src/modules/user/entities/user.entity";
+import { Column, Entity, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { v4 as uuid } from 'uuid';
 @Entity()
 export class ServiceProvided {
@@ -12,8 +15,17 @@ export class ServiceProvided {
         type: 'simple-array',
     })
     categories: string[]
-    // @ManyToOne(() => Gardener, (gardener) => gardener.serviceProvided)
-    // @JoinColumn()
-    // assignedGardener: Gardener[];
 
+    @ManyToMany(() => Gardener, (gardener) => gardener.serviceProvided, { onDelete: "CASCADE" })
+    @JoinTable()
+    gardener: Gardener[];
+
+    @OneToMany(() => User, (user) => user.serviceProvided, { onDelete: "CASCADE" })
+    user: User
+
+    @OneToOne(() => ServicesOrderEntity, (serviceOrder) => serviceOrder.serviceProvided, { onDelete: "CASCADE" })
+    serviceOrder: ServicesOrderEntity
 }
+
+
+

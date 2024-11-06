@@ -1,3 +1,4 @@
+import { ServicesOrderEntity } from 'src/modules/services-order/entities/services-order.entity';
 import {
   Column,
   Entity,
@@ -14,10 +15,6 @@ import { v4 as uuid } from 'uuid';
 export class ServiceDetail {
   @PrimaryGeneratedColumn('uuid')
   id: string = uuid();
-
-  //   @OneToOne(() => Order, (order) => order.orderDetail, { onDelete: 'CASCADE' })
-  //   @JoinColumn()
-  //     order : Order;
 
   @Column()
   serviceType: string;
@@ -36,10 +33,12 @@ export class ServiceDetail {
 
   @Column({ type: 'int', nullable: true })
   rating: number; // Calificación entre 0 y 5
-  
 
-// @ManyToOne(() => Gardener, (gardener) => gardener.serviceDetails, { nullable: false })
-// @JoinColumn()
-// assignedGardener: Gardener;
+  @OneToOne(() => ServicesOrderEntity, (servicesOrder) => servicesOrder.orderDetail, { onDelete: 'CASCADE' })
+  @JoinColumn()
+  servicesOrder: ServicesOrderEntity;
+  // @ManyToOne(() => Gardener, (gardener) => gardener.serviceDetails, { nullable: false })
+  // @JoinColumn()
+  // assignedGardener: Gardener;
 
 }
