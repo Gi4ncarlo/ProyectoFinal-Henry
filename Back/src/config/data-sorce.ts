@@ -13,7 +13,7 @@ export const dataSource = TypeOrmModule.forRoot({
     entities: ['dist/**/*.entity{.ts,.js}'], 
     synchronize: true,
     logging: false,
-    dropSchema: true,
+    dropSchema: false,
     ssl: {
         rejectUnauthorized: false, 
     },

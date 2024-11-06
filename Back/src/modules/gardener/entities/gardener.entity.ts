@@ -13,9 +13,13 @@ import { v4 as uuid } from 'uuid';
 @Entity({
   name: 'Gardener',
 })
-export class Gardener { //extends User (agregarlo)
+export class Gardener {
+  //extends User (agregarlo)
   @PrimaryGeneratedColumn('uuid')
   id: string = uuid();
+
+  @Column({ type: 'text', nullable: true })
+  name: string; // Nombre del jardinero
 
   @Column({ type: 'text', nullable: true })
   experience: string; // Años de experiencia o descripción breve
@@ -29,11 +33,10 @@ export class Gardener { //extends User (agregarlo)
   @Column({ type: 'float', nullable: true })
   costPerHour: number;
 
-  @ManyToMany(() => ServiceProvided, service => service.gardener)
+  @ManyToMany(() => ServiceProvided, (service) => service.gardener)
   @JoinTable()
   serviceProvided: ServiceProvided[];
 
-  @Column({ type: "text", nullable: true })
+  @Column({ type: 'text', nullable: true })
   profileImageUrl: string;
-
 }

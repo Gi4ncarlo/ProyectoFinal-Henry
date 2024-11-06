@@ -9,20 +9,21 @@ import { Repository } from 'typeorm';
 export class GardenerService {
   constructor(
     @InjectRepository(Gardener)
-    private readonly gardenerRepository : Repository<Gardener>
-  ){}
- async create(createGardenerDto: CreateGardenerDto) : Promise<Gardener> {
-   const gardner = this.gardenerRepository.create(createGardenerDto);
-   return await this.gardenerRepository.save(gardner)
+    private readonly gardenerRepository: Repository<Gardener>,
+  ) {}
+
+  async create(createGardenerDto: CreateGardenerDto): Promise<Gardener> {
+    const gardner = this.gardenerRepository.create(createGardenerDto);
+    return await this.gardenerRepository.save(gardner);
   }
 
   async findAll(): Promise<Gardener[]> {
-   const gardners = await this.gardenerRepository.find();
-   if(gardners.length === 0){
-    throw new NotFoundException("Gardner not foundend")
-   }
+    const gardners = await this.gardenerRepository.find();
+    if (gardners.length === 0) {
+      throw new NotFoundException('Gardner not foundend');
+    }
 
-   return gardners;
+    return gardners;
   }
   async findOne(id: string): Promise<Gardener> {
     const gardner = await this.gardenerRepository.findOneBy({ id });
@@ -31,7 +32,25 @@ export class GardenerService {
     }
     return gardner;
   }
-  async update(id: string, updateGardenerDto: UpdateGardenerDto): Promise<Gardener> {
+
+  async findOneByName(name: string): Promise<Gardener> {
+    const gardner = await this.gardenerRepository.findOne({
+      where: {
+        name: name,
+      },
+    });
+
+    if (!gardner) {
+      throw new NotFoundException(`Gardener with the name ${name} not found`);
+    }
+
+    return gardner;
+  }
+
+  async update(
+    id: string,
+    updateGardenerDto: UpdateGardenerDto,
+  ): Promise<Gardener> {
     const gardener = await this.gardenerRepository.findOneBy({ id });
     if (!gardener) {
       throw new NotFoundException(`Gardener with the ID ${id} not Found`);
@@ -46,6 +65,6 @@ export class GardenerService {
       throw new NotFoundException(`Gardener with the ID ${id} not Found`);
     }
 
-    return `Gardner with the ID ${id} DELETED exitosly`
+    return `Gardner with the ID ${id} DELETED exitosly`;
   }
 }
