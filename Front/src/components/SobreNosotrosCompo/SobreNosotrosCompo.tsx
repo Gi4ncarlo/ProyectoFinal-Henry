@@ -1,25 +1,30 @@
+import React from 'react'
+
 import Image from "next/image";
-import { Playfair_Display, Roboto, Lora } from '@next/font/google';
+// import { Playfair_Display, Roboto, Lora } from '@next/font/google';
 
-const playfairDisplay = Playfair_Display({
-  subsets: ['latin'],
-  variable: '--font-playfair',
-});
+// const playfairDisplay = Playfair_Display({
+//   subsets: ['latin'],
+//   variable: '--font-playfair',
+// });
 
-const roboto = Roboto({
-  subsets: ['latin'],
-  variable: '--font-roboto',
-  weight: ['400', '700'],
-});
+// const roboto = Roboto({
+//   subsets: ['latin'],
+//   variable: '--font-roboto',
+//   weight: ['400', '700'],
+// });
 
-const lora = Lora({
-  subsets: ['latin'],
-  variable: '--font-lora',
-});
+// const lora = Lora({
+//   subsets: ['latin'],
+//   variable: '--font-lora',
+// });
 
-export default function Home() {
+
+const SobreNosotrosCompo = () => {
   return (
-    <main className={`flex min-h-screen flex-col items-center justify-between py-8 mt-16 text-center sm:p-24 sm:text-justify ${playfairDisplay.variable} ${roboto.variable} ${lora.variable}`}>
+    <div>
+      
+    <main className={`flex min-h-screen flex-col items-center justify-between py-8 mt-16 text-center sm:p-24 sm:text-justify`}>
       <div className="mx-auto bg-white p-1 shadow-lg grid grid-cols-1 gap-4 my-2 sm:p-8 lg:max-w-4xl">
         <h1 className="text-xl font-bold mb-1 font-playfair sm:text-2xl lg:text-4xl lg:mb-6">Quiénes somos</h1>
         <p className="mb-4 font-lora text-sm sm:text-base">
@@ -105,5 +110,12 @@ export default function Home() {
         />
       </div>
     </main>
-  );
+    </div>
+  )
 }
+
+export default SobreNosotrosCompo
+
+
+
+

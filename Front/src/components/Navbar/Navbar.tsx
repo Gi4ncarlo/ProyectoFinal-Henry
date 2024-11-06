@@ -31,9 +31,10 @@ export default function Navbar() {
           : "bg-gradient-to-r from-green-900 to-green-700 py-2 lg:py-4"
       }`}
     >
+
       <div className="container flex items-center justify-between mx-auto px-2 py-1 lg:px-4 lg:py-2">
         <div
-          className={`text-white text-lg lg:text-3xl font-bold font-cinzel ${
+          className={`text-white text-lg lg:text-3xl font-bold font-cinzel  ${
             isScrolled ? "text-base lg:text-2xl" : ""
           }`}
         >
@@ -45,23 +46,38 @@ export default function Navbar() {
             {isMenuOpen ? <HiX /> : <HiMenu />} 
           </button>
         </div>
+  
+
+
+ 
+    {/* BARRA DE BÚSQUEDA MÁS PEQUEÑA */}
+    <div className="flex items-center w-1/4">
+      <input
+        type="text"
+        placeholder="Search..."
+        className="w-full px-4 py-2 rounded-lg text-black"
+      />
+    </div>
+
+
+
 
         <ul
           className={`hidden lg:flex space-x-6 text-white text-base lg:text-xl font-roboto ${
             isScrolled ? "text-[10px] lg:text-[18px] duration-700" : ""
           }`}
         >
+          {/* <li className="hover:-translate-y-1 hover:underline">
+            <Link href="proyectos">Proyectos</Link>
+          </li> */}
           <li className="hover:-translate-y-1 hover:underline">
-            <Link href="/pages/Proyectos">Proyectos</Link>
+            <Link href="servicios">Servicios</Link>
           </li>
           <li className="hover:-translate-y-1 hover:underline">
-            <Link href="/pages/Servicios">Servicios</Link>
+            <Link href="sobreNosotros">Sobre Nosotros</Link>
           </li>
           <li className="hover:-translate-y-1 hover:underline">
-            <Link href="/pages/SobreNosotros">Sobre Nosotros</Link>
-          </li>
-          <li className="hover:-translate-y-1 hover:underline">
-            <Link href="/pages/Contacto">Contacto</Link>
+            <Link href="/contacto">Contacto</Link>
           </li>
         </ul>
 
@@ -82,6 +98,7 @@ export default function Navbar() {
           </ul>
         )}
       </div>
+
     </nav>
   );
 }
