@@ -34,7 +34,6 @@ export class Gardener {
   costPerHour: number;
 
   @ManyToMany(() => ServiceProvided, (service) => service.gardener)
-  @JoinTable()
   serviceProvided: ServiceProvided[];
 
   @Column({ type: 'text', nullable: true })

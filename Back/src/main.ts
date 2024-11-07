@@ -4,6 +4,7 @@ import { SeedsModule } from './seeds/seeds.module';
 import { UsersSeed } from './seeds/user/users.seed';
 import { ServiceSeed } from './seeds/serviceSeed/service.seed';
 import { loggsGlobal } from './middlewares/loggs.middleware';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
 

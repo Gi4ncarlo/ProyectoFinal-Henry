@@ -40,6 +40,8 @@ export class SignUpAuthDto{
     @IsInt()
     age: number;
 
+    adress: string
+
     role: Role = Role.User
 
     constructor(partial: Partial<SignUpAuthDto>){

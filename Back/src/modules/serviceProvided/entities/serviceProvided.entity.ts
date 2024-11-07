@@ -28,7 +28,6 @@ export class ServiceProvided {
 
 
     @ManyToMany(() => Gardener, (gardener) => gardener.serviceProvided, { onDelete: "CASCADE" })
-    @JoinTable()
     gardener: Gardener[];
 
     @OneToMany(() => User, (user) => user.serviceProvided, { onDelete: "CASCADE" })

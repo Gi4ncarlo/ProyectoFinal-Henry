@@ -15,6 +15,7 @@ export class AuthService {
     ) {}
 
     async signIn(credentials: SignInAuthDto){
+        console.log("Credenciales recibidas en signIn:", credentials);
         const user = await this.userService.findByEmail(credentials.email);
 
         if(!user){
@@ -37,11 +38,9 @@ export class AuthService {
 
     async signUp(signUpUser: SignUpAuthDto){
         const userFinded = await this.userService.findByEmail(
-            signUpUser.email,
+            signUpUser.email
         );
-
-        console.log( userFinded)
-
+        
         if(userFinded){
             throw new BadRequestException('User already exists')
         }
