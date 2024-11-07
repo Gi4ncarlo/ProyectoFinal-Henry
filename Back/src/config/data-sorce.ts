@@ -1,7 +1,4 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Gardener } from 'src/modules/gardener/entities/gardener.entity';
-import { ServiceDetail } from 'src/modules/service-details/entities/service-detail.entity';
-import { ServicesOrderEntity } from 'src/modules/services-order/entities/services-order.entity';
 
 export const dataSource = TypeOrmModule.forRoot({
     type: 'postgres',
@@ -13,7 +10,7 @@ export const dataSource = TypeOrmModule.forRoot({
     entities: ['dist/**/*.entity{.ts,.js}'], 
     synchronize: true,
     logging: false,
-    dropSchema: false,
+    dropSchema: true,
     ssl: {
         rejectUnauthorized: false, 
     },

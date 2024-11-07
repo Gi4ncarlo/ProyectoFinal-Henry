@@ -67,4 +67,9 @@ export class GardenerService {
 
     return `Gardner with the ID ${id} DELETED exitosly`;
   }
+
+
+  async updateProfileImage(id: string, imageUrl: string): Promise<void> {
+    await this.gardenerRepository.update(id, { profileImageUrl: imageUrl });
+  }
 }

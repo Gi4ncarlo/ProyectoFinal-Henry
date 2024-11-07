@@ -1,12 +1,12 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, JoinColumn, ManyToOne } from 'typeorm';
 import { Role } from '../enums/role.enum';
 import { ServicesOrderEntity } from 'src/modules/services-order/entities/services-order.entity';
-import { ServiceProvided } from 'src/modules/serviceProvided/entities/serviceProvided.entity';
+import { v4 as uuid } from 'uuid';
 
 @Entity({ name: 'users' })
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id: string = uuid();
 
   @Column({ nullable: false })
   name: string;
@@ -26,8 +26,8 @@ export class User {
   @Column()
   phone: string;
 
-  @Column({ nullable: true })
-  adress: string;
+  @Column()
+  address : string;
 
   @Column({
     type: 'enum',
@@ -39,6 +39,7 @@ export class User {
   @OneToMany(() => ServicesOrderEntity, (serviceOrders) => serviceOrders.user)
   servicesOrder: ServicesOrderEntity;
 
-  @ManyToOne(() => ServiceProvided, (serviceProvided) => serviceProvided.user)
-  serviceProvided: ServiceProvided;
+  @Column({ type: 'text', nullable: true })
+  profileImageUrl: string;
+
 }

@@ -5,9 +5,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { GardenerModule } from '../gardener/gardener.module';
 import { SharedModule } from 'src/shared/shared.module';
+import { FileUploadModule } from 'src/file-upload/file-upload.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), GardenerModule, SharedModule],
+  imports: [TypeOrmModule.forFeature([User]), GardenerModule, SharedModule, FileUploadModule],
   controllers: [UserController],
   providers: [UserService],
   exports: [UserService],
