@@ -8,6 +8,7 @@ import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { SeedsModule } from './seeds/seeds.module';
+import { AdminModule } from './modules/admin/admin.module';
 
 
 
@@ -24,7 +25,8 @@ import { SeedsModule } from './seeds/seeds.module';
     ServicesOrderModule,
     ServiceProvidedModule,
     AuthModule,
-    SeedsModule
+    SeedsModule,
+    AdminModule
   ],
   controllers: [],
   providers: [],
