@@ -25,25 +25,12 @@ export class GardenerService {
 
     return gardners;
   }
+  
   async findOne(id: string): Promise<Gardener> {
     const gardner = await this.gardenerRepository.findOneBy({ id });
     if (!gardner) {
       throw new NotFoundException(`Gardener with the ID ${id} not Found`);
     }
-    return gardner;
-  }
-
-  async findOneByName(name: string): Promise<Gardener> {
-    const gardner = await this.gardenerRepository.findOne({
-      where: {
-        name: name,
-      },
-    });
-
-    if (!gardner) {
-      throw new NotFoundException(`Gardener with the name ${name} not found`);
-    }
-
     return gardner;
   }
 

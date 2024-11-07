@@ -42,9 +42,9 @@ export class UserController {
     return this.userService.findOne(id);
   }
 
-  @Get('/gardener/:name')
-  async findByNameGardener(@Param('name') name: string) {
-    return await this.gardenerService.findOneByName(name);
+  @Get('/gardener/:id')
+  async findByNameGardener(@Param('id') id: string) {
+    return await this.gardenerService.findOne(id)
   }
 
   //IMAGEN 
