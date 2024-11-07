@@ -6,22 +6,54 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class AdminService {
 
+    
     constructor(
         @InjectRepository(AdminEntity)
         private readonly adminRepository: Repository<AdminEntity>,
     ) { }
-    getAllAdmin() {
+    async getAllAdmin() {
         try {
-            return this.adminRepository.find();
+            return await this.adminRepository.find();
 
         } catch (error) {
             throw new HttpException(error, 400);
         }
     }
-    getAdminById(id: string) {
+    async getAdminById(id: string) {
         try {
-            const admin = this.adminRepository.findOne({ where: { id } });
+            const admin = await this.adminRepository.findOne({ where: { id } });
             return admin;
+        } catch (error) {
+            throw new HttpException(error, 400);
+        }
+    }
+    async createAdmin(createAdmin) {
+        try {
+            const newAdmin = await this.adminRepository.create(createAdmin);
+            return await this.adminRepository.save(newAdmin);
+        } catch (error) {
+            throw new HttpException(error, 400);
+        }
+    }
+    async updateAdmin(id: string, updateAdmin: any) {
+        try {
+            const admin = await this.adminRepository.findOne({ where: { id } });
+            return await this.adminRepository.save({ ...admin, ...updateAdmin });
+        } catch (error) {
+            throw new HttpException(error, 400);
+        }
+    }
+    async removeAdmin(id: string) {
+        try {
+            const userDeleted = await this.adminRepository.delete({ id });
+            if (!userDeleted) {
+                throw new HttpException(`Admin with the ID ${id} not Found`, 400);
+            }
+            return {
+                message: `Admin with the ID ${id} DELETED exitosly`,
+                status: 200,
+                user: userDeleted
+            };
         } catch (error) {
             throw new HttpException(error, 400);
         }
