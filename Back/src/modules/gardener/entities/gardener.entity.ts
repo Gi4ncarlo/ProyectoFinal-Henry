@@ -1,25 +1,16 @@
 import { ServiceProvided } from 'src/modules/serviceProvided/entities/serviceProvided.entity';
+import { User } from 'src/modules/user/entities/user.entity';
+import { Role } from 'src/modules/user/enums/role.enum';
 import {
   Column,
   Entity,
-  JoinColumn,
-  JoinTable,
   ManyToMany,
-  OneToOne,
-  PrimaryGeneratedColumn,
 } from 'typeorm';
-import { v4 as uuid } from 'uuid';
 
 @Entity({
   name: 'Gardener',
 })
-export class Gardener {
-  //extends User (agregarlo)
-  @PrimaryGeneratedColumn('uuid')
-  id: string = uuid();
-
-  @Column({ type: 'text', nullable: true })
-  name: string; // Nombre del jardinero
+export class Gardener extends User{
 
   @Column({ type: 'text', nullable: true })
   experience: string; // Años de experiencia o descripción breve
@@ -33,10 +24,14 @@ export class Gardener {
   @Column({ type: 'float', nullable: true })
   costPerHour: number;
 
+  @Column({
+    type: 'enum',
+    enum: Role,
+    default: Role.Gardener
+  })
+  role: Role;
+
   @ManyToMany(() => ServiceProvided, (service) => service.gardener)
-  @JoinTable()
   serviceProvided: ServiceProvided[];
 
-  @Column({ type: 'text', nullable: true })
-  profileImageUrl: string;
 }

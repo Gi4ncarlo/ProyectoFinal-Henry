@@ -28,7 +28,7 @@ export class UsersSeed {
             user.phone = userData.phone;
             user.age = userData.age; 
             user.role = userData.role;
-            user.adress = userData.address;
+            user.address = userData.address;
             await this.userRepository.save(user); // Guarda el usuario si no existe
         }
     }

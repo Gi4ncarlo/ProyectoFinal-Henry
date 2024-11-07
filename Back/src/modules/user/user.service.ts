@@ -4,6 +4,8 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
+import { FileUploadService } from 'src/file-upload/file-upload.service';
+import { UploadFileDto } from 'src/file-upload/dtos/uploadFile.dto';
 
 @Injectable()
 export class UserService {
@@ -50,6 +52,11 @@ export class UserService {
 
   async findByEmail(email: string){
     return this.userRepository.findOne({ where: { email: email }});
+  }
+
+
+  async updateProfileImage(id: string, imageUrl: string): Promise<void> {
+    await this.userRepository.update(id, { profileImageUrl: imageUrl });
   }
 
 }
