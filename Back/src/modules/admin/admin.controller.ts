@@ -1,11 +1,17 @@
-import { Body, Controller, Delete, Get, HttpException, Param, ParseUUIDPipe, Patch, Post, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpException, Param, ParseUUIDPipe, Patch, Post, Res, UseGuards } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { Response } from 'express';
+import { Roles } from 'src/decorators/roles.decorator';
+import { Role } from '../user/enums/role.enum';
+import { RolesGuard } from 'src/guards/roles/role.guard';
 
 @Controller('admin')
 export class AdminController {
     constructor(private readonly adminService: AdminService) {}
 
+    @UseGuards(RolesGuard)
+    @HttpCode(200)
+    @Roles(Role.Admin)
     @Get()
     async getAllAdmin(@Res() res: Response) {
         try {
@@ -18,6 +24,10 @@ export class AdminController {
             throw new HttpException(error, 400);
         }
     }
+
+    @UseGuards(RolesGuard)
+    @HttpCode(200)
+    @Roles(Role.Admin)
     @Get(':id')
     async getAdminById(@Param('id', ParseUUIDPipe) id: string,@Res() res: Response) {
         try {
@@ -30,6 +40,10 @@ export class AdminController {
             throw new HttpException(error, 400);
         }
     }
+
+    @UseGuards(RolesGuard)
+    @HttpCode(200)
+    @Roles(Role.Admin)
     @Post()
     async createAdmin(@Body() createAdmin,@Res() res: Response) {
         try {
@@ -42,6 +56,10 @@ export class AdminController {
             throw new HttpException(error, 400);
         }
     }
+
+    @UseGuards(RolesGuard)
+    @HttpCode(200)
+    @Roles(Role.Admin)
     @Patch(':id')
     async updateAdmin(@Param('id', ParseUUIDPipe) id: string, @Body() updateAdmin,@Res() res: Response) {
         try {
@@ -54,6 +72,10 @@ export class AdminController {
             throw new HttpException(error, 400);
         }
     }
+
+    @UseGuards(RolesGuard)
+    @HttpCode(200)
+    @Roles(Role.Admin)
     @Delete(':id')
     async removeAdmin(@Param('id', ParseUUIDPipe) id: string, @Res() res: Response) {
         try {

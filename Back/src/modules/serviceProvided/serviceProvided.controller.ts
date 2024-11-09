@@ -1,14 +1,19 @@
-import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, Post, Res } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, Param, ParseUUIDPipe, Patch, Post, Res, UseGuards } from "@nestjs/common";
 import { ServiceProvidedService } from "./serviceProvided.service";
 import { Response } from "express";
 import { UpdateServiceProvidedDto } from "./Dtos/serviceProvided.dto";
 import { ServiceProvided } from "./entities/serviceProvided.entity";
+import { Role } from "../user/enums/role.enum";
+import { Roles } from "src/decorators/roles.decorator";
+import { RolesGuard } from "src/guards/roles/role.guard";
 
 @Controller('serviceProvided')
 export class ServiceProvidedController {
     constructor(
         private readonly serviceProvidedService: ServiceProvidedService
-    ) { }
+    ) {}
+
+    
     @Get()
     async getAllServiceProvided(@Res() res: Response,) {
         try {
@@ -28,6 +33,10 @@ export class ServiceProvidedController {
             return res.status(400).json(error);
         }
     }
+
+    @UseGuards(RolesGuard)
+    @HttpCode(200)
+    @Roles(Role.Admin)
     @Post()
     async createServiceProvided(@Res() res: Response, @Body() createServiceProvidedDto: Omit<ServiceProvided, 'id'>) {
         try {
@@ -40,6 +49,7 @@ export class ServiceProvidedController {
             return res.status(400).json(error);
         }
     }
+
     // @Patch('/:id')
     // async updateServiceProvided(@Res() res: Response, @Param('id', ParseUUIDPipe) id: string, @Body() updateServiceProvidedDto: UpdateServiceProvidedDto) {
     //     try {

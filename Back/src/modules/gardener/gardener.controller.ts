@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, HttpCode, UseGuards, Query } from '@nestjs/common';
 import { GardenerService } from './gardener.service';
 import { CreateGardenerDto } from './dto/create-gardener.dto';
 import { UpdateGardenerDto } from './dto/update-gardener.dto';
@@ -6,15 +6,16 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ImageUploadPipe } from 'src/pipes/image-upload/image-upload.pipe';
 import { UploadFileDto } from 'src/file-upload/dtos/uploadFile.dto';
 import { FileUploadService } from 'src/file-upload/file-upload.service';
+import { Role } from '../user/enums/role.enum';
+import { Roles } from 'src/decorators/roles.decorator';
+import { RolesGuard } from 'src/guards/roles/role.guard';
 
 @Controller('gardener')
 export class GardenerController {
   constructor(
     private readonly gardenerService: GardenerService,
     private readonly fileUploadService: FileUploadService,
-  )
-  
-  {}
+  ){}
 
   @Post()
   create(@Body() createGardenerDto: CreateGardenerDto) {
@@ -22,8 +23,11 @@ export class GardenerController {
   }
 
   @Get()
-  findAll() {
-    return this.gardenerService.findAll();
+  findAll( 
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10) {   
+   
+    return this.gardenerService.findAll(page, limit);
   }
 
 
@@ -66,6 +70,9 @@ export class GardenerController {
     return this.gardenerService.update(id, updateGardenerDto);
   }
 
+  @UseGuards(RolesGuard)
+  @HttpCode(200)
+  @Roles(Role.Admin)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.gardenerService.remove(id);

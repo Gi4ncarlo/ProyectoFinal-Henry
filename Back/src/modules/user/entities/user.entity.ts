@@ -1,12 +1,11 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, JoinColumn, ManyToOne } from 'typeorm';
 import { Role } from '../enums/role.enum';
 import { ServicesOrderEntity } from 'src/modules/services-order/entities/services-order.entity';
-import { v4 as uuid } from 'uuid';
 
 @Entity({ name: 'users' })
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  id: string = uuid();
+  id: string;
 
   @Column({ nullable: false })
   name: string;

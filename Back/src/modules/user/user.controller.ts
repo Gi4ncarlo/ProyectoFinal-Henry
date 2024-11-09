@@ -9,15 +9,19 @@ import {
   HttpCode,
   UseInterceptors,
   UploadedFile,
+  UseGuards,
+  Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { GardenerService } from '../gardener/gardener.service';
 import { FileUploadService } from 'src/file-upload/file-upload.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadFileDto } from 'src/file-upload/dtos/uploadFile.dto';
 import { ImageUploadPipe } from 'src/pipes/image-upload/image-upload.pipe';
+import { RolesGuard } from 'src/guards/roles/role.guard';
+import { Roles } from 'src/decorators/roles.decorator';
+import { Role } from './enums/role.enum';
 
 @Controller('user')
 export class UserController {
@@ -27,14 +31,15 @@ export class UserController {
     private readonly gardenerService: GardenerService,
   ) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
-  }
-
+  // @UseGuards(RolesGuard)
+  @HttpCode(200)
+  @Roles(Role.Admin)
   @Get()
-  findAll() {
-    return this.userService.findAll();
+  findAll( 
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10
+     ) {
+    return this.userService.findAll(page, limit);
   }
 
   @Get(':id')
@@ -83,6 +88,10 @@ export class UserController {
     return this.userService.update(id, updateUserDto);
   }
 
+
+  @UseGuards(RolesGuard)
+  @HttpCode(200)
+  @Roles(Role.Admin)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.userService.remove(id);

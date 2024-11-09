@@ -1,27 +1,47 @@
-import { Injectable } from "@nestjs/common";
-import { serviceProvidedRepository } from "./serviceProvided.repository";
-import { UpdateServiceProvidedDto } from "./Dtos/serviceProvided.dto";
-import { CreateServiceDetailDto } from "../service-details/dto/create-service-detail.dto";
+import { HttpException, Injectable } from "@nestjs/common";
 import { ServiceProvided } from "./entities/serviceProvided.entity";
+import { Repository } from "typeorm";
+import { InjectRepository } from "@nestjs/typeorm";
 
 @Injectable()
 export class ServiceProvidedService {
 
 
     constructor(
-        private readonly serviceProvidedRepository: serviceProvidedRepository
+        @InjectRepository(ServiceProvided)
+        private readonly serviceProvidedRepository: Repository<ServiceProvided>,
     ) { }
     async getAllServiceProvidedService() {
-        return await this.serviceProvidedRepository.getAllServiceProvidedRepository();
+        try {
+            const allData = await this.serviceProvidedRepository.find();
+            return allData;
+        } catch (error) {
+            throw new HttpException(error, 400);
+        }
     }
     async getServiceProvidedByIdService(id: string) {
-        return await this.serviceProvidedRepository.getServiceProvidedByIdRepository(id);
-    }
-    // async updateServiceProvidedService(id: string, updateServiceProvidedDto: UpdateServiceProvidedDto) {
-    //     return await this.serviceProvidedRepository.updateServiceProvidedRepository(id, updateServiceProvidedDto);
-    // }
-    async createServiceProvidedService(createServiceProvidedDto: Omit<ServiceProvided, 'id'>) {
-        return await this.serviceProvidedRepository.createServiceProvidedRepository(createServiceProvidedDto);
+        try {
+            const data = await this.serviceProvidedRepository.findOne({ where: { id } });
+            return data;
+        } catch (error) {
+            throw new HttpException(error, 400);
+        }
     }
 
+    async createServiceProvidedService(createServiceProvidedDto: Omit<ServiceProvided, 'id'>) {
+        try {
+            const newServiceProvided = await this.serviceProvidedRepository.create(createServiceProvidedDto);
+            return await this.serviceProvidedRepository.save(newServiceProvided);
+        } catch (error) {
+            throw new HttpException(error, 400);
+        }
+    }
+    // async updateServiceProvided(id: string, updateServiceProvidedDto: UpdateServiceProvidedDto) {
+    //     const data = await this.getServiceProvidedByIdRepository(id);
+    //     if (!data) {
+    //         throw new HttpException('Servicio no encontrado', 400);
+    //     }
+    //     return await this.serviceProvidedRepository.save({ ...data, ...updateServiceProvidedDto });
+
+    // }
 }

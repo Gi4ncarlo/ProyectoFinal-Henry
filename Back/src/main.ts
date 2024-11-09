@@ -11,6 +11,9 @@ async function bootstrap() {
 
   const app = await NestFactory.create(AppModule);
   app.use(loggsGlobal);
+  app.enableCors({
+    origin: '*',
+  });
 
   const serviceSeed = app.select(SeedsModule).get(ServiceSeed);
   await serviceSeed.seed();

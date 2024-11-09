@@ -1,15 +1,22 @@
-import { IsDate, IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
-import { PaymentMethod } from '../enums/paymentMethod';
+import { IsDate, IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
+
 export class CreateServiceOrderDto {
 
-    @IsDate()
+    @IsString()
     @IsNotEmpty()
-    date: Date;
-
-    @IsEnum(PaymentMethod)
-    @IsNotEmpty()
-    paymentMethod: PaymentMethod;
+    date: string;
 
     @IsOptional()
-    isApproved?: boolean;
+    isApproved?: boolean;  
+
+    @IsUUID()
+    @IsNotEmpty()
+    gardenerId: string; 
+
+    @IsUUID()
+    @IsNotEmpty()
+    userId: string;
+    
+    @IsUUID()
+    serviceId: string;
 }
