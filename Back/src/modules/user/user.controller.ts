@@ -13,7 +13,6 @@ import {
   Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { GardenerService } from '../gardener/gardener.service';
 import { FileUploadService } from 'src/file-upload/file-upload.service';
@@ -23,8 +22,6 @@ import { ImageUploadPipe } from 'src/pipes/image-upload/image-upload.pipe';
 import { RolesGuard } from 'src/guards/roles/role.guard';
 import { Roles } from 'src/decorators/roles.decorator';
 import { Role } from './enums/role.enum';
-
-
 
 @Controller('user')
 export class UserController {
