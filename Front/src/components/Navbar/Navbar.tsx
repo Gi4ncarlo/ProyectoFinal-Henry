@@ -48,13 +48,13 @@ export default function Navbar() {
           } mx-auto`}
         >
           <li className="hover:-translate-y-1 hover:underline">
-            <Link href="services">Services</Link>
+            <Link href="/servicios">Services</Link>
           </li>
           <li className="hover:-translate-y-1 hover:underline">
-            <Link href="aboutUs">About Us</Link>
+            <Link href="/sobreNosotros">About Us</Link>
           </li>
           <li className="hover:-translate-y-1 hover:underline">
-            <Link href="/contact">Contact</Link>
+            <Link href="/contacto">Contact</Link>
           </li>
         </ul>
 

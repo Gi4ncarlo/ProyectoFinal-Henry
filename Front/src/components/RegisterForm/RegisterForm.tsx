@@ -39,16 +39,12 @@ export default function RegisterForm() {
 
   // Manejo del cambio en los campos
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, type, checked } = event.target;
-    let { value } = event.target;
-    console.log({ name, value, type, checked });
-    if(type === "number" ){
-      //@ts-ignore
-      value = Number(value)  
-    }
+    const { name, value, type, checked } = event.target;
     setDataUser({
       ...dataUser,
+    
       [name]: type === 'checkbox' ? checked : value,
+
     });
     setTouched({
       ...touched,
@@ -59,12 +55,19 @@ export default function RegisterForm() {
   // Manejo de envío del formulario
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+  
     const validationErrors = validateRegisterForm(dataUser);
     setErrors(validationErrors);
-
+  
     // Verificamos si no hay errores antes de registrar
     if (Object.keys(validationErrors).length === 0) {
-      await register(dataUser);
+      // Creamos una copia de dataUser con age convertido a número
+      const userToSend = {
+        ...dataUser,
+        age: Number(dataUser.age),
+      };
+  
+      await register(userToSend);
       alert("Correct Register");
       router.push('/login');
     }
