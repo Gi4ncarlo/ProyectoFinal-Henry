@@ -17,12 +17,18 @@ export class ServiceDetailsService {
     return await this.serviceDetailRepository.save(serviceDetails);
   }
 
-  async findAll(): Promise<ServiceDetail[]> {
-    const details = await this.serviceDetailRepository.find();
-    if (details.length === 0) {
+  async findAll(page: number, limit: number): Promise<{ data: ServiceDetail[]; count: number }> {
+
+    const skip = (page - 1) * limit;
+    const [data, count] = await this.serviceDetailRepository.findAndCount({
+      take: limit,
+      skip: skip,
+    });
+
+    if (count === 0) {
       throw new NotFoundException('No hay detalles de servicio almacenados');
     }
-    return details;
+    return {count, data};
   }
 
   async findOne(id: string): Promise<ServiceDetail> {

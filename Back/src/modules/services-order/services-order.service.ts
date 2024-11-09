@@ -17,12 +17,18 @@ export class ServicesOrderService {
     return await this.servicesOrderRepository.save(newOrder);
   }
 
-  async findAll(): Promise<ServicesOrderEntity[]> {
-    const orders = await this.servicesOrderRepository.find();
-    if (orders.length === 0) {
+  async findAll(page: number, limit: number): Promise<{ data: ServicesOrderEntity[]; count: number }> {
+    const skip = (page - 1) * limit;
+
+    const [data, count] = await this.servicesOrderRepository.findAndCount({
+      take: limit,
+      skip: skip,
+    });
+
+    if (count === 0) {
       throw new NotFoundException('No hay órdenes de servicio almacenadas');
     }
-    return orders;
+    return {count, data};
   }
 
   async findOne(id: string): Promise<ServicesOrderEntity> {
