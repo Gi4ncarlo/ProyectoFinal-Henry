@@ -4,18 +4,19 @@ import { v4 as uuid } from 'uuid';
 import { PaymentMethod } from "../enums/paymentMethod";
 import { User } from "src/modules/user/entities/user.entity";
 import { ServiceProvided } from "src/modules/serviceProvided/entities/serviceProvided.entity";
+import { Gardener } from "src/modules/gardener/entities/gardener.entity";
 
 @Entity({ name: "service_order" })
 export class ServicesOrderEntity {
 
     @PrimaryGeneratedColumn('uuid')
-    id: string = uuid();
+    id: string;
 
     @Column()
-    date: Date;
+    date: string;
 
-    @Column({ type: 'enum', enum: PaymentMethod })
-    paymentMethod: PaymentMethod;
+    // @Column({ type: 'enum', enum: PaymentMethod })
+    // paymentMethod: PaymentMethod;
 
     @Column({ default: false })
     isApproved: boolean;
@@ -30,9 +31,9 @@ export class ServicesOrderEntity {
     serviceProvided: ServiceProvided;
 
     // Relación con la entidad Gardener (Muchos a Uno)
-    // @ManyToOne(() => Gardener, (gardener) => gardener.serviceOrders)
-    // @JoinColumn()
-    // gardener: Gardener;
+    @ManyToOne(() => Gardener, (gardener) => gardener.servicesOrder)
+    @JoinColumn()
+    gardener: Gardener;
 
     // Relación con la entidad User (Muchos a Uno)
     @ManyToOne(() => User, (user) => user.servicesOrder)
