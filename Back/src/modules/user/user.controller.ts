@@ -31,7 +31,7 @@ export class UserController {
     private readonly gardenerService: GardenerService,
   ) {}
 
-  @UseGuards(RolesGuard)
+  // @UseGuards(RolesGuard)
   @HttpCode(200)
   @Roles(Role.Admin)
   @Get()
