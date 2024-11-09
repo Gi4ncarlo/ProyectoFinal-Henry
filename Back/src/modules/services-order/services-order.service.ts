@@ -7,7 +7,6 @@ import { ServicesOrderEntity } from './entities/services-order.entity';
 import { Gardener } from '../gardener/entities/gardener.entity';
 import { User } from '../user/entities/user.entity';
 import { ServiceProvided } from '../serviceProvided/entities/serviceProvided.entity';
-import { format } from 'date-fns';
 import { UserResponseDto } from '../user/dto/response-user.dto';
 @Injectable()
 export class ServicesOrderService {
