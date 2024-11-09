@@ -13,7 +13,8 @@ export class ServiceProvidedService {
     ) { }
     async getAllServiceProvidedService() {
         try {
-            return await this.serviceProvidedRepository.find();
+            const allData = await this.serviceProvidedRepository.find();
+            return allData;
         } catch (error) {
             throw new HttpException(error, 400);
         }
