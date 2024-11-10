@@ -19,8 +19,19 @@ export class UserService {
     return await this.userRepository.save(user);
   }
 
-  async findAll(): Promise<User[]> {
-    return await this.userRepository.find();
+  async findAll(page: number, limit: number): Promise<{ data: User[]; count: number }> {
+    const skip = (page - 1) * limit;
+  
+    const [data, count] = await this.userRepository.findAndCount({
+      take: limit,
+      skip: skip,
+    });
+
+    if(count === 0){
+      throw new NotFoundException('Gardner not foundend');
+    }
+  
+    return {count, data};
   }
 
   async findOne(id: string): Promise<User> {
@@ -33,7 +44,7 @@ export class UserService {
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.userRepository.preload({
-      id, 
+      id,
       ...updateUserDto,
     });
 
@@ -45,19 +56,17 @@ export class UserService {
   }
 
   async remove(id: string): Promise<Partial<User>> {
-    const user = await this.findOne(id); 
+    const user = await this.findOne(id);
     await this.userRepository.remove(user);
-    return {id}
+    return { id };
   }
 
   async findByEmail(email: string): Promise<User> {
     const user = await this.userRepository.findOne({ where: { email } });
     return user;
-}
-
+  }
 
   async updateProfileImage(id: string, imageUrl: string): Promise<void> {
     await this.userRepository.update(id, { profileImageUrl: imageUrl });
   }
-
 }
