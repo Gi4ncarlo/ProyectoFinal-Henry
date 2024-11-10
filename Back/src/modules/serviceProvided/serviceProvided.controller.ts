@@ -9,6 +9,8 @@ export class ServiceProvidedController {
     constructor(
         private readonly serviceProvidedService: ServiceProvidedService
     ) { }
+
+    
     @Get()
     async getAllServiceProvided(@Res() res: Response,) {
         try {
