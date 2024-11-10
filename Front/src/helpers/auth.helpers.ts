@@ -8,8 +8,7 @@ const APIURL = process.env.NEXT_PUBLIC_API_URL
 
 export async function register(dataUser: IRegisterProps): Promise<void>  {
     try {
-        // const res = await fetch(`${APIURL}/auth/signup`, {
-        const res = await fetch("http://localhost:3001/auth/signup", {
+        const res = await fetch(`${APIURL}/auth/signup`, {
             method: "POST",
             headers: { "content-type": "application/json" },
             body: JSON.stringify(dataUser),
@@ -33,7 +32,7 @@ export async function register(dataUser: IRegisterProps): Promise<void>  {
 
 export async function login(dataUser: ILoginProps) {
     try {
-        const res = await fetch(" http://localhost:3001/auth/signin", {
+        const res = await fetch(`${APIURL}/auth/signin`, {
             method: "POST",
             headers: { "content-type": "application/json" },
             body: JSON.stringify(dataUser)

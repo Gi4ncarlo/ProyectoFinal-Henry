@@ -1,13 +1,14 @@
 "use client";
 import React from 'react';
 import Image from 'next/image';
+import { ProviderCardProps } from '@/interfaces/IProviderCardProps';
 
-interface ProviderCardProps {
-  providerName: string;
-  description: string;
-  imageUrl: string;
-  rating: number;
-}
+// interface ProviderCardProps {
+//   providerName: string;
+//   description: string;
+//   imageUrl: string;
+//   rating: number;
+// }
 
 const ProviderCard: React.FC<ProviderCardProps> = ({ providerName, description, imageUrl, rating }) => {
   const flooredRating = Math.floor(rating);
