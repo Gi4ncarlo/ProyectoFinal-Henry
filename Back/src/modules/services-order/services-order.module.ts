@@ -14,5 +14,6 @@ import { Gardener } from '../gardener/entities/gardener.entity';
   ],
   controllers: [ServicesOrderController],
   providers: [ServicesOrderService],
+  exports:[ServicesOrderService]
 })
 export class ServicesOrderModule {}

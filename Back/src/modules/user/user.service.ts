@@ -39,6 +39,13 @@ export class UserService {
     };
   }
 
+  async findOneWithOrders(userId: string): Promise<User> {
+    return this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['servicesOrder'], 
+    });
+  }
+
   async findOne(id: string): Promise<User> {
     const user = await this.userRepository.findOne({ where: { id } });
     if (!user) {

@@ -26,11 +26,13 @@ import { RolesGuard } from 'src/guards/roles/role.guard';
 import { Roles } from 'src/decorators/roles.decorator';
 import { Role } from './enums/role.enum';
 import { IsUUID } from 'class-validator';
+import { ServicesOrderService } from '../services-order/services-order.service';
 
 @Controller('user')
 export class UserController {
   constructor(
     private readonly userService: UserService,
+    private readonly serviceOrderService: ServicesOrderService,
     private readonly fileUploadService: FileUploadService,
     private readonly gardenerService: GardenerService,
   ) {}
@@ -45,6 +47,17 @@ export class UserController {
      ) {
     return this.userService.findAll(page, limit);
   }
+
+  @Get(':id/orders')
+  async findOrderUser(@Param('id') id: string) {
+  const user = await this.userService.findOneWithOrders(id);
+
+  if (!user) {
+    throw new HttpException("Usuario no encontrado", HttpStatus.NOT_FOUND);
+  }
+
+  return user.servicesOrder;
+}
 
   @HttpCode(200)
   @Get(':id')
