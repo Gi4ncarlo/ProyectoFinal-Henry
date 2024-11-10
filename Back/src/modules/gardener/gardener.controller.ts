@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, HttpCode, UseGuards, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, HttpCode, UseGuards, Query, HttpException, HttpStatus, ParseUUIDPipe } from '@nestjs/common';
 import { GardenerService } from './gardener.service';
 import { CreateGardenerDto } from './dto/create-gardener.dto';
 import { UpdateGardenerDto } from './dto/update-gardener.dto';
@@ -9,6 +9,7 @@ import { FileUploadService } from 'src/file-upload/file-upload.service';
 import { Role } from '../user/enums/role.enum';
 import { Roles } from 'src/decorators/roles.decorator';
 import { RolesGuard } from 'src/guards/roles/role.guard';
+import { IsUUID } from 'class-validator';
 
 @Controller('gardener')
 export class GardenerController {
@@ -51,7 +52,6 @@ export class GardenerController {
     return { imageUrl };
   }
 
-
   @Get(':id/image')
   @HttpCode(200)
   async getProfileImage(@Param('id') id: string) {
@@ -59,10 +59,20 @@ export class GardenerController {
     return { imageUrl: gardener.profileImageUrl };
   }
 
-
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.gardenerService.findOne(id);
+  @HttpCode(200)
+  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
+    if(!IsUUID(4, { each : true})){
+      throw new HttpException("UUID Invalida", HttpStatus.BAD_REQUEST)
+    }
+
+    const gardener = this.gardenerService.findOne(id);
+
+    if(!gardener){
+      throw new HttpException("Jardinero no encontrado.", HttpStatus.NOT_FOUND)
+    }
+
+    return gardener;
   }
 
   @Patch(':id')

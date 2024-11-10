@@ -23,6 +23,7 @@ export class ServiceDetailsService {
     const [data, count] = await this.serviceDetailRepository.findAndCount({
       take: limit,
       skip: skip,
+      relations: ['servicesOrder', "assignedGardener"],
     });
 
     if (count === 0) {

@@ -19,19 +19,24 @@ export class UserService {
     return await this.userRepository.save(user);
   }
 
-  async findAll(page: number, limit: number): Promise<{ data: User[]; count: number }> {
+  async findAll(page: number, limit: number) {
     const skip = (page - 1) * limit;
   
-    const [data, count] = await this.userRepository.findAndCount({
+    const [results, total] = await this.userRepository.findAndCount({
       take: limit,
       skip: skip,
+      relations: ["servicesOrder"]
     });
 
-    if(count === 0){
+    if(total === 0){
       throw new NotFoundException('Gardner not foundend');
     }
   
-    return {count, data};
+    return {
+      count: total,
+      data: results,
+      page,
+    };
   }
 
   async findOne(id: string): Promise<User> {

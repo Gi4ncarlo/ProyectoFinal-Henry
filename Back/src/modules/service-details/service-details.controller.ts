@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, UseGuards, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, UseGuards, Query, ParseUUIDPipe, HttpException, HttpStatus } from '@nestjs/common';
 import { ServiceDetailsService } from './service-details.service';
 import { CreateServiceDetailDto } from './dto/create-service-detail.dto';
 import { UpdateServiceDetailDto } from './dto/update-service-detail.dto';
 import { Role } from '../user/enums/role.enum';
 import { Roles } from 'src/decorators/roles.decorator';
 import { RolesGuard } from 'src/guards/roles/role.guard';
+import { IsUUID } from 'class-validator';
 
 @Controller('service-details')
 export class ServiceDetailsController {
@@ -27,8 +28,20 @@ export class ServiceDetailsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.serviceDetailsService.findOne(id);
+  @HttpCode(200)
+  async findOne(@Param('id', new ParseUUIDPipe()) id: string) {
+
+    if(!IsUUID(4, { each : true})){
+      throw new HttpException("UUID Invalida", HttpStatus.BAD_REQUEST)
+    }
+
+    const serviceDetail = await this.serviceDetailsService.findOne(id);
+
+    if(!serviceDetail){
+      throw new HttpException("Service Detail no encontrado.", HttpStatus.NOT_FOUND);
+    }
+
+    return serviceDetail;
   }
 
   @Patch(':id')

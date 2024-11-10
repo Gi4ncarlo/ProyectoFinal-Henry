@@ -11,6 +11,9 @@ import {
   UploadedFile,
   UseGuards,
   Query,
+  ParseUUIDPipe,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -22,6 +25,7 @@ import { ImageUploadPipe } from 'src/pipes/image-upload/image-upload.pipe';
 import { RolesGuard } from 'src/guards/roles/role.guard';
 import { Roles } from 'src/decorators/roles.decorator';
 import { Role } from './enums/role.enum';
+import { IsUUID } from 'class-validator';
 
 @Controller('user')
 export class UserController {
@@ -42,14 +46,38 @@ export class UserController {
     return this.userService.findAll(page, limit);
   }
 
+  @HttpCode(200)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(id);
+  async findOne(@Param('id', new ParseUUIDPipe()) id: string) {
+   
+    if(!IsUUID(4, { each : true})){
+      throw new HttpException("UUID Invalida", HttpStatus.BAD_REQUEST)
+    }
+
+    const user = await this.userService.findOne(id);
+
+    if(!user){
+      throw new HttpException("Usuario no encontrado", HttpStatus.NOT_FOUND)
+    }
+
+    return user
   }
 
+  @HttpCode(200)
   @Get('/gardener/:id')
-  async findByNameGardener(@Param('id') id: string) {
-    return await this.gardenerService.findOne(id)
+  async userFindGardener(@Param('id', new ParseUUIDPipe()) id: string) {
+
+    if(!IsUUID(4, { each : true})){
+      throw new HttpException("UUID Invalida", HttpStatus.BAD_REQUEST)
+    }
+
+    const gardener =  await this.gardenerService.findOne(id);
+
+    if(!gardener){
+      throw new HttpException("Jardinero no encontrado", HttpStatus.NOT_FOUND)
+    }
+
+    return gardener
   }
 
   //IMAGEN 

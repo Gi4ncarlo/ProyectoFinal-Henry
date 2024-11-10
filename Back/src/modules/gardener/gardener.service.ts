@@ -23,6 +23,7 @@ export class GardenerService {
     const [data, count] = await this.gardenerRepository.findAndCount({
       take: limit,
       skip: skip,
+      relations : ['serviceProvided', "serviceDetails"]
     });
 
     if (count === 0) {

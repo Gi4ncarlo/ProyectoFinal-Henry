@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, UseGuards, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, UseGuards, Query, ParseUUIDPipe, HttpException, HttpStatus } from '@nestjs/common';
 import { ServicesOrderService } from './services-order.service';
 import { CreateServiceOrderDto } from './dto/create-services-order.dto';
 import { UpdateServicesOrderDto } from './dto/update-services-order.dto';
 import { Role } from '../user/enums/role.enum';
 import { Roles } from 'src/decorators/roles.decorator';
 import { RolesGuard } from 'src/guards/roles/role.guard';
+import { IsUUID } from 'class-validator';
 
 @Controller('services-order')
 export class ServicesOrderController {
@@ -24,8 +25,19 @@ export class ServicesOrderController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.servicesOrderService.findOne(id);
+  async findOne(@Param('id', new ParseUUIDPipe()) id: string) {
+
+    if(!IsUUID(4, { each : true})){
+      throw new HttpException("UUID Invalida", HttpStatus.BAD_REQUEST)
+    }
+
+    const serviceOrder = await this.servicesOrderService.findOne(id);
+
+    if(!serviceOrder){
+      throw new HttpException("Jardinero no encontrado.", HttpStatus.NOT_FOUND)
+    }
+
+    return serviceOrder;
   }
 
   @Patch(':id')

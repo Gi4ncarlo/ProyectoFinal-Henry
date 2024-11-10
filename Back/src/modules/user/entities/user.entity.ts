@@ -36,7 +36,7 @@ export class User {
   role: Role;
 
   @OneToMany(() => ServicesOrderEntity, (serviceOrders) => serviceOrders.user)
-  servicesOrder: ServicesOrderEntity;
+  servicesOrder: ServicesOrderEntity[];
 
   @Column({ type: 'text', nullable: true })
   profileImageUrl: string;
