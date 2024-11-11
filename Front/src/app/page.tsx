@@ -1,10 +1,9 @@
-import CarruselHome from "@/components/CarruselHome/CarruselHome";
-
+import HomeView from "@/views/HomeView/HomeView";
 
 export default function Home() {
   return (
 <div>
-<CarruselHome/>
+<HomeView/>
 </div>
   );
 }

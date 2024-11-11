@@ -17,7 +17,8 @@ export const gardenersMock = [
         calification : 4,
         ubication : "Av. Siempre Viva 742",
         costPerHour : 2000,
-        serviceProvided : []
+        serviceProvided : [],
+        serviceDeails : []
     },
     {
         name: "Ana Lopez",
@@ -33,7 +34,8 @@ export const gardenersMock = [
         calification : 3,
         ubication : "Los Robles 67",
         costPerHour : 1800,
-        serviceProvided : []
+        serviceProvided : [],
+        serviceDeails : []
     },
     {
         name: "Carlos Ramirez",
@@ -49,7 +51,8 @@ export const gardenersMock = [
         calification : 5,
         ubication : "Jardines del Valle 112",
         costPerHour : 2200,
-        serviceProvided : []
+        serviceProvided : [],
+        serviceDeails : []
     },
     {
         name: "Maria Torres",
@@ -65,7 +68,8 @@ export const gardenersMock = [
         calification : 2,
         ubication : "Las Margaritas 23",
         costPerHour : 2500,
-        serviceProvided : []
+        serviceProvided : [],
+        serviceDeails : []
     },
     {
         name: "Lucas Díaz",
@@ -81,6 +85,7 @@ export const gardenersMock = [
         calification : 1,
         ubication : "Pinos de la Colina 34",
         costPerHour : 1900,
-        serviceProvided : []
+        serviceProvided : [],
+        serviceDeails : []
     },
 ];

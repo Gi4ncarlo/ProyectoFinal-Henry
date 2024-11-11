@@ -17,33 +17,27 @@ export class GardenerService {
     return await this.gardenerRepository.save(gardner);
   }
 
-  async findAll(): Promise<Gardener[]> {
-    const gardners = await this.gardenerRepository.find();
-    if (gardners.length === 0) {
+  async findAll(page : number, limit : number): Promise<{ data: Gardener[]; count: number }> {
+    const skip = (page - 1) * limit;
+
+    const [data, count] = await this.gardenerRepository.findAndCount({
+      take: limit,
+      skip: skip,
+      relations : ['serviceProvided', "serviceDetails"]
+    });
+
+    if (count === 0) {
       throw new NotFoundException('Gardner not foundend');
     }
 
-    return gardners;
+    return {count, data};
   }
+  
   async findOne(id: string): Promise<Gardener> {
     const gardner = await this.gardenerRepository.findOneBy({ id });
     if (!gardner) {
       throw new NotFoundException(`Gardener with the ID ${id} not Found`);
     }
-    return gardner;
-  }
-
-  async findOneByName(name: string): Promise<Gardener> {
-    const gardner = await this.gardenerRepository.findOne({
-      where: {
-        name: name,
-      },
-    });
-
-    if (!gardner) {
-      throw new NotFoundException(`Gardener with the name ${name} not found`);
-    }
-
     return gardner;
   }
 

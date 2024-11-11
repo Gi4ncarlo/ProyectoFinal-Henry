@@ -38,7 +38,8 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsEmail({}, { message: 'Email must be valid' })
   email: string;
-
+ 
+  @IsString()
   adress: string
 
   @IsEnum(Role, { message: 'Role must be either User, Admin or Gardener' })

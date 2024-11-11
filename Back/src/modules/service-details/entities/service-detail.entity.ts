@@ -1,9 +1,11 @@
+import { Gardener } from 'src/modules/gardener/entities/gardener.entity';
 import { ServicesOrderEntity } from 'src/modules/services-order/entities/services-order.entity';
 import {
   Column,
   Entity,
   JoinColumn,
   ManyToMany,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -37,8 +39,9 @@ export class ServiceDetail {
   @OneToOne(() => ServicesOrderEntity, (servicesOrder) => servicesOrder.orderDetail, { onDelete: 'CASCADE' })
   @JoinColumn()
   servicesOrder: ServicesOrderEntity;
-  // @ManyToOne(() => Gardener, (gardener) => gardener.serviceDetails, { nullable: false })
-  // @JoinColumn()
-  // assignedGardener: Gardener;
+
+  @ManyToOne(() => Gardener, (gardener) => gardener.serviceDetails, { nullable: false })
+  @JoinColumn()
+  assignedGardener: Gardener;
 
 }

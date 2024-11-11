@@ -1,3 +1,4 @@
+import { ServiceDetail } from 'src/modules/service-details/entities/service-detail.entity';
 import { ServiceProvided } from 'src/modules/serviceProvided/entities/serviceProvided.entity';
 import { User } from 'src/modules/user/entities/user.entity';
 import { Role } from 'src/modules/user/enums/role.enum';
@@ -5,6 +6,7 @@ import {
   Column,
   Entity,
   ManyToMany,
+  OneToMany,
 } from 'typeorm';
 
 @Entity({
@@ -33,5 +35,8 @@ export class Gardener extends User{
 
   @ManyToMany(() => ServiceProvided, (service) => service.gardener)
   serviceProvided: ServiceProvided[];
+
+  @OneToMany(() => ServiceDetail, (serviceDetail) => serviceDetail.assignedGardener)
+  serviceDetails: ServiceDetail[];
 
 }
