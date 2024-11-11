@@ -4,14 +4,15 @@ import { Repository } from "typeorm";
 import { Gardener } from "src/modules/gardener/entities/gardener.entity";
 import { gardenersMock } from "./gardener.mock";
 import { ServiceProvided } from "src/modules/serviceProvided/entities/serviceProvided.entity";
-import { serviceMock } from "../serviceSeed/service-mock";
+import { CloudinaryService } from "src/file-upload/cloudinary.service";
+
 
 @Injectable()
 export class GardenerSeed {
     constructor(
         @InjectRepository(Gardener)
         private readonly gardenerRepository: Repository<Gardener>,
-
+        private readonly cloudinaryService: CloudinaryService,
         @InjectRepository(ServiceProvided)
         private readonly serviceProvidedRepository: Repository<ServiceProvided>,
     ) {}
@@ -28,6 +29,7 @@ export class GardenerSeed {
             if (!existingGardenerEmail.includes(gardenerData.email)) {
                 const gardener = this.gardenerRepository.create({
                     ...gardenerData,
+                    profileImageUrl :`${await this.cloudinaryService.getUrl('gardener/i21jki2m58j7rrgh12rt')}`,
                     serviceProvided: services,
                 });
 

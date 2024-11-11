@@ -12,7 +12,7 @@ export const usersMock = [
         phone: "51231532",
         address: "9 de Julio",
         age : 45,
-        role : Role.User,
+        role : Role.Admin,
     },
     {
         name: "Martina",
