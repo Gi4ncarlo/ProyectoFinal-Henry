@@ -1,9 +1,18 @@
 export interface IServiceProvider {
   id: number;
-  providerName: string;
-  description: string;
-  imageUrl: string;
-  rating: number;
+  name: string;
+  email: string;
+  username: string;
+  password: string;
+  age:number;
+  phone:number;
+  address:string;
+  role:string;
+  profileImageUrl: string;
+  experience:string;
+  calification:number;
+  ubication:string;
+  costPerHour:number;
 }
 
 export interface IServiceProviderListProps {
@@ -11,8 +20,8 @@ export interface IServiceProviderListProps {
 }
 
 export interface IProviderCardProps {
-  providerName: string;
-  description: string;
-  imageUrl: string;
-  rating: number;
+  name: string;
+  profileImageUrl: string;
+  experience:string;
+  calification:number;
 }
