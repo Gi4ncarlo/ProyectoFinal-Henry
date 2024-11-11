@@ -4,7 +4,7 @@ import React from 'react'
 
 const gardener = () => {
   return (
-    <div>
+    <div className="flex mt-24">
 <ProviderCardList/>
     </div>
   )
