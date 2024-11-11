@@ -43,7 +43,7 @@ export default function RegisterForm() {
     setDataUser({
       ...dataUser,
     
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: name === 'age' ? Number(value) : type === 'checkbox' ? checked : value,
 
     });
     setTouched({

@@ -3,16 +3,46 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { HiMenu, HiX } from "react-icons/hi";
+import { IUserSession } from "@/interfaces/IUserSession";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function Navbar() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userData, setUserData] = useState<IUserSession | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+
+
+useEffect(()=>{
+if(typeof window !== "undefined" && window.localStorage){
+const storedUserData= JSON.parse(localStorage.getItem("userSession")|| "null")
+if(storedUserData){
+  setUserData(storedUserData)
+  setIsAuthenticated(true)
+}
+}
+},[pathname])
+
+
+const handleLogout = () => {
+  localStorage.removeItem("userSession")
+  setUserData(null);
+  setIsAuthenticated(false);
+  // setCart([]); 
+  router.push("/")
+
+}
+const Dropdown = () => {
+  setShowDropdown(!showDropdown);
+};
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 0);
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => {
       window.removeEventListener("scroll", handleScroll);
@@ -58,20 +88,7 @@ export default function Navbar() {
           </li>
         </ul>
 
-        {/* Buttons for Register and Login */}
-        <div className="hidden lg:flex space-x-4">
-          <Link href="/register">
-            <button className="px-4 py-2 bg-blue-600 text-white font-bold rounded hover:bg-blue-700">
-              Register
-            </button>
-          </Link>
-          <Link href="/login">
-            <button className="px-4 py-2 bg-green-600 text-white font-bold rounded hover:bg-green-700">
-              Login
-            </button>
-          </Link>
-        </div>
-
+     
         {/* Mobile menu icon */}
         <div className="lg:hidden">
           <button onClick={toggleMenu} className="text-white text-lg lg:text-3xl">
@@ -98,7 +115,100 @@ export default function Navbar() {
             </li>
           </ul>
         )}
-      </div>
+        
+        
+          {/* Renderizado condicional basado en si el usuario está autenticado */}
+          {isAuthenticated && userData?.token ? (
+            <div className="relative user-menu">
+              <div
+                className="flex items-center space-x-2 cursor-pointer"
+                onClick={Dropdown}
+              >
+                <span>{userData?.user?.name || 'Mi cuenta'}</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                  />
+                </svg>
+              </div>
+
+              {/* Menú desplegable */}
+              {showDropdown && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 text-black z-50">
+                  <Link href="/dashboard">
+                    <div className="block px-4 py-2 hover:bg-gray-100">Mi Cuenta</div>
+                  </Link>
+                  <button
+                    className="block px-4 py-2 hover:bg-gray-100 w-full text-left"
+                    onClick={handleLogout}
+                  >
+                    Cerrar sesión
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="relative user-menu">
+              <div className="cursor-pointer" onClick={Dropdown}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                  />
+                </svg>
+              </div>
+
+              {/* Menú desplegable para usuarios no autenticados */}
+              {showDropdown && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 text-black z-50">
+                  <Link href="/login">
+                    <div className="block px-4 py-2 hover:bg-gray-100">Iniciar Sesion</div>
+                  </Link>
+                  <Link href="/register">
+                    <div className="block px-4 py-2 hover:bg-gray-100">Registrarse</div>
+                  </Link>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+
+
+{/* 
+{/*         
+           {/* Buttons for Register and Login */}
+        {/* <div className="hidden lg:flex space-x-4"> */}
+          {/* <Link href="/register">
+            <button className="px-4 py-2 bg-blue-600 text-white font-bold rounded hover:bg-blue-700">
+              Register
+            </button>
+          </Link>
+          <Link href="/login">
+            <button className="px-4 py-2 bg-green-600 text-white font-bold rounded hover:bg-green-700">
+              Login
+            </button>
+          </Link> */}
+        {/* </div>  */}
+
+  
     </nav>
   );
 }
