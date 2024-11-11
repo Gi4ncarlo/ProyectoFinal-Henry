@@ -5,6 +5,7 @@ import { UsersSeed } from './seeds/user/users.seed';
 import { ServiceSeed } from './seeds/serviceSeed/service.seed';
 import { loggsGlobal } from './middlewares/loggs.middleware';
 import { GardenerSeed } from './seeds/gardener/gardener.seed';
+import { AdminSeeder } from './seeds/admin/admin.seed';
 
 
 async function bootstrap() {
@@ -14,6 +15,10 @@ async function bootstrap() {
   app.enableCors({
     origin: '*',
   });
+
+  const adminSeed = app.select(SeedsModule).get(AdminSeeder);
+  await adminSeed.seed();
+  console.log("La inserción de aministradores preestablecidos ha terminado.");
 
   const serviceSeed = app.select(SeedsModule).get(ServiceSeed);
   await serviceSeed.seed();

@@ -17,6 +17,7 @@ export const gardenersMock = [
         calification : 4,
         ubication : "Av. Siempre Viva 742",
         costPerHour : 2000,
+        profileImageUrl:"gardener/i21jki2m58j7rrgh12rt",
         serviceProvided : [],
         serviceDeails : []
     },
@@ -34,6 +35,7 @@ export const gardenersMock = [
         calification : 3,
         ubication : "Los Robles 67",
         costPerHour : 1800,
+        profileImageUrl:"gardener/Perfil7.jpg",
         serviceProvided : [],
         serviceDeails : []
     },
@@ -51,6 +53,7 @@ export const gardenersMock = [
         calification : 5,
         ubication : "Jardines del Valle 112",
         costPerHour : 2200,
+        profileImageUrl:"gardener/vja4j61zfcdl8qk1iccv",
         serviceProvided : [],
         serviceDeails : []
     },
@@ -68,6 +71,7 @@ export const gardenersMock = [
         calification : 2,
         ubication : "Las Margaritas 23",
         costPerHour : 2500,
+        profileImageUrl:"gardener/gnfmj6z3a7c0oncgr05i",
         serviceProvided : [],
         serviceDeails : []
     },
@@ -85,6 +89,7 @@ export const gardenersMock = [
         calification : 1,
         ubication : "Pinos de la Colina 34",
         costPerHour : 1900,
+        profileImageUrl:"gardener/flkyg5ey9eamunc6fnid",
         serviceProvided : [],
         serviceDeails : []
     },
