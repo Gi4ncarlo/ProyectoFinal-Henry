@@ -3,6 +3,7 @@ import { ServiceProvided } from "./entities/serviceProvided.entity";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 
+
 @Injectable()
 export class ServiceProvidedService {
 
@@ -11,14 +12,38 @@ export class ServiceProvidedService {
         @InjectRepository(ServiceProvided)
         private readonly serviceProvidedRepository: Repository<ServiceProvided>,
     ) { }
-    async getAllServiceProvidedService() {
+
+    async getAllServiceProvidedService(
+        name?: string,
+        priceMin?: number,
+        priceMax?: number,
+        order: 'ASC' | 'DESC' = 'ASC'
+      ) {
         try {
-            const allData = await this.serviceProvidedRepository.find();
-            return allData;
+          const query = this.serviceProvidedRepository.createQueryBuilder('serviceProvided')
+            .orderBy('serviceProvided.detailService', order); 
+      
+          // Filtro por nombre
+          if (name) {
+            query.andWhere('serviceProvided.detailService ILIKE :name', { name: `%${name}%` });
+          }
+      
+          // Filtros por precio mínimo y máximo
+          if (priceMin !== undefined) {
+            query.andWhere('serviceProvided.price >= :priceMin', { priceMin });
+          }
+          if (priceMax !== undefined) {
+            query.andWhere('serviceProvided.price <= :priceMax', { priceMax });
+          }
+
+          const allData = await query.getMany();
+      
+          return allData;
         } catch (error) {
-            throw new HttpException(error, 400);
+          throw new HttpException(error, 400);
         }
-    }
+      }
+
     async getServiceProvidedByIdService(id: string) {
         try {
             const data = await this.serviceProvidedRepository.findOne({ where: { id } });

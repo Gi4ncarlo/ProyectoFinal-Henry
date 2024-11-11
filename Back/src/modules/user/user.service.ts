@@ -19,17 +19,24 @@ export class UserService {
     return await this.userRepository.save(user);
   }
 
-  async findAll(page: number, limit: number) {
+  async findAll(page: number, limit: number, name?: string, order: 'ASC' | 'DESC' = 'ASC') {
     const skip = (page - 1) * limit;
   
-    const [results, total] = await this.userRepository.findAndCount({
-      take: limit,
-      skip: skip,
-      relations: ["servicesOrder"]
-    });
-
-    if(total === 0){
-      throw new NotFoundException('Gardner not foundend');
+    const query = this.userRepository.createQueryBuilder('user')
+      .leftJoinAndSelect('user.servicesOrder', 'servicesOrder')
+      .take(limit)
+      .skip(skip)
+      .orderBy('user.name', order);
+  
+    // Agrega el filtro de nombre si se proporciona
+    if (name) {
+      query.andWhere('user.name ILIKE :name', { name: `%${name}%` });
+    }
+  
+    const [results, total] = await query.getManyAndCount();
+  
+    if (total === 0) {
+      throw new NotFoundException('No se encontraron usuarios');
     }
   
     return {
