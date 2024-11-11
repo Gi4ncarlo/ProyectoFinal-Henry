@@ -145,13 +145,13 @@ const Dropdown = () => {
               {showDropdown && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 text-black z-50">
                   <Link href="/dashboard">
-                    <div className="block px-4 py-2 hover:bg-gray-100">Mi Cuenta</div>
+                    <div className="block px-4 py-2 hover:bg-gray-100">My Account</div>
                   </Link>
                   <button
                     className="block px-4 py-2 hover:bg-gray-100 w-full text-left"
                     onClick={handleLogout}
                   >
-                    Cerrar sesión
+                    Log Out
                   </button>
                 </div>
               )}
@@ -179,10 +179,10 @@ const Dropdown = () => {
               {showDropdown && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 text-black z-50">
                   <Link href="/login">
-                    <div className="block px-4 py-2 hover:bg-gray-100">Iniciar Sesion</div>
+                    <div className="block px-4 py-2 hover:bg-gray-100">Log In</div>
                   </Link>
                   <Link href="/register">
-                    <div className="block px-4 py-2 hover:bg-gray-100">Registrarse</div>
+                    <div className="block px-4 py-2 hover:bg-gray-100">Register</div>
                   </Link>
                 </div>
               )}
