@@ -38,16 +38,18 @@ export class UserController {
     private readonly gardenerService: GardenerService,
   ) {}
 
-  // @UseGuards(AuthGuard, RolesGuard)
-  @HttpCode(200)
-  @Roles(Role.Admin)
-  @Get()
-  findAll( 
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 10
-     ) {
-    return this.userService.findAll(page, limit);
-  }
+// @UseGuards(AuthGuard, RolesGuard)
+@HttpCode(200)
+@Roles(Role.Admin)
+@Get()
+findAll( 
+  @Query('page') page: number = 1,
+  @Query('limit') limit: number = 10,
+  @Query('name') name?: string,
+  @Query('order') order: 'ASC' | 'DESC' = 'ASC' 
+) {
+  return this.userService.findAll(page, limit, name, order);
+}
 
   // @UseGuards(AuthGuard)
   @Get(':id/orders')

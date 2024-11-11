@@ -44,11 +44,14 @@ export class GardenerController {
 
   // @UseGuards(AuthGuard)
   @Get()
-  findAll(
+  async findAll(
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
+    @Query('name') name?: string,
+    @Query('calification') calification?: number,
+    @Query('order') order: 'ASC' | 'DESC' = 'ASC'
   ) {
-    return this.gardenerService.findAll(page, limit);
+    return this.gardenerService.findAll(page, limit, name, calification, order);
   }
 
   @UseGuards(AuthGuard)
