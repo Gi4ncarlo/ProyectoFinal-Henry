@@ -18,19 +18,38 @@ export class GardenerService {
     return await this.gardenerRepository.save(gardner);
   }
 
-  async findAll(page: number, limit: number): Promise<{ data: Gardener[]; count: number }> {
+  async findAll(
+    page: number,
+    limit: number,
+    name?: string,
+    calification?: number,
+    order: 'ASC' | 'DESC' = 'ASC'
+  ): Promise<{ data: Gardener[]; count: number }> {
     const skip = (page - 1) * limit;
-
-    const [data, count] = await this.gardenerRepository.findAndCount({
-      take: limit,
-      skip: skip,
-      relations: ['serviceProvided', "serviceDetails"]
-    });
-
-    if (count === 0) {
-      throw new NotFoundException('Gardner not foundend');
+  
+    const query = this.gardenerRepository.createQueryBuilder('gardener')
+      .leftJoinAndSelect('gardener.serviceProvided', 'serviceProvided')
+      .leftJoinAndSelect('gardener.serviceDetails', 'serviceDetails')
+      .take(limit)
+      .skip(skip)
+      .orderBy('gardener.name', order);
+  
+    // Filtro por nombre
+    if (name) {
+      query.andWhere('gardener.name ILIKE :name', { name: `%${name}%` });
     }
-
+  
+    // Filtro por calificación
+    if (calification !== undefined) {
+      query.andWhere('gardener.calification = :calification', { calification });
+    }
+  
+    const [data, count] = await query.getManyAndCount();
+  
+    if (count === 0) {
+      throw new NotFoundException('Gardener not found');
+    }
+  
     return { count, data };
   }
 
