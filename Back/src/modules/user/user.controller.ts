@@ -49,7 +49,7 @@ export class UserController {
     return this.userService.findAll(page, limit);
   }
 
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @Get(':id/orders')
   async findOrderUser(@Param('id') id: string) {
   const user = await this.userService.findOneWithOrders(id);
@@ -61,7 +61,7 @@ export class UserController {
   return user.servicesOrder;
 }
 
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @HttpCode(200)
   @Get(':id')
   async findOne(@Param('id', new ParseUUIDPipe()) id: string) {

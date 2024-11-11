@@ -88,7 +88,10 @@ export class ServicesOrderService {
   }
 
   async findOne(id: string): Promise<ServicesOrderEntity> {
-    const order = await this.servicesOrderRepository.findOneBy({ id });
+    const order = await this.servicesOrderRepository.findOne({
+      where: { id },
+      relations: ['user', 'gardener', 'serviceProvided'], 
+    })
     if (!order) {
       throw new NotFoundException(`Orden de servicio con id ${id} no encontrada`);
     }
