@@ -27,6 +27,14 @@ export class AdminService {
             throw new HttpException(error, 400);
         }
     }
+    async findByEmail(email: string) {
+        try {
+            const admin = await this.adminRepository.findOne({ where: { email } });
+            return admin;
+        } catch (error) {
+            throw new HttpException(error, 400);
+        }
+    }
     async createAdmin(createAdmin) {
         try {
             const newAdmin = await this.adminRepository.create(createAdmin);

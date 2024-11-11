@@ -6,10 +6,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../user/entities/user.entity';
 import { SharedModule } from 'src/shared/shared.module';
 import { UserService } from '../user/user.service';
+import { AdminModule } from '../admin/admin.module';
+import { GardenerModule } from '../gardener/gardener.module';
+import { GardenerService } from '../gardener/gardener.service';
+import { AdminService } from '../admin/admin.service';
+import { AdminEntity } from '../admin/entities/admin.entity';
+import { Gardener } from '../gardener/entities/gardener.entity';
 
 @Module({
-  imports: [UserModule, TypeOrmModule.forFeature([User]), SharedModule],
+  imports: [UserModule, TypeOrmModule.forFeature([User, AdminEntity,Gardener]), SharedModule, AdminModule, GardenerModule],
   controllers: [AuthController],
-  providers: [AuthService, UserService],
+  providers: [AuthService, UserService, GardenerService, AdminService],
 })
 export class AuthModule {}

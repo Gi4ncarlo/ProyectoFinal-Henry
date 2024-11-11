@@ -5,6 +5,7 @@ import { Gardener } from "src/modules/gardener/entities/gardener.entity";
 import { gardenersMock } from "./gardener.mock";
 import { ServiceProvided } from "src/modules/serviceProvided/entities/serviceProvided.entity";
 import { CloudinaryService } from "src/file-upload/cloudinary.service";
+import * as bcrypt from 'bcrypt';
 
 
 @Injectable()
@@ -29,6 +30,7 @@ export class GardenerSeed {
             if (!existingGardenerEmail.includes(gardenerData.email)) {
                 const gardener = this.gardenerRepository.create({
                     ...gardenerData,
+                    password: await bcrypt.hash(gardenerData.password, 10),
                     profileImageUrl :`${await this.cloudinaryService.getUrl(gardenerData.profileImageUrl)}`,
                     serviceProvided: services,
                 });

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateGardenerDto } from './dto/create-gardener.dto';
 import { UpdateGardenerDto } from './dto/update-gardener.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -7,38 +7,47 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class GardenerService {
+
   constructor(
     @InjectRepository(Gardener)
     private readonly gardenerRepository: Repository<Gardener>,
-  ) {}
+  ) { }
 
   async create(createGardenerDto: CreateGardenerDto): Promise<Gardener> {
     const gardner = this.gardenerRepository.create(createGardenerDto);
     return await this.gardenerRepository.save(gardner);
   }
 
-  async findAll(page : number, limit : number): Promise<{ data: Gardener[]; count: number }> {
+  async findAll(page: number, limit: number): Promise<{ data: Gardener[]; count: number }> {
     const skip = (page - 1) * limit;
 
     const [data, count] = await this.gardenerRepository.findAndCount({
       take: limit,
       skip: skip,
-      relations : ['serviceProvided', "serviceDetails"]
+      relations: ['serviceProvided', "serviceDetails"]
     });
 
     if (count === 0) {
       throw new NotFoundException('Gardner not foundend');
     }
 
-    return {count, data};
+    return { count, data };
   }
-  
+
   async findOne(id: string): Promise<Gardener> {
     const gardner = await this.gardenerRepository.findOneBy({ id });
     if (!gardner) {
       throw new NotFoundException(`Gardener with the ID ${id} not Found`);
     }
     return gardner;
+  }
+  findByEmail(email: string) {
+    try {
+      const gardener = this.gardenerRepository.findOne({ where: { email } });
+      return gardener;
+    } catch (error) {
+      throw new HttpException(error, 400);
+    }
   }
 
   async update(
