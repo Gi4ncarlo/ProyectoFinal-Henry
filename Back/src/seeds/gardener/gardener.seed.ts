@@ -29,7 +29,7 @@ export class GardenerSeed {
             if (!existingGardenerEmail.includes(gardenerData.email)) {
                 const gardener = this.gardenerRepository.create({
                     ...gardenerData,
-                    profileImageUrl :`${await this.cloudinaryService.getUrl('gardener/i21jki2m58j7rrgh12rt')}`,
+                    profileImageUrl :`${await this.cloudinaryService.getUrl(gardenerData.profileImageUrl)}`,
                     serviceProvided: services,
                 });
 
