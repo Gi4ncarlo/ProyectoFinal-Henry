@@ -15,8 +15,8 @@ export const validateRegisterForm = (value: IRegisterProps): IRegisterErrors => 
     }
     if (!value.password) {
         tempErrors.password = "La contraseña es requerida.";
-    } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/.test(value.password)) {
-        tempErrors.password = "La contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula, una minúscula y un número.";
+    } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[=!@#$%^&])[A-Za-z\d=!@#$%^&]{8,15}$/.test(value.password)) {
+        tempErrors.password = "La contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula, una minúscula, un número y un carácter especial.";
     }
     if (value.password !== value.passwordConfirm) {
         tempErrors.passwordConfirm = "Las contraseñas no coinciden.";

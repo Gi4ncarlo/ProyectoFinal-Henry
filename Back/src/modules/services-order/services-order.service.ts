@@ -57,6 +57,34 @@ export class ServicesOrderService {
     const savedOrder = await this.servicesOrderRepository.findOne({
       where: { id: newOrder.id },
       relations: ['user', 'gardener', 'serviceProvided'],
+      select:{
+        user:{
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        profileImageUrl: true
+      },
+      gardener: {
+        id: true,
+        name: true,
+        username: true,
+        email: true,
+        age: true,
+        phone: true,
+        profileImageUrl: true,
+        experience: true,
+        calification:true,
+        ubication: true,
+        costPerHour: true
+      },
+      serviceProvided: {
+        id: true,
+        detailService: true,
+        categories: true,
+        price: true
+      }
+    }
     });
   
     if (savedOrder) {
