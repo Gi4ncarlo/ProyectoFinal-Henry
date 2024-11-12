@@ -38,7 +38,7 @@ export class ServiceProvided {
   // @OneToMany(() => User, (user) => user.serviceProvided, { onDelete: "CASCADE" })
   // user: User
 
-  @OneToOne(
+  @OneToMany(
     () => ServicesOrderEntity,
     (serviceOrder) => serviceOrder.serviceProvided,
     { onDelete: 'CASCADE' },

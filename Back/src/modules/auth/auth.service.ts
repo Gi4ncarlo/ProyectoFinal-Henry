@@ -45,7 +45,7 @@ export class AuthService {
                 throw new HttpException('credenciales incorrectas', HttpStatus.UNAUTHORIZED)
             }
             const token = await this.createToken(admin)
-            return { token };
+            return { token , user:admin};
         }
         if (gardener) {
             const isPasswordMatching = await bcrypt.compare(
@@ -56,7 +56,7 @@ export class AuthService {
                 throw new HttpException('credenciales incorrectas', HttpStatus.UNAUTHORIZED)
             }
             const token = await this.createToken(gardener)
-            return { token};   
+            return { token, user:gardener};   
         }
 
         throw new HttpException('USER NOT FOUND IN THE DB', HttpStatus.UNAUTHORIZED)

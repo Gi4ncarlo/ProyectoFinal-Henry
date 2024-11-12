@@ -68,6 +68,7 @@ const ProviderDetail: React.FC = () => {
     const { user } = JSON.parse(userSession);
     const userId = user?.id;
     
+    
     if (!userId) {
       setError('User ID not found');
       return;
