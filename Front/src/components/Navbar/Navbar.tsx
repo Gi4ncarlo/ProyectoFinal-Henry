@@ -87,7 +87,7 @@ export default function Navbar() {
             <Link href="/contacto">Contact</Link>
           </li>
           <li className="hover:-translate-y-1 hover:underline">
-            <Link href="/gardener">Gardeners</Link>
+            <Link href="/gardeners">Gardeners</Link>
           </li>
         </ul>
 
@@ -111,6 +111,9 @@ export default function Navbar() {
               <Link href="/contact">Contact</Link>
             </li>
             <li className="hover:-translate-y-1 hover:underline">
+            <Link href="/gardeners">Gardeners</Link>
+          </li>
+            <li className="hover:-translate-y-1 hover:underline">
               <Link href="/register">Register</Link>
             </li>
             <li className="hover:-translate-y-1 hover:underline">
@@ -127,7 +130,7 @@ export default function Navbar() {
               className="flex items-center space-x-2 cursor-pointer"
               onClick={Dropdown}
             >
-              <span>{userData?.user?.name || 'Mi cuenta'}</span>
+              <span>{userData?.user?.name || 'My Account'}</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
