@@ -1,9 +1,9 @@
-import HomeView from "@/views/HomeView/HomeView";
+import PreHomeView from "@/views/PreHomeView/PreHomeView";
 
 export default function Home() {
   return (
 <div>
-<HomeView/>
+<PreHomeView/>
 </div>
   );
 }
