@@ -7,18 +7,19 @@ const TOKEN = JSON.parse(localStorage.getItem("userSession") || "null")
 
 export const getGardenersDB = async (
   order: 'ASC' | 'DESC' = 'ASC',
-  calification?: number
+  calification?: number,
+  name?: string
 ): Promise<IServiceProvider[]> => { 
 
   const params = new URLSearchParams();
   params.append('order', order);
   if (calification) params.append('calification', calification.toString());
+  if (name) params.append('name', name.toString());
   try {
-    console.log(params.toString());
     const response = await fetch(`${APIURL}/gardener?${params.toString()}`, {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${TOKEN}`,
+        'Authorization': `Bearer ${TOKEN.token}`,
         'Content-Type': 'application/json',
       },
     });
