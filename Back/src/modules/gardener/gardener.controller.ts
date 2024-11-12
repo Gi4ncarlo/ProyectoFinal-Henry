@@ -42,7 +42,7 @@ export class GardenerController {
     return this.gardenerService.create(createGardenerDto);
   }
 
-  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Get()
   async findAll(
     @Query('page') page: number = 1,
