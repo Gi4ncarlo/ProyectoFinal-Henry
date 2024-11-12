@@ -26,7 +26,7 @@ export class ServicesOrderEntity {
     @JoinColumn()
     orderDetail: ServiceDetail;
     // // Relación con la entidad ServiceDetail (1:1)
-    @OneToOne(() => ServiceProvided, (serviceProvided) => serviceProvided.serviceOrder, { onDelete: "CASCADE" })
+    @ManyToOne(() => ServiceProvided, (serviceProvided) => serviceProvided.serviceOrder, { onDelete: "CASCADE" })
     @JoinColumn()
     serviceProvided: ServiceProvided;
 
