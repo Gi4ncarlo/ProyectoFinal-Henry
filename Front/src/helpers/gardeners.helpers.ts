@@ -3,12 +3,12 @@ import { IServiceProvider } from "@/interfaces/IServiceProvider";
 const APIURL = process.env.NEXT_PUBLIC_API_URL;
 const TOKEN = JSON.parse(localStorage.getItem("userSession") || "null")
 
-export async function getGardenersDB(): Promise<IServiceProvider[]> {
+export async function getGardenersDB(name?:string): Promise<IServiceProvider[]> {
   try {
 
     console.log("gardHelp TOKEN : ", TOKEN.token);
     
-    const res = await fetch(`${APIURL}/gardener`, {
+    const res = await fetch(`${APIURL}/gardener/?name=${name || ""}`, {
       method: 'GET', 
       headers: {
       'Authorization': `Bearer ${TOKEN.token}`,
