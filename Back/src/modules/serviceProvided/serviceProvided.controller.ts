@@ -11,7 +11,6 @@ import {
   Post,
   Res,
   UseGuards,
-  Query,
 } from '@nestjs/common';
 import { ServiceProvidedService } from './serviceProvided.service';
 import { Response } from 'express';
@@ -30,20 +29,9 @@ export class ServiceProvidedController {
   ) {}
 
   @Get()
-  async getAllServiceProvided(
-    @Res() res: Response,
-    @Query('name') name?: string,
-    @Query('priceMin') priceMin?: number,
-    @Query('priceMax') priceMax?: number,
-    @Query('order') order: 'ASC' | 'DESC' = 'ASC'
-  ) {
+  async getAllServiceProvided(@Res() res: Response) {
     try {
-      const data = await this.serviceProvidedService.getAllServiceProvidedService(
-        name,
-        priceMin,
-        priceMax,
-        order
-      );
+      const data = await this.serviceProvidedService.getAllServiceProvidedService();
       return res.status(200).json(data);
     } catch (error) {
       return res.status(400).json(error);
