@@ -1,5 +1,4 @@
 import { IServiceProvider } from "@/interfaces/IServiceProvider";
-import { useRouter } from 'next/navigation';
 const APIURL = process.env.NEXT_PUBLIC_API_URL;
 const TOKEN = JSON.parse(localStorage.getItem("userSession") || "null")
 
