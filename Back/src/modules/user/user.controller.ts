@@ -38,7 +38,7 @@ export class UserController {
     private readonly gardenerService: GardenerService,
   ) {}
 
-// @UseGuards(AuthGuard, RolesGuard)
+@UseGuards(AuthGuard, RolesGuard)
 @HttpCode(200)
 @Roles(Role.Admin)
 @Get()
@@ -51,7 +51,7 @@ findAll(
   return this.userService.findAll(page, limit, name, order);
 }
 
-  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Get(':id/orders')
   async findOrderUser(@Param('id') id: string) {
   const user = await this.userService.findOneWithOrders(id);
@@ -63,7 +63,7 @@ findAll(
   return user.servicesOrder;
 }
 
-  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @HttpCode(200)
   @Get(':id')
   async findOne(@Param('id', new ParseUUIDPipe()) id: string) {
@@ -82,6 +82,7 @@ findAll(
   }
 
   @HttpCode(200)
+  @UseGuards(AuthGuard) 
   @Get('/gardener/:id')
   async userFindGardener(@Param('id', new ParseUUIDPipe()) id: string) {
 

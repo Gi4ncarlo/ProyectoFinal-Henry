@@ -26,7 +26,8 @@ import { IsUUID } from 'class-validator';
 export class ServicesOrderController {
   constructor(private readonly servicesOrderService: ServicesOrderService) {}
 
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Admin, Role.User)
   @Post()
   create(@Body() createServicesOrderDto: CreateServiceOrderDto) {
     return this.servicesOrderService.create(createServicesOrderDto);

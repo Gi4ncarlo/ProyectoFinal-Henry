@@ -1,10 +1,19 @@
 import { IServiceProvider } from "@/interfaces/IServiceProvider";
 
 const APIURL = process.env.NEXT_PUBLIC_API_URL;
+const TOKEN = JSON.parse(localStorage.getItem("userSession") || "null")
 
 export async function getGardenersDB(): Promise<IServiceProvider[]> {
   try {
+
+    console.log("gardHelp TOKEN : ", TOKEN.token);
+    
     const res = await fetch(`${APIURL}/gardener`, {
+      method: 'GET', 
+      headers: {
+      'Authorization': `Bearer ${TOKEN.token}`,
+      'Content-Type': 'application/json', 
+    },
       next: { revalidate: 1200 },
     });
 
@@ -28,7 +37,12 @@ export async function getGardenersDB(): Promise<IServiceProvider[]> {
 // Nueva función para obtener un gardener por ID
 export async function getProviderById(id: string): Promise<IServiceProvider | null> {
   try {
-    const res = await fetch(`${APIURL}/gardener/${id}`, {
+      const res = await fetch(`${APIURL}/gardener/${id}`, {
+        method: 'GET', 
+        headers: {
+        'Authorization': `Bearer ${TOKEN.token}`,
+        'Content-Type': 'application/json', 
+      },
       next: { revalidate: 1200 },
     });
 

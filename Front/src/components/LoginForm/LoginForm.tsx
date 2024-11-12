@@ -36,8 +36,10 @@ export default function LoginForm() {
     event.preventDefault();
     const response = await login(dataUser);
     console.log(response);
+    console.log(response.status);
+    
 
-    if (response.statusCode === 400) {
+    if (response.status === 401) {
       alert(response.message || "error register")
     } else {
       alert("Correct login");

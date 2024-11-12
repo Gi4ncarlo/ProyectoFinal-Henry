@@ -29,6 +29,7 @@ export class ServiceProvidedController {
     private readonly serviceProvidedService: ServiceProvidedService,
   ) {}
 
+  @UseGuards(AuthGuard)
   @Get()
   async getAllServiceProvided(
     @Res() res: Response,
@@ -50,6 +51,7 @@ export class ServiceProvidedController {
     }
   }
 
+  @UseGuards(AuthGuard)
   @Get('/:id')
   async getServiceProvidedById(
     @Res() res: Response,

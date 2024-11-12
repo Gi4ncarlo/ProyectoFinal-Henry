@@ -19,6 +19,9 @@ export default function Navbar() {
   useEffect(() => {
     if (typeof window !== "undefined" && window.localStorage) {
       const storedUserData = JSON.parse(localStorage.getItem("userSession") || "null")
+
+      console.log("storedUserData : ", storedUserData);
+      
       if (storedUserData) {
         setUserData(storedUserData)
         setIsAuthenticated(true)

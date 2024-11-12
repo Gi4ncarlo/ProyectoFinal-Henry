@@ -34,7 +34,7 @@ export class AuthService {
                 throw new HttpException('credenciales incorrectas', HttpStatus.UNAUTHORIZED)
             }
             const token = await this.createToken(user)
-            return { token };
+            return { token};
         }
         if (admin) {
             const isPasswordMatching = await bcrypt.compare(
@@ -56,12 +56,12 @@ export class AuthService {
                 throw new HttpException('credenciales incorrectas', HttpStatus.UNAUTHORIZED)
             }
             const token = await this.createToken(gardener)
-            return { token };   
+            return { token};   
         }
 
-        throw new HttpException('usuario no encontrado', HttpStatus.UNAUTHORIZED)
+        throw new HttpException('USER NOT FOUND IN THE DB', HttpStatus.UNAUTHORIZED)
         } catch (error) {
-            throw new HttpException(error, 400);
+            throw new HttpException(error, 401);
         }
     }
 
