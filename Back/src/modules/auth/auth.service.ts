@@ -34,7 +34,7 @@ export class AuthService {
                 throw new HttpException('credenciales incorrectas', HttpStatus.UNAUTHORIZED)
             }
             const token = await this.createToken(user)
-            return { token};
+            return { token, user};
         }
         if (admin) {
             const isPasswordMatching = await bcrypt.compare(

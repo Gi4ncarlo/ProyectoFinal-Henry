@@ -1,17 +1,19 @@
 
 const APIURL = process.env.NEXT_PUBLIC_API_URL
+const TOKEN = JSON.parse(localStorage.getItem("userSession") || "null")
 
 export const hireServices = async (data: {
     date: string;
     isApproved: boolean;
     gardenerId: string;
     userId: string;
-    serviceId: string[];
+    serviceId: string;
   }) => {
     try {
       const response = await fetch(`${APIURL}/services-order`, {
         method: 'POST',
         headers: {
+          'Authorization': `Bearer ${TOKEN.token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),

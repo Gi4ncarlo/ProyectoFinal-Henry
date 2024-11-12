@@ -9,7 +9,6 @@ import { useRouter } from 'next/navigation';
 import { FaSearch } from 'react-icons/fa';
 
 
-
 const ProviderCardList: React.FC = () => {
   const [providers, setProviders] = useState<IServiceProvider[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -29,7 +28,7 @@ const ProviderCardList: React.FC = () => {
   };
 
   useEffect(() => {
-    const fetchProviders = async () => {
+    const fetchProviders = async (name = "") => {
       try {
         // Si `filter` es numérico, lo interpretamos como una calificación.
         const order = filter === 'ASC' || filter === 'DESC' ? filter : 'ASC';
@@ -41,7 +40,7 @@ const ProviderCardList: React.FC = () => {
 
 
       } catch (error) {
-        setError('Error al cargar los productos');
+        setError(error.message || 'Error al cargar los productos');
       }
     };
     console.log(fetchProviders());
@@ -103,7 +102,6 @@ const ProviderCardList: React.FC = () => {
           </>
         )
       }
-
     </div>
   );
 };
