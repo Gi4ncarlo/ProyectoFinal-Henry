@@ -43,9 +43,12 @@ export async function registerService(
   dataService: IServiceProps
 ): Promise<void> {
   try {
-    if (!TOKEN || !TOKEN.token) {
+    if (!TOKEN.token) {
       throw new Error("Token is missing or invalid.");
     }
+
+    console.log("DATA SERVICE : ", dataService);
+    
 
     const res = await fetch(`${APIURL}/serviceProvided`, {
       method: "POST",

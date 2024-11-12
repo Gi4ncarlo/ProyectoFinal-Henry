@@ -5,9 +5,12 @@ import { useRouter } from 'next/navigation';
 import { IServiceErrors, IServiceProps } from '@/interfaces/IServiceProps';
 import { validateServiceForm } from '@/helpers/validateService';
 import { registerService } from '@/helpers/auth.helpers';
+import { Categories } from './enums/categories.enum';
 
 export default function RegisterServiceForm() {
   const router = useRouter();
+
+  const categories = Object.values(Categories);
 
   const initialState: IServiceProps = {
     detailService: '',
@@ -26,6 +29,7 @@ export default function RegisterServiceForm() {
   // Manejo de cambios en los campos del formulario
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = event.target;
+
     setDataService({
       ...dataService,
       [name]: type === 'number' ? Number(value) : value,
@@ -116,7 +120,7 @@ export default function RegisterServiceForm() {
         <div>
           <label className="block text-sm font-medium text-gray-700">Categories</label>
           <div className="mt-2 space-y-2">
-            {['Lawn Care', 'Tree Trimming', 'Irrigation', 'Pest Control'].map(category => (
+            {categories.map(category => (
               <div key={category} className="flex items-center">
                 <input
                   id={category}
