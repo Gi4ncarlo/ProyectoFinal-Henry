@@ -25,22 +25,22 @@ const Home: React.FC = () => {
             aria-label="Select a gardening service"
           >
             <option value="">Seleccione un servicio</option>
-            <option value="all-services">All Services</option>
-            <option value="lawn-mowing">Lawn Mowing</option>
-            <option value="tree-pruning">Tree Pruning</option>
-            <option value="hedge-trimming">Hedge Trimming</option>
-            <option value="garden-design">Garden Design</option>
-            <option value="lawn-fertilization">Lawn Fertilization</option>
-            <option value="weed-control">Weed Control</option>
-            <option value="mulching">Mulching</option>
-            <option value="irrigation">Irrigation System Installation</option>
-            <option value="landscape-maintenance">Landscape Maintenance</option>
-            <option value="leaf-removal">Leaf Removal</option>
-            <option value="flower-bed-planting">Flower Bed Planting</option>
-            <option value="soil-aeration">Soil Aeration</option>
-            <option value="garden-pest-control">Garden Pest Control</option>
-            <option value="gutter-cleaning">Gutter Cleaning</option>
-            <option value="tree-removal">Tree Removal</option>
+            <option value="all-services">Todos los Servicios</option>
+            <option value="lawn-mowing">Cortar el césped</option>
+            <option value="tree-pruning">Poda de árboles</option>
+            <option value="hedge-trimming">Recorte de arbustos</option>
+            <option value="garden-design">Diseño de jardines</option>
+            <option value="lawn-fertilization">Fertilización del césped</option>
+            <option value="weed-control">Control de malezas</option>
+            <option value="mulching">Acolchado</option>
+            <option value="irrigation">Instalación del sistema de riego</option>
+            <option value="landscape-maintenance">Mantenimiento del paisaje</option>
+            <option value="leaf-removal">Eliminación de hojas</option>
+            <option value="flower-bed-planting">Plantación de macizos de flores</option>
+            <option value="soil-aeration">Aireación del suelo</option>
+            <option value="garden-pest-control">Control de plagas en el jardín</option>
+            <option value="gutter-cleaning">Limpieza de canaletas</option>
+            <option value="tree-removal">Eliminación de árboles</option>
           </select>
 
           <button

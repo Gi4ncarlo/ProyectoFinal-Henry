@@ -1,12 +1,11 @@
 export enum Categories {
-  GROWER = 'Grower',
-  PRUNER = 'Pruner',
-  DESIGNER = 'Garden Designer',
-  LANDSCAPER = 'Landscaper',
-  MAINTENANCE_TECHNICIAN = 'Garden Maintenance Technician',
-  LAWN_CARE = 'Plant and Lawn Care Specialist',
-  IRRIGATION = 'Irrigation Systems Installer',
-  PEST_CONTROL = 'Pest Control',
-  TREE_TRIMMING = 'Tree Trimming',
-
+  GROWER = 'Cultivador',
+  PRUNER = 'Podador',
+  DESIGNER = 'Diseñador de jardines',
+  LANDSCAPER = 'Paisajista',
+  MAINTENANCE_TECHNICIAN = 'Técnico de mantenimiento de jardines',
+  LAWN_CARE = 'Especialista en cuidado de plantas y césped',
+  IRRIGATION = 'Instalador de sistemas de riego',
+  PEST_CONTROL = 'Control de plagas',
+  TREE_TRIMMING = 'Poda de árboles',
 }

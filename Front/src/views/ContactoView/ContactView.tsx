@@ -19,7 +19,7 @@ const ContactView = () => {
               id="name"
               name="name"
               required
-              placeholder="Enter your name"
+              placeholder="Introduce tu nombre"
               className="mt-1 p-3 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
@@ -32,7 +32,7 @@ const ContactView = () => {
               id="email"
               name="email"
               required
-              placeholder="Enter your email"
+              placeholder="Ingresa tu correo electrónico"
               className="mt-1 p-3 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
@@ -45,7 +45,7 @@ const ContactView = () => {
               id="phone"
               name="phone"
               required
-              placeholder="Enter your phone number"
+              placeholder="Introduce tu número de teléfono"
               className="mt-1 p-3 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
@@ -57,7 +57,7 @@ const ContactView = () => {
               id="message"
               name="message"
               required
-              placeholder="Enter your message"
+              placeholder="Introduce tu mensaje"
               className="mt-1 p-3 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 h-32"
               style={{ resize: 'none' }}
             ></textarea>
