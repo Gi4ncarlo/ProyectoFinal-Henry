@@ -5,7 +5,7 @@ import { serviceMock } from "../serviceSeed/service-mock";
 export const gardenersMock = [
     {
         name: "Juan Perez",
-        email: "juan.perez@gmail.com",
+        email: "jardinero@gmail.com",
         username : "GardnerJuan",
         password: "password123",
         confirmPassword: "password123",

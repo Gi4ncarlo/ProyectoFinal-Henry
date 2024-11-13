@@ -5,7 +5,7 @@ export const usersMock = [
    
     {
         name: "Pepe",
-        email: "jardinero@gmail.com",
+        email: "pepe@gmail.com",
         username : "Pepito",
         password: "123456",
         passwordConfirm: "123456",
