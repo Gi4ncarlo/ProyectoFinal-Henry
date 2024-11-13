@@ -7,12 +7,12 @@ const ContactView = () => {
       <div className="container bg-white m-auto mt-12 p-2 max-w-full shadow-sm rounded-sm lg:m-0 lg:p-8 lg:max-w-lg lg:shadow-lg lg:rounded-lg">
         <h2 className="text-4xl font-extrabold mb-6 text-center text-gray-800 font-cinzel">Contacto</h2>
         <p className="mb-6 text-gray-600 text-center font-nunito text-sm lg:text-lg">
-        Please fill out the form for more information, and we will get in touch as soon as possible. All fields are required.
+        Por favor llene el formulario para mas información, y nos pondremos en contacto lo mas pronto posible. Debes completar todos los campos.
         </p>
         <form className="space-y-6">
           <div>
             <label htmlFor="name" className="block text-base font-medium text-gray-700 font-roboto">
-              Name:
+              Nombre:
             </label>
             <input
               type="text"
@@ -38,7 +38,7 @@ const ContactView = () => {
           </div>
           <div>
             <label htmlFor="phone" className="block text-base font-medium text-gray-700 font-roboto">
-              Phone:
+              Teléfono:
             </label>
             <input
               type="tel"
@@ -51,7 +51,7 @@ const ContactView = () => {
           </div>
           <div>
             <label htmlFor="message" className="block text-base font-medium text-gray-700 font-roboto">
-            Message:
+            Mensaje:
             </label>
             <textarea
               id="message"
@@ -66,7 +66,7 @@ const ContactView = () => {
             type="submit"
             className="font-lato text-lg w-full py-3 bg-green-600 text-white font-semibold rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
           >
-               SEND
+               ENVIAR
           </button>
         </form>
       </div>

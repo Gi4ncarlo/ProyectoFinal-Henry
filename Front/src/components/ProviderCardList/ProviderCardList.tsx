@@ -77,9 +77,9 @@ const ProviderCardList: React.FC = () => {
                 value={filter}
                 onChange={handleFilter}
               >
-                <option value="">Sort by</option>
-                <option value="ASC">Alphabetical ⬆</option>
-                <option value="DESC">Alphabetical ⬇</option>
+                <option value="">Ordenar por</option>
+                <option value="ASC">Alfabetico ⬆</option>
+                <option value="DESC">Alfabetico ⬇</option>
                 <option value="1"> ⭐</option>
                 <option value="2"> ⭐⭐</option>
                 <option value="3"> ⭐⭐⭐</option>
