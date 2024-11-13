@@ -38,6 +38,9 @@ export const getGardenersDB = async (
 
 // Nueva función para obtener un gardener por ID
 export async function getProviderById(id: string): Promise<IServiceProvider | null> {
+
+  console.log("GARDENER HELPERS ID", id);
+  
   try {
       const res = await fetch(`${APIURL}/gardener/${id}`, {
         method: 'GET', 

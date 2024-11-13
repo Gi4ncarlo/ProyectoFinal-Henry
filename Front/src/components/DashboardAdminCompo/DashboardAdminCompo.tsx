@@ -6,7 +6,8 @@ import React, { useEffect, useState } from 'react'
 
 const DashboardAdminCompo = () => {
     const [services, setServices] = useState<IService[]>([]); // Servicios disponibles
-    const [sortOrder] = useState<'asc' | 'desc'>('asc');
+   const [sortOrder] = useState<'asc' | 'desc'>('asc');
+
 
     useEffect(() => {
         // Cargar los servicios cuando el componente se monta
@@ -23,12 +24,6 @@ const DashboardAdminCompo = () => {
         }
     };
 
-    // const deleteServices = ()=>{
-
-    // }
-
-
-
     return (
         <div>
 
@@ -39,14 +34,11 @@ const DashboardAdminCompo = () => {
                         <p>{services.detailService}</p>
                         <p>{services.categories}</p>
                         <p>{services.price}</p>
+                        <br />
                     </div>
-
-
 
                 ))
             }
-
-
         </div>
     )
 }

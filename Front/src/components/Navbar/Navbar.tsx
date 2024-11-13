@@ -87,7 +87,7 @@ export default function Navbar() {
             <Link href="/contacto">Contact</Link>
           </li>
           <li className="hover:-translate-y-1 hover:underline">
-            <Link href="/gardeners">Gardeners</Link>
+            <Link href="/gardener">Gardeners</Link>
           </li>
           <li className="hover:-translate-y-1 hover:underline">
             <Link href="/registerService">Register New Service Provided</Link>
@@ -114,7 +114,7 @@ export default function Navbar() {
               <Link href="/contact">Contact</Link>
             </li>
             <li className="hover:-translate-y-1 hover:underline">
-            <Link href="/gardeners">Gardeners</Link>
+            <Link href="/gardener">Gardeners</Link>
           </li>
             <li className="hover:-translate-y-1 hover:underline">
               <Link href="/register">Register</Link>
