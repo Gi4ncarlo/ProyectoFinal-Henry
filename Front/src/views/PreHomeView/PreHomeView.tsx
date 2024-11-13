@@ -17,11 +17,11 @@ const PreHomeView = () => {
       {/* Overlay y botón */}
       <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-center">
         <h1 className="text-white text-4xl md:text-6xl font-bold mb-8">
-          ¡Bienvenido a Vicnasol!
+          ¡Welcome to Vicnasol!
         </h1>
         <Link href="/Home">
           <button className="px-6 py-3 bg-white text-black font-semibold rounded-lg hover:bg-gray-200 transition duration-300">
-            Entrar al Home
+            Enter home
           </button>
         </Link>
       </div>
