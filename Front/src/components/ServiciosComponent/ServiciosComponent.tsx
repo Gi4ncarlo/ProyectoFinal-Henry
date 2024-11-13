@@ -36,22 +36,22 @@ const ServicesComponent = () => {
           <ul className="flex justify-center space-x-6 text-sm text-white lg:text-2xl">
             <li>
               <a href="#GardenMaintenance" className="hover:text-green-300 transition-colors duration-300">
-                Garden Maintenance
+                Mantenimiento de jardin
               </a>
             </li>
             <li>
               <a href="#Landscaping" className="hover:text-green-300 transition-colors duration-300">
-                Landscaping
+                Paisajismo
               </a>
             </li>
             <li>
               <a href="#Corporate" className="hover:text-green-300 transition-colors duration-300">
-                Corporate
+                Corporativo
               </a>
             </li>
             <li>
               <a href="#Irrigation" className="hover:text-green-300 transition-colors duration-300">
-                Irrigation
+                Riego
               </a>
             </li>
           </ul>
@@ -63,9 +63,9 @@ const ServicesComponent = () => {
       <section className="mt-14 lg:mt-24">
         <div className="grid grid-cols-1 max-w-7xl mx-auto p-6 lg:grid lg:grid-cols-2 lg:items-center">
           <div className="lg:p-6">
-            <h2 className="text-3xl lg:text-4xl font-bold text-center lg:text-left mb-4">Garden Maintenance</h2>
+            <h2 className="text-3xl lg:text-4xl font-bold text-center lg:text-left mb-4">Mantenimiento de jardin</h2>
             <p className="text-lg text-justify mb-6">
-              Keeping your garden in perfect condition is our priority. We offer pruning, fertilizing, and comprehensive care services to ensure your green space always looks impeccable. With advanced techniques and an expert team, we take care of every detail.
+            Mantener tu jardín en perfectas condiciones es nuestra prioridad. Ofrecemos servicios de poda, abono y cuidado integral para que tu espacio verde luzca siempre impecable. Con técnicas avanzadas y un equipo experto, cuidamos cada detalle.
             </p>
           </div>
           <div className='grid grid-cols-2 grid-rows-2 gap-2 lg:grid lg:grid-cols-2 lg:grid-rows-2 lg:gap-2 lg:p-6 lg:shadow-xl lg:rounded-lg'>
@@ -112,9 +112,9 @@ const ServicesComponent = () => {
       <section className="lg:mt-24">
         <div className="grid grid-cols-1 max-w-7xl mx-auto p-6 lg:grid lg:grid-cols-2 lg:items-center">
           <div className="lg:p-6">
-            <h2 className="text-3xl lg:text-4xl font-bold text-center lg:text-left mb-4">Landscaping</h2>
+            <h2 className="text-3xl lg:text-4xl font-bold text-center lg:text-left mb-4">Paisajismo</h2>
             <p className="text-lg text-justify mb-6">
-              We transform your spaces with landscaping projects that combine creativity, functionality, and aesthetics. We design gardens that not only beautify but also optimize land use and environmental sustainability.
+            Transformamos tus espacios con proyectos paisajísticos que combinan creatividad, funcionalidad y estética. Diseñamos jardines que no sólo embellecen sino que también optimizan el uso del suelo y la sostenibilidad ambiental.
             </p>
           </div>
           <div className='grid grid-cols-2 grid-rows-2 gap-2 lg:grid lg:grid-cols-2 lg:grid-rows-2 lg:gap-2 lg:p-6 lg:shadow-xl lg:rounded-lg'>
@@ -155,9 +155,9 @@ const ServicesComponent = () => {
       <section className="lg:mt-24">
         <div className="grid grid-cols-1 max-w-7xl mx-auto p-6 lg:grid lg:grid-cols-2 lg:items-center">
           <div className="lg:p-6">
-            <h2 className="text-3xl lg:text-4xl font-bold text-center lg:text-left mb-4">Corporate</h2>
+            <h2 className="text-3xl lg:text-4xl font-bold text-center lg:text-left mb-4">Corporativo</h2>
             <p className="text-lg text-justify mb-6">
-              We offer specialized solutions for businesses, ensuring their green spaces reflect professionalism and commitment to the environment. We handle the design, installation, and maintenance of corporate green areas.
+            Ofrecemos soluciones especializadas para empresas, asegurando que sus espacios verdes reflejen profesionalismo y compromiso con el medio ambiente. Nos encargamos del diseño, instalación y mantenimiento de áreas verdes corporativas.
             </p>
           </div>
           <div className='grid grid-cols-2 grid-rows-2 gap-2 lg:grid lg:grid-cols-2 lg:grid-rows-2 lg:gap-2 lg:p-6 lg:shadow-xl lg:rounded-lg'>
@@ -198,9 +198,9 @@ const ServicesComponent = () => {
       <section className="lg:mt-24">
         <div className="grid grid-cols-1 max-w-7xl mx-auto p-6 lg:grid lg:grid-cols-2 lg:items-center">
           <div className="lg:p-6">
-            <h2 className="text-3xl lg:text-4xl font-bold text-center lg:text-left mb-4">Irrigation Systems</h2>
+            <h2 className="text-3xl lg:text-4xl font-bold text-center lg:text-left mb-4">Sistemas de Riego</h2>
             <p className="text-lg text-justify mb-6">
-              We install efficient irrigation systems that adapt to the needs of your garden or green area. Automation and water optimization ensure each plant receives the exact amount of hydration needed.
+            Instalamos sistemas de riego eficientes que se adaptan a las necesidades de tu jardín o zona verde. La automatización y la optimización del agua garantizan que cada planta reciba la cantidad exacta de hidratación necesaria.
             </p>
           </div>
           <div className='grid grid-cols-2 grid-rows-2 gap-2 lg:grid lg:grid-cols-2 lg:grid-rows-2 lg:gap-2 lg:p-6 lg:shadow-xl lg:rounded-lg'>
