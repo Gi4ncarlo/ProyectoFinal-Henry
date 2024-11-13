@@ -1,4 +1,5 @@
 "use client"
+import DashboardAdminCompo from '@/components/DashboardAdminCompo/DashboardAdminCompo';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 
@@ -12,7 +13,7 @@ const user= JSON.parse(localStorage.getItem("userSession")|| "null")  ;
 console.log(user?.token); // Logs the token if it exists
 console.log("Usersession", user);
 
-if(user && user.token && user.role){
+if(user && user.token && user.user.role){
 setAuthorized(user);
 }else{
     console.log("Redirecting to login");
@@ -24,8 +25,8 @@ setAuthorized(user);
 if (!authorized) return null;
 
   return (
-    <div>
-      <main>{children}</main>
+    <div className='mt-32 p-8 justify-center'>
+         <main>{children}</main>
     </div>
   )
 }

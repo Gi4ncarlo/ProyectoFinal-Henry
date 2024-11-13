@@ -7,12 +7,15 @@ import { getProviderById } from '@/helpers/gardeners.helpers';
 import { getServicesProvided } from '@/helpers/service.helpers';
 import { useParams } from 'next/navigation';
 import { IService } from '@/interfaces/IService';
+import { hireServices } from '@/helpers/order.helpers';
 
 const ProviderDetail: React.FC = () => {
   const { id } = useParams();
   const [gardener, setGardener] = useState<IServiceProvider | null>(null);
   const [services, setServices] = useState<IService[]>([]); // Servicios disponibles
   const [selectedServices, setSelectedServices] = useState<string[]>([]); // Servicios seleccionados
+  const [orderService, setOrderService] = useState();
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchGardener = async () => {
@@ -50,9 +53,51 @@ const ProviderDetail: React.FC = () => {
     );
   };
 
-  const handleHireClick = () => {
-    // Lógica para contratar al jardinero con los servicios seleccionados
+
+  const handleHireClick = async () => {
+    const date = new Date().toString();
+    const isApproved = false;
+    const gardenerId = gardener?.id.toString(); 
+    const userSession = localStorage.getItem("userSession");
+    
+    if (!userSession) {
+      setError('User session not found');
+      return;
+    }
+  
+    const { user } = JSON.parse(userSession);
+    const userId = user?.id;
+    
+    
+    if (!userId) {
+      setError('User ID not found');
+      return;
+    }
+  
+    try {
+      const order = await hireServices({
+        date,
+        isApproved,
+        gardenerId,
+        userId,
+        serviceId: selectedServices[0],
+      });
+      setOrderService(order);
+  
+      
+      alert(
+        `Order ID: ${order.id}\n` +
+        `User Name: ${order.user.name}\n` +
+        `Gardener Name: ${order.gardener.name}\n` +
+        `Service: ${order.serviceProvided.detailService}`
+      );
+    } catch (error) {
+      setError('Error al cargar los productos');
+    }
   };
+  
+
+  if (error) return <div>{error}</div>;
 
   return (
     <div className="flex">
