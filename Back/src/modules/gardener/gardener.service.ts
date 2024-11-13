@@ -7,7 +7,6 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class GardenerService {
-
   constructor(
     @InjectRepository(Gardener)
     private readonly gardenerRepository: Repository<Gardener>,
@@ -53,6 +52,35 @@ export class GardenerService {
     return { count, data };
   }
 
+ async findServicesProvidedByGardener(id: string) {
+    const gardener = await this.gardenerRepository.findOne({
+      where : {id : id},
+      relations : ['serviceProvided'],
+    })
+
+    if (!gardener) {
+      throw new NotFoundException(`Jardinero ${id} no encontrado`);
+    }
+
+    return gardener.serviceProvided;
+
+  }
+
+
+  async findOrdersAsignedForGardener(id: string) {
+    const gardener = await this.gardenerRepository.findOne({
+      where : {id : id},
+      relations : ['serviceDetails'],
+    })
+
+    if (!gardener) {
+      throw new NotFoundException(`Jardinero ${id} no encontrado`);
+    }
+
+    return gardener.serviceDetails;
+
+  }
+
   async findOne(id: string): Promise<Gardener> {
     const gardner = await this.gardenerRepository.findOneBy({ id });
     if (!gardner) {
@@ -60,6 +88,7 @@ export class GardenerService {
     }
     return gardner;
   }
+
   findByEmail(email: string) {
     try {
       const gardener = this.gardenerRepository.findOne({ where: { email } });
