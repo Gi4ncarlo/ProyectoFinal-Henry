@@ -53,49 +53,51 @@ const ProviderDetail: React.FC = () => {
     );
   };
 
-
   const handleHireClick = async () => {
     const date = new Date().toString();
     const isApproved = false;
-    const gardenerId = gardener?.id.toString(); 
-    const userSession = localStorage.getItem("userSession");
+    const gardenerId = gardener?.id.toString();
     
-    if (!userSession) {
-      setError('User session not found');
-      return;
-    }
-  
-    const { user } = JSON.parse(userSession);
-    const userId = user?.id;
-    
-    
-    if (!userId) {
-      setError('User ID not found');
-      return;
-    }
-  
-    try {
-      const order = await hireServices({
-        date,
-        isApproved,
-        gardenerId,
-        userId,
-        serviceId: selectedServices[0],
-      });
-      setOrderService(order);
-  
-      
-      alert(
-        `Order ID: ${order.id}\n` +
-        `User Name: ${order.user.name}\n` +
-        `Gardener Name: ${order.gardener.name}\n` +
-        `Service: ${order.serviceProvided.detailService}`
-      );
-    } catch (error) {
-      setError('Error al cargar los productos');
+    // Verificar si estamos en el lado del cliente antes de acceder a localStorage
+    if (typeof window !== 'undefined') {
+      const userSession = localStorage.getItem("userSession");
+
+      if (!userSession) {
+        setError('User session not found');
+        return;
+      }
+
+      const { user } = JSON.parse(userSession);
+      const userId = user?.id;
+
+      if (!userId) {
+        setError('User ID not found');
+        return;
+      }
+
+      try {
+        const order = await hireServices({
+          date,
+          isApproved,
+          gardenerId,
+          userId,
+          serviceId: selectedServices[0],
+        });
+        setOrderService(order);
+
+        alert(
+          `Order ID: ${order.id}\n` +
+          `User Name: ${order.user.name}\n` +
+          `Gardener Name: ${order.gardener.name}\n` +
+          `Service: ${order.serviceProvided.detailService}`
+        );
+      } catch (error) {
+        setError('Error al cargar los productos');
+      }
+    } else {
+      setError('No se puede acceder a la sesión del usuario en el servidor');
     }
   };
-  
 
   if (error) return <div>{error}</div>;
 

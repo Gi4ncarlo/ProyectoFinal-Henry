@@ -14,11 +14,20 @@ const ProviderCardList: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>('ASC'); // Default order filter
   const [searchTerm, setSearchTerm] = useState('');
-  const TOKEN = JSON.parse(localStorage.getItem("userSession") || "null")
+  const [TOKEN, setTOKEN] = useState<any>(null);
   const router = useRouter();
-  if (!TOKEN) {
-    router.push('/login')
-  }
+
+  useEffect(() => {
+    // Verificación para obtener el token solo en el cliente
+    if (typeof window !== 'undefined') {
+      const storedToken = localStorage.getItem("userSession");
+      if (storedToken) {
+        setTOKEN(JSON.parse(storedToken));
+      } else {
+        router.push('/login');
+      }
+    }
+  }, [router]); // Se ejecuta solo una vez al montar el componente
 
   const handleFilter = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     setFilter(e.target.value);

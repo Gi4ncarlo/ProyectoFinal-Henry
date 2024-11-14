@@ -1,10 +1,10 @@
-'use client'
+"use client";
 
-import { login } from '@/helpers/auth.helpers'
-import { validateLoginForm } from '@/helpers/validate';
-import { ILoginErrors, ILoginProps } from '@/interfaces/ILoginProps';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react'
+import { login } from "@/helpers/auth.helpers";
+import { validateLoginForm } from "@/helpers/validate";
+import { ILoginErrors, ILoginProps } from "@/interfaces/ILoginProps";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -13,7 +13,7 @@ export default function LoginForm() {
     password: "",
   };
   const [dataUser, setDataUser] = useState<ILoginProps>(initialState);
-  const [showPassword, setShowPassword] = useState(false)
+  const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<ILoginErrors>(initialState);
   const [touched, setTouched] = useState({
     email: false,
@@ -21,7 +21,7 @@ export default function LoginForm() {
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     setDataUser({
       ...dataUser,
       [name]: value,
@@ -29,37 +29,40 @@ export default function LoginForm() {
     setTouched((prev) => ({
       ...prev,
       [name]: true,
-    }))
-  }
+    }));
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const response = await login(dataUser);
     console.log(response);
     console.log(response.status);
-    
 
     if (response.status === 401) {
-      alert(response.message || "error register")
+      alert(response.message || "error register");
     } else {
       alert("Correct login");
       const { token, user } = response;
-      localStorage.setItem("userSession", JSON.stringify({ token, user }));
-      router.push('/');
+      // Verificación si estamos en el cliente antes de acceder a localStorage
+      if (typeof window !== "undefined") {
+        localStorage.setItem("userSession", JSON.stringify({ token, user }));
+        router.push("/");
+      } else {
+        alert("No se puede guardar en localStorage en el servidor");
+      }
     }
   };
 
   useEffect(() => {
-    if (Object.values(touched).some(field => field)) {
+    if (Object.values(touched).some((field) => field)) {
       const validationErrors = validateLoginForm(dataUser);
-      setErrors(validationErrors)
+      setErrors(validationErrors);
     }
-  }, [dataUser, touched])
-
+  }, [dataUser, touched]);
 
   const togglePasswordVisibility = () => {
-    setShowPassword(prev => !prev)
-  }
+    setShowPassword((prev) => !prev);
+  };
 
   return (
     <div className="w-full max-w-md mx-auto p-6 border rounded-lg shadow-lg bg-white">
@@ -68,7 +71,12 @@ export default function LoginForm() {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Email
+          </label>
           <input
             id="email"
             name="email"
@@ -79,11 +87,18 @@ export default function LoginForm() {
             placeholder="example@mail.com"
             className="mt-1 p-2 border border-gray-300 rounded w-full"
           />
-           {touched.email && errors.email && <span className="text-red-500">{errors.email}</span>}
+          {touched.email && errors.email && (
+            <span className="text-red-500">{errors.email}</span>
+          )}
         </div>
 
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Password
+          </label>
           <div className="relative">
             <input
               id="password"
@@ -102,18 +117,20 @@ export default function LoginForm() {
             >
               {showPassword ? "Hide" : "Show"}
             </button>
-            {touched.password && errors.password && <span className="text-red-500">{errors.password}</span>}
+            {touched.password && errors.password && (
+              <span className="text-red-500">{errors.password}</span>
+            )}
           </div>
         </div>
 
         <button
           type="submit"
-          disabled={Object.values(errors).some(error => error !== "")}
+          disabled={Object.values(errors).some((error) => error !== "")}
           className="w-full mt-4 p-2 bg-blue-600 text-white font-bold rounded hover:bg-blue-700"
         >
           Login
         </button>
       </form>
     </div>
-  )
+  );
 }
