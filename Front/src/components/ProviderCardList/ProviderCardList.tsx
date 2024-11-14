@@ -35,7 +35,7 @@ const ProviderCardList: React.FC = () => {
         const calification = isNaN(Number(filter)) ? undefined : Number(filter);
         const name = searchTerm;
         const gardeners = await getGardenersDB(order, calification, name);
-        setProviders(gardeners.data);
+        setProviders(gardeners); // SACO .data PARA VER DE RESOLVER EL DEPLOY
         console.log(gardeners);
 
 
