@@ -20,7 +20,6 @@ import { Role } from '../user/enums/role.enum';
 import { Roles } from 'src/decorators/roles.decorator';
 import { RolesGuard } from 'src/guards/roles/role.guard';
 import { AuthGuard } from '../auth/auth.guard';
-import { IsUUID } from 'class-validator';
 
 @Controller('service-details')
 export class ServiceDetailsController {

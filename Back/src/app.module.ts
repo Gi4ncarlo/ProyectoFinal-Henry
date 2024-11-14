@@ -9,10 +9,6 @@ import { AuthModule } from './modules/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { SeedsModule } from './seeds/seeds.module';
 import { AdminModule } from './modules/admin/admin.module';
-
-
-
-
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -27,7 +23,7 @@ import { AdminModule } from './modules/admin/admin.module';
     ServiceProvidedModule,
     AuthModule,
     SeedsModule,
-    AdminModule
+    AdminModule,
   ],
   controllers: [],
   providers: [],

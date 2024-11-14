@@ -1,7 +1,6 @@
 import { ServiceDetail } from "src/modules/service-details/entities/service-detail.entity";
 import { Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn, JoinColumn } from "typeorm";
 import { v4 as uuid } from 'uuid';
-import { PaymentMethod } from "../enums/paymentMethod";
 import { User } from "src/modules/user/entities/user.entity";
 import { ServiceProvided } from "src/modules/serviceProvided/entities/serviceProvided.entity";
 import { Gardener } from "src/modules/gardener/entities/gardener.entity";
@@ -10,13 +9,13 @@ import { Gardener } from "src/modules/gardener/entities/gardener.entity";
 export class ServicesOrderEntity {
 
     @PrimaryGeneratedColumn('uuid')
-    id: string;
+    id: string = uuid();
 
     @Column()
     date: string;
 
-    // @Column({ type: 'enum', enum: PaymentMethod })
-    // paymentMethod: PaymentMethod;
+    @Column()
+    wasAlreadyPaid: boolean = false;
 
     @Column({ default: false })
     isApproved: boolean;
