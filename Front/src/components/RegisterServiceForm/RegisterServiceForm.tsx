@@ -81,10 +81,10 @@ export default function RegisterServiceForm() {
 
   return (
     <div className="w-full max-w-md mx-auto mt-24 p-6 border rounded-lg shadow-lg bg-white">
-      <h2 className="text-2xl font-bold text-center mb-4">Add Gardening Service</h2>
+      <h2 className="text-2xl font-bold text-center mb-4">Agregar un Servicio de Jardineria</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="detailService" className="block text-sm font-medium text-gray-700">Service Detail</label>
+          <label htmlFor="detailService" className="block text-sm font-medium text-gray-700">Detalle del Servicio</label>
           <input
             id="detailService"
             name="detailService"
@@ -100,7 +100,7 @@ export default function RegisterServiceForm() {
         </div>
 
         <div>
-          <label htmlFor="price" className="block text-sm font-medium text-gray-700">Price</label>
+          <label htmlFor="price" className="block text-sm font-medium text-gray-700">Precio</label>
           <input
             id="price"
             name="price"
@@ -118,7 +118,7 @@ export default function RegisterServiceForm() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Categories</label>
+          <label className="block text-sm font-medium text-gray-700">Categorias</label>
           <div className="mt-2 space-y-2">
             {categories.map(category => (
               <div key={category} className="flex items-center">
@@ -140,7 +140,7 @@ export default function RegisterServiceForm() {
         </div>
 
         <button type="submit" disabled={Object.values(errors).some(error => error !== '')} className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">
-          Add Service
+          Agregar Servicio
         </button>
       </form>
     </div>
