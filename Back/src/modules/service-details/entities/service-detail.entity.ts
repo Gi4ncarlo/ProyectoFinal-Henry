@@ -25,11 +25,11 @@ export class ServiceDetail {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   totalPrice: number;
 
-  @Column({ type: 'timestamp', nullable: true })
-  startTime: Date;
+  @Column({ type: 'text', nullable: true })
+  startTime: string;
 
-  @Column({ type: 'timestamp', nullable: true })
-  endTime: Date;
+  @Column({ type: 'text', nullable: true })
+  endTime: string;
 
   @Column({ 
     type: 'enum',

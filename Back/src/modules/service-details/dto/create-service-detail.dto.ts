@@ -10,10 +10,10 @@ export class CreateServiceDetailDto {
   totalPrice: number;
 
   @IsOptional()
-  startTime?: Date;
+  startTime?: string;
 
   @IsOptional()
-  endTime?: Date;
+  endTime?: string;
 
   @IsOptional()
   @IsString()

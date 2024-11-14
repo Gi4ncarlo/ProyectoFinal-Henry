@@ -14,10 +14,7 @@ export class ServicesOrderEntity {
     @Column()
     date: string;
 
-    @Column()
-    wasAlreadyPaid: boolean = false;
-
-    @Column({ default: false })
+    @Column({ default: true })
     isApproved: boolean;
 
     // Relación con la entidad ServiceDetail (1:1)

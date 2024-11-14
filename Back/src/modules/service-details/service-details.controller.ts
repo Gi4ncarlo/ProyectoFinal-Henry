@@ -28,8 +28,8 @@ export class ServiceDetailsController {
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Admin)
   @Post()
-  create(@Body() createServiceDetailDto: CreateServiceDetailDto) {
-    return this.serviceDetailsService.create(createServiceDetailDto);
+  async create(@Body() createServiceDetailDto: CreateServiceDetailDto) {
+    return await this.serviceDetailsService.create(createServiceDetailDto);
   }
 
   @UseGuards(AuthGuard, RolesGuard)
