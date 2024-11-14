@@ -40,9 +40,7 @@ export class SignUpAuthDto{
     @IsInt()
     age: number;
 
-    adress: string
-
-    role: Role = Role.User
+    address: string
 
     constructor(partial: Partial<SignUpAuthDto>){
         Object.assign(this, partial);

@@ -4,7 +4,10 @@ import { Response } from 'express';
 import { Roles } from 'src/decorators/roles.decorator';
 import { Role } from '../user/enums/role.enum';
 import { RolesGuard } from 'src/guards/roles/role.guard';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('admin')
+@ApiBearerAuth()
 @Controller('admin')
 export class AdminController {
     constructor(private readonly adminService: AdminService) {}

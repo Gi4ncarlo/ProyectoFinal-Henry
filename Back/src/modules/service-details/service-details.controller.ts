@@ -21,7 +21,10 @@ import { Roles } from 'src/decorators/roles.decorator';
 import { RolesGuard } from 'src/guards/roles/role.guard';
 import { AuthGuard } from '../auth/auth.guard';
 import { IsUUID } from 'class-validator';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('serviceDetails')
+@ApiBearerAuth()
 @Controller('service-details')
 export class ServiceDetailsController {
   constructor(private readonly serviceDetailsService: ServiceDetailsService) {}

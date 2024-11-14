@@ -84,6 +84,7 @@ export class AuthService {
                 throw new BadRequestException('Error at password hash')
             }
 
+
             const newUser = await this.userService.create(signUpUser)
             return newUser;
         }

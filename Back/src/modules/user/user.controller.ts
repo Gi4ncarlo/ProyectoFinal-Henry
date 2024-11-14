@@ -28,7 +28,10 @@ import { Role } from './enums/role.enum';
 import { IsUUID } from 'class-validator';
 import { ServicesOrderService } from '../services-order/services-order.service';
 import { AuthGuard } from '../auth/auth.guard';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiQuery, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('user')
+@ApiBearerAuth()
 @Controller('user')
 export class UserController {
   constructor(
@@ -42,6 +45,10 @@ export class UserController {
 @HttpCode(200)
 @Roles(Role.Admin)
 @Get()
+@ApiQuery({ name: 'page', required: false, description: 'Número de página para la paginación', example: 1 })
+@ApiQuery({ name: 'limit', required: false, description: 'Cantidad de resultados por página', example: 10 })
+@ApiQuery({ name: 'name', required: false, description: 'Nombre para filtrar los resultados', example: '' })
+@ApiQuery({ name: 'order', required: false, description: 'Orden de los resultados (ASC o DESC)', enum: ['ASC', 'DESC'], example: 'ASC' })
 findAll( 
   @Query('page') page: number = 1,
   @Query('limit') limit: number = 10,
@@ -104,6 +111,18 @@ findAll(
   @UseGuards(AuthGuard)
   @Post(':id/image')
   @UseInterceptors(FileInterceptor('file')) 
+  @ApiConsumes("multipart/form-data")
+  @ApiBody({
+    schema:{
+      type: "object",
+      properties:{
+        file:{
+          type: "string",
+          format: "binary"
+        }
+      }
+    }
+  })
   async uploadProfileImage(
     @Param('id') id: string,
     @UploadedFile(new ImageUploadPipe()) file: Express.Multer.File, 

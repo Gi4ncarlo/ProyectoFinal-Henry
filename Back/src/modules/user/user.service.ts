@@ -6,6 +6,7 @@ import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { FileUploadService } from 'src/file-upload/file-upload.service';
 import { UploadFileDto } from 'src/file-upload/dtos/uploadFile.dto';
+import { Role } from './enums/role.enum';
 
 @Injectable()
 export class UserService {
@@ -15,6 +16,8 @@ export class UserService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
+
+    createUserDto.role = Role.User;
     const user = this.userRepository.create(createUserDto);
     return await this.userRepository.save(user);
   }
