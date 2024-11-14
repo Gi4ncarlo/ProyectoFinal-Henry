@@ -1,4 +1,4 @@
-import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateServiceOrderDto } from './dto/create-services-order.dto';
@@ -52,7 +52,7 @@ export class ServicesOrderService {
     }
 
     const newOrder = this.servicesOrderRepository.create({
-      date: date|| new Date().toLocaleString(),
+      date: date || new Date().toLocaleString(),
       isApproved,
       user: user || Admin,
       gardener,
@@ -136,6 +136,7 @@ export class ServicesOrderService {
     try {
       const order = await this.findOne(id);
       if (!order) throw new NotFoundException(`Orden de servicio con id ${id} no encontrada`);
+      if (!order.orderDetail) throw new HttpException('ya existe un detalle de servicio', HttpStatus.BAD_REQUEST);
       order.isApproved = true;
       const newOrderDetail = await this.serviceDetailsRepository.create({
         serviceType: order.serviceProvided.detailService,
@@ -148,12 +149,12 @@ export class ServicesOrderService {
       await this.serviceDetailsRepository.save(newOrderDetail);
       order.orderDetail = newOrderDetail;
       await this.servicesOrderRepository.save(order);
-      const { assignedGardener, servicesOrder, ...rest} = newOrderDetail
-      const {orderDetail ,user, gardener, serviceProvided, ...ord} = order
+      const { assignedGardener, servicesOrder, ...rest } = newOrderDetail
+      const { orderDetail, user, gardener, serviceProvided, ...ord } = order
 
       return {
         message: 'detalle de servicio generado exitosamente',
-        data:{
+        data: {
           order: ord,
           datail: rest,
           user,
