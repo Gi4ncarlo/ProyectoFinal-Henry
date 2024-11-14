@@ -23,7 +23,7 @@ const ProviderCardList: React.FC = () => {
   const handleFilter = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     setFilter(e.target.value);
   };
-  const HandleSearch = (e) => {
+  const HandleSearch = (e : any) => {
     setSearchTerm(e.target.value);
   };
 
@@ -39,7 +39,7 @@ const ProviderCardList: React.FC = () => {
         console.log(gardeners);
 
 
-      } catch (error) {
+      } catch (error : any) {
         setError(error.message || 'Error al cargar los productos');
       }
     };
