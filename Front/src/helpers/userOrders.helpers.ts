@@ -1,6 +1,8 @@
+import { IOrderProps } from "@/interfaces/IOrdersProps";
+
 const APIURL: string = process.env.NEXT_PUBLIC_API_URL as string;
 
-export async function getuserOrdersDB(id: number, token: string) {
+export async function getuserOrdersDB(id: number, token: string):Promise<IOrderProps[]> {
   try {
     const res = await fetch(`${APIURL}/user/${id}/orders`, {
         method: "GET",

@@ -29,6 +29,7 @@ const DashboardUserCompo: React.FC = () => {
     setLoading(true);
     try {
       const ordersData = await getuserOrdersDB(id, token);
+      localStorage.setItem("ordersUser", JSON.stringify(ordersData));
       setOrders(ordersData);
       setError(null); // Resetear errores si la solicitud es exitosa
     } catch (err) {
