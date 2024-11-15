@@ -18,17 +18,16 @@ const ProviderCardList: React.FC = () => {
   const router = useRouter();
 
   useEffect(() => {
-    // Verificación para obtener el token solo en el cliente
-    if (typeof window !== 'undefined') {
-      const storedToken = localStorage.getItem("userSession");
-      if (storedToken) {
-        setTOKEN(JSON.parse(storedToken));
-      } else {
-        router.push('/login');
-      }
+    const storedToken = localStorage.getItem("userSession");
+  
+    // Si no se encuentra el token, redirigimos al login
+    if (!storedToken) {
+      router.push('/login');
+    } else {
+      setTOKEN(JSON.parse(storedToken));
     }
-  }, [router]); // Se ejecuta solo una vez al montar el componente
-
+  }, [router]);
+  
   const handleFilter = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     setFilter(e.target.value);
   };
