@@ -1,10 +1,13 @@
-"use client";
-
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { login } from "@/helpers/auth.helpers";
 import { validateLoginForm } from "@/helpers/validate";
 import { ILoginErrors, ILoginProps } from "@/interfaces/ILoginProps";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+
+interface UserSession {
+  token: string;
+  user: any; // Cambia 'any' por el tipo adecuado si tienes uno para el usuario
+}
 
 export default function LoginForm() {
   const router = useRouter();
@@ -12,6 +15,7 @@ export default function LoginForm() {
     email: "",
     password: "",
   };
+  
   const [dataUser, setDataUser] = useState<ILoginProps>(initialState);
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<ILoginErrors>(initialState);
@@ -19,6 +23,7 @@ export default function LoginForm() {
     email: false,
     password: false,
   });
+  const [userSession, setUserSession] = useState<UserSession | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -35,23 +40,24 @@ export default function LoginForm() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const response = await login(dataUser);
-    console.log(response);
-    console.log(response.status);
 
     if (response.status === 401) {
       alert(response.message || "error register");
     } else {
       alert("Correct login");
       const { token, user } = response;
-      // Verificación si estamos en el cliente antes de acceder a localStorage
-      if (typeof window !== "undefined") {
-        localStorage.setItem("userSession", JSON.stringify({ token, user }));
-        router.push("/");
-      } else {
-        alert("No se puede guardar en localStorage en el servidor");
-      }
+      setUserSession({ token, user }); // Establece los datos en el estado
     }
   };
+
+  useEffect(() => {
+    if (userSession) {
+      if (typeof window !== "undefined") {
+        localStorage.setItem("userSession", JSON.stringify(userSession));
+        router.push("/");
+      }
+    }
+  }, [userSession, router]); // Incluye router en las dependencias
 
   useEffect(() => {
     if (Object.values(touched).some((field) => field)) {
