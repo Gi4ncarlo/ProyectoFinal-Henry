@@ -2,18 +2,12 @@ import { ServiceDetail } from 'src/modules/service-details/entities/service-deta
 import { ServiceProvided } from 'src/modules/serviceProvided/entities/serviceProvided.entity';
 import { User } from 'src/modules/user/entities/user.entity';
 import { Role } from 'src/modules/user/enums/role.enum';
-import {
-  Column,
-  Entity,
-  ManyToMany,
-  OneToMany,
-} from 'typeorm';
+import { Column, Entity, ManyToMany, OneToMany } from 'typeorm';
 
 @Entity({
   name: 'Gardener',
 })
-export class Gardener extends User{
-
+export class Gardener extends User {
   @Column({ type: 'text', nullable: true })
   experience: string; // Años de experiencia o descripción breve
 
@@ -29,14 +23,19 @@ export class Gardener extends User{
   @Column({
     type: 'enum',
     enum: Role,
-    default: Role.Gardener
+    default: Role.Gardener,
   })
   role: Role;
+
+  @Column({ type: 'text', array: true, nullable: true }) 
+  reservedDays: string[];
 
   @ManyToMany(() => ServiceProvided, (service) => service.gardener)
   serviceProvided: ServiceProvided[];
 
-  @OneToMany(() => ServiceDetail, (serviceDetail) => serviceDetail.assignedGardener)
+  @OneToMany(
+    () => ServiceDetail,
+    (serviceDetail) => serviceDetail.assignedGardener,
+  )
   serviceDetails: ServiceDetail[];
-
 }
