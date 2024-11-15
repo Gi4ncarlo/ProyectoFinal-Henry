@@ -5,11 +5,12 @@ import Image from 'next/image';
 import { IServiceProvider } from '@/interfaces/IServiceProvider';
 import { getProviderById } from '@/helpers/gardeners.helpers';
 import { getServicesProvided } from '@/helpers/service.helpers';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { IService } from '@/interfaces/IService';
 import { hireServices } from '@/helpers/order.helpers';
 
 const ProviderDetail: React.FC = () => {
+  const router = useRouter();
   const { id } = useParams();
   const [gardener, setGardener] = useState<IServiceProvider | null>(null);
   const [services, setServices] = useState<IService[]>([]); // Servicios disponibles
@@ -83,7 +84,7 @@ const ProviderDetail: React.FC = () => {
         serviceId: selectedServices[0],
       });
       setOrderService(order);
-  
+      router.push("/dashboard/userDashboard")
       
       alert(
         `Order ID: ${order.id}\n` +
@@ -91,6 +92,7 @@ const ProviderDetail: React.FC = () => {
         `Gardener Name: ${order.gardener.name}\n` +
         `Service: ${order.serviceProvided.detailService}`
       );
+    
     } catch (error) {
       setError('Error al cargar los productos');
     }
