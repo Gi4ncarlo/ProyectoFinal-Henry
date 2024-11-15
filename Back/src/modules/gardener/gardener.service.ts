@@ -94,4 +94,13 @@ export class GardenerService {
   async updateProfileImage(id: string, imageUrl: string): Promise<void> {
     await this.gardenerRepository.update(id, { profileImageUrl: imageUrl });
   }
+
+    // Método para buscar gardeners por servicio
+    async findByService(serviceId: string): Promise<Gardener[]> {
+      return this.gardenerRepository
+        .createQueryBuilder('gardener')
+        .leftJoinAndSelect('gardener.services', 'service')
+        .where('service.id = :serviceId', { serviceId })
+        .getMany();
+    }
 }

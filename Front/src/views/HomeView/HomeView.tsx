@@ -1,14 +1,36 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import axios from 'axios';
+
+interface ServiceProvided {
+  id: string;
+  detailService: string;
+  price: number;
+}
 
 const Home: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedService, setSelectedService] = useState<string>('');
+  const [services, setServices] = useState<ServiceProvided[]>([]);
   const router = useRouter();
 
+  // Fetch de los servicios al cargar el componente
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const response = await axios.get<ServiceProvided[]>('/api/services');
+        setServices(response.data);
+      } catch (error) {
+        console.error('Error al obtener los servicios:', error);
+      }
+    };
+
+    fetchServices();
+  }, []);
+
   const handleSearch = () => {
-    if (selectedCategory) {
-      router.push(`/${selectedCategory}`);
+    if (selectedService) {
+      router.push(`/gardeners${selectedService}`);
     }
   };
 
@@ -19,38 +41,27 @@ const Home: React.FC = () => {
       <div className="bg-white rounded-lg shadow-xl p-8 max-w-3xl w-full mb-12">
         <div className="flex flex-col sm:flex-row items-center gap-4">
           <select
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
+            value={selectedService}
+            onChange={(e) => setSelectedService(e.target.value)}
             className="w-full sm:w-[300px] p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200 ease-in-out"
             aria-label="Select a gardening service"
           >
             <option value="">Select a service</option>
-            <option value="all-services">All Services</option>
-            <option value="lawn-mowing">Lawn Mowing</option>
-            <option value="tree-pruning">Tree Pruning</option>
-            <option value="hedge-trimming">Hedge Trimming</option>
-            <option value="garden-design">Garden Design</option>
-            <option value="lawn-fertilization">Lawn Fertilization</option>
-            <option value="weed-control">Weed Control</option>
-            <option value="mulching">Mulching</option>
-            <option value="irrigation">Irrigation System Installation</option>
-            <option value="landscape-maintenance">Landscape Maintenance</option>
-            <option value="leaf-removal">Leaf Removal</option>
-            <option value="flower-bed-planting">Flower Bed Planting</option>
-            <option value="soil-aeration">Soil Aeration</option>
-            <option value="garden-pest-control">Garden Pest Control</option>
-            <option value="gutter-cleaning">Gutter Cleaning</option>
-            <option value="tree-removal">Tree Removal</option>
+            {services.map((service) => (
+              <option key={service.id} value={service.id}>
+                {service.detailService} - ${service.price}
+              </option>
+            ))}
           </select>
           
           <button
             onClick={handleSearch}
             className={`w-full sm:w-auto px-6 py-3 rounded-md text-white font-semibold transition duration-200 ease-in-out ${
-              selectedCategory 
+              selectedService 
                 ? 'bg-green-600 hover:bg-green-700 active:bg-green-800'
                 : 'bg-gray-400 cursor-not-allowed'
             }`}
-            disabled={!selectedCategory}
+            disabled={!selectedService}
             aria-label="Search for selected service"
           >
             <svg 

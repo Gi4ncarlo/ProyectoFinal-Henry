@@ -27,6 +27,7 @@ import { Roles } from 'src/decorators/roles.decorator';
 import { RolesGuard } from 'src/guards/roles/role.guard';
 import { AuthGuard } from '../auth/auth.guard';
 import { IsUUID } from 'class-validator';
+import { Gardener } from './entities/gardener.entity';
 
 @Controller('gardener')
 export class GardenerController {
@@ -107,5 +108,10 @@ export class GardenerController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.gardenerService.remove(id);
+  }
+
+  @Get()
+  async findGardenersByService(@Query('serviceId') serviceId: string): Promise<Gardener[]> {
+    return this.gardenerService.findByService(serviceId);
   }
 }
