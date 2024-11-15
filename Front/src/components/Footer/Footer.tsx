@@ -7,28 +7,24 @@ export default function Footer() {
       <div className="grid grid-cols-1 gap-4 mx-4 my-2 sm:grid-cols-2 lg:grid-cols-3">
         <ul className="lg:pr-8 text-center sm:pr-0 lg:text-left"> 
           <li className="font-nunito text-lg py-1 lg:text-lg md:text-base sm:text-sm">
-            Transforming green spaces, taking care of every detail.
+          Transformando espacios verdes, cuidando cada detalle.
           </li>
     
           <li className="font-lato text-base lg:text-base md:text-sm sm:text-xs">
-            🌿 Location: Av. Las Flores 1234, Garden City, Green Province
+          🌿Ubicación: Av. Las Flores 1234, Ciudad Jardín, Provincia Verde
           </li>
     
           <li className="font-lato text-base lg:text-base md:text-sm sm:text-xs">
-            📞 Phone: +54 9 11 1234-5678
+          📞 Teléfono: +54 9 11 1234-5678
           </li>
     
           <li className="font-lato text-base lg:text-base md:text-sm sm:text-xs">
-            📧 Email: contact@vicnasol.com
-          </li>
-    
-          <li className="font-lato text-base lg:text-base md:text-sm sm:text-xs">
-            ⏰ Work Hours: Monday to Friday, 8:00 AM - 6:00 PM
+          📧 Correo electrónico: contact@vicnasol.com
           </li>
         </ul>
     
         <p className="text-xl font-cinzel font-medium m-auto text-center lg:text-lg md:text-base sm:text-sm">
-          &copy; 2010 Vicnasol. All rights reserved.
+          &copy; 2010 Vicnasol. Todos los derechos reservados.
         </p>
     
         <ul className="space-x-6 m-auto flex sm:justify-center lg:justify-start">

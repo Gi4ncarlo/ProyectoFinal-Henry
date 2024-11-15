@@ -38,6 +38,14 @@ export class GardenerController {
     private readonly fileUploadService: FileUploadService,
   ) {}
 
+  @Post(':id/reserve')
+  async reserveDay(
+    @Param('id') id: string,
+    @Body('day') day: string,
+  ) {
+    return this.gardenerService.reserveDay(id, day);
+  }
+
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Admin)
   @Post()
@@ -130,6 +138,7 @@ export class GardenerController {
     return { imageUrl: gardener.profileImageUrl };
   }
 
+<<<<<<< HEAD
   @UseGuards(AuthGuard)
   @Get(':id/serviceProvided')
   @HttpCode(200)
@@ -162,6 +171,8 @@ export class GardenerController {
     return servicesOfTheGardener;
   }
 
+=======
+>>>>>>> ea82e6910e6026bf55bf72ec10b33feb376ef84a
   @UseGuards(AuthGuard)
   @Get(':id')
   @HttpCode(200)
@@ -171,6 +182,7 @@ export class GardenerController {
     if (!gardener) {
       throw new HttpException('Jardinero no encontrado.', HttpStatus.NOT_FOUND);
     }
+
     return gardener;
   }
 

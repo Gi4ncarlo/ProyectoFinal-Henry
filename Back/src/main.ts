@@ -38,7 +38,7 @@ SwaggerModule.setup("docs", app, document)
 
   const adminSeed = app.select(SeedsModule).get(AdminSeeder);
   await adminSeed.seed();
-  console.log("La inserción de aministradores preestablecidos ha terminado.");
+  console.log("La inserción de administradores preestablecidos ha terminado.");
 
   const serviceSeed = app.select(SeedsModule).get(ServiceSeed);
   await serviceSeed.seed();
