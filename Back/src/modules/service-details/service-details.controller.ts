@@ -20,7 +20,6 @@ import { Role } from '../user/enums/role.enum';
 import { Roles } from 'src/decorators/roles.decorator';
 import { RolesGuard } from 'src/guards/roles/role.guard';
 import { AuthGuard } from '../auth/auth.guard';
-import { IsUUID } from 'class-validator';
 
 @Controller('service-details')
 export class ServiceDetailsController {
@@ -29,8 +28,8 @@ export class ServiceDetailsController {
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Admin)
   @Post()
-  create(@Body() createServiceDetailDto: CreateServiceDetailDto) {
-    return this.serviceDetailsService.create(createServiceDetailDto);
+  async create(@Body() createServiceDetailDto: CreateServiceDetailDto) {
+    return await this.serviceDetailsService.create(createServiceDetailDto);
   }
 
   @UseGuards(AuthGuard, RolesGuard)

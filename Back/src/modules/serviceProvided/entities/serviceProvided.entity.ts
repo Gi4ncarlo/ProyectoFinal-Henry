@@ -6,6 +6,7 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -38,7 +39,7 @@ export class ServiceProvided {
   // @OneToMany(() => User, (user) => user.serviceProvided, { onDelete: "CASCADE" })
   // user: User
 
-  @OneToMany(
+  @ManyToOne(
     () => ServicesOrderEntity,
     (serviceOrder) => serviceOrder.serviceProvided,
     { onDelete: 'CASCADE' },
