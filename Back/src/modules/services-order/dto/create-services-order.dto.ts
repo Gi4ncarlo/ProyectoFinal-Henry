@@ -18,6 +18,6 @@ export class CreateServiceOrderDto {
     userId: string;
 
     @IsUUID()
-    serviceId?: string;
+    serviceId?: string[];
 
 }

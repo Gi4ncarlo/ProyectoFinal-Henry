@@ -24,6 +24,7 @@ import { AdminModule } from './modules/admin/admin.module';
     AuthModule,
     SeedsModule,
     AdminModule,
+    
   ],
   controllers: [],
   providers: [],

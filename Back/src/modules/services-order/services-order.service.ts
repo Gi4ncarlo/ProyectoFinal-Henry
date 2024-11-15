@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateServiceOrderDto } from './dto/create-services-order.dto';
@@ -40,7 +40,18 @@ export class ServicesOrderService {
     const user = await this.userRepository.findOne({ where: { id: userId } });
     const gardener = await this.gardenerRepository.findOne({ where: { id: gardenerId } });
     const Admin = await this.adminRepository.findOne({ where: { id: userId } });
-    const serviceProvided = await this.serviceProvidedRepository.findOne({ where: { id: serviceId } });
+
+    const serviceProvided = [];
+
+    for (let i = 0; i < serviceId.length; i++) {
+      const service = await this.serviceProvidedRepository.findOne({ where: { id: serviceId[i] } });
+      if (!service) {
+        throw new Error('Service not found');
+      }
+      serviceProvided.push(service);
+    }
+    console.log(serviceProvided);
+    
 
 
     if (!gardener) {
@@ -83,7 +94,6 @@ export class ServicesOrderService {
           experience: true,
           calification: true,
           ubication: true,
-          costPerHour: true
         },
         serviceProvided: {
           id: true,
@@ -136,11 +146,12 @@ export class ServicesOrderService {
     try {
       const order = await this.findOne(id);
       if (!order) throw new NotFoundException(`Orden de servicio con id ${id} no encontrada`);
-      if (!order.orderDetail) throw new HttpException('ya existe un detalle de servicio', HttpStatus.BAD_REQUEST);
       order.isApproved = true;
+      let price = 0;
+      order.serviceProvided.map((service) => price += service.price)
       const newOrderDetail = await this.serviceDetailsRepository.create({
-        serviceType: order.serviceProvided.detailService,
-        totalPrice: order.serviceProvided.price,
+        serviceType: order.serviceProvided.map((service) => service.detailService),
+        totalPrice: price,
         startTime: new Date().toLocaleString(),
         status: Status.Pending,
         servicesOrder: order,

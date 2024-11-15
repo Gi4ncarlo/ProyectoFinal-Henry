@@ -23,8 +23,8 @@ export class Gardener extends User{
   @Column({ nullable: true })
   ubication: string; //REVISAR QUE TIPO DE DATO DEVUELVE GOOGLE MAPS PARA LA UBI
 
-  @Column({ type: 'float', nullable: true })
-  costPerHour: number;
+  // @Column({ type: 'float', nullable: true })
+  // costPerHour: number;
 
   @Column({
     type: 'enum',

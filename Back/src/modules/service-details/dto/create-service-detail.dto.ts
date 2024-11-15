@@ -3,7 +3,7 @@ import { IsDecimal, IsInt, IsNotEmpty, IsOptional, IsString, IsUUID, Max, Min } 
 export class CreateServiceDetailDto {
   @IsNotEmpty()
   @IsString()
-  serviceType: string;
+  serviceType: string[];
 
   @IsNotEmpty()
   @IsDecimal({ decimal_digits: '2' })

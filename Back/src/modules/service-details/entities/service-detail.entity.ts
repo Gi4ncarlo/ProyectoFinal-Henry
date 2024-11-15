@@ -19,8 +19,8 @@ export class ServiceDetail {
   @PrimaryGeneratedColumn('uuid')
   id: string = uuid();
 
-  @Column()
-  serviceType: string;
+  @Column({ type: 'simple-array' })
+  serviceType: string[];
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   totalPrice: number;
