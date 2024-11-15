@@ -35,6 +35,14 @@ export class GardenerController {
     private readonly fileUploadService: FileUploadService,
   ) {}
 
+  @Post(':id/reserve')
+  async reserveDay(
+    @Param('id') id: string,
+    @Body('day') day: string,
+  ) {
+    return this.gardenerService.reserveDay(id, day);
+  }
+
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Admin)
   @Post()
@@ -42,7 +50,7 @@ export class GardenerController {
     return this.gardenerService.create(createGardenerDto);
   }
 
-  @UseGuards(AuthGuard)
+  //@UseGuards(AuthGuard)
   @Get()
   async findAll(
     @Query('page') page: number = 1,
