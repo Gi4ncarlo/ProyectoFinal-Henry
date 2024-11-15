@@ -2,48 +2,27 @@ import { IServiceProvider } from "@/interfaces/IServiceProvider";
 const APIURL = process.env.NEXT_PUBLIC_API_URL;
 
 export const getGardenersDB = async (
+  token: string,
   order: 'ASC' | 'DESC' = 'ASC',
   calification?: number,
   name?: string
-): Promise<IServiceProvider[]> => { 
-  let TOKEN = null;
-
-  // Asegurarse de que estamos en el cliente antes de acceder a localStorage
-  if (typeof window !== "undefined") {
-    const storedToken = localStorage.getItem("userSession");
-    TOKEN = storedToken ? JSON.parse(storedToken) : null;
-  }
-
-  if (!TOKEN || !TOKEN.token) {
+): Promise<{ data: IServiceProvider[] }> => { 
+  if (!token) {
     console.error("Token is missing or invalid.");
-    return []; // Retornar un arreglo vacío si no hay token válido
+    return { data: [] }; // Retornar un objeto con `data` vacío si no hay token válido
   }
-
   const params = new URLSearchParams();
   params.append('order', order);
   if (calification) params.append('calification', calification.toString());
   if (name) params.append('name', name.toString());
-
-  try {
-    const response = await fetch(`${APIURL}/gardener?${params.toString()}`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${TOKEN.token}`,
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch gardeners');
+  
+  const response = await fetch(`${APIURL}/gardener?${params.toString()}`, {
+    headers: {
+      Authorization: `Bearer ${token}`
     }
-
-    const gardeners = await response.json();
-    console.log(gardeners);
-    return gardeners; // Devuelve un arreglo seguro
-  } catch (error) {
-    console.error('Error fetching gardeners:', error);
-    return []; // Asegura que siempre devuelve un arreglo
-  }
+  });
+  const data = await response.json();
+  return { data };
 };
 
 // Nueva función para obtener un gardener por ID

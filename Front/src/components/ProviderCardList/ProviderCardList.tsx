@@ -36,14 +36,15 @@ const ProviderCardList: React.FC = () => {
   };
 
   useEffect(() => {
-    const fetchProviders = async (name = "") => {
+    const fetchProviders = async () => {
       try {
         // Si `filter` es numérico, lo interpretamos como una calificación.
         const order = filter === 'ASC' || filter === 'DESC' ? filter : 'ASC';
         const calification = isNaN(Number(filter)) ? undefined : Number(filter);
         const name = searchTerm;
-        const gardeners = await getGardenersDB(order, calification, name);
-        setProviders(gardeners); // SACO .data PARA VER DE RESOLVER EL DEPLOY
+        const token = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("userSession") || "{}").token : null;
+      const gardeners = await getGardenersDB(token, order, calification, name);
+      setProviders(gardeners.data); // SACO .data PARA VER DE RESOLVER EL DEPLOY
         console.log(gardeners);
 
 
