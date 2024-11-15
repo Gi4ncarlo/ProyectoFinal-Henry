@@ -7,16 +7,17 @@ export class CreateServiceOrderDto {
     date: string;
 
     @IsOptional()
-    isApproved?: boolean;  
+    isApproved?: boolean;
 
     @IsUUID()
     @IsNotEmpty()
-    gardenerId: string; 
+    gardenerId: string;
 
     @IsUUID()
     @IsNotEmpty()
     userId: string;
-    
+
     @IsUUID()
-    serviceId: string;
+    serviceId?: string[];
+
 }

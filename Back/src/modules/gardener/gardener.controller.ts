@@ -50,7 +50,7 @@ export class GardenerController {
     return this.gardenerService.create(createGardenerDto);
   }
 
-  //@UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Get()
   async findAll(
     @Query('page') page: number = 1,
@@ -90,32 +90,6 @@ export class GardenerController {
     return { imageUrl: gardener.profileImageUrl };
   }
 
-
-  @UseGuards(AuthGuard)
-  @Get(':id/serviceProvided')
-  @HttpCode(200)
-  getServiceProvided(@Param('id', new ParseUUIDPipe()) id: string) {
-    const servicesOfTheGardener = this.gardenerService.findServicesProvidedByGardener(id);
-     
-    if(!servicesOfTheGardener){
-      throw new HttpException("No hay servicios prestados por este Jardinero.", HttpStatus.NOT_FOUND)
-    }
-    return servicesOfTheGardener;
-  }
-
-  @UseGuards(AuthGuard)
-  @Get(':id/orders')
-  @HttpCode(200)
-  getOrdersAsigned(@Param('id', new ParseUUIDPipe()) id: string) {
-    const servicesOfTheGardener = this.gardenerService.findOrdersAsignedForGardener(id);
-     
-    if(!servicesOfTheGardener){
-      throw new HttpException("No hay ordenes asignadas a este Jardinero.", HttpStatus.NOT_FOUND)
-    }
-    return servicesOfTheGardener;
-  }
-
-
   @UseGuards(AuthGuard)
   @Get(':id')
   @HttpCode(200)
@@ -125,6 +99,7 @@ export class GardenerController {
     if (!gardener) {
       throw new HttpException("Jardinero no encontrado.", HttpStatus.NOT_FOUND);
     }
+
     return gardener;
   }
 
