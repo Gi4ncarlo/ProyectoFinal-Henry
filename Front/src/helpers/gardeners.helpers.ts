@@ -22,7 +22,7 @@ export const getGardenersDB = async (
     }
   });
   const data = await response.json();
-  return { data };
+  return data ;
 };
 
 // Nueva función para obtener un gardener por ID
