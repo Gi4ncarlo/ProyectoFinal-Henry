@@ -24,7 +24,7 @@ export class GardenerSeed {
         );
 
         const services = await this.serviceProvidedRepository.find();
-          
+
         // Asignar todos los servicios a cada jardinero nuevo
         for (const gardenerData of gardenersMock) {
             if (!existingGardenerEmail.includes(gardenerData.email)) {
@@ -32,7 +32,7 @@ export class GardenerSeed {
                     ...gardenerData,
                     password: await bcrypt.hash(gardenerData.password, 10),
                     profileImageUrl :`${await this.cloudinaryService.getUrl(gardenerData.profileImageUrl)}`,
-                    serviceProvided: services,
+                    serviceProvided : services
                 });
 
                 // Guardar el jardinero con los servicios asociados

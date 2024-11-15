@@ -2,7 +2,6 @@ import { Categories } from "src/modules/serviceProvided/enums/categories.enum";
 
 export const serviceMock = [
     {
-  
         categories: [Categories.GROWER],
         detailService: "Servicio completo de jardinería, limpieza incluida en el servicio.",
         price: 30000,
