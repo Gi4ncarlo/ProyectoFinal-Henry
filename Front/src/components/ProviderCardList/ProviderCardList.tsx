@@ -17,7 +17,6 @@ const ProviderCardList: React.FC = () => {
   const [TOKEN, setTOKEN] = useState<any>(null);
   const router = useRouter();
 
-  
   useEffect(() => {
     const storedToken = localStorage.getItem("userSession");
   
