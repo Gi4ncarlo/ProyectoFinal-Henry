@@ -26,7 +26,7 @@ const SobreNosotrosCompo = () => {
    <div>
       <main className={`flex min-h-screen flex-col items-center justify-between py-8 mt-16 text-center sm:p-24 sm:text-justify`}>
         <div className="mx-auto bg-white p-1 shadow-lg grid grid-cols-1 gap-4 my-2 sm:p-8 lg:max-w-4xl">
-          <h1 className="text-xl font-bold mb-1 font-playfair sm:text-2xl lg:text-4xl lg:mb-6">Who We Are</h1>
+          <h1 className="text-xl font-bold mb-1 font-playfair sm:text-2xl lg:text-4xl lg:mb-6">¿Quiénes somos?</h1>
           <p className="mb-4 font-lora text-sm sm:text-base">
           <strong>Vicnasol</strong> es una empresa de servicios ambientales con más de 30 años de experiencia, ubicada en Carrasco, Montevideo y Ciudad de la Costa, Uruguay. Estamos especializados en todos los trabajos de jardinería, ofreciendo soluciones personalizadas para satisfacer las necesidades de particulares y empresas que buscan un servicio de calidad. Nuestro equipo de 10 profesionales altamente cualificados le asesorará y guiará en cada etapa de su proyecto.
           </p>
