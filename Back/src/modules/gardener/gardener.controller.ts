@@ -138,41 +138,6 @@ export class GardenerController {
     return { imageUrl: gardener.profileImageUrl };
   }
 
-<<<<<<< HEAD
-  @UseGuards(AuthGuard)
-  @Get(':id/serviceProvided')
-  @HttpCode(200)
-  getServiceProvided(@Param('id', new ParseUUIDPipe()) id: string) {
-    const servicesOfTheGardener =
-      this.gardenerService.findServicesProvidedByGardener(id);
-
-    if (!servicesOfTheGardener) {
-      throw new HttpException(
-        'No hay servicios prestados por este Jardinero.',
-        HttpStatus.NOT_FOUND,
-      );
-    }
-    return servicesOfTheGardener;
-  }
-
-  @UseGuards(AuthGuard)
-  @Get(':id/orders')
-  @HttpCode(200)
-  getOrdersAsigned(@Param('id', new ParseUUIDPipe()) id: string) {
-    const servicesOfTheGardener =
-      this.gardenerService.findOrdersAsignedForGardener(id);
-
-    if (!servicesOfTheGardener) {
-      throw new HttpException(
-        'No hay ordenes asignadas a este Jardinero.',
-        HttpStatus.NOT_FOUND,
-      );
-    }
-    return servicesOfTheGardener;
-  }
-
-=======
->>>>>>> ea82e6910e6026bf55bf72ec10b33feb376ef84a
   @UseGuards(AuthGuard)
   @Get(':id')
   @HttpCode(200)

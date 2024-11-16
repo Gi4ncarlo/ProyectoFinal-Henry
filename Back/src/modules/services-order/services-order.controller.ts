@@ -30,11 +30,7 @@ export class ServicesOrderController {
   constructor(private readonly servicesOrderService: ServicesOrderService) { }
 
   @UseGuards(AuthGuard, RolesGuard)
-<<<<<<< HEAD
   @Roles( Role.User, Role.Admin)
-=======
-  @Roles(Role.User)
->>>>>>> ea82e6910e6026bf55bf72ec10b33feb376ef84a
   @Post()
   create(@Body() createServicesOrderDto: CreateServiceOrderDto) {
     return this.servicesOrderService.create(createServicesOrderDto);
