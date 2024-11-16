@@ -7,9 +7,10 @@ export const hireServices = async (data: {
     isApproved: boolean;
     gardenerId: string;
     userId: string;
-    serviceId: string;
+    serviceId: string[];
   }) => {
     try {
+      console.log(data);
       const response = await fetch(`${APIURL}/services-order`, {
         method: 'POST',
         headers: {
@@ -18,7 +19,7 @@ export const hireServices = async (data: {
         },
         body: JSON.stringify(data),
       });
-  
+      
       if (!response.ok) {
         throw new Error('Failed to hire services');
       }

@@ -60,7 +60,7 @@ findAll(
     throw new HttpException("Usuario no encontrado", HttpStatus.NOT_FOUND);
   }
 
-  return user.servicesOrder;
+  return [user];
 }
 
   @UseGuards(AuthGuard)

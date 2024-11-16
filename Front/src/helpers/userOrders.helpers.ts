@@ -13,6 +13,8 @@ export async function getuserOrdersDB(id: number, token: string) {
       throw new Error("Error al obtener las órdenes");
     }
     const orders = await res.json();
+    console.log("ORDERS", orders);
+    
     return orders;
   } catch (error: any) {
     throw new Error(error);
