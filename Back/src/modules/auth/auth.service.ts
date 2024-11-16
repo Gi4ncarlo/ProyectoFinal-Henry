@@ -26,6 +26,10 @@ export class AuthService {
             const admin = await this.adminService.findByEmail(credentials.email);
             const gardener = await this.gardenerService.findByEmail(credentials.email);
 
+            if(user?.isBanned === true) {
+                throw new HttpException('El usuario esta baneado', HttpStatus.UNAUTHORIZED)
+            }
+
             // Validación para usuarios
             if (user) {
                 const isPasswordMatching = await bcrypt.compare(credentials.password, user.password);

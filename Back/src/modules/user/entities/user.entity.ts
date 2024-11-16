@@ -28,6 +28,9 @@ export class User {
   @Column()
   address : string;
 
+  @Column({ default: false })
+  isBanned: boolean; 
+
   @Column({
     type: 'enum',
     enum: Role,

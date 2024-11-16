@@ -38,7 +38,7 @@ export class SignUpAuthDto {
     @IsInt()
     age: number;
 
-    adress: string;
+    address: string;
 
     @IsOptional()
     role: Role = Role.User;
