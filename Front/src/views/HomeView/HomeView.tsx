@@ -14,7 +14,7 @@ const Home: React.FC = () => {
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-green-100 to-green-200 flex flex-col items-center justify-center p-4">
-      <h1 className="text-4xl font-bold text-green-800 mb-8">¡Bienvenido a Vicnasol!</h1>
+      <h1 className="text-4xl font-bold text-green-800 mb-8">Realizá tu busqueda personalizada</h1>
 
       <div className="bg-white rounded-lg shadow-xl p-8 max-w-3xl w-full mb-12">
         <div className="flex flex-col sm:flex-row items-center gap-4">
