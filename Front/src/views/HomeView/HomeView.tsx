@@ -1,50 +1,50 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { getServicesProvided } from '@/helpers/service.helpers';
+// import { getServicesProvided } from '@/helpers/service.helpers';
 
-interface ServiceProvided {
-  id: string;
-  detailService: string;
-  price: number;
-}
+// interface ServiceProvided {
+//   id: string;
+//   detailService: string;
+//   price: number;
+// }
 
 const Home: React.FC = () => {
   const [selectedService, setSelectedService] = useState<string>('');
-  const [services, setServices] = useState<ServiceProvided[]>([]);
-  const [isMounted, setIsMounted] = useState(false); // Nuevo estado para verificar si el componente está montado
+  // const [services, setServices] = useState<ServiceProvided[]>([]);
+  // const [isMounted, setIsMounted] = useState(false); // Nuevo estado para verificar si el componente está montado
   const router = useRouter();
 
   // Efecto para verificar si el componente está montado
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  // useEffect(() => {
+  //   setIsMounted(true);
+  // }, []);
 
-  useEffect(() => {
-    const fetchServices = async () => {
-      if (!isMounted) return; // Esperamos hasta que el componente esté montado
+  // useEffect(() => {
+  //   const fetchServices = async () => {
+  //     if (!isMounted) return; // Esperamos hasta que el componente esté montado
 
-      // Obtenemos el token del localStorage
-      const userSession = localStorage.getItem("userSession");
-      const tokenData = userSession ? JSON.parse(userSession) : null;
+  //     // Obtenemos el token del localStorage
+  //     const userSession = localStorage.getItem("userSession");
+  //     const tokenData = userSession ? JSON.parse(userSession) : null;
 
-      // Verificamos si existe el token
-      if (!tokenData || !tokenData.token) {
-        console.error('Token not found');
-        return;
-      }
+  //     // Verificamos si existe el token
+  //     if (!tokenData || !tokenData.token) {
+  //       console.error('Token not found');
+  //       return;
+  //     }
 
-      try {
-        // Obtenemos los servicios usando el helper
-        const fetchedServices = await getServicesProvided(tokenData.token);
-        setServices(fetchedServices);
-      } catch (error) {
-        console.error('Error fetching services:', error);
-      }
-    };
+    //   try {
+    //     // Obtenemos los servicios usando el helper
+    //     const fetchedServices = await getServicesProvided();
+    //     setServices(fetchedServices);
+    //   } catch (error) {
+    //     console.error('Error fetching services:', error);
+    //   }
+    // };
 
-    fetchServices();
-  }, [isMounted]);
+  //   fetchServices();
+  // }, [isMounted]);
 
   const handleSearch = () => {
     if (selectedService) {
@@ -57,7 +57,7 @@ const Home: React.FC = () => {
       <h1 className="text-4xl font-bold text-green-800 mb-8">¡Bienvenido a Vicnasol!</h1>
       <div className="bg-white rounded-lg shadow-xl p-8 max-w-3xl w-full mb-12">
         <div className="flex flex-col sm:flex-row items-center gap-4">
-          <select
+          {/* <select
             value={selectedService}
             onChange={(e) => setSelectedService(e.target.value)}
             className="w-full sm:w-[300px] p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200 ease-in-out"
@@ -68,7 +68,7 @@ const Home: React.FC = () => {
                 {service.detailService} - ${service.price}
               </option>
             ))}
-          </select>
+          </select> */}
           <button
             onClick={handleSearch}
             className={`w-full sm:w-auto px-6 py-3 rounded-md text-white font-semibold transition duration-200 ease-in-out ${

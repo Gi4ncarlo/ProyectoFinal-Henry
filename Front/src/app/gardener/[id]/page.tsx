@@ -11,7 +11,8 @@ import { hireServices } from '@/helpers/order.helpers';
 
 const ProviderDetail: React.FC = () => {
   const router = useRouter();
-  const { id } = useParams();
+  const params = useParams();
+  const id = params?.id as string | undefined;
   const [gardener, setGardener] = useState<IServiceProvider | null>(null);
   const [services, setServices] = useState<IService[]>([]); // Servicios disponibles
   const [selectedServices, setSelectedServices] = useState<string[]>([]); // Servicios seleccionados
@@ -33,7 +34,7 @@ const ProviderDetail: React.FC = () => {
     // Fetch para obtener los servicios
     const fetchServices = async () => {
       try {
-        const serviceData = await getServicesProvided(id as string);
+        const serviceData = await getServicesProvided();
         setServices(serviceData);
       } catch (error) {
         console.error('Error fetching services:', error);

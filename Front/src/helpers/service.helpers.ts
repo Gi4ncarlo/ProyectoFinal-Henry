@@ -1,13 +1,14 @@
 import { IService } from "@/interfaces/IService";
 
 const APIURL = process.env.NEXT_PUBLIC_API_URL;
+const TOKEN = JSON.parse(localStorage.getItem("userSession") || "null")
 
-export const getServicesProvided = async (token: string): Promise<IService[]> => {
+export const getServicesProvided = async(): Promise<IService[]> => {
   try {
     const response = await fetch(`${APIURL}/serviceProvided`, {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${token}`,
+        'Authorization': `Bearer ${TOKEN.token}`,
         'Content-Type': 'application/json',
       },
     });
