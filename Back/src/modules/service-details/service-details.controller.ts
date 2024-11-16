@@ -20,8 +20,11 @@ import { Role } from '../user/enums/role.enum';
 import { Roles } from 'src/decorators/roles.decorator';
 import { RolesGuard } from 'src/guards/roles/role.guard';
 import { AuthGuard } from '../auth/auth.guard';
+<<<<<<< HEAD
 import { IsUUID } from 'class-validator';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+=======
+>>>>>>> be5aba3c94dd9b61e6d4001b77841a165dab269b
 
 @ApiTags('serviceDetails')
 @ApiBearerAuth()
@@ -32,8 +35,8 @@ export class ServiceDetailsController {
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Admin)
   @Post()
-  create(@Body() createServiceDetailDto: CreateServiceDetailDto) {
-    return this.serviceDetailsService.create(createServiceDetailDto);
+  async create(@Body() createServiceDetailDto: CreateServiceDetailDto) {
+    return await this.serviceDetailsService.create(createServiceDetailDto);
   }
 
   @UseGuards(AuthGuard, RolesGuard)

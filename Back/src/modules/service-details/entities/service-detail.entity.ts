@@ -10,6 +10,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { v4 as uuid } from 'uuid';
+import { Status } from '../enum/status.enum';
 
 @Entity({
   name: 'serviceDetails',
@@ -18,19 +19,23 @@ export class ServiceDetail {
   @PrimaryGeneratedColumn('uuid')
   id: string = uuid();
 
-  @Column()
-  serviceType: string;
+  @Column({ type: 'simple-array' })
+  serviceType: string[];
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   totalPrice: number;
 
-  @Column({ type: 'timestamp', nullable: true })
-  startTime: Date;
+  @Column({ type: 'text', nullable: true })
+  startTime: string;
 
-  @Column({ type: 'timestamp', nullable: true })
-  endTime: Date;
+  @Column({ type: 'text', nullable: true })
+  endTime: string;
 
-  @Column({ default: 'Pendiente' })
+  @Column({ 
+    type: 'enum',
+    enum: Status,
+    default: Status.Pending
+   })
   status: string;
 
   @Column({ type: 'int', nullable: true })
@@ -43,5 +48,6 @@ export class ServiceDetail {
   @ManyToOne(() => Gardener, (gardener) => gardener.serviceDetails, { nullable: false })
   @JoinColumn()
   assignedGardener: Gardener;
+  
 
 }

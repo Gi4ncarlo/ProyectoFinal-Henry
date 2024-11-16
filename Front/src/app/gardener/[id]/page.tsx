@@ -5,11 +5,12 @@ import Image from 'next/image';
 import { IServiceProvider } from '@/interfaces/IServiceProvider';
 import { getProviderById } from '@/helpers/gardeners.helpers';
 import { getServicesProvided } from '@/helpers/service.helpers';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { IService } from '@/interfaces/IService';
 import { hireServices } from '@/helpers/order.helpers';
 
 const ProviderDetail: React.FC = () => {
+  const router = useRouter();
   const { id } = useParams();
   const [gardener, setGardener] = useState<IServiceProvider | null>(null);
   const [services, setServices] = useState<IService[]>([]); // Servicios disponibles
@@ -32,7 +33,7 @@ const ProviderDetail: React.FC = () => {
     // Fetch para obtener los servicios
     const fetchServices = async () => {
       try {
-        const serviceData = await getServicesProvided();
+        const serviceData = await getServicesProvided(id as string);
         setServices(serviceData);
       } catch (error) {
         console.error('Error fetching services:', error);
@@ -43,7 +44,7 @@ const ProviderDetail: React.FC = () => {
     fetchServices();
   }, [id]);
 
-  if (!gardener) return <div>Loading...</div>;
+  if (!gardener) return <div>Cargando...</div>;
 
   const handleServiceChange = (serviceId: string) => {
     setSelectedServices(prevSelected =>
@@ -58,44 +59,46 @@ const ProviderDetail: React.FC = () => {
     const isApproved = false;
     const gardenerId = gardener?.id.toString();
     
-    // Verificar si estamos en el lado del cliente antes de acceder a localStorage
     if (typeof window !== 'undefined') {
       const userSession = localStorage.getItem("userSession");
-
-      if (!userSession) {
-        setError('User session not found');
-        return;
-      }
-
-      const { user } = JSON.parse(userSession);
-      const userId = user?.id;
-
-      if (!userId) {
-        setError('User ID not found');
-        return;
-      }
-
-      try {
-        const order = await hireServices({
-          date,
-          isApproved,
-          gardenerId,
-          userId,
-          serviceId: selectedServices[0],
-        });
-        setOrderService(order);
-
-        alert(
-          `Order ID: ${order.id}\n` +
-          `User Name: ${order.user.name}\n` +
-          `Gardener Name: ${order.gardener.name}\n` +
-          `Service: ${order.serviceProvided.detailService}`
-        );
-      } catch (error) {
-        setError('Error al cargar los productos');
-      }
+    
+    if (!userSession) {
+      setError('User session not found');
+      return;
+    }
+  
+    const { user } = JSON.parse(userSession);
+    const userId = user?.id;
+    
+    
+    if (!userId) {
+      setError('User ID not found');
+      return;
+    }
+  
+    try {
+      const order = await hireServices({
+        date,
+        isApproved,
+        gardenerId,
+        userId,
+        serviceId: selectedServices[0],
+      });
+      setOrderService(order);
+      router.push("/dashboard/userDashboard")
+      
+      alert(
+        `Order ID: ${order.id}\n` +
+        `User Name: ${order.user.name}\n` +
+        `Gardener Name: ${order.gardener.name}\n` +
+        `Service: ${order.serviceProvided.detailService}`
+      );
+    
+    } catch (error) {
+      setError('Error al cargar los productos');
+    }
     } else {
-      setError('No se puede acceder a la sesión del usuario en el servidor');
+    setError('No se puede acceder a la sesión del usuario en el servidor');
     }
   };
 
@@ -119,10 +122,10 @@ const ProviderDetail: React.FC = () => {
         </div>
 
         <div className="mt-6">
-          <h2 className="text-lg font-semibold text-gray-700">Experience:</h2>
+          <h2 className="text-lg font-semibold text-gray-700">Experiencia:</h2>
           <p className="text-gray-600">{gardener.experience}</p>
 
-          <h2 className="text-lg font-semibold text-gray-700 mt-4">Rating:</h2>
+          <h2 className="text-lg font-semibold text-gray-700 mt-4">Puntuación:</h2>
           <div className="flex items-center">
             {Array.from({ length: 5 }).map((_, index) => (
               <svg
@@ -140,13 +143,13 @@ const ProviderDetail: React.FC = () => {
             <span className="ml-2 text-sm text-gray-500">{gardener.calification.toFixed(1)}</span>
           </div>
 
-          <h2 className="text-lg font-semibold text-gray-700 mt-4">Cost per hour:</h2>
+          <h2 className="text-lg font-semibold text-gray-700 mt-4">Costo por hora:</h2>
           <p className="text-gray-600">${gardener.costPerHour}</p>
         </div>
 
         {/* Servicios disponibles */}
         <div className="mt-6">
-          <h2 className="text-lg font-semibold text-gray-700">Available Services:</h2>
+          <h2 className="text-lg font-semibold text-gray-700">Servicios Disponibles:</h2>
           <div className="mt-2">
             {services.map(service => (
               <div key={service.id} className="mb-4">
@@ -158,9 +161,9 @@ const ProviderDetail: React.FC = () => {
                     className="mr-2"
                   />
                 </label>
-                <p className="ml-6 text-sm text-gray-500">Detail: {service.detailService}</p>
-                <p className="ml-6 text-sm text-gray-500">Price: ${service.price}</p>
-                <p className="ml-6 text-sm text-gray-500">Categories: {service.categories}</p>
+                <p className="ml-6 text-sm text-gray-500">Detalle: {service.detailService}</p>
+                <p className="ml-6 text-sm text-gray-500">Precio: ${service.price}</p>
+                <p className="ml-6 text-sm text-gray-500">Categoria: {service.categories}</p>
               </div>
             ))}
           </div>
@@ -171,7 +174,7 @@ const ProviderDetail: React.FC = () => {
             onClick={handleHireClick}
             className="px-6 py-3 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors"
           >
-            Hire Services
+            Contratar Servicios
           </button>
         </div>
       </div>

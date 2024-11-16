@@ -1,11 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
-import { FileUploadService } from 'src/file-upload/file-upload.service';
-import { UploadFileDto } from 'src/file-upload/dtos/uploadFile.dto';
 import { Role } from './enums/role.enum';
 
 @Injectable()
@@ -22,31 +20,76 @@ export class UserService {
     return await this.userRepository.save(user);
   }
 
-  async findAll(page: number, limit: number, name?: string, order: 'ASC' | 'DESC' = 'ASC') {
+  async findAll(
+    page: number,
+    limit: number,
+    name?: string,
+    order: 'ASC' | 'DESC' = 'ASC',
+    isBanned?: boolean,
+    role?: string,
+  ) {
     const skip = (page - 1) * limit;
-  
+
     const query = this.userRepository.createQueryBuilder('user')
       .leftJoinAndSelect('user.servicesOrder', 'servicesOrder')
       .take(limit)
       .skip(skip)
       .orderBy('user.name', order);
-  
-    // Agrega el filtro de nombre si se proporciona
+
     if (name) {
       query.andWhere('user.name ILIKE :name', { name: `%${name}%` });
     }
-  
+
+    if (isBanned !== undefined) {
+      query.andWhere('user.isBanned = :isBanned', { isBanned });
+    }
+
+    if (role) {
+      query.andWhere('user.role = :role', { role });
+    }
+
     const [results, total] = await query.getManyAndCount();
-  
+
     if (total === 0) {
       throw new NotFoundException('No se encontraron usuarios');
     }
-  
+
     return {
       count: total,
       data: results,
       page,
     };
+  }
+
+  async findOne(id: string): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+    return user;
+  }
+
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+    await this.userRepository.update(id, updateUserDto);
+    return this.findOne(id);
+  }
+
+  async banUser(id: string): Promise<User> {
+    const user = await this.findOne(id);
+    user.isBanned = !user.isBanned;
+    return await this.userRepository.save(user);
+  }
+
+  async findByEmail(email: string): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { email } });
+    return user;
+  }
+
+  async remove(id: string): Promise<void> {
+    const result = await this.userRepository.delete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException('Usuario no encontrado para eliminar');
+    }
   }
 
   async findOneWithOrders(userId: string): Promise<User> {
@@ -56,42 +99,8 @@ export class UserService {
     });
   }
 
-  async findOne(user_id: string): Promise<User> {
-    const user = await this.userRepository.findOne({
-      where: { id: user_id },
-      relations: ['servicesOrder'], 
-    });
-    if (!user) {
-      throw new NotFoundException(`User with ID ${user_id} not found`);
-    }
-    return user;
-  }
-
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
-    const user = await this.userRepository.preload({
-      id,
-      ...updateUserDto,
-    });
-
-    if (!user) {
-      throw new NotFoundException(`User with ID ${id} not found`);
-    }
-
-    return await this.userRepository.save(user);
-  }
-
-  async remove(id: string): Promise<Partial<User>> {
-    const user = await this.findOne(id);
-    await this.userRepository.remove(user);
-    return { id };
-  }
-
-  async findByEmail(email: string): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { email } });
-    return user;
-  }
-
   async updateProfileImage(id: string, imageUrl: string): Promise<void> {
     await this.userRepository.update(id, { profileImageUrl: imageUrl });
   }
 }
+

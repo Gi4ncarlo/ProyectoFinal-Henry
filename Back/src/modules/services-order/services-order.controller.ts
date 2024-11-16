@@ -1,17 +1,17 @@
-import { 
-  Controller, 
-  Get, 
-  Post, 
-  Body, 
-  Patch, 
-  Param, 
-  Delete, 
-  HttpCode, 
-  UseGuards, 
-  Query, 
-  ParseUUIDPipe, 
-  HttpException, 
-  HttpStatus 
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  HttpCode,
+  UseGuards,
+  Query,
+  ParseUUIDPipe,
+  HttpException,
+  HttpStatus
 } from '@nestjs/common';
 import { ServicesOrderService } from './services-order.service';
 import { CreateServiceOrderDto } from './dto/create-services-order.dto';
@@ -27,10 +27,14 @@ import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 @ApiBearerAuth()
 @Controller('services-order')
 export class ServicesOrderController {
-  constructor(private readonly servicesOrderService: ServicesOrderService) {}
+  constructor(private readonly servicesOrderService: ServicesOrderService) { }
 
   @UseGuards(AuthGuard, RolesGuard)
+<<<<<<< HEAD
   @Roles( Role.User, Role.Admin)
+=======
+  @Roles(Role.User)
+>>>>>>> be5aba3c94dd9b61e6d4001b77841a165dab269b
   @Post()
   create(@Body() createServicesOrderDto: CreateServiceOrderDto) {
     return this.servicesOrderService.create(createServicesOrderDto);
@@ -38,13 +42,17 @@ export class ServicesOrderController {
 
   @UseGuards(AuthGuard)
   @Get()
-  findAll(
+  async findAll(
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
   ) {
-    return this.servicesOrderService.findAll(page, limit);
+    return await this.servicesOrderService.findAll(page, limit);
   }
-
+  @UseGuards(AuthGuard)
+  @Get('orderPay/:id')
+  async orderPay(@Param('id', new ParseUUIDPipe()) id: string) {
+    return await this.servicesOrderService.orderPay(id);
+  }
   @UseGuards(AuthGuard)
   @Get(':id')
   async findOne(@Param('id', new ParseUUIDPipe()) id: string) {
@@ -60,7 +68,7 @@ export class ServicesOrderController {
   @UseGuards(AuthGuard)
   @Patch(':id')
   update(
-    @Param('id') id: string, 
+    @Param('id') id: string,
     @Body() updateServicesOrderDto: UpdateServicesOrderDto,
   ) {
     return this.servicesOrderService.update(id, updateServicesOrderDto);

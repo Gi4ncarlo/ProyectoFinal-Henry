@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateServiceOrderDto } from './dto/create-services-order.dto';
@@ -9,8 +9,12 @@ import { User } from '../user/entities/user.entity';
 import { ServiceProvided } from '../serviceProvided/entities/serviceProvided.entity';
 import { UserResponseDto } from '../user/dto/response-user.dto';
 import { AdminEntity } from '../admin/entities/admin.entity';
+import { ServiceDetailsService } from '../service-details/service-details.service';
+import { Status } from '../service-details/enum/status.enum';
+import { ServiceDetail } from '../service-details/entities/service-detail.entity';
 @Injectable()
 export class ServicesOrderService {
+
   constructor(
     @InjectRepository(ServicesOrderEntity)
     private servicesOrderRepository: Repository<ServicesOrderEntity>,
@@ -25,6 +29,8 @@ export class ServicesOrderService {
 
     @InjectRepository(ServiceProvided)
     private serviceProvidedRepository: Repository<ServiceProvided>,
+    @InjectRepository(ServiceDetail)
+    private readonly serviceDetailsRepository: Repository<ServiceDetail>
 
   ) { }
 
@@ -34,7 +40,18 @@ export class ServicesOrderService {
     const user = await this.userRepository.findOne({ where: { id: userId } });
     const gardener = await this.gardenerRepository.findOne({ where: { id: gardenerId } });
     const Admin = await this.adminRepository.findOne({ where: { id: userId } });
-    const serviceProvided = await this.serviceProvidedRepository.findOne({ where: { id: serviceId } });
+
+    const serviceProvided = [];
+
+    for (let i = 0; i < serviceId.length; i++) {
+      const service = await this.serviceProvidedRepository.findOne({ where: { id: serviceId[i] } });
+      if (!service) {
+        throw new Error('Service not found');
+      }
+      serviceProvided.push(service);
+    }
+    console.log(serviceProvided);
+    
 
 
     if (!gardener) {
@@ -46,9 +63,9 @@ export class ServicesOrderService {
     }
 
     const newOrder = this.servicesOrderRepository.create({
-      date,
+      date: date || new Date().toLocaleString(),
       isApproved,
-      user : user || Admin,
+      user: user || Admin,
       gardener,
       serviceProvided,
     });
@@ -77,7 +94,6 @@ export class ServicesOrderService {
           experience: true,
           calification: true,
           ubication: true,
-          costPerHour: true
         },
         serviceProvided: {
           id: true,
@@ -125,6 +141,42 @@ export class ServicesOrderService {
       throw new NotFoundException(`Orden de servicio con id ${id} no encontrada`);
     }
     return order;
+  }
+  async orderPay(id: string) {
+    try {
+      const order = await this.findOne(id);
+      if (!order) throw new NotFoundException(`Orden de servicio con id ${id} no encontrada`);
+      order.isApproved = true;
+      let price = 0;
+      order.serviceProvided.map((service) => price += service.price)
+      const newOrderDetail = await this.serviceDetailsRepository.create({
+        serviceType: order.serviceProvided.map((service) => service.detailService),
+        totalPrice: price,
+        startTime: new Date().toLocaleString(),
+        status: Status.Pending,
+        servicesOrder: order,
+        assignedGardener: order.gardener
+      })
+      await this.serviceDetailsRepository.save(newOrderDetail);
+      order.orderDetail = newOrderDetail;
+      await this.servicesOrderRepository.save(order);
+      const { assignedGardener, servicesOrder, ...rest } = newOrderDetail
+      const { orderDetail, user, gardener, serviceProvided, ...ord } = order
+
+      return {
+        message: 'detalle de servicio generado exitosamente',
+        data: {
+          order: ord,
+          datail: rest,
+          user,
+          gardener,
+        }
+      }
+
+
+    } catch (error) {
+      throw new HttpException(error, 400);
+    }
   }
 
   async update(id: string, updateServiceOrderDto: UpdateServicesOrderDto): Promise<ServicesOrderEntity> {

@@ -13,6 +13,7 @@ export interface IServiceProvider {
   calification:number;
   ubication:string;
   costPerHour:number;
+  services: [];
 }
 
 export interface IServiceProviderListProps {

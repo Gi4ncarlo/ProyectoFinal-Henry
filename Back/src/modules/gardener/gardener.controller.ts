@@ -28,6 +28,7 @@ import { RolesGuard } from 'src/guards/roles/role.guard';
 import { AuthGuard } from '../auth/auth.guard';
 import { IsUUID } from 'class-validator';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { Gardener } from './entities/gardener.entity';
 
 @ApiTags('gardener')
 @ApiBearerAuth()
@@ -37,6 +38,14 @@ export class GardenerController {
     private readonly gardenerService: GardenerService,
     private readonly fileUploadService: FileUploadService,
   ) {}
+
+  @Post(':id/reserve')
+  async reserveDay(
+    @Param('id') id: string,
+    @Body('day') day: string,
+  ) {
+    return this.gardenerService.reserveDay(id, day);
+  }
 
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Admin)
@@ -171,6 +180,7 @@ export class GardenerController {
     if (!gardener) {
       throw new HttpException('Jardinero no encontrado.', HttpStatus.NOT_FOUND);
     }
+
     return gardener;
   }
 
@@ -190,5 +200,10 @@ export class GardenerController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.gardenerService.remove(id);
+  }
+
+  @Get()
+  async findGardenersByService(@Query('serviceId') serviceId: string): Promise<Gardener[]> {
+    return this.gardenerService.findByService(serviceId);
   }
 }

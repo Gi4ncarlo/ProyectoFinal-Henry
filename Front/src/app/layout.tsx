@@ -4,7 +4,7 @@ import "./globals.css";
 import Head from "next/head";
 import Navbar from "@/components/Navbar/Navbar";
 import Footer from "@/components/Footer/Footer";
-
+import { UserProvider } from "@auth0/nextjs-auth0/client";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,14 +21,16 @@ export default function RootLayout({
   return (
     <html lang="es">
       <Head>
-      <title>{metadata.title as string}</title>
+        <title>{metadata.title as string}</title>
       </Head>
       <body className={inter.className}>
-        <Navbar />
-        <div className="min-h-screen bg-green-50">
-        {children}
-        </div>
-        <Footer />
+        <UserProvider>
+          <Navbar />
+          <div className="min-h-screen bg-green-50">
+            {children}
+          </div>
+          <Footer />
+        </UserProvider>
       </body>
     </html>
   );
