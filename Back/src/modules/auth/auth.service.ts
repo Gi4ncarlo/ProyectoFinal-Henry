@@ -7,7 +7,7 @@ import { SignUpAuthDto } from '../user/dto/signup-user.dto';
 import * as bcrypt from 'bcrypt'
 import { AdminService } from '../admin/admin.service';
 import { GardenerService } from '../gardener/gardener.service';
-
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class AuthService {
@@ -15,7 +15,8 @@ export class AuthService {
         private userService: UserService,
         private adminService: AdminService,
         private gardenerService: GardenerService,
-        private jwtService: JwtService
+        private jwtService: JwtService,
+        private readonly mailService: MailService,
     ) { }
 
     async signIn(credentials: SignInAuthDto) {
@@ -85,6 +86,7 @@ export class AuthService {
             }
 
             const newUser = await this.userService.create(signUpUser)
+            await this.mailService.sendWelcomeEmail(newUser.email, newUser.username);
             return newUser;
         }
 

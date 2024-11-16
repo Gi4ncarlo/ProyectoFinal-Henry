@@ -16,9 +16,9 @@ export class AuthController {
 
   @Post('signup')
   @HttpCode(HttpStatus.CREATED)
-  async signUp(@Body() signUpUser: SignUpAuthDto){
-          const user = await this.authService.signUp(signUpUser);
-          return new UserResponseDto(user);
+  async signUp(@Body() signUpUser: SignUpAuthDto) {
+    const user = await this.authService.signUp(signUpUser);  // El servicio ya maneja el envío del correo
+    return new UserResponseDto(user);  // Retorna el usuario con la respuesta deseada
   }
 
 }
