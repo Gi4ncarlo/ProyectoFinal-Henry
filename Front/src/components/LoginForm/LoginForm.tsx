@@ -5,6 +5,7 @@ import { validateLoginForm } from '@/helpers/validate';
 import { ILoginErrors, ILoginProps } from '@/interfaces/ILoginProps';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react'
+import Swal from 'sweetalert2';
 
 export default function LoginForm() {
   const router = useRouter();
@@ -35,13 +36,19 @@ export default function LoginForm() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const response = await login(dataUser);
-    console.log(response);
-
-    if (response.statusCode === 400) {
-      alert(response.message || "error register")
-    } else {
-      alert("Correct login");
-      const { token, user } = response;
+    if (response.status === 401) {
+      Swal.fire({
+        title: "Error",
+        text: "Email o contraseña incorrectos",
+        icon: "error"
+      });
+          } else {
+            Swal.fire({
+              title: "Bienvenido!",
+              text: "Ingresaste correctamente",
+              icon: "success"
+            });
+                  const { token, user } = response;
       localStorage.setItem("userSession", JSON.stringify({ token, user }));
       router.push('/');
     }
@@ -61,8 +68,8 @@ export default function LoginForm() {
 
   return (
     <div className="w-full max-w-md mx-auto p-6 border rounded-lg shadow-lg bg-white">
-      <h2 className="text-2xl font-bold text-center mb-4">Login</h2>
-      <p className="text-gray-600 text-center mb-6">Access your account</p>
+      <h2 className="text-2xl font-bold text-center mb-4">Ingresa</h2>
+      <p className="text-gray-600 text-center mb-6">Accede a tu cuenta</p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -109,7 +116,7 @@ export default function LoginForm() {
           disabled={Object.values(errors).some(error => error !== "")}
           className="w-full mt-4 p-2 bg-blue-600 text-white font-bold rounded hover:bg-blue-700"
         >
-          Login
+          Entrar
         </button>
       </form>
     </div>

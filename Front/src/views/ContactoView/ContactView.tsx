@@ -7,7 +7,7 @@ const ContactView = () => {
       <div className="container bg-white m-auto mt-12 p-2 max-w-full shadow-sm rounded-sm lg:m-0 lg:p-8 lg:max-w-lg lg:shadow-lg lg:rounded-lg">
         <h2 className="text-4xl font-extrabold mb-6 text-center text-gray-800 font-cinzel">Contacto</h2>
         <p className="mb-6 text-gray-600 text-center font-nunito text-sm lg:text-lg">
-          Por favor, rellene el formulario para más información y nos comunicaremos lo antes posible. Todos los campos son obligatorios.
+        Por favor llene el formulario para mas información, y nos pondremos en contacto lo mas pronto posible. Debes completar todos los campos.
         </p>
         <form className="space-y-6">
           <div>
@@ -19,20 +19,20 @@ const ContactView = () => {
               id="name"
               name="name"
               required
-              placeholder="Ingrese su nombre completo"
+              placeholder="Introduce tu nombre"
               className="mt-1 p-3 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
           <div>
             <label htmlFor="email" className="block text-base font-medium text-gray-700 font-roboto">
-              Correo Electrónico:
+              Email:
             </label>
             <input
               type="email"
               id="email"
               name="email"
               required
-              placeholder="Ingrese su correo electrónico"
+              placeholder="Ingresa tu correo electrónico"
               className="mt-1 p-3 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
@@ -45,19 +45,19 @@ const ContactView = () => {
               id="phone"
               name="phone"
               required
-              placeholder="Ingrese su número de teléfono"
+              placeholder="Introduce tu número de teléfono"
               className="mt-1 p-3 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
           <div>
             <label htmlFor="message" className="block text-base font-medium text-gray-700 font-roboto">
-              Mensaje:
+            Mensaje:
             </label>
             <textarea
               id="message"
               name="message"
               required
-              placeholder="Escriba su mensaje aquí"
+              placeholder="Introduce tu mensaje"
               className="mt-1 p-3 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 h-32"
               style={{ resize: 'none' }}
             ></textarea>
@@ -66,7 +66,7 @@ const ContactView = () => {
             type="submit"
             className="font-lato text-lg w-full py-3 bg-green-600 text-white font-semibold rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
           >
-            ENVIAR
+               ENVIAR
           </button>
         </form>
       </div>

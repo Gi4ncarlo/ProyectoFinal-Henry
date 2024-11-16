@@ -28,6 +28,7 @@ export class ServiceProvidedController {
     private readonly serviceProvidedService: ServiceProvidedService,
   ) {}
 
+  @UseGuards(AuthGuard)
   @Get()
   async getAllServiceProvided(@Res() res: Response) {
     try {
@@ -38,6 +39,7 @@ export class ServiceProvidedController {
     }
   }
 
+  @UseGuards(AuthGuard)
   @Get('/:id')
   async getServiceProvidedById(
     @Res() res: Response,

@@ -4,23 +4,23 @@ export const serviceMock = [
     {
   
         categories: [Categories.GROWER],
-        detailService: "Servicio de Jardinería completa, limpieza incluida en el servicio.",
+        detailService: "Servicio de jardinería completo con limpieza y mantenimiento.",
         price: 30000,
-        gardener: null, // Puedes dejarlo como `null` o agregar una referencia si es necesario
-        serviceOrders: null, // Si se requieren otros campos, agrégalos aquí
+        gardener: null, 
+        serviceOrders: null, 
     },
     {
 
-        categories: [Categories.PLANT_SPECIALIST],
-        detailService: "Servicio de Plantación, distintos tipos de semillas",
+        categories: [Categories.LAWN_CARE],
+        detailService: "servicio de plantacion de todo tipo de plantas y flores.",
         price: 90000,
         gardener: null,
         serviceOrders: null,
     },
     {
      
-        categories: [Categories.IRRIGATION_INSTALLER],
-        detailService: "Servicio de instalación de irrigación, tuberías subterráneas.",
+        categories: [Categories.IRRIGATION],
+        detailService: "Servicio de instalación de riego, tuberías subterráneas.",
         price: 65000,
         gardener: null,
         serviceOrders: null,

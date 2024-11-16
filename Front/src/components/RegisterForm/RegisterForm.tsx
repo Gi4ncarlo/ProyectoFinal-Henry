@@ -88,12 +88,12 @@ export default function RegisterForm() {
 
   return (
     <div className="w-full max-w-md mx-auto mt-24 p-6 border rounded-lg shadow-lg bg-white">
-      <h2 className="text-2xl font-bold text-center mb-4">Register</h2>
-      <p className="text-gray-600 text-center mb-6">Create your account</p>
+      <h2 className="text-2xl font-bold text-center mb-4">Registrate como usuario</h2>
+      <p className="text-gray-600 text-center mb-6">Crea tu cuenta y disfruta de nuestros servicios</p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700">Nombre</label>
           <input
             id="name"
             name="name"
@@ -110,7 +110,7 @@ export default function RegisterForm() {
 
 
         <div>
-          <label htmlFor="username" className="block text-sm font-medium text-gray-700">Username</label>
+          <label htmlFor="username" className="block text-sm font-medium text-gray-700">Nombre de Usuario</label>
           <input
             id="username"
             name="username"
@@ -170,7 +170,7 @@ export default function RegisterForm() {
 
 
         <div>
-          <label htmlFor="passwordConfirm" className="block text-sm font-medium text-gray-700">passwordConfirm</label>
+          <label htmlFor="passwordConfirm" className="block text-sm font-medium text-gray-700">Confirmar Password</label>
           <input
             id="passwordConfirm"
             name="passwordConfirm"
@@ -187,7 +187,7 @@ export default function RegisterForm() {
         </div>
 
         <div>
-          <label htmlFor="age" className="block text-sm font-medium text-gray-700">Age</label>
+          <label htmlFor="age" className="block text-sm font-medium text-gray-700">Edad</label>
           <input
             id="age"
             name="age"
@@ -204,7 +204,7 @@ export default function RegisterForm() {
         </div>
 
         <div>
-          <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Phone</label>
+          <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Teléfono</label>
           <input
             id="phone"
             name="phone"
@@ -221,7 +221,7 @@ export default function RegisterForm() {
         </div>
 
         <div>
-          <label htmlFor="address" className="block text-sm font-medium text-gray-700">Address</label>
+          <label htmlFor="address" className="block text-sm font-medium text-gray-700">Dirección</label>
           <input
             id="address"
             name="address"
@@ -245,14 +245,11 @@ export default function RegisterForm() {
             onChange={handleChange}
             className="h-4 w-4 text-indigo-600 border-gray-300 rounded"
           />
-          <label htmlFor="offerServices" className="text-sm font-medium text-gray-700">
-            I want to offer my gardening services
-          </label>
         </div>
 
     
         <button type="submit" disabled={Object.values(errors).some(error => error !== "")} className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-        Register
+        Registrarme como usuario
       </button>
       </form>
     </div>

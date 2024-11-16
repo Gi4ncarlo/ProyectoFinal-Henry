@@ -7,10 +7,11 @@ import { ServiceDetail } from '../service-details/entities/service-detail.entity
 import { ServiceProvided } from '../serviceProvided/entities/serviceProvided.entity';
 import { User } from '../user/entities/user.entity';
 import { Gardener } from '../gardener/entities/gardener.entity';
+import { AdminEntity } from '../admin/entities/admin.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ServicesOrderEntity, ServiceDetail, ServiceProvided, User, Gardener]),
+    TypeOrmModule.forFeature([ServicesOrderEntity, ServiceDetail, ServiceProvided, User, Gardener, AdminEntity]),
   ],
   controllers: [ServicesOrderController],
   providers: [ServicesOrderService],

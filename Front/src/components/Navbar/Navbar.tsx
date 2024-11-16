@@ -5,6 +5,7 @@ import Link from "next/link";
 import { HiMenu, HiX } from "react-icons/hi";
 import { IUserSession } from "@/interfaces/IUserSession";
 import { usePathname, useRouter } from "next/navigation";
+import Swal from "sweetalert2";
 
 export default function Navbar() {
   const router = useRouter();
@@ -19,6 +20,9 @@ export default function Navbar() {
   useEffect(() => {
     if (typeof window !== "undefined" && window.localStorage) {
       const storedUserData = JSON.parse(localStorage.getItem("userSession") || "null")
+
+      console.log("storedUserData : ", storedUserData);
+      
       if (storedUserData) {
         setUserData(storedUserData)
         setIsAuthenticated(true)
@@ -29,9 +33,27 @@ export default function Navbar() {
 
   const handleLogout = () => {
     localStorage.removeItem("userSession")
+    Swal.fire({
+      title: "Seguro que quieres salir?",
+      text: "Vas a cerrar sesion",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si, salir!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: "Session Cerrada!",
+          text: "Hasta pronto!",
+          icon: "success"
+        });
+      }
+    });
     setUserData(null);
     setIsAuthenticated(false);
     // setCart([]); 
+    
     router.push("/")
 
   }
@@ -75,16 +97,19 @@ export default function Navbar() {
             } mx-auto`}
         >
           <li className="hover:-translate-y-1 hover:underline">
-            <Link href="/servicios">Services</Link>
+            <Link href="/servicios">Servicios</Link>
           </li>
           <li className="hover:-translate-y-1 hover:underline">
-            <Link href="/sobreNosotros">About Us</Link>
+            <Link href="/sobreNosotros">Sobre Nosotros</Link>
           </li>
           <li className="hover:-translate-y-1 hover:underline">
-            <Link href="/contacto">Contact</Link>
+            <Link href="/contacto">Contacto</Link>
           </li>
           <li className="hover:-translate-y-1 hover:underline">
-            <Link href="/gardener">Gardeners</Link>
+            <Link href="/gardener">Lista de Jardineros</Link>
+          </li>
+          <li className="hover:-translate-y-1 hover:underline">
+            <Link href="/registerService">Registrar un nuevo servicio</Link>
           </li>
         </ul>
 
@@ -99,19 +124,22 @@ export default function Navbar() {
         {isMenuOpen && (
           <ul className="absolute top-16 right-4 bg-green-700 text-white text-base lg:text-xl font-roboto space-y-4 p-4 rounded-lg lg:hidden">
             <li className="hover:-translate-y-1 hover:underline">
-              <Link href="services">Services</Link>
+              <Link href="services">Servicios</Link>
             </li>
             <li className="hover:-translate-y-1 hover:underline">
-              <Link href="aboutUs">About Us</Link>
+              <Link href="aboutUs">Sobre Nosotros</Link>
             </li>
             <li className="hover:-translate-y-1 hover:underline">
-              <Link href="/contact">Contact</Link>
+              <Link href="/contact">Contacto</Link>
             </li>
             <li className="hover:-translate-y-1 hover:underline">
-              <Link href="/register">Register</Link>
+            <Link href="/gardener">Lista de Jardineros</Link>
+          </li>
+            <li className="hover:-translate-y-1 hover:underline">
+              <Link href="/register">Registrarme</Link>
             </li>
             <li className="hover:-translate-y-1 hover:underline">
-              <Link href="/login">Login</Link>
+              <Link href="/login">Ingresar</Link>
             </li>
           </ul>
         )}
@@ -124,7 +152,7 @@ export default function Navbar() {
               className="flex items-center space-x-2 cursor-pointer"
               onClick={Dropdown}
             >
-              <span>{userData?.user?.name || 'Mi cuenta'}</span>
+              <span>{userData?.user?.name || 'My Account'}</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -145,13 +173,13 @@ export default function Navbar() {
             {showDropdown && (
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 text-black z-50">
                 <Link href="/dashboard">
-                  <div className="block px-4 py-2 hover:bg-gray-100">My Account</div>
+                  <div className="block px-4 py-2 hover:bg-gray-100">Mi Cuenta</div>
                 </Link>
                 <button
                   className="block px-4 py-2 hover:bg-gray-100 w-full text-left"
                   onClick={handleLogout}
                 >
-                  Log Out
+                  Cerrar sesión
                 </button>
               </div>
             )}
@@ -179,10 +207,10 @@ export default function Navbar() {
             {showDropdown && (
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 text-black z-50">
                 <Link href="/login">
-                  <div className="block px-4 py-2 hover:bg-gray-100">Log In</div>
+                  <div className="block px-4 py-2 hover:bg-gray-100">Ingresar</div>
                 </Link>
                 <Link href="/register">
-                  <div className="block px-4 py-2 hover:bg-gray-100">Register</div>
+                  <div className="block px-4 py-2 hover:bg-gray-100">Registrarme</div>
                 </Link>
               </div>
             )}

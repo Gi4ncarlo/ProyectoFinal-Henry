@@ -44,11 +44,6 @@ import {
     @IsOptional()
     ubication?: string;
   
-    @IsNumber()
-    @Min(0)
-    @IsOptional()
-    costPerHour?: number;
-  
     @IsUrl()
     @IsOptional()
     profileImageUrl?: string;

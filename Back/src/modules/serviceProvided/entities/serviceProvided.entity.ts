@@ -6,6 +6,7 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -26,11 +27,7 @@ export class ServiceProvided {
   @Column()
   price: number;
 
-  @Column({
-    type: 'enum',
-    enum: Categories,
-    default: Categories.GROWER,
-  })
+  @Column("text", {array:true})
   categories: Categories[];
 
   @ManyToMany(() => Gardener, (gardener) => gardener.serviceProvided, {
@@ -42,7 +39,7 @@ export class ServiceProvided {
   // @OneToMany(() => User, (user) => user.serviceProvided, { onDelete: "CASCADE" })
   // user: User
 
-  @OneToOne(
+  @ManyToOne(
     () => ServicesOrderEntity,
     (serviceOrder) => serviceOrder.serviceProvided,
     { onDelete: 'CASCADE' },

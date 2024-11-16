@@ -5,14 +5,14 @@ export const usersMock = [
    
     {
         name: "Pepe",
-        email: "jardinero@gmail.com",
+        email: "pepe@gmail.com",
         username : "Pepito",
         password: "123456",
         passwordConfirm: "123456",
         phone: "51231532",
         address: "9 de Julio",
         age : 45,
-        role : Role.Admin,
+        role : Role.User,
     },
     {
         name: "Martina",
