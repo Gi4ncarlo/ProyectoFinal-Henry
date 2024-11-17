@@ -95,7 +95,7 @@ export class UserService {
   async findOneWithOrders(userId: string): Promise<User> {
     return this.userRepository.findOne({
       where: { id: userId },
-      relations: ['servicesOrder'], 
+      relations: ['servicesOrder', 'servicesOrder.gardener', 'servicesOrder.serviceProvided'], 
     });
   }
 
