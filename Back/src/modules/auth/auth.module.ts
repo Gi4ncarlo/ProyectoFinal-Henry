@@ -12,9 +12,10 @@ import { GardenerService } from '../gardener/gardener.service';
 import { AdminService } from '../admin/admin.service';
 import { AdminEntity } from '../admin/entities/admin.entity';
 import { Gardener } from '../gardener/entities/gardener.entity';
+import { MailModule } from '../mail/mail.module';
 
 @Module({
-  imports: [UserModule, TypeOrmModule.forFeature([User, AdminEntity,Gardener]), SharedModule, AdminModule, GardenerModule],
+  imports: [UserModule, TypeOrmModule.forFeature([User, AdminEntity,Gardener]), SharedModule, AdminModule, GardenerModule,MailModule],
   controllers: [AuthController],
   providers: [AuthService, UserService, GardenerService, AdminService],
 })

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import {
     BadRequestException,
     HttpException,
@@ -24,6 +25,29 @@ import {
       private jwtService: JwtService,
     ) {}
   
+=======
+import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { User } from '../user/entities/user.entity';
+import { SignInAuthDto } from '../user/dto/signin-user.dto';
+import { UserService } from '../user/user.service';
+import { JwtService } from '@nestjs/jwt';
+import { SignUpAuthDto } from '../user/dto/signup-user.dto';
+import * as bcrypt from 'bcrypt'
+import { AdminService } from '../admin/admin.service';
+import { GardenerService } from '../gardener/gardener.service';
+import { MailService } from '../mail/mail.service';
+
+@Injectable()
+export class AuthService {
+    constructor(
+        private userService: UserService,
+        private adminService: AdminService,
+        private gardenerService: GardenerService,
+        private jwtService: JwtService,
+        private readonly mailService: MailService,
+    ) { }
+
+>>>>>>> 5629a5329a662a1d895d34dc854da596e1fb750c
     async signIn(credentials: SignInAuthDto) {
       try {
         console.log('Credenciales recibidas en signIn:', credentials);
@@ -52,9 +76,30 @@ import {
               'Credenciales incorrectas',
               HttpStatus.UNAUTHORIZED,
             );
+<<<<<<< HEAD
           }
           const token = await this.createToken(user);
           return { token, user };
+=======
+
+            if (userFinded) {
+                throw new BadRequestException('User already exists')
+            }
+
+            if (signUpUser.password !== signUpUser.passwordConfirm) {
+                throw new HttpException('Password does not match', 400)
+            }
+
+            signUpUser.password = await bcrypt.hash(signUpUser.password, 10)
+
+            if (!signUpUser.password) {
+                throw new BadRequestException('Error at password hash')
+            }
+
+            const newUser = await this.userService.create(signUpUser)
+            await this.mailService.sendWelcomeEmail(newUser.email, newUser.username);
+            return newUser;
+>>>>>>> 5629a5329a662a1d895d34dc854da596e1fb750c
         }
   
         // Validación para administradores
