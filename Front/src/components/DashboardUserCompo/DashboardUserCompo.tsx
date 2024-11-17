@@ -31,7 +31,7 @@ const DashboardUserCompo: React.FC = () => {
   
   if (params?.status === 'approved') {    
     const fetchOrders = async () => {
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/services-order/orderPay/${orders[0].servicesOrder[0].id}`,{
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/services-order/orderPay/${orders[0]?.servicesOrder[0].id}`,{
         method: "GET",
         headers: {
           Authorization: `Bearer ${TOKEN.token}`,
@@ -113,12 +113,13 @@ const DashboardUserCompo: React.FC = () => {
     return <p>{error}</p>;
   }
 
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center py-8 px-4">
-      <h1 className="text-3xl font-bold text-gray-800 mb-8">Dashboard de Órdenes de Compra</h1>
+      <h1 className="text-3xl font-bold text-gray-800 mb-8">Bienvenido a su historial de Operaciones</h1>
 
-      {orders.length === 0 ? (
-        <p className="text-xl text-gray-500">No se encontraron órdenes.</p>
+      {!orders.servicesOrder ? (
+        <p className="text-xl text-[#FF5722]">No se encontraron órdenes.</p>
       ) : (
         <div className="w-full max-w-6xl space-y-8">
           {orders.map((order: any) => (
