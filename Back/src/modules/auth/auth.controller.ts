@@ -3,8 +3,9 @@ import { AuthService } from './auth.service';
 import { SignUpAuthDto } from '../user/dto/signup-user.dto';
 import { SignInAuthDto } from '../user/dto/signin-user.dto';
 import { UserResponseDto } from '../user/dto/response-user.dto';
+import { ApiTags } from '@nestjs/swagger';
 
-
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -16,9 +17,9 @@ export class AuthController {
 
   @Post('signup')
   @HttpCode(HttpStatus.CREATED)
-  async signUp(@Body() signUpUser: SignUpAuthDto){
-          const user = await this.authService.signUp(signUpUser);
-          return new UserResponseDto(user);
+  async signUp(@Body() signUpUser: SignUpAuthDto) {
+    const user = await this.authService.signUp(signUpUser);  // El servicio ya maneja el envío del correo
+    return new UserResponseDto(user);  // Retorna el usuario con la respuesta deseada
   }
 
 }

@@ -20,13 +20,17 @@ import { Role } from '../user/enums/role.enum';
 import { Roles } from 'src/decorators/roles.decorator';
 import { RolesGuard } from 'src/guards/roles/role.guard';
 import { AuthGuard } from '../auth/auth.guard';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
+
+@ApiTags('serviceOrder')
+@ApiBearerAuth()
 @Controller('services-order')
 export class ServicesOrderController {
   constructor(private readonly servicesOrderService: ServicesOrderService) { }
 
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.User)
+  @Roles( Role.User, Role.Admin)
   @Post()
   create(@Body() createServicesOrderDto: CreateServiceOrderDto) {
     return this.servicesOrderService.create(createServicesOrderDto);

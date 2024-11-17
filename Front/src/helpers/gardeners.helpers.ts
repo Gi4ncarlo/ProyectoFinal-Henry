@@ -1,8 +1,6 @@
 import { IServiceProvider } from "@/interfaces/IServiceProvider";
 const APIURL = process.env.NEXT_PUBLIC_API_URL;
-const TOKEN = JSON.parse(localStorage.getItem("userSession") || "null")
-
-
+const TOKEN = JSON.parse(localStorage.getItem("userSession") || "null");
 
 export const getGardenersDB = async (
   order: 'ASC' | 'DESC' = 'ASC',
@@ -28,7 +26,7 @@ export const getGardenersDB = async (
     }
 
     const gardeners = await response.json();
-    return gardeners// Devuelve un arreglo seguro
+    return gardeners; // Devuelve un arreglo seguro
   } catch (error) {
     console.error('Error fetching gardeners:', error);
     return []; // Asegura que siempre devuelve un arreglo

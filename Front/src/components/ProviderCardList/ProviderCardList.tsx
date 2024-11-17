@@ -23,6 +23,7 @@ const ProviderCardList: React.FC = () => {
   const handleFilter = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     setFilter(e.target.value);
   };
+  const HandleSearch = (e : any) => {
   const HandleSearch = (e: any) => {
     setSearchTerm(e.target.value);
   };

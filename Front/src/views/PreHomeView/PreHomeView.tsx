@@ -10,7 +10,7 @@ const PreHomeView = () => {
         src="/images/fondo_landingPage.jpg" // Reemplaza por el nombre exacto de tu archivo
         alt="Fondo de bienvenida"
         fill
-        className="object-cover"
+        className="object-cover object-center w-full h-full"
         priority
       />
       
