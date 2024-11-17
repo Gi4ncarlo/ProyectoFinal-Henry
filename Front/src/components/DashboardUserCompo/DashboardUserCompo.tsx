@@ -50,7 +50,7 @@ const DashboardUserCompo: React.FC = () => {
 
   return (
     <div>
-      {orders.length === 0 ? (
+      {/* {orders.length === 0 ? (
         <p>No orders found.</p>
       ) : (
         console.log(orders),        
@@ -62,7 +62,7 @@ const DashboardUserCompo: React.FC = () => {
             <br />
           </div>
         ))
-      )}
+      )} */}
     </div>
   );
 };
