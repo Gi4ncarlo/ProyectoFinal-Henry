@@ -7,7 +7,11 @@ import { SignUpAuthDto } from '../user/dto/signup-user.dto';
 import * as bcrypt from 'bcrypt';
 import { AdminService } from '../admin/admin.service';
 import { GardenerService } from '../gardener/gardener.service';
+<<<<<<< HEAD
 import { Role } from '../user/enums/role.enum';
+=======
+import { MailService } from '../mail/mail.service';
+>>>>>>> 5629a5329a662a1d895d34dc854da596e1fb750c
 
 @Injectable()
 export class AuthService {
@@ -15,8 +19,14 @@ export class AuthService {
         private userService: UserService,
         private adminService: AdminService,
         private gardenerService: GardenerService,
+<<<<<<< HEAD
         private jwtService: JwtService
     ) {}
+=======
+        private jwtService: JwtService,
+        private readonly mailService: MailService,
+    ) { }
+>>>>>>> 5629a5329a662a1d895d34dc854da596e1fb750c
 
     async signIn(credentials: SignInAuthDto) {
         try {
@@ -84,11 +94,17 @@ export class AuthService {
                 throw new BadRequestException('Error at password hash')
             }
 
+<<<<<<< HEAD
 
         const newUser = await this.userService.create(signUpUser)
             
         if (userFinded || gardenerFinded) {
             throw new BadRequestException('El usuario ya existe');
+=======
+            const newUser = await this.userService.create(signUpUser)
+            await this.mailService.sendWelcomeEmail(newUser.email, newUser.username);
+            return newUser;
+>>>>>>> 5629a5329a662a1d895d34dc854da596e1fb750c
         }
 
         if (signUpUser.password !== signUpUser.passwordConfirm) {
