@@ -81,7 +81,7 @@ const ProviderDetail: React.FC = () => {
         isApproved,
         gardenerId,
         userId,
-        serviceId: selectedServices[0],
+        serviceId: selectedServices,
       });
       setOrderService(order);
       router.push("/dashboard/userDashboard")

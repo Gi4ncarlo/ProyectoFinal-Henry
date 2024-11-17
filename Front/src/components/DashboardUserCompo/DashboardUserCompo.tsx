@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 
 // Componente para mostrar las órdenes del usuario
 const DashboardUserCompo: React.FC = () => {
-  const [orders, setOrders] = useState<IOrderProps[]>([]);
+  const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState<boolean>(true);  // Para mostrar el estado de carga
   const [error, setError] = useState<string | null>(null);  // Para manejar errores
   const [userSession, setUserSession] = useState<IUserSession | null>(null); // Sesión de usuario
@@ -53,11 +53,12 @@ const DashboardUserCompo: React.FC = () => {
       {orders.length === 0 ? (
         <p>No orders found.</p>
       ) : (
-        orders.map((order: IOrderProps) => (
-          <div key={order.serviceId}>
-            <p>{order.gardenerId}</p>
-            <p>{order.date}</p>
-            <p>{order.isApproved ? 'Approved' : 'Not Approved'}</p>
+        console.log(orders),        
+        orders.map((order) => (
+          <div key={order.id}>
+            <p>{order.address}</p>
+            <p>{order.email}</p>
+            <p>{order.servicesOrder.isApproved ? 'Approved' : 'Not Approved'}</p>
             <br />
           </div>
         ))

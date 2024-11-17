@@ -4,8 +4,6 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { FileUploadService } from 'src/file-upload/file-upload.service';
-import { UploadFileDto } from 'src/file-upload/dtos/uploadFile.dto';
 import { Role } from './enums/role.enum';
 
 @Injectable()
