@@ -27,11 +27,8 @@ import { Roles } from 'src/decorators/roles.decorator';
 import { RolesGuard } from 'src/guards/roles/role.guard';
 import { AuthGuard } from '../auth/auth.guard';
 import { IsUUID } from 'class-validator';
-<<<<<<< HEAD
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiQuery, ApiTags } from '@nestjs/swagger';
-=======
 import { Gardener } from './entities/gardener.entity';
->>>>>>> be5aba3c94dd9b61e6d4001b77841a165dab269b
 
 @ApiTags('gardener')
 @ApiBearerAuth()
