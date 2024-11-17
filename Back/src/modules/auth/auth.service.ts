@@ -13,7 +13,7 @@ import {
   import { AdminService } from '../admin/admin.service';
   import { GardenerService } from '../gardener/gardener.service';
   import { Role } from '../user/enums/role.enum';
-import { MailService } from '../mail/mail.service';
+  import { MailService } from '../mail/mail.service';
   
   
   @Injectable()
@@ -27,13 +27,9 @@ import { MailService } from '../mail/mail.service';
     ) {}
   
     async signIn(credentials: SignInAuthDto) {
-<<<<<<< HEAD
-        try {
-=======
       try {
         console.log('Credenciales recibidas en signIn:', credentials);
   
->>>>>>> 2e572d688ba70319e6657f28ed19f11aad67eefc
         const user = await this.userService.findByEmail(credentials.email);
         const admin = await this.adminService.findByEmail(credentials.email);
         const gardener = await this.gardenerService.findByEmail(
