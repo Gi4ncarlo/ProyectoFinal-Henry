@@ -88,7 +88,7 @@ export default function Navbar() {
           className={`text-white text-lg lg:text-3xl font-bold font-cinzel ${isScrolled ? "text-base lg:text-2xl" : ""
             }`}
         >
-          <Link href="/">VICNASOL</Link>
+          <Link href="/Home">VICNASOL</Link>
         </div>
 
         {/* Links aligned to the center on large screens */}
@@ -108,9 +108,14 @@ export default function Navbar() {
           <li className="hover:-translate-y-1 hover:underline">
             <Link href="/gardener">Lista de Jardineros</Link>
           </li>
-          <li className="hover:-translate-y-1 hover:underline">
-            <Link href="/registerService">Registrar un nuevo servicio</Link>
-          </li>
+          {
+            userData?.user.role === "admin" && (
+              <li className="hover:-translate-y-1 hover:underline">
+              <Link href="/registerService">Registrar un nuevo servicio</Link>
+            </li>
+            )
+          }  
+         
         </ul>
 
 
