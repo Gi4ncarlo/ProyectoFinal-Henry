@@ -9,14 +9,9 @@ const Layout  = ({ children }: { children: React.ReactNode }) => {
 
 useEffect(()=>{
 const user= JSON.parse(localStorage.getItem("userSession")|| "null")  ;
-
-console.log(user?.token); // Logs the token if it exists
-console.log("Usersession", user);
-
 if(user && user.token && user.user.role){
 setAuthorized(user);
 }else{
-    console.log("Redirecting to login");
     router.push("/login")
 }
 

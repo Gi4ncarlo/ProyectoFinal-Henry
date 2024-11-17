@@ -10,7 +10,6 @@ export const hireServices = async (data: {
     serviceId: string[];
   }) => {
     try {
-      console.log(data);
       const response = await fetch(`${APIURL}/services-order`, {
         method: 'POST',
         headers: {

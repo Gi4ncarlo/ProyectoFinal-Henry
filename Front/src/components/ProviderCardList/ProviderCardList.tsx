@@ -23,7 +23,7 @@ const ProviderCardList: React.FC = () => {
   const handleFilter = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     setFilter(e.target.value);
   };
-  const HandleSearch = (e) => {
+  const HandleSearch = (e: any) => {
     setSearchTerm(e.target.value);
   };
 
@@ -36,14 +36,11 @@ const ProviderCardList: React.FC = () => {
         const name = searchTerm;
         const gardeners = await getGardenersDB(order, calification, name);
         setProviders(gardeners.data);
-        console.log(gardeners);
-
-
-      } catch (error) {
+      } catch (error: any) {
         setError(error.message || 'Error al cargar los productos');
       }
     };
-    console.log(fetchProviders());
+    fetchProviders()
   }, [filter, searchTerm]); // Vuelve a cargar cada vez que cambia el filtro
 
   if (error) return <div>{error}</div>;

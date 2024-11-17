@@ -28,7 +28,6 @@ export const getGardenersDB = async (
     }
 
     const gardeners = await response.json();
-    console.log(gardeners)
     return gardeners// Devuelve un arreglo seguro
   } catch (error) {
     console.error('Error fetching gardeners:', error);
@@ -38,9 +37,6 @@ export const getGardenersDB = async (
 
 // Nueva función para obtener un gardener por ID
 export async function getProviderById(id: string): Promise<IServiceProvider | null> {
-
-  console.log("GARDENER HELPERS ID", id);
-  
   try {
       const res = await fetch(`${APIURL}/gardener/${id}`, {
         method: 'GET', 
@@ -56,8 +52,6 @@ export async function getProviderById(id: string): Promise<IServiceProvider | nu
     }
 
     const response = await res.json();
-    console.log("Response from API:", response , "token", TOKEN); // Imprimir toda la respuesta para ver el formato
-
     // Verifica si el formato es correcto
     if (response && typeof response === 'object' && !Array.isArray(response)) {
       return response.data || response; // Retorna 'data' si existe, sino retorna 'response'

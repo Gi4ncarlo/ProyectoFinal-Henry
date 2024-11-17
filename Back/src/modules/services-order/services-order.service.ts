@@ -50,10 +50,6 @@ export class ServicesOrderService {
       }
       serviceProvided.push(service);
     }
-    console.log(serviceProvided);
-    
-
-
     if (!gardener) {
       throw new Error('Gardener not found');
     }

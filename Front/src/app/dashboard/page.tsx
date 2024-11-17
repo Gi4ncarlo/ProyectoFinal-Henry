@@ -4,6 +4,7 @@ import DashboardAdminCompo from '@/components/DashboardAdminCompo/DashboardAdmin
 import UserDashboard from './userDashboard/page';
 import React, { useEffect, useState } from 'react';
 import GardenerDashboard from './gardenerDashboard/page';
+import Swal from 'sweetalert2';
 
 const Dashboard = () => {
   const [role, setRole] = useState<string | null>(null);
@@ -15,7 +16,13 @@ const Dashboard = () => {
     if (user && user.token && user.user.role) {
       setRole(user.user.role); // Guarda el rol del usuario
     } else {
-      console.log("Usuario no autorizado");
+      Swal.fire({
+        title: "Error",
+        text: "Debes iniciar sesion primero",
+        icon: "error",
+      }).then(() => {
+        window.location.href = "/";
+      })
     }
   }, []);
 

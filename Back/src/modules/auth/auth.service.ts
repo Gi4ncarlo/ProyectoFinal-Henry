@@ -20,7 +20,6 @@ export class AuthService {
 
     async signIn(credentials: SignInAuthDto) {
         try {
-            console.log("Credenciales recibidas en signIn:", credentials);
         const user = await this.userService.findByEmail(credentials.email);
         const admin = await this.adminService.findByEmail(credentials.email);
         const gardener = await this.gardenerService.findByEmail(credentials.email);
