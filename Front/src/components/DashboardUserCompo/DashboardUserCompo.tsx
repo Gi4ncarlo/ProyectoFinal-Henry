@@ -41,7 +41,6 @@ const DashboardUserCompo: React.FC = () => {
     };
     fetchOrders();
   }
-  console.log(params?.status);
   if(params?.status === 'failure' || params?.status === 'rejected'){
     Swal.fire({
       title: 'Error',
@@ -68,8 +67,6 @@ const DashboardUserCompo: React.FC = () => {
     try {
       const ordersData = await getuserOrdersDB(id, token);
       setOrders(ordersData);
-      console.log(ordersData);
-
       setError(null); // Resetear errores si la solicitud es exitosa
     } catch (err) {
       console.error('Error fetching orders:', err);
@@ -89,13 +86,9 @@ const DashboardUserCompo: React.FC = () => {
       }
       );
       const data = await response.json();
-      console.log(data);
-
       if (!response.ok) {
         throw new Error(data.message);
       }
-      console.log(data.paymentUrl.init_point);
-
       if (data.paymentUrl.sandbox_init_point) {
         window.location.href = data.paymentUrl.sandbox_init_point;
       }
@@ -113,55 +106,52 @@ const DashboardUserCompo: React.FC = () => {
     return <p>{error}</p>;
   }
 
-  console.log("Que recibe aqui: ", orders[0].servicesOrder);
-  console.log("Que esta pasando con orders : ", orders);
-
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center py-8 px-4">
       <h1 className="text-3xl font-bold text-gray-800 mb-8">Bienvenido a su historial de Operaciones</h1>
 
-      {!orders[0].servicesOrder ? (
+      {!orders[0].servicesOrder.length ? (
         <p className="text-xl text-[#FF5722]">No se encontraron órdenes.</p>
       ) : (
         <div className="w-full max-w-6xl space-y-8">
-          {orders.map((order: any) => (
+          {orders[0].servicesOrder.map((order: any) => (
             <div
               key={order.id}
               className="bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300"
             >
               {/* ID de la Orden y Detalles Generales */}
-              <h2 className="text-2xl font-semibold text-gray-800 mb-4">Jardinero contratado: {order.servicesOrder[0].gardener.name}</h2>
+              <h2 className="text-2xl font-semibold text-gray-800 mb-4">Jardinero contratado: {order.gardener.name}</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <p className="text-gray-700"><strong>Dirección:</strong> {order.servicesOrder[0].gardener.address}</p>
-                  <p className="text-gray-700"><strong>Email:</strong> {order.servicesOrder[0].gardener.email}</p>
-                  <p className="text-gray-700"><strong>Teléfono:</strong> {order.servicesOrder[0].gardener.phone}</p>
+                  <p className="text-gray-700"><strong>Dirección:</strong> {order.gardener.address}</p>
+                  <p className="text-gray-700"><strong>Email:</strong> {order.gardener.email}</p>
+                  <p className="text-gray-700"><strong>Teléfono:</strong> {order.gardener.phone}</p>
                 </div>
                 <div>
-                  <p className="text-gray-700"><strong>Fecha de Orden:</strong> {order.servicesOrder[0].date.split('T')[0]}</p>
+                  <p className="text-gray-700"><strong>Fecha de Orden:</strong> {order.date.split('T')[0]}</p>
                   <p className="text-gray-700"><strong>Fecha del Servicio:</strong> {false || 'No esta definida'}</p>
-                  <p className="text-gray-700"><strong>Monto Total:</strong> ${order.servicesOrder[0].serviceProvided[0].price}</p>
+                  <p className="text-gray-700"><strong>Monto Total:</strong> ${order.serviceProvided[0].price}</p>
                 </div>
               </div>
 
               {/* Detalles del Servicio */}
               <div className="mt-6">
                 <h3 className="text-xl font-semibold text-gray-800 mb-2">Detalles del Servicio</h3>
-                <p className="text-gray-700"><strong>Servicio:</strong> {order.servicesOrder[0].serviceProvided[0].detailService}</p>
-                <p className="text-gray-700"><strong>Categorias del jardinero:</strong> {order.servicesOrder[0].serviceProvided[0].categories[0]}</p>
-                <p className="text-gray-700"><strong>Cantidad:</strong> 1 </p>
-                <p className="text-gray-700"><strong>Precio Unitario:</strong> ${order.servicesOrder[0].serviceProvided[0].price}</p>
-                <p className="text-gray-700"><strong>SubTotal:</strong> ${order.servicesOrder[0].serviceProvided[0].price}</p>
+                <p className="text-gray-700"><strong>Servicio:</strong> {order.serviceProvided[0].detailService}</p>
+                <p className="text-gray-700"><strong>Categorias del jardinero:</strong> {order.serviceProvided[0].categories[0]}</p>
+                <p className="text-gray-700"><strong>Cantidad:</strong> {order.serviceProvided[0].detailService} </p>
+                <p className="text-gray-700"><strong>Precio Unitario:</strong> ${order.serviceProvided[0].price}</p>
+                <p className="text-gray-700"><strong>SubTotal:</strong> ${order.serviceProvided[0].price}</p>
               </div>
 
               {/* Estado y Pago */}
               <div className="mt-6 flex justify-between items-center">
                 <div className="flex items-center">
                   <span
-                    className={`inline-block px-4 py-2 rounded-full text-white font-semibold ${order.servicesOrder.isApproved ? 'bg-green-500' : 'bg-red-500'
+                    className={`inline-block px-4 py-2 rounded-full text-white font-semibold ${order.isApproved ? 'bg-green-500' : 'bg-red-500'
                       }`}
                   >
-                    {order.servicesOrder.isApproved ? 'Aprobada' : 'No Aprobada'}
+                    {order.isApproved ? 'Aprobada' : 'No Aprobada'}
                   </span>
                 </div>
                 <div className="flex items-center">
@@ -183,7 +173,7 @@ const DashboardUserCompo: React.FC = () => {
               </div>
 
               <button className="mt-6 py-2 px-6 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors duration-300"
-                onClick={() => handlePayment(order.servicesOrder[0].id)}>
+                onClick={() => handlePayment(order.id)}>
                 Pagar con mercadopago
               </button>
             </div>
