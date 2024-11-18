@@ -57,7 +57,7 @@ const ProviderDetail: React.FC = () => {
 
 
   const handleHireClick = async () => {
-    const date = new Date().toString();
+    const date = new Date().toLocaleDateString();
     const isApproved = false;
     const gardenerId = gardener?.id.toString(); 
     const userSession = localStorage.getItem("userSession");

@@ -1,5 +1,5 @@
 import { ServiceDetail } from "src/modules/service-details/entities/service-detail.entity";
-import { Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn, JoinColumn, OneToMany, ManyToMany } from "typeorm";
+import { Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn, JoinColumn, OneToMany, ManyToMany, JoinTable } from "typeorm";
 import { v4 as uuid } from 'uuid';
 import { User } from "src/modules/user/entities/user.entity";
 import { ServiceProvided } from "src/modules/serviceProvided/entities/serviceProvided.entity";
@@ -23,6 +23,7 @@ export class ServicesOrderEntity {
     orderDetail: ServiceDetail;
     // // Relación con la entidad ServiceDetail (1:1)
     @ManyToMany(() => ServiceProvided, (serviceProvided) => serviceProvided.serviceOrder, { onDelete: "CASCADE" })
+    @JoinTable()
     serviceProvided: ServiceProvided[];
 
     // Relación con la entidad Gardener (Muchos a Uno)

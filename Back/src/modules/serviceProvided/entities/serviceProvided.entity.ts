@@ -44,6 +44,5 @@ export class ServiceProvided {
     (serviceOrder) => serviceOrder.serviceProvided,
     { onDelete: 'CASCADE' },
   )
-  @JoinTable()
   serviceOrder: ServicesOrderEntity[];
 }

@@ -2,8 +2,8 @@
 import { getuserOrdersDB } from '@/helpers/userOrders.helpers';
 import { IOrderProps } from '@/interfaces/IOrdersProps';
 import { IUserSession } from '@/interfaces/IUserSession';
-import { stat } from 'fs';
-import { useRouter } from 'next/router';
+import { format } from 'date-fns';
+import { es, ar } from 'date-fns/locale';
 import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 
@@ -11,9 +11,9 @@ import Swal from 'sweetalert2';
 const DashboardUserCompo: React.FC = () => {
   const [orders, setOrders] = useState<any>([]);
   const [params, setParams] = useState<any>(null);
-  const [loading, setLoading] = useState<boolean>(true);  // Para mostrar el estado de carga
-  const [error, setError] = useState<string | null>(null);  // Para manejar errores
-  const [userSession, setUserSession] = useState<IUserSession | null>(null); // Sesión de usuario
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [userSession, setUserSession] = useState<IUserSession | null>(null);
   const TOKEN = JSON.parse(localStorage.getItem("userSession") || "null");
 
 
@@ -25,13 +25,13 @@ const DashboardUserCompo: React.FC = () => {
     const externalReference = urlParams.get('external_reference');
 
     setParams({ status, paymentId, externalReference });
-    
+
   }, []);
 
-  
-  if (params?.status === 'approved') {    
+
+  if (params?.status === 'approved') {
     const fetchOrders = async () => {
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/services-order/orderPay/${orders[0]?.servicesOrder[0].id}`,{
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/services-order/orderPay/${orders[0]?.servicesOrder[0].id}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${TOKEN.token}`,
@@ -41,7 +41,7 @@ const DashboardUserCompo: React.FC = () => {
     };
     fetchOrders();
   }
-  if(params?.status === 'failure' || params?.status === 'rejected'){
+  if (params?.status === 'failure' || params?.status === 'rejected' || params?.status === 'null') {
     Swal.fire({
       title: 'Error',
       text: 'El pago ha fallado',
@@ -49,7 +49,6 @@ const DashboardUserCompo: React.FC = () => {
     })
   }
   useEffect(() => {
-    // Verifica si estamos en el cliente (solo en el navegador)
     if (typeof window !== 'undefined') {
       const storedSession = JSON.parse(localStorage.getItem('userSession') || 'null');
       setUserSession(storedSession);
@@ -58,7 +57,7 @@ const DashboardUserCompo: React.FC = () => {
 
   useEffect(() => {
     if (userSession?.user?.id && userSession.token) {
-      fetchOrders(userSession.user.id, userSession.token); // Usamos el id del usuario que está dentro de userSession
+      fetchOrders(userSession.user.id, userSession.token);
     }
   }, [userSession]);
 
@@ -67,7 +66,7 @@ const DashboardUserCompo: React.FC = () => {
     try {
       const ordersData = await getuserOrdersDB(id, token);
       setOrders(ordersData);
-      setError(null); // Resetear errores si la solicitud es exitosa
+      setError(null);
     } catch (err) {
       console.error('Error fetching orders:', err);
       setError('Error fetching orders. Please try again later.');
@@ -97,7 +96,6 @@ const DashboardUserCompo: React.FC = () => {
       throw error;
     }
   };
-  // Mostrar la interfaz de carga o error
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -105,7 +103,6 @@ const DashboardUserCompo: React.FC = () => {
   if (error) {
     return <p>{error}</p>;
   }
-
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center py-8 px-4">
       <h1 className="text-3xl font-bold text-gray-800 mb-8">Bienvenido a su historial de Operaciones</h1>
@@ -128,7 +125,7 @@ const DashboardUserCompo: React.FC = () => {
                   <p className="text-gray-700"><strong>Teléfono:</strong> {order.gardener.phone}</p>
                 </div>
                 <div>
-                  <p className="text-gray-700"><strong>Fecha de Orden:</strong> {order.date.split('T')[0]}</p>
+                  <p className="text-gray-700"><strong>Fecha de Orden:</strong> {order.date}</p>
                   <p className="text-gray-700"><strong>Fecha del Servicio:</strong> {false || 'No esta definida'}</p>
                   <p className="text-gray-700"><strong>Monto Total:</strong> ${order.serviceProvided[0].price}</p>
                 </div>
@@ -137,11 +134,15 @@ const DashboardUserCompo: React.FC = () => {
               {/* Detalles del Servicio */}
               <div className="mt-6">
                 <h3 className="text-xl font-semibold text-gray-800 mb-2">Detalles del Servicio</h3>
-                <p className="text-gray-700"><strong>Servicio:</strong> {order.serviceProvided[0].detailService}</p>
-                <p className="text-gray-700"><strong>Categorias del jardinero:</strong> {order.serviceProvided[0].categories[0]}</p>
-                <p className="text-gray-700"><strong>Cantidad:</strong> {order.serviceProvided[0].detailService} </p>
-                <p className="text-gray-700"><strong>Precio Unitario:</strong> ${order.serviceProvided[0].price}</p>
-                <p className="text-gray-700"><strong>SubTotal:</strong> ${order.serviceProvided[0].price}</p>
+                {order.serviceProvided.map((s: any) => (
+                  <div key={s.id}>
+                    <p className="text-gray-700"><strong>Servicio:</strong> {s.detailService}</p>
+                    <p className="text-gray-700"><strong>Precio Unitario:</strong> ${s.price}</p>
+                  </div >
+                ))
+                }
+                <p className="text-gray-700"><strong>Cantidad:</strong> {order.serviceProvided.length} </p>
+                <p className="text-gray-700"><strong>Total:</strong> ${order.serviceProvided.reduce((acc: number, s: any) => acc + s.price, 0)}</p>
               </div>
 
               {/* Estado y Pago */}
