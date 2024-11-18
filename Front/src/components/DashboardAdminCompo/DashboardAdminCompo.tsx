@@ -26,7 +26,9 @@ const DashboardAdminCompo = () => {
 
     return (
         <div>
-
+            <h1>servicios disponibles:
+            </h1>
+<br />
             {
                 services.map(services => (
 

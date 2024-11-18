@@ -15,9 +15,11 @@ export const validateRegisterForm = (value: IRegisterProps): IRegisterErrors => 
     }
     if (!value.password) {
         tempErrors.password = "La contraseña es requerida.";
-    } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[=!@#$%^&])[A-Za-z\d=!@#$%^&]{8,15}$/.test(value.password)) {
-        tempErrors.password = "La contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula, una minúscula, un número y un carácter especial.";
+    } else if (!/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/.test(value.password)) {
+        tempErrors.password = "La contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula, una minúscula, un número y un símbolo.";
     }
+    
+    
     if (value.password !== value.passwordConfirm) {
         tempErrors.passwordConfirm = "Las contraseñas no coinciden.";
       }
@@ -28,12 +30,15 @@ export const validateRegisterForm = (value: IRegisterProps): IRegisterErrors => 
     } else if (value.phone.length < 8 || value.phone.length > 15) {
         tempErrors.phone = "El número de teléfono debe tener entre 8 y 15 dígitos.";
     }
-
-  if (!value.age) {
-    tempErrors.age = "La edad es requerida.";
-  } else if (isNaN(Number(value.age)) || Number(value.age) <= 0) {
-    tempErrors.age = "La edad debe ser un número positivo.";
-  }
+    if (!value.age) {
+        tempErrors.age = "La edad es requerida.";
+    } else {
+        const ageValue = Number(value.age); // Convertimos age a número
+        if (isNaN(ageValue) || ageValue <= 0) {  // Verificamos que sea un número válido
+            tempErrors.age = "La edad debe ser un número positivo.";
+        }
+    }
+    
   if (!value.address) {
     tempErrors.address = "La dirección es requerida.";
   }

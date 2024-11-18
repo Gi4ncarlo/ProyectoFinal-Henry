@@ -1,10 +1,11 @@
 "use client";
 
-import DashboardAdminCompo from '@/components/DashboardAdminCompo/DashboardAdminCompo';
+
 import UserDashboard from './userDashboard/page';
 import React, { useEffect, useState } from 'react';
 import GardenerDashboard from './gardenerDashboard/page';
 import Swal from 'sweetalert2';
+import AdminDashboard from './adminDashboard/page';
 
 const Dashboard = () => {
   const [role, setRole] = useState<string | null>(null);
@@ -32,7 +33,7 @@ const Dashboard = () => {
   // Renderiza el componente correspondiente según el rol
   switch (role) {
     case "admin":
-      return <DashboardAdminCompo />;
+      return <AdminDashboard />;
     case "gardener":
       return <GardenerDashboard/>;
     case "user":

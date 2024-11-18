@@ -1,8 +1,14 @@
 import DashboardUserCompo from "@/components/DashboardUserCompo/DashboardUserCompo";
 import React from "react";
 
-const userDashboard = () => {
-  return <DashboardUserCompo />;
+const UserDashboard = () => {
+  return (
+    <div>
+      <DashboardUserCompo/>
+      
+    </div>
+
+  )
 };
 
-export default userDashboard;
+export default UserDashboard;

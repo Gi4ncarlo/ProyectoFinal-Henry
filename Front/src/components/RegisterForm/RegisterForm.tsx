@@ -19,7 +19,7 @@ export default function RegisterForm() {
     age: 0,
     address: "",
     phone: "",
-    offerServices: false, // Inicialización correcta
+    role: "", // Campo para el rol (cliente o jardinero)
   };
 
   const [showPassword, setShowPassword] = useState(false);
@@ -34,17 +34,16 @@ export default function RegisterForm() {
     age: false,
     address: false,
     phone: false,
-    offerServices: false,
+
+    role: false, // Campo tocado para el rol
   });
 
   // Manejo del cambio en los campos
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type, checked } = event.target;
     setDataUser({
       ...dataUser,
-    
       [name]: name === 'age' ? Number(value) : type === 'checkbox' ? checked : value,
-
     });
     setTouched({
       ...touched,
@@ -92,6 +91,7 @@ export default function RegisterForm() {
       <p className="text-gray-600 text-center mb-6">Crea tu cuenta y disfruta de nuestros servicios</p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Nombre */}
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-gray-700">Nombre</label>
           <input
@@ -103,12 +103,12 @@ export default function RegisterForm() {
             placeholder="John"
             className="mt-1 p-2 border border-gray-300 rounded w-full"
           />
-            {touched.name && errors.name && (
-          <span className="text-red-500 text-sm">{errors.name}</span>
-        )}
+          {touched.name && errors.name && (
+            <span className="text-red-500 text-sm">{errors.name}</span>
+          )}
         </div>
 
-
+        {/* Usuario */}
         <div>
           <label htmlFor="username" className="block text-sm font-medium text-gray-700">Nombre de Usuario</label>
           <input
@@ -120,11 +120,12 @@ export default function RegisterForm() {
             placeholder="john_doe"
             className="mt-1 p-2 border border-gray-300 rounded w-full"
           />
-            {touched.username && errors.username && (
-          <span className="text-red-500 text-sm">{errors.username}</span>
-               )}
+          {touched.username && errors.username && (
+            <span className="text-red-500 text-sm">{errors.username}</span>
+          )}
         </div>
 
+        {/* Email */}
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
           <input
@@ -137,13 +138,14 @@ export default function RegisterForm() {
             placeholder="example@mail.com"
             className="mt-1 p-2 border border-gray-300 rounded w-full"
           />
-               {touched.email && errors.email && (
-          <span className="text-red-500 text-sm">{errors.email}</span>
-               )}
+          {touched.email && errors.email && (
+            <span className="text-red-500 text-sm">{errors.email}</span>
+          )}
         </div>
 
+        {/* Contraseña */}
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+          <label htmlFor="password" className="block text-sm font-medium text-gray-700">Contraseña</label>
           <div className="relative">
             <input
               id="password"
@@ -164,13 +166,13 @@ export default function RegisterForm() {
             </button>
           </div>
           {touched.password && errors.password && (
-          <span className="text-red-500 text-sm">{errors.password}</span>
+            <span className="text-red-500 text-sm">{errors.password}</span>
           )}
         </div>
 
-
+        {/* Confirmar Contraseña */}
         <div>
-          <label htmlFor="passwordConfirm" className="block text-sm font-medium text-gray-700">Confirmar Password</label>
+          <label htmlFor="passwordConfirm" className="block text-sm font-medium text-gray-700">Confirmar Contraseña</label>
           <input
             id="passwordConfirm"
             name="passwordConfirm"
@@ -181,11 +183,12 @@ export default function RegisterForm() {
             placeholder="••••••••"
             className="mt-1 p-2 border border-gray-300 rounded w-full"
           />
-            {touched.passwordConfirm && errors.passwordConfirm && (
-          <span className="text-red-500 text-sm">{errors.passwordConfirm}</span>
-        )}
+          {touched.passwordConfirm && errors.passwordConfirm && (
+            <span className="text-red-500 text-sm">{errors.passwordConfirm}</span>
+          )}
         </div>
 
+        {/* Edad */}
         <div>
           <label htmlFor="age" className="block text-sm font-medium text-gray-700">Edad</label>
           <input
@@ -198,11 +201,12 @@ export default function RegisterForm() {
             placeholder="30"
             className="mt-1 p-2 border border-gray-300 rounded w-full"
           />
-            {touched.age && errors.age && (
-          <span className="text-red-500 text-sm">{errors.age}</span>
-        )}
+          {touched.age && errors.age && (
+            <span className="text-red-500 text-sm">{errors.age}</span>
+          )}
         </div>
 
+        {/* Teléfono */}
         <div>
           <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Teléfono</label>
           <input
@@ -215,11 +219,12 @@ export default function RegisterForm() {
             placeholder="123-456-7890"
             className="mt-1 p-2 border border-gray-300 rounded w-full"
           />
-              {touched.phone && errors.phone && (
-          <span className="text-red-500 text-sm">{errors.phone}</span>
-        )}
+          {touched.phone && errors.phone && (
+            <span className="text-red-500 text-sm">{errors.phone}</span>
+          )}
         </div>
 
+        {/* Dirección */}
         <div>
           <label htmlFor="address" className="block text-sm font-medium text-gray-700">Dirección</label>
           <input
@@ -231,27 +236,35 @@ export default function RegisterForm() {
             placeholder="123 Garden St."
             className="mt-1 p-2 border border-gray-300 rounded w-full"
           />
-            {touched.address && errors.address && (
-          <span className="text-red-500 text-sm">{errors.address}</span>
-        )}
+          {touched.address && errors.address && (
+            <span className="text-red-500 text-sm">{errors.address}</span>
+          )}
         </div>
 
-        <div className="flex items-center space-x-2">
-          <input
-            id="offerServices"
-            name="offerServices"
-            type="checkbox"
-            checked={dataUser.offerServices}
+        {/* Selección de rol */}
+        <div>
+          <label htmlFor="role" className="block text-sm font-medium text-gray-700">¿Eres Cliente o Jardinero?</label>
+          <select
+            id="role"
+            name="role"
+            value={dataUser.role}
             onChange={handleChange}
-            className="h-4 w-4 text-indigo-600 border-gray-300 rounded"
-          />
+            required
+            className="mt-1 p-2 border border-gray-300 rounded w-full"
+          >
+            <option value="">Selecciona un rol</option>
+            <option value="user">Usuario</option>
+            <option value="gardener">Jardinero</option>
+          </select>
+          {touched.role && errors.role && (
+            <span className="text-red-500 text-sm">{errors.role}</span>
+          )}
         </div>
 
-    
         <button type="submit" disabled={Object.values(errors).some(error => error !== "")} className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-        Registrarme como usuario
-      </button>
+          Registrarme como usuario
+        </button>
       </form>
     </div>
-  )
+  );
 }
