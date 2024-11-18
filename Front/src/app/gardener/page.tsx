@@ -3,7 +3,7 @@ import React from "react";
 
 const gardeners = () => {
   return (
-    <div className="flex mt-24">
+    <div className="flex">
       <ProviderCardList />
     </div>
   );
