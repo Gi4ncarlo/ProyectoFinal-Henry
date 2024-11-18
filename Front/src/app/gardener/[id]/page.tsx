@@ -26,7 +26,7 @@ const ProviderDetail: React.FC = () => {
           const gardenerData = await getProviderById(id as string);
           setGardener(gardenerData);
         } catch (error) {
-          console.error('Error fetching gardener data:', error);
+          console.error('Error buscando informacion del Jardinero.:', error);
         }
       }
     };
@@ -37,7 +37,7 @@ const ProviderDetail: React.FC = () => {
         const serviceData = await getServicesProvided();
         setServices(serviceData);
       } catch (error) {
-        console.error('Error fetching services:', error);
+        console.error('Error buscando los servicios del Jardinero:', error);
       }
     };
 

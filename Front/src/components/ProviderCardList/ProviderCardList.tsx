@@ -48,7 +48,7 @@ const ProviderCardList: React.FC = () => {
 
   return (
 
-    <div className="mx-auto">
+    <div className="mx-auto mb-10">
       {
         !providers ? (
           <div className="text-center mb-8 mx-auto">
@@ -76,8 +76,8 @@ const ProviderCardList: React.FC = () => {
                 onChange={handleFilter}
               >
                 <option value="">Ordenar por</option>
-                <option value="ASC">Alfabetico ⬆</option>
-                <option value="DESC">Alfabetico ⬇</option>
+                <option value="ASC">Alfabetico A-Z</option>
+                <option value="DESC">Alfabetico Z-A</option>
                 <option value="1"> ⭐</option>
                 <option value="2"> ⭐⭐</option>
                 <option value="3"> ⭐⭐⭐</option>
