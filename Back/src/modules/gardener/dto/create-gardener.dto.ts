@@ -18,6 +18,9 @@ export class CreateGardenerDto {
   email: string;
 
   @IsString()
+  username : string;
+
+  @IsString()
   password: string;
 
   @IsInt()

@@ -12,7 +12,7 @@ export async function getuserOrdersDB(id: number, token: string) {
     if (!res.ok) {
       throw new Error("Error al obtener las órdenes");
     }
-    const orders = await res.json();
+    const orders = await res.json();    
     return orders;
   } catch (error: any) {
     throw new Error(error);

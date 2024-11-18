@@ -1,92 +1,166 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+// import { getServicesProvided } from '@/helpers/service.helpers';
+
+// interface ServiceProvided {
+//   id: string;
+//   detailService: string;
+//   price: number;
+// }
 
 const Home: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedService, setSelectedService] = useState<string>('');
+  // const [services, setServices] = useState<ServiceProvided[]>([]);
+  // const [isMounted, setIsMounted] = useState(false); // Nuevo estado para verificar si el componente está montado
   const router = useRouter();
 
+  // Efecto para verificar si el componente está montado
+  // useEffect(() => {
+  //   setIsMounted(true);
+  // }, []);
+
+  // useEffect(() => {
+  //   const fetchServices = async () => {
+  //     if (!isMounted) return; // Esperamos hasta que el componente esté montado
+
+  //     // Obtenemos el token del localStorage
+  //     const userSession = localStorage.getItem("userSession");
+  //     const tokenData = userSession ? JSON.parse(userSession) : null;
+
+  //     // Verificamos si existe el token
+  //     if (!tokenData || !tokenData.token) {
+  //       console.error('Token not found');
+  //       return;
+  //     }
+
+    //   try {
+    //     // Obtenemos los servicios usando el helper
+    //     const fetchedServices = await getServicesProvided();
+    //     setServices(fetchedServices);
+    //   } catch (error) {
+    //     console.error('Error fetching services:', error);
+    //   }
+    // };
+
+  //   fetchServices();
+  // }, [isMounted]);
+
   const handleSearch = () => {
-    if (selectedCategory) {
-      router.push(`/${selectedCategory}`);
+    if (selectedService) {
+      router.push(`/gardener/${selectedService}`);
     }
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-green-100 to-green-200 flex flex-col items-center justify-center p-4">
-      <h1 className="text-4xl font-bold text-green-800 mb-8">¡Bienvenido a Vicnasol!</h1>
-
-      <div className="bg-white rounded-lg shadow-xl p-8 max-w-3xl w-full mb-12">
-        <div className="flex flex-col sm:flex-row items-center gap-4">
-          <select
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            className="w-full sm:w-[300px] p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200 ease-in-out"
-            aria-label="Select a gardening service"
+    <div className="flex flex-col items-center justify-center">
+      {/* HERO SECTION */}
+      <section
+        id="hero"
+        className="w-full h-screen flex flex-col items-center justify-center relative text-white"
+        style={{
+          backgroundImage: "url('/images/fondo_home.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        <div className="bg-black bg-opacity-50 w-full h-full flex flex-col items-center justify-center">
+          <h1 className="text-4xl md:text-6xl font-bold mb-4">
+            Bienvenido a Vicnasol Jardinería
+          </h1>
+          <p className="text-lg md:text-xl mb-8">
+            Transformamos tu espacio en un oasis verde
+          </p>
+          <a
+            href="/servicios"
+            className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded"
           >
-            <option value="">Seleccione un servicio</option>
-            <option value="all-services">Todos los Servicios</option>
-            <option value="lawn-mowing">Cortar el césped</option>
-            <option value="tree-pruning">Poda de árboles</option>
-            <option value="hedge-trimming">Recorte de arbustos</option>
-            <option value="garden-design">Diseño de jardines</option>
-            <option value="lawn-fertilization">Fertilización del césped</option>
-            <option value="weed-control">Control de malezas</option>
-            <option value="mulching">Acolchado</option>
-            <option value="irrigation">Instalación del sistema de riego</option>
-            <option value="landscape-maintenance">Mantenimiento del paisaje</option>
-            <option value="leaf-removal">Eliminación de hojas</option>
-            <option value="flower-bed-planting">Plantación de macizos de flores</option>
-            <option value="soil-aeration">Aireación del suelo</option>
-            <option value="garden-pest-control">Control de plagas en el jardín</option>
-            <option value="gutter-cleaning">Limpieza de canaletas</option>
-            <option value="tree-removal">Eliminación de árboles</option>
-          </select>
-
-          <button
-            onClick={handleSearch}
-            className={`w-full sm:w-auto px-6 py-3 rounded-md text-white font-semibold transition duration-200 ease-in-out ${selectedCategory
-                ? 'bg-green-600 hover:bg-green-700 active:bg-green-800'
-                : 'bg-gray-400 cursor-not-allowed'
-              }`}
-            disabled={!selectedCategory}
-            aria-label="Search for selected service"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              className="w-5 h-5 inline-block mr-2"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-            Buscar
-          </button>
+            Ver Servicios
+          </a>
         </div>
-      </div>
+      </section>
 
-      <div className="mt-12 text-center max-w-2xl mx-auto">
-        <h2 className="text-2xl font-semibold text-green-800 mb-4">Descubra el placer de la jardinería</h2>
-        <p className="text-green-700">
-          Si usted es un jardinero experimentado, recién comienza o busca contratar servicios profesionales,
-           tenemos todo lo que necesita para ayudar a que su jardín y su negocio florezcan. Explora nuestra extensa 
-           gama de servicios, herramientas y asesoramiento experto para crear el espacio exterior perfecto.
+      {/* ABOUT SECTION */}
+      <section
+        id="about"
+        className="w-full py-20 bg-white text-gray-800 flex flex-col items-center justify-center"
+      >
+        <h2 className="text-3xl md:text-4xl font-semibold mb-6">
+          Sobre Nosotros
+        </h2>
+        <p className="text-lg md:text-xl mb-6 px-4 md:w-2/3 lg:w-1/2 text-center">
+          En Vicnasol Jardinería, nos especializamos en crear y mantener
+          hermosos jardines que alegran los espacios. Nuestro equipo de
+          profesionales está comprometido con la excelencia y la
+          satisfacción del cliente.
         </p>
-      </div>
+      </section>
 
-      <div className="absolute bottom-4 left-4">
-        <div className="w-32 h-32 bg-green-300 rounded-full opacity-50"></div>
+      {/* SERVICES SECTION */}
+<section
+  id="services"
+  className="w-full py-20 bg-gradient-to-b from-green-500 to-green-700 text-white flex flex-col items-center"
+  style={{
+    backgroundImage: "url('/images/fondo_home.jpg')",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+  }}
+>
+  <h2 className="text-3xl md:text-4xl font-semibold mb-10 text-center">
+    Nuestros Servicios
+  </h2>
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-4 md:px-10 lg:px-20">
+    {/* Bloque de Servicio */}
+    <div className="bg-white text-gray-800 p-6 rounded-lg shadow-lg transform transition-transform hover:scale-105">
+      <div className="flex items-center justify-center mb-4">
       </div>
-      <div className="absolute top-4 right-4">
-        <div className="w-32 h-32 bg-green-300 rounded-full opacity-50"></div>
+      <h3 className="text-xl font-semibold mb-4 text-center">Mantenimiento</h3>
+      <p className="text-center">
+        Servicios regulares de mantenimiento para mantener tu jardín en perfectas
+        condiciones durante todo el año.
+      </p>
+    </div>
+    {/* Bloque de Diseño */}
+    <div className="bg-white text-gray-800 p-6 rounded-lg shadow-lg transform transition-transform hover:scale-105">
+      <div className="flex items-center justify-center mb-4">
       </div>
-    </main>
+      <h3 className="text-xl font-semibold mb-4 text-center">Diseño</h3>
+      <p className="text-center">
+        Creamos diseños personalizados que se adaptan a tus gustos y al entorno
+        de tu espacio.
+      </p>
+    </div>
+    {/* Bloque de Instalación */}
+    <div className="bg-white text-gray-800 p-6 rounded-lg shadow-lg transform transition-transform hover:scale-105">
+      <div className="flex items-center justify-center mb-4">
+      </div>
+      <h3 className="text-xl font-semibold mb-4 text-center">Instalación</h3>
+      <p className="text-center">
+        Realizamos instalaciones completas, desde césped hasta sistemas de riego.
+      </p>
+    </div>
+  </div>
+</section>
+
+      {/* CONTACT SECTION */}
+      <section
+        id="contact"
+        className="w-full py-20 bg-white text-gray-800 flex flex-col items-center justify-center"
+      >
+        <h2 className="text-3xl md:text-4xl font-semibold mb-6">Contáctanos</h2>
+        <p className="text-lg md:text-xl mb-6 px-4 md:w-2/3 lg:w-1/2 text-center">
+          ¿Listo para transformar tu jardín? Ponte en contacto con nosotros
+          hoy mismo para obtener una cotización.
+        </p>
+        <a
+          href="#"
+          className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded"
+        >
+          Enviar Mensaje
+        </a>
+      </section>
+    </div>
   );
 };
 

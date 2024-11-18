@@ -7,21 +7,22 @@ import {
   HttpStatus,
   Param,
   ParseUUIDPipe,
-  Patch,
   Post,
   Res,
-  UseGuards,
+  UseGuards
 } from '@nestjs/common';
-import { ServiceProvidedService } from './serviceProvided.service';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { IsUUID } from 'class-validator';
 import { Response } from 'express';
-import { UpdateServiceProvidedDto } from './Dtos/serviceProvided.dto';
-import { ServiceProvided } from './entities/serviceProvided.entity';
-import { Role } from '../user/enums/role.enum';
 import { Roles } from 'src/decorators/roles.decorator';
 import { RolesGuard } from 'src/guards/roles/role.guard';
 import { AuthGuard } from '../auth/auth.guard';
-import { IsUUID } from 'class-validator';
+import { Role } from '../user/enums/role.enum';
+import { ServiceProvided } from './entities/serviceProvided.entity';
+import { ServiceProvidedService } from './serviceProvided.service';
 
+@ApiTags('serviceDetails')
+@ApiBearerAuth()
 @Controller('serviceProvided')
 export class ServiceProvidedController {
   constructor(

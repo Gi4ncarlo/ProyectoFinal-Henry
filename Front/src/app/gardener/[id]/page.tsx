@@ -11,7 +11,8 @@ import { hireServices } from '@/helpers/order.helpers';
 
 const ProviderDetail: React.FC = () => {
   const router = useRouter();
-  const { id } = useParams();
+  const params = useParams();
+  const id = params?.id as string | undefined;
   const [gardener, setGardener] = useState<IServiceProvider | null>(null);
   const [services, setServices] = useState<IService[]>([]); // Servicios disponibles
   const [selectedServices, setSelectedServices] = useState<string[]>([]); // Servicios seleccionados
@@ -25,7 +26,7 @@ const ProviderDetail: React.FC = () => {
           const gardenerData = await getProviderById(id as string);
           setGardener(gardenerData);
         } catch (error) {
-          console.error('Error fetching gardener data:', error);
+          console.error('Error buscando informacion del Jardinero.:', error);
         }
       }
     };
@@ -36,7 +37,7 @@ const ProviderDetail: React.FC = () => {
         const serviceData = await getServicesProvided();
         setServices(serviceData);
       } catch (error) {
-        console.error('Error fetching services:', error);
+        console.error('Error buscando los servicios del Jardinero:', error);
       }
     };
 
@@ -81,7 +82,7 @@ const ProviderDetail: React.FC = () => {
         isApproved,
         gardenerId,
         userId,
-        serviceId: selectedServices[0],
+        serviceId: selectedServices,
       });
       setOrderService(order);
       router.push("/dashboard/userDashboard")
@@ -102,8 +103,8 @@ const ProviderDetail: React.FC = () => {
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="flex">
-      <div className="max-w-3xl mx-auto mt-32 p-6 bg-white rounded-lg shadow-lg">
+    <div className="flex bg-[#4CAF50]">
+      <div className="max-w-3xl mx-auto mt-32 mb-14 p-6 bg-white rounded-lg shadow-lg">
         <div className="flex items-center">
           <Image
             className="rounded-full"
@@ -113,17 +114,17 @@ const ProviderDetail: React.FC = () => {
             height={120}
           />
           <div className="ml-6">
-            <h1 className="text-2xl font-bold text-gray-900">{gardener.name}</h1>
-            <p className="text-gray-500">@{gardener.username}</p>
+            <h1 className="text-2xl font-bold text-[#263238]">{gardener.name}</h1>
+            <p className="text-[#8BC34A]">@{gardener.username}</p>
           </div>
         </div>
 
         <div className="mt-6">
-          <h2 className="text-lg font-semibold text-gray-700">Experiencia:</h2>
+          <h2 className="text-lg font-semibold text-[#263238]">Experiencia:</h2>
           <p className="text-gray-600">{gardener.experience}</p>
 
-          <h2 className="text-lg font-semibold text-gray-700 mt-4">Puntuación:</h2>
-          <div className="flex items-center">
+          <h2 className="text-lg font-semibold text-[#263238] mt-4">Puntuación:</h2>
+          <div className="flex items-center mt-3">
             {Array.from({ length: 5 }).map((_, index) => (
               <svg
                 key={index}
@@ -140,17 +141,15 @@ const ProviderDetail: React.FC = () => {
             <span className="ml-2 text-sm text-gray-500">{gardener.calification.toFixed(1)}</span>
           </div>
 
-          <h2 className="text-lg font-semibold text-gray-700 mt-4">Costo por hora:</h2>
-          <p className="text-gray-600">${gardener.costPerHour}</p>
         </div>
 
         {/* Servicios disponibles */}
         <div className="mt-6">
-          <h2 className="text-lg font-semibold text-gray-700">Servicios Disponibles:</h2>
+          <h2 className="text-lg font-semibold text-[#263238]">Servicios Disponibles:</h2>
           <div className="mt-2">
             {services.map(service => (
               <div key={service.id} className="mb-4">
-                <label className="block text-gray-600">
+                <label className="block text-[#263238]">
                   <input
                     type="checkbox"
                     checked={selectedServices.includes(service.id)}
@@ -158,9 +157,9 @@ const ProviderDetail: React.FC = () => {
                     className="mr-2"
                   />
                 </label>
-                <p className="ml-6 text-sm text-gray-500">Detalle: {service.detailService}</p>
-                <p className="ml-6 text-sm text-gray-500">Precio: ${service.price}</p>
-                <p className="ml-6 text-sm text-gray-500">Categoria: {service.categories}</p>
+                <p className="ml-6 text-sm text-[#263238]">Detalle: {service.detailService}</p>
+                <p className="ml-6 text-sm text-[#263238]">Precio: ${service.price}</p>
+                <p className="ml-6 text-sm text-[#263238]">Categoria: {service.categories}</p>
               </div>
             ))}
           </div>
@@ -169,7 +168,7 @@ const ProviderDetail: React.FC = () => {
         <div className="mt-6 flex justify-center">
           <button
             onClick={handleHireClick}
-            className="px-6 py-3 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors"
+            className="w-full mt-4 p-2 bg-[#4caf50] text-white font-bold rounded hover:bg-[#388e3c]"
           >
             Contratar Servicios
           </button>

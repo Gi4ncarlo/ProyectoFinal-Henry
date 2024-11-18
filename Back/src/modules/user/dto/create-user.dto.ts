@@ -40,8 +40,8 @@ export class CreateUserDto {
   email: string;
  
   @IsString()
-  adress: string
+  address: string
 
   @IsEnum(Role, { message: 'Role must be either User, Admin or Gardener' })
-  role: Role = Role.User;
+  role?: Role;
 }

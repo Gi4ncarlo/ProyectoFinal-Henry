@@ -7,7 +7,7 @@ export const hireServices = async (data: {
     isApproved: boolean;
     gardenerId: string;
     userId: string;
-    serviceId: string;
+    serviceId: string[];
   }) => {
     try {
       const response = await fetch(`${APIURL}/services-order`, {
@@ -18,7 +18,7 @@ export const hireServices = async (data: {
         },
         body: JSON.stringify(data),
       });
-  
+      
       if (!response.ok) {
         throw new Error('Failed to hire services');
       }

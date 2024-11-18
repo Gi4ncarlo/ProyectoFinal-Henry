@@ -50,10 +50,6 @@ export class ServicesOrderService {
       }
       serviceProvided.push(service);
     }
-    console.log(serviceProvided);
-    
-
-
     if (!gardener) {
       throw new Error('Gardener not found');
     }
@@ -146,6 +142,7 @@ export class ServicesOrderService {
     try {
       const order = await this.findOne(id);
       if (!order) throw new NotFoundException(`Orden de servicio con id ${id} no encontrada`);
+      
       order.isApproved = true;
       let price = 0;
       order.serviceProvided.map((service) => price += service.price)
