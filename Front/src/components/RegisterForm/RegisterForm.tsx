@@ -1,6 +1,6 @@
 'use client';
 
-import { register } from '@/helpers/auth.helpers';
+import { checkEmailBeforeRegister, register } from '@/helpers/auth.helpers';
 import { validateRegisterForm } from '@/helpers/validate';
 import { IRegisterErrors, IRegisterProps } from '@/interfaces/IRegisterProps';
 import { useRouter } from 'next/navigation';
@@ -35,7 +35,7 @@ export default function RegisterForm() {
     address: false,
     phone: false,
 
-    role: false, // Campo tocado para el rol
+    role: false, 
   });
 
   // Manejo del cambio en los campos
@@ -50,27 +50,32 @@ export default function RegisterForm() {
       [name]: true,
     });
   };
-
-  // Manejo de envío del formulario
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
   
     const validationErrors = validateRegisterForm(dataUser);
     setErrors(validationErrors);
   
-    // Verificamos si no hay errores antes de registrar
     if (Object.keys(validationErrors).length === 0) {
-      // Creamos una copia de dataUser con age convertido a número
-      const userToSend = {
-        ...dataUser,
-        age: Number(dataUser.age),
-      };
+      const emailValid = await checkEmailBeforeRegister(dataUser);
+      if (!emailValid) {
+        setErrors((prev) => ({
+          ...prev,
+          email: "Este correo ya está registrado.",
+        }));
+        return;
+      }
   
-      await register(userToSend);
-      alert("Correct Register");
-      router.push('/login');
+      try {
+        await register(dataUser);
+        alert("Registro exitoso");
+        router.push("/login");
+      } catch (error) {
+        alert(error.message);
+      }
     }
   };
+  
 
   // Validación en tiempo real al cambiar `dataUser` o `touched`
   useEffect(() => {
