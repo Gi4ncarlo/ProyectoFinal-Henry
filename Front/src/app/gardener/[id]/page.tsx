@@ -8,7 +8,7 @@ import { getServicesProvided } from '@/helpers/service.helpers';
 import { useParams, useRouter } from 'next/navigation';
 import { IService } from '@/interfaces/IService';
 import { hireServices } from '@/helpers/order.helpers';
-import GardenerCalendar from '@/components/Gardeners/Gardeners';
+import GardenerCalendar from '@/components/GardenerCalendar/GardenerCalendar';
 
 const ProviderDetail: React.FC = () => {
   const router = useRouter();

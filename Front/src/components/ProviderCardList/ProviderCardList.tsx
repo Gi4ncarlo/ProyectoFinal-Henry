@@ -7,75 +7,62 @@ import { IServiceProvider } from '@/interfaces/IServiceProvider';
 import { getGardenersDB } from '@/helpers/gardeners.helpers';
 import { useRouter } from 'next/navigation';
 import { FaSearch } from 'react-icons/fa';
+import gardeners from '@/app/gardener/page';
+
 
 const ProviderCardList: React.FC = () => {
   const [providers, setProviders] = useState<IServiceProvider[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [filter, setFilter] = useState<string>('ASC'); // Valor inicial predeterminado
-  const [searchTerm, setSearchTerm] = useState<string>(''); // Valor inicial predeterminado
-  const TOKEN = JSON.parse(localStorage.getItem("userSession") || "null");
+  const [filter, setFilter] = useState<string>(localStorage.getItem("filter") || 'ASC'); // Recupera el filtro de localStorage o usa el valor predeterminado
+  const [searchTerm, setSearchTerm] = useState(localStorage.getItem("searchTerm") || ''); // Recupera el término de búsqueda de localStorage o usa una cadena vacía
+  const TOKEN = JSON.parse(localStorage.getItem("userSession") || "null")
   const router = useRouter();
-
-  // Validación de token
   if (!TOKEN) {
-    router.push('/login');
+    router.push('/login')
   }
 
-  // Cargar `filter` y `searchTerm` desde localStorage en el cliente
-  useEffect(() => {
-    const storedFilter = localStorage.getItem("filter");
-    const storedSearchTerm = localStorage.getItem("searchTerm");
-
-    if (storedFilter) setFilter(storedFilter);
-    if (storedSearchTerm) setSearchTerm(storedSearchTerm);
-  }, []);
-
-  const handleFilter = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleFilter = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newFilter = e.target.value;
     setFilter(newFilter);
     localStorage.setItem("filter", newFilter);
   };
-
-  const HandleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const HandleSearch = (e) => {
     const newSearchTerm = e.target.value;
     setSearchTerm(newSearchTerm);
     localStorage.setItem("searchTerm", newSearchTerm);
   };
 
   useEffect(() => {
-    const fetchProviders = async () => {
+    const fetchProviders = async (name = "") => {
       try {
+        // Si `filter` es numérico, lo interpretamos como una calificación.
         const order = filter === 'ASC' || filter === 'DESC' ? filter : 'ASC';
         const calification = isNaN(Number(filter)) ? undefined : Number(filter);
-  
-        // Llamada a la función
-        const gardeners = await getGardenersDB(order, calification, searchTerm);
-  
-        // Ajuste del acceso
-        setProviders(gardeners); 
+       
+        const name = searchTerm;
+        const gardeners = await getGardenersDB(order, calification, name);
+       setProviders(gardeners.data);
       } catch (error: any) {
         setError(error.message || 'Error al cargar los productos');
       }
     };
+    
+    
   
-    fetchProviders();
-  }, [filter, searchTerm]);
-  
+    console.log(fetchProviders());
+  }, [filter, searchTerm]); // Vuelve a cargar cada vez que cambia el filtro
+
 
   if (error) return <div>{error}</div>;
 
   return (
+
     <div className="mx-auto">
       {
-        !providers.length ? (
+        !providers ? (
           <div className="text-center mb-8 mx-auto">
             <h1 className="text-2xl font-bold mb-4">No hay jardineros</h1>
-            <button
-              className='bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded'
-              onClick={() => setSearchTerm('')}
-            >
-              Back
-            </button>
+            <button className='bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded' onClick={() => setSearchTerm('')}>Back</button>
           </div>
         ) : (
           <>
