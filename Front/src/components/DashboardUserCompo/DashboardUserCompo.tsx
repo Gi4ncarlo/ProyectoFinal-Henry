@@ -3,8 +3,6 @@ import { getuserOrdersDB } from "@/helpers/userOrders.helpers";
 import { IOrderProps } from "@/interfaces/IOrdersProps";
 import { IUserSession } from "@/interfaces/IUserSession";
 import Image from "next/image";
-// import { format } from 'date-fns';
-// import { es, ar } from 'date-fns/locale';
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
