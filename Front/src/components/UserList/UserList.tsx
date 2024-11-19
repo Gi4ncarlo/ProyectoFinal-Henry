@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useState, useEffect } from 'react';
 import { banUser, getAllUsers } from '@/helpers/userOrders.helpers';
 
@@ -12,7 +14,7 @@ interface User {
 function UserList() {
   const [users, setUsers] = useState<User[]>([]);
   const [isBanning, setIsBanning] = useState(false);
-  const [banError, setBanError] = useState(null);
+  const [banError, setBanError] = useState<any>(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -47,7 +49,7 @@ function UserList() {
         console.error('User token not found');
         setBanError('Token de usuario no encontrado');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error banning/unbanning user:', error);
       setBanError(error.message || 'Error al banear/desbanear usuario');
     } finally {
