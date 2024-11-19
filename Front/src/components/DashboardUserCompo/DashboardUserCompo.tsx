@@ -65,6 +65,7 @@ const DashboardUserCompo: React.FC = () => {
     setLoading(true);
     try {
       const ordersData = await getuserOrdersDB(id, token);
+      console.log(ordersData);
       setOrders(ordersData);
       setError(null);
     } catch (err) {
@@ -109,7 +110,7 @@ const DashboardUserCompo: React.FC = () => {
     <div className="min-h-screen bg-gray-50 flex flex-col items-center py-8 px-4">
       <h1 className="text-3xl font-bold text-gray-800 mb-8">Bienvenido a su historial de Operaciones</h1>
 
-      {!orders.servicesOrder ? (
+      {!orders[0].servicesOrder.length ? (
         <p className="text-xl text-[#FF5722]">No se encontraron órdenes.</p>
       ) : (
         <div className="w-full max-w-6xl space-y-8">
@@ -127,9 +128,9 @@ const DashboardUserCompo: React.FC = () => {
                   <p className="text-gray-700"><strong>Teléfono:</strong> {order.gardener.phone}</p>
                 </div>
                 <div>
+                  <h1 className="text-gray-700 text-xl"><strong>Nº de Orden:</strong><br/>{order.id}</h1><br/>
                   <p className="text-gray-700"><strong>Fecha de Orden:</strong> {order.date}</p>
                   <p className="text-gray-700"><strong>Fecha del Servicio:</strong> {false || 'No esta definida'}</p>
-                  <p className="text-gray-700"><strong>Monto Total:</strong> ${order.serviceProvided[0].price}</p>
                 </div>
               </div>
 
@@ -144,7 +145,7 @@ const DashboardUserCompo: React.FC = () => {
                 ))
                 }
                 <p className="text-gray-700"><strong>Cantidad:</strong> {order.serviceProvided.length} </p>
-                <p className="text-gray-700"><strong>Total:</strong> ${order.serviceProvided.reduce((acc: number, s: any) => acc + s.price, 0)}</p>
+                <p className="text-gray-700 text-2xl mt-4"><strong>Total:</strong> ${order.serviceProvided.reduce((acc: number, s: any) => acc + s.price, 0)}</p>
               </div>
 
               {/* Estado y Pago */}
@@ -158,12 +159,6 @@ const DashboardUserCompo: React.FC = () => {
                   </span>
                 </div>
                 <div className="flex items-center">
-                  <span
-                    className={`inline-block px-4 py-2 rounded-full text-white font-semibold ${order.paymentStatus === 'Pagado' ? 'bg-blue-500' : 'bg-yellow-500'
-                      }`}
-                  >
-                    {order.paymentStatus}
-                  </span>
                 </div>
               </div>
 
@@ -174,11 +169,12 @@ const DashboardUserCompo: React.FC = () => {
                 <p className="text-gray-700"><strong>Referencias:</strong> {order.references || 'N/A'}</p>
                 <p className="text-gray-700"><strong>Comentarios:</strong> {order.comments || 'Ningún comentario'}</p>
               </div>
-
-              <button className="mt-6 py-2 px-6 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors duration-300"
+              <div className='flex justify-center'>
+              <button className="mt-4 p-4 bg-[#4caf50] text-white text-xl font-bold rounded-lg hover:bg-[#388e3c]"
                 onClick={() => handlePayment(order.id)}>
                 Pagar con mercadopago
               </button>
+              </div>
             </div>
           ))}
         </div>

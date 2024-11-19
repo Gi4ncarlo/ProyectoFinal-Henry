@@ -12,13 +12,13 @@ export async function register(dataUser: IRegisterProps): Promise<void> {
       body: JSON.stringify(dataUser),
     });
 
-    if (!res.ok) {
-      const errorData = await res.json();
-      if (errorData.message.includes("email")) {
-        throw new Error("Este correo ya está registrado.");
-      }
-      throw new Error(errorData.message || "Register error");
-    }
+    // if (!res.ok) {
+    //   const errorData = await res.json();
+    //   if (errorData.message.includes("email")) {
+    //     throw new Error("Este correo ya está registrado.");
+    //   }
+    //   throw new Error(errorData.message || "Register error");
+    // }
   } catch (error: any) {
     throw new Error(error.message);
   }
@@ -70,7 +70,7 @@ export async function checkEmailBeforeRegister(dataUser: IRegisterProps): Promis
     const res = await fetch(`${APIURL}/auth/signup`, {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ ...dataUser, validateOnly: true }), 
+      body: JSON.stringify({ ...dataUser }), 
     });
 
     return res.ok; // Retorna `true` si no hay error

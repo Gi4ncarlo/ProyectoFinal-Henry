@@ -24,7 +24,7 @@ export default function RegisterForm() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [dataUser, setDataUser] = useState<IRegisterProps>(initialState);
-  const [errors, setErrors] = useState<IRegisterErrors>({});
+  const [errors, setErrors] = useState<any>({});
   const [touched, setTouched] = useState({
     name: false,
     email: false,
@@ -34,13 +34,12 @@ export default function RegisterForm() {
     age: false,
     address: false,
     phone: false,
-
     role: false, 
   });
 
 
   const searchParams = useSearchParams(); // Hook para leer parámetros de la URL
-  const role = searchParams.get('role'); // Obtén el valor del parámetro "role"
+  const role = searchParams?.get('role'); // Obtén el valor del parámetro "role"
   
   const [title, setTitle] = useState("");
 
@@ -57,7 +56,7 @@ export default function RegisterForm() {
 
 
   // Manejo del cambio en los campos
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (event: any) => {
     const { name, value, type, checked } = event.target;
     setDataUser({
       ...dataUser,
@@ -75,9 +74,12 @@ export default function RegisterForm() {
     setErrors(validationErrors);
   
     if (Object.keys(validationErrors).length === 0) {
+      console.log("Email mandado: ", dataUser.email);
       const emailValid = await checkEmailBeforeRegister(dataUser);
+      console.log("Email: ", emailValid);
+      
       if (!emailValid) {
-        setErrors((prev) => ({
+        setErrors((prev: any) => ({
           ...prev,
           email: "Este correo ya está registrado.",
         }));
@@ -89,7 +91,7 @@ export default function RegisterForm() {
         alert("Registro exitoso");
         router.push("/login");
       } catch (error) {
-        alert(error.message);
+        alert(error);
       }
     }
   };
