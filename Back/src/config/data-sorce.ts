@@ -14,7 +14,7 @@ export const dataSource = TypeOrmModule.forRoot({
     database: process.env.DB_NAME,
     entities: ['dist/**/*.entity{.ts,.js}'], 
     synchronize: true,
-    logging: false,
+    // logging: true,
     dropSchema: true,
     ssl: {
         rejectUnauthorized: false, 

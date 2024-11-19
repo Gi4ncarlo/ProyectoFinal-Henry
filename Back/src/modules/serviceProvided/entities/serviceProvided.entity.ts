@@ -39,10 +39,10 @@ export class ServiceProvided {
   // @OneToMany(() => User, (user) => user.serviceProvided, { onDelete: "CASCADE" })
   // user: User
 
-  @ManyToOne(
+  @ManyToMany(
     () => ServicesOrderEntity,
     (serviceOrder) => serviceOrder.serviceProvided,
     { onDelete: 'CASCADE' },
   )
-  serviceOrder: ServicesOrderEntity;
+  serviceOrder: ServicesOrderEntity[];
 }
