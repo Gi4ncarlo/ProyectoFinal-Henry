@@ -1,13 +1,14 @@
 
 import DashboardAdminCompo from '@/components/DashboardAdminCompo/DashboardAdminCompo';
-import GetUserDashboardAdmin from '@/components/GetUserDashboardAdmin/GetUserDashboardAdmin';
+import UserList from '@/components/UserList/UserList';
+
 import React from 'react'
 
 const AdminDashboard = () => {
   return (
     <div>
       <DashboardAdminCompo/>
-      <GetUserDashboardAdmin/>
+<UserList/>
     </div>
   )
 }

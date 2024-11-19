@@ -1,3 +1,5 @@
+import { log } from "console";
+
 const APIURL: string = process.env.NEXT_PUBLIC_API_URL as string;
 
 // Función para obtener las órdenes de un usuario
@@ -21,24 +23,49 @@ export async function getuserOrdersDB(id: number, token: string) {
   }
 }
 
-// Función para obtener los usuarios
-export const getUsers = async (token: string) => {
+
+ const TOKEN = JSON.parse(localStorage.getItem("userSession") || "null")
+export async function getAllUsers() {
   try {
-    const res = await fetch(`${APIURL}/user`, {  // Corregido la plantilla literal
-      method: "GET",
+  
+    const response = await fetch(`${APIURL}/user`, {
+      method: 'GET',
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`, // Aquí se agrega el token
+        'Authorization': `Bearer ${TOKEN.token}`,
+        'Content-Type': 'application/json',
       },
     });
-    console.log("response",res);
-    if (!res.ok) {
-      throw new Error("Error al obtener los usuarios");
+    if (!response.ok) {
+      if (response.status === 401) {
+        throw new Error('No autorizado: token no válido');
+      } else {
+        throw new Error('La respuesta de la red no fue correcta');
+      }
     }
-    const users = await res.json();
+    const users = await response.json();
     return users;
   } catch (error) {
-    console.error(error);  // Agrega un log para verificar errores
-    throw new Error(error instanceof Error ? error.message : "Error desconocido");
+    console.error('Error al recuperar usuarios', error);
+    throw error; // Re-throw the error for proper handling in the calling component
   }
+}
+
+
+
+
+
+export async function banUser(userId: string, token: string, isBanned: boolean) {
+  const response = await fetch(`${APIURL}/user/${userId}/ban`, {
+    method: 'PATCH',
+    headers: {
+      'Authorization': `Bearer ${TOKEN.token}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ isBanned })
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to ban user');
+  }
+  return await response.json();
 }

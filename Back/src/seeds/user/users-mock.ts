@@ -13,6 +13,7 @@ export const usersMock = [
         address: "9 de Julio",
         age : 45,
         role : Role.User,
+        isBanned:"false",
     },
     {
         name: "Martina",
@@ -24,5 +25,6 @@ export const usersMock = [
         address: "Giulio di cesare",
         age : 19,
         role : Role.User,
+        isBanned:"false",
     },
 ]

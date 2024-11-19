@@ -113,14 +113,12 @@ const DashboardUserCompo: React.FC = () => {
     return <p>{error}</p>;
   }
 
-  console.log("Que recibe aqui: ", orders[0].servicesOrder);
-  console.log("Que esta pasando con orders : ", orders);
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center py-8 px-4">
       <h1 className="text-3xl font-bold text-gray-800 mb-8">Bienvenido a su historial de Operaciones</h1>
 
-      {!orders[0].servicesOrder ? (
+      {!orders.servicesOrder ? (
         <p className="text-xl text-[#FF5722]">No se encontraron órdenes.</p>
       ) : (
         <div className="w-full max-w-6xl space-y-8">
