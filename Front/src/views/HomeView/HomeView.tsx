@@ -154,7 +154,7 @@ const Home: React.FC = () => {
           hoy mismo para obtener una cotización.
         </p>
         <a
-          href="#"
+          href="/contacto"
           className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded"
         >
           Enviar Mensaje
