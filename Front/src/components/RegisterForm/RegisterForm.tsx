@@ -3,7 +3,7 @@
 import { checkEmailBeforeRegister, register } from '@/helpers/auth.helpers';
 import { validateRegisterForm } from '@/helpers/validate';
 import { IRegisterErrors, IRegisterProps } from '@/interfaces/IRegisterProps';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
 export default function RegisterForm() {
@@ -37,6 +37,24 @@ export default function RegisterForm() {
 
     role: false, 
   });
+
+
+  const searchParams = useSearchParams(); // Hook para leer parámetros de la URL
+  const role = searchParams.get('role'); // Obtén el valor del parámetro "role"
+  
+  const [title, setTitle] = useState("");
+
+  // Cambiar dinámicamente el título basado en el parámetro
+  useEffect(() => {
+    if (role === 'cliente') {
+      setTitle("Regístrate como Cliente");
+    } else if (role === 'jardinero') {
+      setTitle("Regístrate como Jardinero");
+    }
+  }, [role]);
+
+
+
 
   // Manejo del cambio en los campos
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -92,7 +110,7 @@ export default function RegisterForm() {
 
   return (
     <div className="w-full max-w-md mx-auto mt-24 p-6 border rounded-lg shadow-lg bg-white">
-      <h2 className="text-2xl font-bold text-center mb-4">Registrate como usuario</h2>
+ <h2 className="text-2xl font-bold text-center mb-4">{title}</h2>
       <p className="text-gray-600 text-center mb-6">Crea tu cuenta y disfruta de nuestros servicios</p>
 
       <form onSubmit={handleSubmit} className="space-y-4">

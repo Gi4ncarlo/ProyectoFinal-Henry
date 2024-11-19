@@ -7,37 +7,36 @@ const PreRegisterView = () => {
   
 
   return (
-    <div className='flex'>
-      <div>
-        <Link href="/register">
-         
-            <Image
-              className="rounded-full"
-              src="/images/client.jpeg" // Usamos la URL guardada en localStorage
-              alt="Cliente"
-              width={384}
-              height={384}
-            />
-            <h3>Cliente</h3>
-    
-        </Link>
-      </div>
+    <div className="flex">
+  <div>
+    <Link href="/register?role=cliente">
+      <Image
+        className="rounded-full"
+        src="/images/client.jpeg"
+        alt="Cliente"
+        width={384}
+        height={384}
+        priority 
+      />
+      <h3>Cliente</h3>
+    </Link>
+  </div>
 
-      <div>
-        <Link href="/register">
- 
-            <Image
-              className="rounded-full"
-              src="/images/gardeners.jpeg"  // Usamos la URL guardada en localStorage
-              alt="Jardinero"
-              width={384}
-              height={384}
-            />
-            <h3>Jardinero</h3>
+  <div>
+    <Link href="/register?role=jardinero">
+      <Image
+        className="rounded-full"
+        src="/images/gardeners.jpeg"
+        alt="Jardinero"
+        width={384}
+        height={384}
+        priority 
+      />
+      <h3>Jardinero</h3>
+    </Link>
+  </div>
+</div>
 
-        </Link>
-      </div>
-    </div>
   );
 };
 
