@@ -38,29 +38,29 @@ const Home: React.FC = () => {
   //       return;
   //     }
 
-    //   try {
-    //     // Obtenemos los servicios usando el helper
-    //     const fetchedServices = await getServicesProvided();
-    //     setServices(fetchedServices);
-    //   } catch (error) {
-    //     console.error('Error fetching services:', error);
-    //   }
-    // };
+  //   try {
+  //     // Obtenemos los servicios usando el helper
+  //     const fetchedServices = await getServicesProvided();
+  //     setServices(fetchedServices);
+  //   } catch (error) {
+  //     console.error('Error fetching services:', error);
+  //   }
+  // };
 
   //   fetchServices();
   // }, [isMounted]);
- const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
- useEffect(() => {
-  const checkUserSession = async () => {
-    // 1. Verificar si hay un token en localStorage
-    const userSession = localStorage.getItem("userSession");
-    if (userSession) {
-      const tokenData = JSON.parse(userSession);
-      if (tokenData?.token) {
-        setIsUserLoggedIn(true);
-        return; // Usuario ya logueado, no seguimos.
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  useEffect(() => {
+    const checkUserSession = async () => {
+      // 1. Verificar si hay un token en localStorage
+      const userSession = localStorage.getItem("userSession");
+      if (userSession) {
+        const tokenData = JSON.parse(userSession);
+        if (tokenData?.token) {
+          setIsUserLoggedIn(true);
+          return; // Usuario ya logueado, no seguimos.
+        }
       }
-    }
 
       // 2. Si no hay token, consultar al endpoint de Google Auth
       try {
@@ -75,39 +75,66 @@ const Home: React.FC = () => {
         if (googleResponse.ok) {
           const googleUser = await googleResponse.json();
           if (googleUser?.email && googleUser.sub) {
-            // Usuario de Google encontrado, logueamos en el backend
-            const loginResponse = await fetch(`(${APIURL}/auth/signup`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                email: googleUser.email,
-                password: googleUser.sub, // Contraseña genérica (ajusta según tu backend)
-              }),
-            });
 
-          if (loginResponse.ok) {
-            const loggedInUser = await loginResponse.json();
-            localStorage.setItem(
-              'userSession',
-              JSON.stringify({ token: loggedInUser.token })
-            );
-            setIsUserLoggedIn(true);
-            return;
+            const Flag = await fetch(`${APIURL}/user/${googleUser.email}`, {})
+            if (Flag.ok) {
+              const login = await fetch(`${APIURL}/auth/signin`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  email: googleUser.email,
+                  password: googleUser.sub,
+                })
+
+              })
+              const response = await login.json();
+              localStorage.setItem(
+                'userSession',
+                JSON.stringify({ token: response.token })
+              );
+              setIsUserLoggedIn(true);
+              return;
+
+            }
+            if (!Flag.ok) {
+              const register = await fetch(`${APIURL}/auth/signup`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  email: googleUser.email,
+                  password: googleUser.sub,
+                  name: googleUser.name,
+                  profileImageUrl: googleUser.picture,
+                  username: googleUser.nickname,
+                  role: "user", 
+                })
+              })
+              const response = await register.json();
+              localStorage.setItem(
+                'userSession',
+                JSON.stringify({ token: response.token })
+              );
+              setIsUserLoggedIn(true);
+              return;
+            }
+
+
           }
         }
+      } catch (error) {
+        console.error("Error al verificar el usuario de Google:", error);
       }
-    } catch (error) {
-      console.error("Error al verificar el usuario de Google:", error);
-    }
 
-    // 3. Si no hay token ni usuario, continuamos sin usuario logueado
-    setIsUserLoggedIn(false);
-  };
+      // 3. Si no hay token ni usuario, continuamos sin usuario logueado
+      setIsUserLoggedIn(false);
+    };
 
-  checkUserSession();
-}, []);
+    checkUserSession();
+  }, []);
 
   const handleSearch = () => {
     if (selectedService) {
@@ -160,50 +187,50 @@ const Home: React.FC = () => {
       </section>
 
       {/* SERVICES SECTION */}
-<section
-  id="services"
-  className="w-full py-20 bg-gradient-to-b from-green-500 to-green-700 text-white flex flex-col items-center"
-  style={{
-    backgroundImage: "url('/images/fondo_home.jpg')",
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-  }}
->
-  <h2 className="text-3xl md:text-4xl font-semibold mb-10 text-center">
-    Nuestros Servicios
-  </h2>
-  <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-4 md:px-10 lg:px-20">
-    {/* Bloque de Servicio */}
-    <div className="bg-white text-gray-800 p-6 rounded-lg shadow-lg transform transition-transform hover:scale-105">
-      <div className="flex items-center justify-center mb-4">
-      </div>
-      <h3 className="text-xl font-semibold mb-4 text-center">Mantenimiento</h3>
-      <p className="text-center">
-        Servicios regulares de mantenimiento para mantener tu jardín en perfectas
-        condiciones durante todo el año.
-      </p>
-    </div>
-    {/* Bloque de Diseño */}
-    <div className="bg-white text-gray-800 p-6 rounded-lg shadow-lg transform transition-transform hover:scale-105">
-      <div className="flex items-center justify-center mb-4">
-      </div>
-      <h3 className="text-xl font-semibold mb-4 text-center">Diseño</h3>
-      <p className="text-center">
-        Creamos diseños personalizados que se adaptan a tus gustos y al entorno
-        de tu espacio.
-      </p>
-    </div>
-    {/* Bloque de Instalación */}
-    <div className="bg-white text-gray-800 p-6 rounded-lg shadow-lg transform transition-transform hover:scale-105">
-      <div className="flex items-center justify-center mb-4">
-      </div>
-      <h3 className="text-xl font-semibold mb-4 text-center">Instalación</h3>
-      <p className="text-center">
-        Realizamos instalaciones completas, desde césped hasta sistemas de riego.
-      </p>
-    </div>
-  </div>
-</section>
+      <section
+        id="services"
+        className="w-full py-20 bg-gradient-to-b from-green-500 to-green-700 text-white flex flex-col items-center"
+        style={{
+          backgroundImage: "url('/images/fondo_home.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        <h2 className="text-3xl md:text-4xl font-semibold mb-10 text-center">
+          Nuestros Servicios
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-4 md:px-10 lg:px-20">
+          {/* Bloque de Servicio */}
+          <div className="bg-white text-gray-800 p-6 rounded-lg shadow-lg transform transition-transform hover:scale-105">
+            <div className="flex items-center justify-center mb-4">
+            </div>
+            <h3 className="text-xl font-semibold mb-4 text-center">Mantenimiento</h3>
+            <p className="text-center">
+              Servicios regulares de mantenimiento para mantener tu jardín en perfectas
+              condiciones durante todo el año.
+            </p>
+          </div>
+          {/* Bloque de Diseño */}
+          <div className="bg-white text-gray-800 p-6 rounded-lg shadow-lg transform transition-transform hover:scale-105">
+            <div className="flex items-center justify-center mb-4">
+            </div>
+            <h3 className="text-xl font-semibold mb-4 text-center">Diseño</h3>
+            <p className="text-center">
+              Creamos diseños personalizados que se adaptan a tus gustos y al entorno
+              de tu espacio.
+            </p>
+          </div>
+          {/* Bloque de Instalación */}
+          <div className="bg-white text-gray-800 p-6 rounded-lg shadow-lg transform transition-transform hover:scale-105">
+            <div className="flex items-center justify-center mb-4">
+            </div>
+            <h3 className="text-xl font-semibold mb-4 text-center">Instalación</h3>
+            <p className="text-center">
+              Realizamos instalaciones completas, desde césped hasta sistemas de riego.
+            </p>
+          </div>
+        </div>
+      </section>
 
       {/* CONTACT SECTION */}
       <section
