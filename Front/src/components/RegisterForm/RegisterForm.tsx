@@ -5,6 +5,7 @@ import { validateRegisterForm } from '@/helpers/validate';
 import { IRegisterErrors, IRegisterProps } from '@/interfaces/IRegisterProps';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import Swal from 'sweetalert2';
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -88,7 +89,12 @@ export default function RegisterForm() {
   
       try {
         await register(dataUser);
-        alert("Registro exitoso");
+    
+        Swal.fire({
+          title: "Bienvenido!",
+          text: "Registrado correctamente",
+          icon: "success",
+        });
         router.push("/login");
       } catch (error) {
         alert(error);
