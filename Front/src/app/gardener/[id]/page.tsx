@@ -1,43 +1,47 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
-import { IServiceProvider } from '@/interfaces/IServiceProvider';
-import { getProviderById } from '@/helpers/gardeners.helpers';
-import { getServicesProvided } from '@/helpers/service.helpers';
-import { useParams, useRouter } from 'next/navigation';
-import { IService } from '@/interfaces/IService';
-import { hireServices } from '@/helpers/order.helpers';
+import React, { useEffect, useState } from "react";
+import Image from "next/image";
+import { IServiceProvider } from "@/interfaces/IServiceProvider";
+import { getProviderById } from "@/helpers/gardeners.helpers";
+import { getServicesProvided } from "@/helpers/service.helpers";
+import { useParams, useRouter } from "next/navigation";
+import { IService } from "@/interfaces/IService";
+import { hireServices } from "@/helpers/order.helpers";
 
 const ProviderDetail: React.FC = () => {
   const router = useRouter();
   const params = useParams();
   const id = params?.id as string | undefined;
+
   const [gardener, setGardener] = useState<IServiceProvider | null>(null);
-  const [services, setServices] = useState<IService[]>([]); // Servicios disponibles
-  const [selectedServices, setSelectedServices] = useState<string[]>([]); // Servicios seleccionados
-  const [orderService, setOrderService] = useState();
+  const [services, setServices] = useState<IService[]>([]);
+  const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchGardener = async () => {
-      if (id) {
-        try {
-          const gardenerData = await getProviderById(id as string);
-          setGardener(gardenerData);
-        } catch (error) {
-          console.error('Error buscando informacion del Jardinero.:', error);
-        }
+      if (!id) {
+        setError("No se proporcionó el ID del jardinero.");
+        return;
+      }
+
+      try {
+        const gardenerData = await getProviderById(id);
+        setGardener(gardenerData);
+      } catch (error) {
+        console.error("Error buscando información del jardinero:", error);
+        setError("No se pudo obtener la información del jardinero.");
       }
     };
 
-    // Fetch para obtener los servicios
     const fetchServices = async () => {
       try {
         const serviceData = await getServicesProvided();
         setServices(serviceData);
       } catch (error) {
-        console.error('Error buscando los servicios del Jardinero:', error);
+        console.error("Error buscando los servicios:", error);
+        setError("No se pudieron obtener los servicios.");
       }
     };
 
@@ -48,71 +52,51 @@ const ProviderDetail: React.FC = () => {
   if (!gardener) return <div>Cargando...</div>;
 
   const handleServiceChange = (serviceId: string) => {
-    setSelectedServices(prevSelected =>
+    setSelectedServices((prevSelected) =>
       prevSelected.includes(serviceId)
-        ? prevSelected.filter(id => id !== serviceId) // Desmarcar si ya estaba seleccionado
-        : [...prevSelected, serviceId] // Agregar a seleccionados
+        ? prevSelected.filter((id) => id !== serviceId)
+        : [...prevSelected, serviceId]
     );
   };
 
   const handleHireClick = async () => {
-    if (typeof window === "undefined") {
-      setError("No se puede acceder a la sesión del usuario en el servidor");
-      return;
-    }
-
-    const userSession = localStorage.getItem("userSession");
-    if (!userSession) {
-      setError("No se encontró la sesión del usuario");
-      return;
-    }
-
-    const { user } = JSON.parse(userSession);
-    const userId = user?.id;
-  
-    if (!userId) {
-      setError('User ID not found');
-      return;
-    }
-  
-    const date = new Date().toLocaleDateString();
-    const isApproved = false;
-    const gardenerId = gardener?.id.toString();
-    
-    if (typeof window !== 'undefined') {
-      const userSession = localStorage.getItem("userSession");
-    
-    if (!userSession) {
-      setError('User session not found');
-      return;
-    }
-  
-    const { user } = JSON.parse(userSession);
-    const userId = user?.id;
-    
-    
-    if (!userId) {
-      setError('User ID not found');
-      return;
-    }
-  
     try {
+      if (!gardener?.id) {
+        setError("El ID del jardinero no está disponible.");
+        return;
+      }
+
+      const userSession = localStorage.getItem("userSession");
+      if (!userSession) {
+        setError("No se encontró la sesión del usuario.");
+        return;
+      }
+
+      const { user } = JSON.parse(userSession);
+      const userId = user?.id;
+
+      if (!userId) {
+        setError("No se encontró el ID del usuario.");
+        return;
+      }
+
+      const date = new Date().toISOString(); // Mejor usar formato ISO para fechas
+      const isApproved = false;
+
       const order = await hireServices({
         date,
         isApproved,
-        gardenerId,
+        gardenerId: gardener.id.toString(), // Ya se asegura que gardener.id esté definido
         userId,
         serviceId: selectedServices,
       });
-      setOrderService(order);
+
+      console.log("Orden generada:", order);
       setSelectedServices([]);
-      router.push("/dashboard/userDashboard")
-          
+      router.push("/dashboard/userDashboard");
     } catch (error) {
-      setError('Error al cargar los productos');
-    }
-    } else {
-    setError('No se puede acceder a la sesión del usuario en el servidor');
+      console.error("Error al procesar la contratación:", error);
+      setError("Hubo un error al intentar contratar los servicios.");
     }
   };
 
@@ -124,7 +108,7 @@ const ProviderDetail: React.FC = () => {
         <div className="flex items-center">
           <Image
             className="rounded-full"
-            src={gardener.profileImageUrl || '/default-profile.jpg'}
+            src={gardener.profileImageUrl || "/default-profile.jpg"}
             alt={`${gardener.name}'s profile`}
             width={120}
             height={120}
@@ -144,7 +128,11 @@ const ProviderDetail: React.FC = () => {
             {Array.from({ length: 5 }).map((_, index) => (
               <svg
                 key={index}
-                className={`w-5 h-5 ${index < Math.floor(gardener.calification) ? 'text-yellow-400' : 'text-gray-300'}`}
+                className={`w-5 h-5 ${
+                  index < Math.floor(gardener.calification)
+                    ? "text-yellow-400"
+                    : "text-gray-300"
+                }`}
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="currentColor"
@@ -154,16 +142,16 @@ const ProviderDetail: React.FC = () => {
                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.39 2.46a1 1 0 00-.364 1.118l1.287 3.966c.3.921-.755 1.688-1.538 1.118l-3.39-2.46a1 1 0 00-1.175 0l-3.39 2.46c-.783.57-1.838-.197-1.538-1.118l1.287-3.966a1 1 0 00-.364-1.118L2.2 8.394c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.967z" />
               </svg>
             ))}
-            <span className="ml-2 text-sm text-gray-500">{gardener.calification.toFixed(1)}</span>
+            <span className="ml-2 text-sm text-gray-500">
+              {gardener.calification.toFixed(1)}
+            </span>
           </div>
-
         </div>
 
-        {/* Servicios disponibles */}
         <div className="mt-6">
           <h2 className="text-lg font-semibold text-[#263238]">Servicios Disponibles:</h2>
           <div className="mt-2">
-            {services.map(service => (
+            {services.map((service) => (
               <div key={service.id} className="mb-4">
                 <label className="block text-[#263238]">
                   <input
@@ -172,10 +160,8 @@ const ProviderDetail: React.FC = () => {
                     onChange={() => handleServiceChange(service.id)}
                     className="mr-2"
                   />
+                  {service.detailService} - ${service.price} - {service.categories}
                 </label>
-                <p className="ml-6 text-sm text-[#263238]">Detalle: {service.detailService}</p>
-                <p className="ml-6 text-sm text-[#263238]">Precio: ${service.price}</p>
-                <p className="ml-6 text-sm text-[#263238]">Categoria: {service.categories}</p>
               </div>
             ))}
           </div>
