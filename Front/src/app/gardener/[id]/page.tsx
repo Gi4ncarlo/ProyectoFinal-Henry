@@ -8,6 +8,7 @@ import { getServicesProvided } from '@/helpers/service.helpers';
 import { useParams, useRouter } from 'next/navigation';
 import { IService } from '@/interfaces/IService';
 import { hireServices } from '@/helpers/order.helpers';
+import GardenerCalendar from '@/components/Gardeners/Gardeners';
 
 const ProviderDetail: React.FC = () => {
   const router = useRouter();
@@ -143,8 +144,8 @@ const ProviderDetail: React.FC = () => {
 
         </div>
 
-        {/* Servicios disponibles */}
-        <div className="mt-6">
+{/* Servicios disponibles */}
+<div className="mt-6">
           <h2 className="text-lg font-semibold text-[#263238]">Servicios Disponibles:</h2>
           <div className="mt-2">
             {services.map(service => (
@@ -163,6 +164,13 @@ const ProviderDetail: React.FC = () => {
               </div>
             ))}
           </div>
+        </div>
+
+
+        {/* Calendario de disponibilidad */}
+        <div className="mt-6">
+          <h2 className="text-lg font-semibold text-[#263238]">Calendario de Disponibilidad:</h2>
+          <GardenerCalendar gardenerId={gardener.id.toString()} />
         </div>
 
         <div className="mt-6 flex justify-center">

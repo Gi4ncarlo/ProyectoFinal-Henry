@@ -1,4 +1,3 @@
-// src/views/PreHomeView.tsx
 import Link from "next/link";
 import Image from "next/image";
 
@@ -10,7 +9,7 @@ const PreHomeView = () => {
         src="/images/fondo_landingPage.jpg" // Reemplaza por el nombre exacto de tu archivo
         alt="Fondo de bienvenida"
         fill
-        className="object-cover object-center w-full h-full"
+        style={{ objectFit: 'cover', objectPosition: 'center' }} // Usar style en lugar de clases para objectFit
         priority
       />
       

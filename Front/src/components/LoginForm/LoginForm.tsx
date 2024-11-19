@@ -15,6 +15,7 @@ export default function LoginForm() {
     email: "",
     password: "",
   };
+  
   const [dataUser, setDataUser] = useState<ILoginProps>(initialState);
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<ILoginErrors>(initialState);
@@ -25,10 +26,14 @@ export default function LoginForm() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setDataUser({
-      ...dataUser,
+    setDataUser((prev) => ({
+      ...prev,
       [name]: value,
-    });
+    }));
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const { name } = e.target;
     setTouched((prev) => ({
       ...prev,
       [name]: true,
@@ -37,26 +42,35 @@ export default function LoginForm() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const response = await login(dataUser);
-    if (response.status === 401) {
-      Swal.fire({
-        title: "Error",
-        text: "Email o contraseña incorrectos",
-        icon: "error",
-      });
-    } else {
-      Swal.fire({
-        title: "Bienvenido!",
-        text: "Ingresaste correctamente",
-        icon: "success",
-      });
-      const { token, user } = response;
-      localStorage.setItem("userSession", JSON.stringify({ token, user }));
-      router.push("/Home");
+
+    // Validar antes de hacer la llamada al servidor
+    const validationErrors = validateLoginForm(dataUser);
+    setErrors(validationErrors);
+
+    // Si no hay errores, proceder con la autenticación
+    if (Object.values(validationErrors).every((error) => error === "")) {
+      const response = await login(dataUser);
+      if (response.status === 401) {
+        Swal.fire({
+          title: "Error",
+          text: "Email o contraseña incorrectos",
+          icon: "error",
+        });
+      } else {
+        Swal.fire({
+          title: "Bienvenido!",
+          text: "Ingresaste correctamente",
+          icon: "success",
+        });
+        const { token, user } = response;
+        localStorage.setItem("userSession", JSON.stringify({ token, user }));
+        router.push("/Home");
+      }
     }
   };
 
   useEffect(() => {
+    // Validar cuando el campo se haya tocado
     if (Object.values(touched).some((field) => field)) {
       const validationErrors = validateLoginForm(dataUser);
       setErrors(validationErrors);
@@ -71,12 +85,12 @@ export default function LoginForm() {
     <div className="h-screen w-screen relative flex items-center justify-center">
       {/* Imagen de fondo optimizada */}
       <Image
-        src="/images/fondoLogin.jpg" 
+        src="/images/fondoLogin.jpg"
         alt="Fondo de bienvenida"
-        layout="fill" 
+        layout="fill"
         objectFit="cover"
-        priority // Asegura que la imagen se cargue rápidamente
-        quality={100} // Alta calidad (ajusta según tus necesidades)
+        priority
+        quality={100}
       />
 
       {/* Contenedor del formulario */}
@@ -101,6 +115,7 @@ export default function LoginForm() {
               required
               value={dataUser.email}
               onChange={handleChange}
+              onBlur={handleBlur}
               placeholder="example@mail.com"
               className="mt-1 p-2 border border-[#8bc34a] rounded w-full"
             />
@@ -124,6 +139,7 @@ export default function LoginForm() {
                 required
                 value={dataUser.password}
                 onChange={handleChange}
+                onBlur={handleBlur}
                 placeholder="••••••••"
                 className="mt-1 p-2 border border-[#8bc34a] rounded w-full"
               />

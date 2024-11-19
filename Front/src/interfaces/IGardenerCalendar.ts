@@ -1,0 +1,4 @@
+interface GardenerCalendarProps {
+    gardenerId: string;
+}
+  
