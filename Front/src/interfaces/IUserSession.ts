@@ -7,7 +7,7 @@ export interface IUserSession {
         name:string,
         phone:string, 
          role:string,
-         orders: [],
-         profileImageUrl: string,
+         profileImageUrl?:string,
+         orders: []
     }
 }
