@@ -2,6 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+
+const APIURL = process.env.NEXT_PUBLIC_API_URL;
+const AUTHURL = process.env.AUTH0_BASE_URL;
+
 // import { getServicesProvided } from '@/helpers/service.helpers';
 
 // interface ServiceProvided {
@@ -48,64 +52,64 @@ const Home: React.FC = () => {
   //   fetchServices();
   // }, [isMounted]);
  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
-  useEffect(() => {
-    const checkUserSession = async () => {
-      // 1. Verificar si hay un token en localStorage
-      const userSession = localStorage.getItem("userSession");
-      if (userSession) {
-        const tokenData = JSON.parse(userSession);
-        if (tokenData?.token) {
-          setIsUserLoggedIn(true);
-          return; // Usuario ya logueado, no seguimos.
-        }
+ useEffect(() => {
+  const checkUserSession = async () => {
+    // 1. Verificar si hay un token en localStorage
+    const userSession = localStorage.getItem("userSession");
+    if (userSession) {
+      const tokenData = JSON.parse(userSession);
+      if (tokenData?.token) {
+        setIsUserLoggedIn(true);
+        return; // Usuario ya logueado, no seguimos.
       }
+    }
 
-      // 2. Si no hay token, consultar al endpoint de Google Auth
-      try {
-        const googleResponse = await fetch('/api/auth/me', {
-          method: 'GET',
-          credentials: 'include', // Incluye cookies en la petición
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
+    // 2. Si no hay token, consultar al endpoint de Google Auth
+    try {
+      const googleResponse = await fetch(`(${AUTHURL})/api/auth/me`, {
+        method: 'GET',
+        credentials: 'include', // Incluye cookies en la petición
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
-        if (googleResponse.ok) {
-          const googleUser = await googleResponse.json();
-          if (googleUser?.email) {
-            // Usuario de Google encontrado, logueamos en el backend
-            const loginResponse = await fetch('/api/login', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                email: googleUser.email,
-                password: 'defaultPassword', // Contraseña genérica (ajusta según tu backend)
-              }),
-            });
+      if (googleResponse.ok) {
+        const googleUser = await googleResponse.json();
+        if (googleUser?.email && googleUser?.sid) {
+          // Usuario de Google encontrado, logueamos en el backend usando el sid como password
+          const loginResponse = await fetch(`${APIURL}/auth/signup`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              email: googleUser.email,
+              password: googleUser.sid, // Usamos el sid como contraseña
+            }),
+          });
 
-            if (loginResponse.ok) {
-              const loggedInUser = await loginResponse.json();
-              localStorage.setItem(
-                'userSession',
-                JSON.stringify({ token: loggedInUser.token })
-              );
-              setIsUserLoggedIn(true);
-              return;
-            }
+          if (loginResponse.ok) {
+            const loggedInUser = await loginResponse.json();
+            localStorage.setItem(
+              'userSession',
+              JSON.stringify({ token: loggedInUser.token })
+            );
+            setIsUserLoggedIn(true);
+            return;
           }
         }
-      } catch (error) {
-        console.error("Error al verificar el usuario de Google:", error);
       }
+    } catch (error) {
+      console.error("Error al verificar el usuario de Google:", error);
+    }
 
-      // 3. Si no hay token ni usuario, continuamos sin usuario logueado
-      setIsUserLoggedIn(false);
-    };
+    // 3. Si no hay token ni usuario, continuamos sin usuario logueado
+    setIsUserLoggedIn(false);
+  };
 
-    checkUserSession();
-  }, []);
+  checkUserSession();
+}, []);
 
   const handleSearch = () => {
     if (selectedService) {
