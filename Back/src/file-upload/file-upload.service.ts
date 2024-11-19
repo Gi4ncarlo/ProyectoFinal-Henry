@@ -7,7 +7,6 @@ export class FileUploadService {
   constructor(private readonly cloudinaryService: CloudinaryService) {}
 
   async uploadFile(file: UploadFileDto, folder: string): Promise<string> {
-    console.log('Dentro de uploadFile FileUpload');
     return await this.cloudinaryService.uploadFile(file.buffer, folder, file.originalname);
   }
 

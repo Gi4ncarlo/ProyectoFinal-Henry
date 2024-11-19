@@ -7,14 +7,16 @@ import { IServiceProvider } from '@/interfaces/IServiceProvider';
 import { getGardenersDB } from '@/helpers/gardeners.helpers';
 import { useRouter } from 'next/navigation';
 import { FaSearch } from 'react-icons/fa';
+import gardeners from '@/app/gardener/page';
 
 
 const ProviderCardList: React.FC = () => {
   const [providers, setProviders] = useState<IServiceProvider[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [filter, setFilter] = useState<string>('ASC'); // Default order filter
-  const [searchTerm, setSearchTerm] = useState('');
   const [TOKEN, setTOKEN] = useState<any>(null);
+  const [filter, setFilter] = useState<string>(localStorage.getItem("filter") || 'ASC'); // Recupera el filtro de localStorage o usa el valor predeterminado
+  const [searchTerm, setSearchTerm] = useState(localStorage.getItem("searchTerm") || ''); // Recupera el término de búsqueda de localStorage o usa una cadena vacía
+  // const TOKEN = JSON.parse(localStorage.getItem("userSession") || "null")
   const router = useRouter();
 
   useEffect(() => {
@@ -29,10 +31,14 @@ const ProviderCardList: React.FC = () => {
   }, [router]);
   
   const handleFilter = async (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setFilter(e.target.value);
+    const newFilter = e.target.value;
+    setFilter(newFilter);
+    localStorage.setItem("filter", newFilter);
   };
-  const HandleSearch = (e : any) => {
-    setSearchTerm(e.target.value);
+  const HandleSearch = (e: any) => {
+    const newSearchTerm = e.target.value;
+    setSearchTerm(newSearchTerm);
+    localStorage.setItem("searchTerm", newSearchTerm);
   };
 
   useEffect(() => {
@@ -41,6 +47,7 @@ const ProviderCardList: React.FC = () => {
         // Si `filter` es numérico, lo interpretamos como una calificación.
         const order = filter === 'ASC' || filter === 'DESC' ? filter : 'ASC';
         const calification = isNaN(Number(filter)) ? undefined : Number(filter);
+       
         const name = searchTerm;
         const token = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("userSession") || "{}").token : null;
       const gardeners = await getGardenersDB(token, order, calification, name);
@@ -52,14 +59,18 @@ const ProviderCardList: React.FC = () => {
         setError(error.message || 'Error al cargar los productos');
       }
     };
+    
+    
+  
     console.log(fetchProviders());
   }, [filter, searchTerm]); // Vuelve a cargar cada vez que cambia el filtro
+
 
   if (error) return <div>{error}</div>;
 
   return (
 
-    <div className="mx-auto">
+    <div className="mx-auto mt-24">
       {
         !providers ? (
           <div className="text-center mb-8 mx-auto">

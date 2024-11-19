@@ -28,7 +28,7 @@ const ServicesComponent = () => {
     <div className={`bg-green-50 py-12 ${
       isScrolled 
       ? "pb-8 lg:mt-4"
-      : "pb-16 lg:mt-8"
+      : "pb-16 lg:mt-4"
     }`}>
       
       <div className="fixed w-full">
@@ -60,7 +60,7 @@ const ServicesComponent = () => {
 
       <hr id="GardenMaintenance" className="mb-24 border-green-50 opacity-50" />
       
-      <section className="mt-14 lg:mt-24">
+      <section className="mt-2 lg:mt-2">
         <div className="grid grid-cols-1 max-w-7xl mx-auto p-6 lg:grid lg:grid-cols-2 lg:items-center">
           <div className="lg:p-6">
             <h2 className="text-3xl lg:text-4xl font-bold text-center lg:text-left mb-4">Mantenimiento de jardin</h2>

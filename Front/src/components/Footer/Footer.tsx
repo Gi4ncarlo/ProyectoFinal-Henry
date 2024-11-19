@@ -3,31 +3,32 @@ import Image from "next/image";
 
 export default function Footer() {
   return (
-    <footer className="bg-green-800 text-white p-4">
-      <div className="grid grid-cols-1 gap-4 mx-4 my-2 sm:grid-cols-2 lg:grid-cols-3">
-        <ul className="lg:pr-8 text-center sm:pr-0 lg:text-left"> 
-          <li className="font-nunito text-lg py-1 lg:text-lg md:text-base sm:text-sm">
-          Transformando espacios verdes, cuidando cada detalle.
+    <footer className="bg-green-800 text-white py-8 px-4">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mx-auto">
+        {/* Información de contacto */}
+        <ul className="text-center lg:text-left">
+          <li className="font-nunito text-lg py-2">
+            Transformando espacios verdes, cuidando cada detalle.
           </li>
-    
-          <li className="font-lato text-base lg:text-base md:text-sm sm:text-xs">
-          🌿Ubicación: Av. Las Flores 1234, Ciudad Jardín, Provincia Verde
+          <li className="font-lato text-sm py-1">
+            🌿 Ubicación: Av. Las Flores 1234, Ciudad Jardín, Provincia Verde
           </li>
-    
-          <li className="font-lato text-base lg:text-base md:text-sm sm:text-xs">
-          📞 Teléfono: +54 9 11 1234-5678
+          <li className="font-lato text-sm py-1">
+            📞 Teléfono: +54 9 11 1234-5678
           </li>
-    
-          <li className="font-lato text-base lg:text-base md:text-sm sm:text-xs">
-          📧 Correo electrónico: contact@vicnasol.com
+          <li className="font-lato text-sm py-1">
+            📧 Correo electrónico: contact@vicnasol.com
           </li>
         </ul>
-    
-        <p className="text-xl font-cinzel font-medium m-auto text-center lg:text-lg md:text-base sm:text-sm">
+
+        {/* Derechos reservados */}
+        <p className="text-center font-cinzel font-medium text-base lg:text-lg">
           &copy; 2010 Vicnasol. Todos los derechos reservados.
         </p>
-    
-        <ul className="space-x-6 m-auto flex sm:justify-center lg:justify-start">
+
+        {/* Redes sociales */}
+        <ul className="flex justify-center space-x-6 lg:justify-start">
+          {/* Facebook */}
           <li className="transform transition-transform duration-300 hover:scale-110">
             <Link
               href="https://www.facebook.com/"
@@ -39,13 +40,16 @@ export default function Footer() {
                 alt="Facebook"
                 width={40}
                 height={40}
-                className="mx-auto"
+                className="rounded-full"
               />
-              <p className="font-nunito mt-2">Facebook</p>
+              <span className="font-nunito text-sm mt-2 block text-center">
+                Facebook
+              </span>
             </Link>
           </li>
-    
-          <li className="transform transition-transform duration-300 hover:scale-110 mx-auto">
+
+          {/* Instagram */}
+          <li className="transform transition-transform duration-300 hover:scale-110">
             <Link
               href="https://www.instagram.com/"
               target="_blank"
@@ -56,12 +60,15 @@ export default function Footer() {
                 alt="Instagram"
                 width={40}
                 height={40}
-                className="mx-auto"
+                className="rounded-full"
               />
-              <p className="font-nunito mt-2">Instagram</p>
+              <span className="font-nunito text-sm mt-2 block text-center">
+                Instagram
+              </span>
             </Link>
           </li>
-    
+
+          {/* WhatsApp */}
           <li className="transform transition-transform duration-300 hover:scale-110">
             <Link
               href="https://wa.me/5492944777103?text=Hello, I want information about your business"
@@ -70,12 +77,14 @@ export default function Footer() {
             >
               <Image
                 src={"/images/LogosWhatsappIcon.png"}
-                alt="Whatsapp"
+                alt="WhatsApp"
                 width={40}
                 height={40}
-                className="mx-auto"
+                className="rounded-full"
               />
-              <p className="font-nunito mt-2">Whatsapp</p>
+              <span className="font-nunito text-sm mt-2 block text-center">
+                WhatsApp
+              </span>
             </Link>
           </li>
         </ul>

@@ -20,8 +20,7 @@ import { Role } from '../user/enums/role.enum';
 import { Roles } from 'src/decorators/roles.decorator';
 import { RolesGuard } from 'src/guards/roles/role.guard';
 import { AuthGuard } from '../auth/auth.guard';
-import { IsUUID } from 'class-validator';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
 @ApiTags('serviceDetails')
 @ApiBearerAuth()

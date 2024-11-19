@@ -50,10 +50,6 @@ export class ServicesOrderService {
       }
       serviceProvided.push(service);
     }
-    console.log(serviceProvided);
-    
-
-
     if (!gardener) {
       throw new Error('Gardener not found');
     }
@@ -61,7 +57,6 @@ export class ServicesOrderService {
     if (!serviceProvided) {
       throw new Error('Service Provided not found');
     }
-
     const newOrder = this.servicesOrderRepository.create({
       date: date || new Date().toLocaleString(),
       isApproved,
@@ -69,7 +64,6 @@ export class ServicesOrderService {
       gardener,
       serviceProvided,
     });
-
     await this.servicesOrderRepository.save(newOrder);
 
     const savedOrder = await this.servicesOrderRepository.findOne({
@@ -146,6 +140,7 @@ export class ServicesOrderService {
     try {
       const order = await this.findOne(id);
       if (!order) throw new NotFoundException(`Orden de servicio con id ${id} no encontrada`);
+
       order.isApproved = true;
       let price = 0;
       order.serviceProvided.map((service) => price += service.price)

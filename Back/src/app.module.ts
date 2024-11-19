@@ -9,6 +9,8 @@ import { AuthModule } from './modules/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { SeedsModule } from './seeds/seeds.module';
 import { AdminModule } from './modules/admin/admin.module';
+import { MailModule } from './modules/mail/mail.module';
+import { MercadopagoModule } from './modules/mercadopago/mercadopago.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -24,9 +26,10 @@ import { AdminModule } from './modules/admin/admin.module';
     AuthModule,
     SeedsModule,
     AdminModule,
-    
+    MercadopagoModule,
+    MailModule,
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule { }

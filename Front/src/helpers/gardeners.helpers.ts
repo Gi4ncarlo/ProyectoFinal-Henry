@@ -57,8 +57,6 @@ export async function getProviderById(id: string): Promise<IServiceProvider | nu
     }
 
     const response = await res.json();
-    console.log("Response from API:", response, "token", TOKEN); // Imprimir toda la respuesta para ver el formato
-
     // Verifica si el formato es correcto
     if (response && typeof response === 'object' && !Array.isArray(response)) {
       return response.data || response; // Retorna 'data' si existe, sino retorna 'response'

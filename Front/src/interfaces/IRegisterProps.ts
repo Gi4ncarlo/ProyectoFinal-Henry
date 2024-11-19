@@ -8,9 +8,9 @@ export interface IRegisterProps {
   phone: string
   age: number | string; 
   address: string
-  offerServices: boolean
-}
 
+  role: string,
+}
 
 export interface IRegisterErrors {
   name?: string
@@ -21,11 +21,7 @@ export interface IRegisterErrors {
   phone?: string
   age?: string
   address?: string
-  offerServices?: boolean
 
+  role:string
 }
-
-
-
-
 

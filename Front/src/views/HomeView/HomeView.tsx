@@ -1,6 +1,9 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+
+const APIURL = process.env.NEXT_PUBLIC_API_URL;
 // import { getServicesProvided } from '@/helpers/service.helpers';
 
 // interface ServiceProvided {
@@ -14,6 +17,7 @@ const Home: React.FC = () => {
   // const [services, setServices] = useState<ServiceProvided[]>([]);
   // const [isMounted, setIsMounted] = useState(false); // Nuevo estado para verificar si el componente está montado
   const router = useRouter();
+
 
   // Efecto para verificar si el componente está montado
   // useEffect(() => {
@@ -34,17 +38,135 @@ const Home: React.FC = () => {
   //       return;
   //     }
 
-    //   try {
-    //     // Obtenemos los servicios usando el helper
-    //     const fetchedServices = await getServicesProvided();
-    //     setServices(fetchedServices);
-    //   } catch (error) {
-    //     console.error('Error fetching services:', error);
-    //   }
-    // };
+  //   try {
+  //     // Obtenemos los servicios usando el helper
+  //     const fetchedServices = await getServicesProvided();
+  //     setServices(fetchedServices);
+  //   } catch (error) {
+  //     console.error('Error fetching services:', error);
+  //   }
+  // };
 
   //   fetchServices();
   // }, [isMounted]);
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  useEffect(() => {
+    const checkUserSession = async () => {
+      // 1. Verificar si hay un token en localStorage
+      const userSession = localStorage.getItem("userSession");
+      if (userSession) {
+        const tokenData = JSON.parse(userSession);
+        if (tokenData?.token) {
+          setIsUserLoggedIn(true);
+          return; // Usuario ya logueado, no seguimos.
+        }
+      }
+
+      // 2. Si no hay token, consultar al endpoint de Google Auth
+      try {
+        const googleResponse = await fetch('/api/auth/me', {
+          method: 'GET',
+          credentials: 'include', // Incluye cookies en la petición
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (googleResponse.ok) {
+          const googleUser = await googleResponse.json();
+          console.log('googleUser', googleUser);
+          if (googleUser?.email && googleUser.sub) {
+
+            const Flag = await fetch(`${APIURL}/user/google`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+
+              },
+              body: JSON.stringify({ email: googleUser.email })
+            })
+            const response = await Flag.json();
+            console.log('Flag', response);
+
+            if (response) {
+              const login = await fetch(`${APIURL}/auth/signin`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  email: googleUser.email,
+                  password: googleUser.sub,
+                })
+
+              })
+              const response = await login.json();
+              console.log('response', response);
+
+              localStorage.setItem(
+                'userSession',
+                JSON.stringify({ token: response.token, user: response.user })
+              );
+              setIsUserLoggedIn(true);
+              return;
+
+            }
+            if (!response) {
+              const register = await fetch(`${APIURL}/auth/signup/google`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  email: googleUser.email,
+                  password: googleUser.sub,
+                  name: googleUser.name,
+                  profileImageUrl: googleUser.picture,
+                  username: googleUser.nickname,
+                })
+              })
+              const response = await register.json();
+              console.log('response', response);
+
+              if (!response) {
+                throw new Error('Error al registrar el usuario');
+              }
+              if (response) {
+                const login = await fetch(`${APIURL}/auth/signin`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                    email: googleUser.email,
+                    password: googleUser.sub,
+                  })
+
+                })
+                const response = await login.json();
+                console.log('response2', response);
+
+                localStorage.setItem(
+                  'userSession',
+                  JSON.stringify({ token: response.token, user: response.user })
+                );
+                setIsUserLoggedIn(true);
+                return;
+
+              }
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error al verificar el usuario de Google:", error);
+      }
+
+      // 3. Si no hay token ni usuario, continuamos sin usuario logueado
+      setIsUserLoggedIn(false);
+    };
+
+    checkUserSession();
+  }, []);
 
   const handleSearch = () => {
     if (selectedService) {
@@ -53,43 +175,113 @@ const Home: React.FC = () => {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-green-100 to-green-200 flex flex-col items-center justify-center p-4">
-      <h1 className="text-4xl font-bold text-green-800 mb-8">¡Bienvenido a Vicnasol!</h1>
-      <div className="bg-white rounded-lg shadow-xl p-8 max-w-3xl w-full mb-12">
-        <div className="flex flex-col sm:flex-row items-center gap-4">
-          {/* <select
-            value={selectedService}
-            onChange={(e) => setSelectedService(e.target.value)}
-            className="w-full sm:w-[300px] p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200 ease-in-out"
+    <div className="flex flex-col items-center justify-center">
+      {/* HERO SECTION */}
+      <section
+        id="hero"
+        className="w-full h-screen flex flex-col items-center justify-center relative text-white"
+        style={{
+          backgroundImage: "url('/images/fondo_home.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        <div className="bg-black bg-opacity-50 w-full h-full flex flex-col items-center justify-center">
+          <h1 className="text-4xl md:text-6xl font-bold mb-4">
+            Bienvenido a Vicnasol Jardinería
+          </h1>
+          <p className="text-lg md:text-xl mb-8">
+            Transformamos tu espacio en un oasis verde
+          </p>
+          <a
+            href="/servicios"
+            className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded"
           >
-            <option value="">Select a service</option>
-            {services.map((service) => (
-              <option key={service.id} value={service.id}>
-                {service.detailService} - ${service.price}
-              </option>
-            ))}
-          </select> */}
-          <button
-            onClick={handleSearch}
-            className={`w-full sm:w-auto px-6 py-3 rounded-md text-white font-semibold transition duration-200 ease-in-out ${
-              selectedService 
-                ? 'bg-green-600 hover:bg-green-700 active:bg-green-800'
-                : 'bg-gray-400 cursor-not-allowed'
-            }`}
-            disabled={!selectedService}
-          >
-            Buscar
-          </button>
+            Ver Servicios
+          </a>
         </div>
-      </div>
-      <div className="mt-12 text-center max-w-2xl mx-auto">
-        <h2 className="text-2xl font-semibold text-green-800 mb-4">Descubra el placer de la jardinería</h2>
-        <p className="text-green-700">
-          Si usted es un jardinero experimentado, recién comienza o busca contratar servicios profesionales,
-          tenemos todo lo que necesita para ayudar a que su jardín y su negocio florezcan.
+      </section>
+
+      {/* ABOUT SECTION */}
+      <section
+        id="about"
+        className="w-full py-20 bg-white text-gray-800 flex flex-col items-center justify-center"
+      >
+        <h2 className="text-3xl md:text-4xl font-semibold mb-6">
+          Sobre Nosotros
+        </h2>
+        <p className="text-lg md:text-xl mb-6 px-4 md:w-2/3 lg:w-1/2 text-center">
+          En Vicnasol Jardinería, nos especializamos en crear y mantener
+          hermosos jardines que alegran los espacios. Nuestro equipo de
+          profesionales está comprometido con la excelencia y la
+          satisfacción del cliente.
         </p>
-      </div>
-    </main>
+      </section>
+
+      {/* SERVICES SECTION */}
+      <section
+        id="services"
+        className="w-full py-20 bg-gradient-to-b from-green-500 to-green-700 text-white flex flex-col items-center"
+        style={{
+          backgroundImage: "url('/images/fondo_home.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        <h2 className="text-3xl md:text-4xl font-semibold mb-10 text-center">
+          Nuestros Servicios
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-4 md:px-10 lg:px-20">
+          {/* Bloque de Servicio */}
+          <div className="bg-white text-gray-800 p-6 rounded-lg shadow-lg transform transition-transform hover:scale-105">
+            <div className="flex items-center justify-center mb-4">
+            </div>
+            <h3 className="text-xl font-semibold mb-4 text-center">Mantenimiento</h3>
+            <p className="text-center">
+              Servicios regulares de mantenimiento para mantener tu jardín en perfectas
+              condiciones durante todo el año.
+            </p>
+          </div>
+          {/* Bloque de Diseño */}
+          <div className="bg-white text-gray-800 p-6 rounded-lg shadow-lg transform transition-transform hover:scale-105">
+            <div className="flex items-center justify-center mb-4">
+            </div>
+            <h3 className="text-xl font-semibold mb-4 text-center">Diseño</h3>
+            <p className="text-center">
+              Creamos diseños personalizados que se adaptan a tus gustos y al entorno
+              de tu espacio.
+            </p>
+          </div>
+          {/* Bloque de Instalación */}
+          <div className="bg-white text-gray-800 p-6 rounded-lg shadow-lg transform transition-transform hover:scale-105">
+            <div className="flex items-center justify-center mb-4">
+            </div>
+            <h3 className="text-xl font-semibold mb-4 text-center">Instalación</h3>
+            <p className="text-center">
+              Realizamos instalaciones completas, desde césped hasta sistemas de riego.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* CONTACT SECTION */}
+      <section
+        id="contact"
+        className="w-full py-20 bg-white text-gray-800 flex flex-col items-center justify-center"
+      >
+        <h2 className="text-3xl md:text-4xl font-semibold mb-6">Contáctanos</h2>
+        <p className="text-lg md:text-xl mb-6 px-4 md:w-2/3 lg:w-1/2 text-center">
+          ¿Listo para transformar tu jardín? Ponte en contacto con nosotros
+          hoy mismo para obtener una cotización.
+        </p>
+        <a
+          href="/contacto"
+          className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded"
+        >
+          Enviar Mensaje
+        </a>
+      </section>
+    </div>
   );
 };
 
