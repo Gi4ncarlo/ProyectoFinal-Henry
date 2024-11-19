@@ -12,12 +12,15 @@ export async function register(dataUser: IRegisterProps): Promise<void> {
       body: JSON.stringify(dataUser),
     });
 
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(errorData.message || "Register error");
-    }
+    // if (!res.ok) {
+    //   const errorData = await res.json();
+    //   if (errorData.message.includes("email")) {
+    //     throw new Error("Este correo ya está registrado.");
+    //   }
+    //   throw new Error(errorData.message || "Register error");
+    // }
   } catch (error: any) {
-    throw new Error(error);
+    throw new Error(error.message);
   }
 }
 
@@ -58,5 +61,23 @@ export async function registerService(
   } catch (error: any) {
     console.error("Error during service registration:", error);
     throw new Error(error.message || "Unknown error");
+  }
+}
+
+
+export async function checkEmailBeforeRegister(dataUser: IRegisterProps): Promise<boolean> {
+  try {
+    const res = await fetch(`${APIURL}/auth/signup`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ ...dataUser }), 
+    });
+
+    return res.ok; // Retorna `true` si no hay error
+  } catch (error: any) {
+    if (error.message.includes("email")) {
+      return false; // Si el email ya existe
+    }
+    throw error; // Otros errores
   }
 }

@@ -181,7 +181,7 @@ export default function Navbar() {
                   <Link href="/login">
                     <div className="block px-4 py-2 hover:bg-gray-100">Iniciar Sesión</div>
                   </Link>
-                  <Link href="/register">
+                  <Link href="/preRegister">
                     <div className="block px-4 py-2 hover:bg-gray-100">Registrarse</div>
                   </Link>
                 </>

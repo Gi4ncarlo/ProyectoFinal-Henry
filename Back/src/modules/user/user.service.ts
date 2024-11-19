@@ -93,10 +93,14 @@ export class UserService {
   }
 
   async findOneWithOrders(userId: string): Promise<User> {
-    return this.userRepository.findOne({
-      where: { id: userId },
-      relations: ['servicesOrder', 'servicesOrder.gardener', 'servicesOrder.serviceProvided'], 
-    });
+    try {
+      return this.userRepository.findOne({
+        where: { id: userId },
+        relations: ['servicesOrder', 'servicesOrder.gardener', 'servicesOrder.serviceProvided'], 
+      });   
+    } catch (error) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
   }
 
   async updateProfileImage(id: string, imageUrl: string): Promise<void> {

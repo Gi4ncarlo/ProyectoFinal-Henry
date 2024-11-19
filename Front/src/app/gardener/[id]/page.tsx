@@ -58,7 +58,7 @@ const ProviderDetail: React.FC = () => {
 
 
   const handleHireClick = async () => {
-    const date = new Date().toString();
+    const date = new Date().toLocaleDateString();
     const isApproved = false;
     const gardenerId = gardener?.id.toString(); 
     const userSession = localStorage.getItem("userSession");
@@ -86,15 +86,9 @@ const ProviderDetail: React.FC = () => {
         serviceId: selectedServices,
       });
       setOrderService(order);
+      setSelectedServices([]);
       router.push("/dashboard/userDashboard")
-      
-      alert(
-        `Order ID: ${order.id}\n` +
-        `User Name: ${order.user.name}\n` +
-        `Gardener Name: ${order.gardener.name}\n` +
-        `Service: ${order.serviceProvided.detailService}`
-      );
-    
+          
     } catch (error) {
       setError('Error al cargar los productos');
     }
