@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+
+const APIURL = process.env.NEXT_PUBLIC_API_URL;
 // import { getServicesProvided } from '@/helpers/service.helpers';
 
 // interface ServiceProvided {
@@ -72,16 +74,16 @@ const Home: React.FC = () => {
 
         if (googleResponse.ok) {
           const googleUser = await googleResponse.json();
-          if (googleUser?.email) {
+          if (googleUser?.email && googleUser.sub) {
             // Usuario de Google encontrado, logueamos en el backend
-            const loginResponse = await fetch('/api/login', {
+            const loginResponse = await fetch(`(${APIURL}/auth/signup`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
                 email: googleUser.email,
-                password: 'defaultPassword', // Contraseña genérica (ajusta según tu backend)
+                password: googleUser.sub, // Contraseña genérica (ajusta según tu backend)
               }),
             });
 
