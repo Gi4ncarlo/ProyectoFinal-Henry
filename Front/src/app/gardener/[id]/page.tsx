@@ -56,17 +56,17 @@ const ProviderDetail: React.FC = () => {
   };
 
   const handleHireClick = async () => {
-    if (typeof window === 'undefined') {
-      setError('No se puede acceder a la sesión del usuario en el servidor');
+    if (typeof window === "undefined") {
+      setError("No se puede acceder a la sesión del usuario en el servidor");
       return;
     }
-  
+
     const userSession = localStorage.getItem("userSession");
     if (!userSession) {
-      setError('User session not found');
+      setError("No se encontró la sesión del usuario");
       return;
     }
-  
+
     const { user } = JSON.parse(userSession);
     const userId = user?.id;
   
