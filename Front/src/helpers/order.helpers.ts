@@ -1,4 +1,5 @@
-const APIURL = process.env.NEXT_PUBLIC_API_URL;
+const APIURL = process.env.NEXT_PUBLIC_API_URL
+const TOKEN = JSON.parse(localStorage.getItem("userSession") || "null")
 
 export const hireServices = async (data: {
     date: string;

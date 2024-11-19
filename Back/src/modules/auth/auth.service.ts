@@ -15,7 +15,6 @@ import { GardenerService } from '../gardener/gardener.service';
 import { Role } from '../user/enums/role.enum';
 import { MailService } from '../mail/mail.service';
 
-
 @Injectable()
 export class AuthService {
   constructor(
@@ -107,23 +106,25 @@ export class AuthService {
     if (userFinded || gardenerFinded) {
       throw new BadRequestException('User already exists');
     }
-    
+
     if (signUpUser.password !== signUpUser.passwordConfirm) {
       throw new HttpException('Password does not match', 400);
     }
 
     signUpUser.password = await bcrypt.hash(signUpUser.password, 10);
-    
+
     if (!signUpUser.password) {
       throw new BadRequestException('Error at password hash');
     }
-    
+
     let newUsers;
-    
+
     if (signUpUser.role === Role.Gardener) {
       newUsers = await this.gardenerService.create(signUpUser);
+    } else {
+      newUsers = await this.userService.create(signUpUser);
     }
-    
+
     const newUser = await this.userService.create(signUpUser);
     await this.mailService.sendWelcomeEmail(newUser.email, newUser.username);
     return newUser;

@@ -3,11 +3,6 @@ import { IRegisterProps } from "@/interfaces/IRegisterProps";
 import { IServiceProps } from "@/interfaces/IServiceProps";
 
 const APIURL = process.env.NEXT_PUBLIC_API_URL;
-<<<<<<< HEAD
-
-=======
-const TOKEN = JSON.parse(localStorage.getItem("userSession") || "null");
->>>>>>> 3eb31b2ff372808ecb0a7bab2fc2b36e68defe42
 export async function register(dataUser: IRegisterProps): Promise<void> {
   try {
     const res = await fetch(`${APIURL}/auth/signup`, {
@@ -56,12 +51,9 @@ export async function registerService(dataService: IServiceProps): Promise<void>
     if (!TOKEN || !TOKEN.token) {
       throw new Error("Token is missing or invalid.");
     }
-<<<<<<< HEAD
 
     console.log("DATA SERVICE:", dataService);
 
-=======
->>>>>>> 3eb31b2ff372808ecb0a7bab2fc2b36e68defe42
     const res = await fetch(`${APIURL}/serviceProvided`, {
       method: "POST",
       headers: {
