@@ -2,6 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+
+const AUTHURL = process.env.AUTH0_BASE_URL;
+const APIURL = process.env.NEXT_PUBLIC_BASE_URL;
 // import { getServicesProvided } from '@/helpers/service.helpers';
 
 // interface ServiceProvided {
@@ -62,26 +65,25 @@ const Home: React.FC = () => {
 
       // 2. Si no hay token, consultar al endpoint de Google Auth
       try {
-        const googleResponse = await fetch('/api/auth/me', {
+        const googleResponse = await fetch(`/api/auth/me`, {
           method: 'GET',
           credentials: 'include', // Incluye cookies en la petición
           headers: {
             'Content-Type': 'application/json',
           },
         });
-
         if (googleResponse.ok) {
           const googleUser = await googleResponse.json();
-          if (googleUser?.email) {
+          if (googleUser?.email && googleUser?.sub){
             // Usuario de Google encontrado, logueamos en el backend
-            const loginResponse = await fetch('/api/login', {
+            const loginResponse = await fetch(`${APIURL}/auth/signin`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
                 email: googleUser.email,
-                password: 'defaultPassword', // Contraseña genérica (ajusta según tu backend)
+                password: googleUser.sub // Contraseña genérica (ajusta según tu backend)
               }),
             });
 
