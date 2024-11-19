@@ -56,6 +56,25 @@ const ProviderDetail: React.FC = () => {
   };
 
   const handleHireClick = async () => {
+    if (typeof window === 'undefined') {
+      setError('No se puede acceder a la sesión del usuario en el servidor');
+      return;
+    }
+  
+    const userSession = localStorage.getItem("userSession");
+    if (!userSession) {
+      setError('User session not found');
+      return;
+    }
+  
+    const { user } = JSON.parse(userSession);
+    const userId = user?.id;
+  
+    if (!userId) {
+      setError('User ID not found');
+      return;
+    }
+  
     const date = new Date().toLocaleDateString();
     const isApproved = false;
     const gardenerId = gardener?.id.toString();
