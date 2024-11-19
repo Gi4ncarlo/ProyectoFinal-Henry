@@ -125,7 +125,7 @@ const DashboardUserCompo: React.FC = () => {
 
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/user/${userSession?.user?.id}/image`,
+          `${process.env.NEXT_PUBLIC_API_URL}/${userSession?.user.role}/${userSession?.user?.id}/image`,
           {
             method: "POST",
             headers: {

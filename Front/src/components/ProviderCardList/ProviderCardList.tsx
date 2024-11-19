@@ -26,7 +26,7 @@ const ProviderCardList: React.FC = () => {
     setFilter(newFilter);
     localStorage.setItem("filter", newFilter);
   };
-  const HandleSearch = (e) => {
+  const HandleSearch = (e: any) => {
     const newSearchTerm = e.target.value;
     setSearchTerm(newSearchTerm);
     localStorage.setItem("searchTerm", newSearchTerm);
@@ -57,7 +57,7 @@ const ProviderCardList: React.FC = () => {
 
   return (
 
-    <div className="mx-auto">
+    <div className="mx-auto mt-24">
       {
         !providers ? (
           <div className="text-center mb-8 mx-auto">
