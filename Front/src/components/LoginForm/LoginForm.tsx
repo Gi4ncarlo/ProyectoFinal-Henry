@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
-
+import Link from "next/link";
 export default function LoginForm() {
   const router = useRouter();
   const initialState = {
@@ -41,7 +41,7 @@ export default function LoginForm() {
     if (response.status === 401) {
       Swal.fire({
         title: "Error",
-        text: "Email o contraseña incorrectos",
+        text: "Email o contraseña incorrectos",
         icon: "error",
       });
     } else {
@@ -69,17 +69,15 @@ export default function LoginForm() {
 
   return (
     <div className="h-screen w-screen relative flex items-center justify-center">
-      {/* Imagen de fondo optimizada */}
       <Image
-        src="/images/fondoLogin.jpg" 
+        src="/images/fondoLogin.jpg"
         alt="Fondo de bienvenida"
-        layout="fill" 
+        layout="fill"
         objectFit="cover"
-        priority // Asegura que la imagen se cargue rápidamente
-        quality={100} // Alta calidad (ajusta según tus necesidades)
+        priority
+        quality={100}
       />
 
-      {/* Contenedor del formulario */}
       <div className="relative w-full max-w-md mx-auto p-6 border rounded-lg shadow-lg bg-white z-10">
         <h2 className="text-3xl font-bold text-center mb-4 text-[#263238]">
           Inicia sesión
@@ -148,6 +146,23 @@ export default function LoginForm() {
             Entrar
           </button>
         </form>
+
+        {/* Botón para iniciar sesión con Google */}
+        <div className="mt-6">
+          <Link
+            href= "/api/auth/login"
+            className="w-full flex items-center justify-center p-2 bg-[#4caf50] text-white font-bold rounded hover:bg-[#388e3c]"
+          >
+            <Image
+              src="/images/LogoGoogle.png"
+              alt="Google Logo"
+              width={20}
+              height={20}
+              className="mr-2 rounded-full bg-white"
+            />
+            Entrar con Google
+          </Link>
+        </div>
       </div>
     </div>
   );

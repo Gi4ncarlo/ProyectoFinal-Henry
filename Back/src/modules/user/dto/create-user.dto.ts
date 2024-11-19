@@ -1,4 +1,4 @@
-import { IsEmail, IsEnum, IsInt, IsNotEmpty, IsPhoneNumber, IsString, Min, Matches } from 'class-validator';
+import { IsEmail, IsEnum, IsInt, IsNotEmpty, IsPhoneNumber, IsString, Min, Matches, IsOptional } from 'class-validator';
 import { Role } from '../enums/role.enum';
 
 export class CreateUserDto {
@@ -44,4 +44,7 @@ export class CreateUserDto {
 
   @IsEnum(Role, { message: 'Role must be either User, Admin or Gardener' })
   role?: Role;
+
+  @IsOptional()
+  profileImageUrl?: string
 }
