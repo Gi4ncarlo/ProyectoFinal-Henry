@@ -59,24 +59,24 @@ const ProviderDetail: React.FC = () => {
   const handleHireClick = async () => {
     const date = new Date().toLocaleDateString();
     const isApproved = false;
-    const gardenerId = gardener?.id.toString(); 
+    const gardenerId = gardener?.id.toString();
     const userSession = localStorage.getItem("userSession");
-    
+
     if (!userSession) {
       setError('User session not found');
       return;
     }
-  
+
     const { user } = JSON.parse(userSession);
     const userId = user?.id;
-    
-    
+
     if (!userId) {
       setError('User ID not found');
       return;
     }
-  
+
     try {
+      // Llamada a la API para crear la orden
       const order = await hireServices({
         date,
         isApproved,
@@ -84,15 +84,21 @@ const ProviderDetail: React.FC = () => {
         userId,
         serviceId: selectedServices,
       });
+
+      // Almacenar la orden en el estado si es necesario
       setOrderService(order);
       setSelectedServices([]);
-      router.push("/dashboard/userDashboard")
-          
+
+      // Almacenar la orden en el localStorage si es necesario para persistencia
+      localStorage.setItem('userOrder', JSON.stringify(order));  // Puedes almacenarlo en el localStorage si es necesario.
+
+      // Redirigir al Dashboard de Usuario
+      router.push("/dashboard/userDashboard");  // Asegúrate de que esta ruta sea correcta
+
     } catch (error) {
       setError('Error al cargar los productos');
     }
   };
-  
 
   if (error) return <div>{error}</div>;
 
