@@ -1,9 +1,9 @@
 "use client";
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const Home: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState("");
   const router = useRouter();
 
   const handleSearch = () => {
@@ -53,35 +53,42 @@ const Home: React.FC = () => {
           <button
             onClick={handleSearch}
             className={`w-full sm:w-auto px-6 py-3 rounded-md text-white font-semibold transition duration-200 ease-in-out ${
-              selectedCategory 
-                ? 'bg-green-600 hover:bg-green-700 active:bg-green-800'
-                : 'bg-gray-400 cursor-not-allowed'
+              selectedCategory
+                ? "bg-green-600 hover:bg-green-700 active:bg-green-800"
+                : "bg-gray-400 cursor-not-allowed"
             }`}
             disabled={!selectedCategory}
             aria-label="Search for selected service"
           >
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              fill="none" 
-              viewBox="0 0 24 24" 
-              stroke="currentColor" 
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
               className="w-5 h-5 inline-block mr-2"
             >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={2} 
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" 
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
               />
             </svg>
             Search
           </button>
         </div>
       </div>
-      
+
       <div className="mt-12 text-center max-w-2xl mx-auto">
-        <h2 className="text-2xl font-semibold text-green-800 mb-4">Discover the Joy of Gardening</h2>
+        <h2 className="text-2xl font-semibold text-green-800 mb-4">
+          Discover the Joy of Gardening
+        </h2>
         <p className="text-green-700">
+          Whether you are an experienced gardener, just starting out, or looking
+          to hire professional services, we have everything you need to help
+          your garden and your business flourish. Explore our extensive range of
+          services, tools, and expert advice to create the perfect outdoor
+          space.
           Lucas Cambio 
         </p>
       </div>
@@ -91,6 +98,9 @@ const Home: React.FC = () => {
       </div>
       <div className="absolute top-4 right-4">
         <div className="w-32 h-32 bg-green-300 rounded-full opacity-50"></div>
+        <div>
+          <h1>GIANCARLO</h1>
+        </div>
       </div>
     </main>
   );
