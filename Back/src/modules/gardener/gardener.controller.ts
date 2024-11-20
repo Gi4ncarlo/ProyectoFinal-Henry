@@ -140,6 +140,38 @@ export class GardenerController {
   }
 
   @UseGuards(AuthGuard)
+  @Get(':id/serviceProvided')
+  @HttpCode(200)
+  getServiceProvided(@Param('id', new ParseUUIDPipe()) id: string) {
+    const servicesOfTheGardener =
+      this.gardenerService.findServicesProvidedByGardener(id);
+
+    if (!servicesOfTheGardener) {
+      throw new HttpException(
+        'No hay servicios prestados por este Jardinero.',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    return servicesOfTheGardener;
+  }
+
+  @UseGuards(AuthGuard)
+  @Get(':id/orders')
+  @HttpCode(200)
+  getOrdersAsigned(@Param('id', new ParseUUIDPipe()) id: string) {
+    const servicesOfTheGardener =
+      this.gardenerService.findOrdersAsignedForGardener(id);
+
+    if (!servicesOfTheGardener) {
+      throw new HttpException(
+        'No hay ordenes asignadas a este Jardinero.',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    return servicesOfTheGardener;
+  }
+
+  @UseGuards(AuthGuard)
   @Get(':id')
   @HttpCode(200)
   findOne(@Param('id', new ParseUUIDPipe()) id: string) {

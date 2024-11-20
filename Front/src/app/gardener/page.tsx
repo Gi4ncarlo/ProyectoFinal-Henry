@@ -1,6 +1,6 @@
 import ProviderCardList from "@/components/ProviderCardList/ProviderCardList";
 import React from "react";
-
+ 
 const gardeners = () => {
   return (
     <div className="flex">
@@ -10,3 +10,4 @@ const gardeners = () => {
 };
 
 export default gardeners;
+

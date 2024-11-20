@@ -8,10 +8,12 @@ import { Role } from './enums/role.enum';
 
 @Injectable()
 export class UserService {
+
+
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-  ) {}
+  ) { }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
 
@@ -69,6 +71,7 @@ export class UserService {
     return user;
   }
 
+
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     await this.userRepository.update(id, updateUserDto);
     return this.findOne(id);
@@ -84,6 +87,13 @@ export class UserService {
     const user = await this.userRepository.findOne({ where: { email } });
     return user;
   }
+  async googleEmail(email: string) {
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (user) {
+      return true;
+    }
+    return false;
+  }
 
   async remove(id: string): Promise<void> {
     const result = await this.userRepository.delete(id);
@@ -96,8 +106,8 @@ export class UserService {
     try {
       return this.userRepository.findOne({
         where: { id: userId },
-        relations: ['servicesOrder', 'servicesOrder.gardener', 'servicesOrder.serviceProvided'], 
-      });   
+        relations: ['servicesOrder', 'servicesOrder.gardener', 'servicesOrder.serviceProvided'],
+      });
     } catch (error) {
       throw new NotFoundException('Usuario no encontrado');
     }

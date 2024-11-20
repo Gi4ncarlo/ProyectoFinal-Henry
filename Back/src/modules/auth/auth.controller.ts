@@ -8,11 +8,11 @@ import { ApiTags } from '@nestjs/swagger';
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
   @Post('signin')
-  signIn(@Body() credentials: SignInAuthDto){
-      return this.authService.signIn(credentials)
+  signIn(@Body() credentials: SignInAuthDto) {
+    return this.authService.signIn(credentials)
   }
 
   @Post('signup')
@@ -20,6 +20,12 @@ export class AuthController {
   async signUp(@Body() signUpUser: SignUpAuthDto) {
     const user = await this.authService.signUp(signUpUser);  // El servicio ya maneja el envío del correo
     return new UserResponseDto(user);  // Retorna el usuario con la respuesta deseada
+  }
+  @Post('signup/google')
+  @HttpCode(HttpStatus.CREATED)
+  async signUpgoogle(@Body() signUpUser: SignUpAuthDto) {
+    const user = await this.authService.signUpgoogle(signUpUser);  // El servicio ya maneja el envío del correo
+    return user;  // Retorna el usuario con la respuesta deseada
   }
 
 }

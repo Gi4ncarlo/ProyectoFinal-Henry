@@ -107,11 +107,11 @@ export default function Navbar() {
           <li className="hover:text-[#FFEB3B]">
             <Link href="/gardener">Lista de Jardineros</Link>
           </li>
-          {userData?.user.role === "admin" && (
+          {userData?.user.role === "admin" ? (
             <li className="hover:text-[#FFEB3B]">
               <Link href="/registerService">Registrar un nuevo servicio</Link>
             </li>
-          )}
+          ) : null}
         </ul>
 
         {/* Mobile menu icon */}
@@ -147,7 +147,7 @@ export default function Navbar() {
           >
             {/* Icono del usuario */}
             <svg
-              xmlns="http://www.w3.org/2000/svg"
+              xmlns={userData?.user.profileImageUrl || "http://www.w3.org/2000/svg"}
               fill="none"
               viewBox="0 0 24 24"
               strokeWidth={1.5}
