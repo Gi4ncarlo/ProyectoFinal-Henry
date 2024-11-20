@@ -8,11 +8,8 @@ import { getServicesProvided } from '@/helpers/service.helpers';
 import { useParams, useRouter } from 'next/navigation';
 import { IService } from '@/interfaces/IService';
 import { hireServices } from '@/helpers/order.helpers';
-<<<<<<< HEAD
 import GardenerCalendar from '@/components/GardenerCalendar/GardenerCalendar';
-=======
 import { IUserSession } from '@/interfaces/IUserSession';
->>>>>>> 5763f608a24c037a1ab5e2028bd5e688e7176b69
 
 const ProviderDetail: any = () => {
       const router = useRouter();
