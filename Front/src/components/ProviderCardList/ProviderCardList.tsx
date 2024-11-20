@@ -7,7 +7,7 @@ import { IServiceProvider } from '@/interfaces/IServiceProvider';
 import { getGardenersDB } from '@/helpers/gardeners.helpers';
 import { useRouter } from 'next/navigation';
 import { FaSearch } from 'react-icons/fa';
-import gardeners from '@/app/gardener/page';
+
 
 
 const ProviderCardList: React.FC = () => {

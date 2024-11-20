@@ -8,7 +8,7 @@
 // import { hireServices } from '@/helpers/order.helpers';
 // import { IUserSession } from '@/interfaces/IUserSession';
 
-// const ProviderDetail: React.FC = () => {
+const ProviderDetail: any = () => {
 //   const router = useRouter();
 //   const params = useParams();
 //   const id = params?.id as string | undefined;
@@ -168,6 +168,6 @@
 //       </div>
 //     </div>
 //   );
-// };
+};
 
 // export default ProviderDetail;
