@@ -37,7 +37,7 @@ export class GardenerService {
       if (error instanceof BadRequestException) {
         throw error; 
       }
-      throw new InternalServerErrorException(`Ocurrió un error interno al intentar reservar el día: ${error.message}`);
+      throw new InternalServerErrorException(`Ocurrió un error interno al intentar reservar el día: ${error}`);
     }
   }
   
@@ -131,5 +131,33 @@ export class GardenerService {
         .leftJoinAndSelect('gardener.services', 'service')
         .where('service.id = :serviceId', { serviceId })
         .getMany();
+    }
+
+    async findServicesProvidedByGardener(id: string) {
+      const gardener = await this.gardenerRepository.findOne({
+        where : {id : id},
+        relations : ['serviceProvided'],
+      })
+  
+      if (!gardener) {
+        throw new NotFoundException(`Jardinero ${id} no encontrado`);
+      }
+  
+      return gardener.serviceProvided;
+  
+    }
+
+    async findOrdersAsignedForGardener(id: string) {
+      const gardener = await this.gardenerRepository.findOne({
+        where : {id : id},
+        relations : ['serviceDetails'],
+      })
+  
+      if (!gardener) {
+        throw new NotFoundException(`Jardinero ${id} no encontrado`);
+      }
+  
+      return gardener.serviceDetails;
+  
     }
 }

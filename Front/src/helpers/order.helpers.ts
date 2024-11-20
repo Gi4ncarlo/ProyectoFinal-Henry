@@ -1,4 +1,3 @@
-
 const APIURL = process.env.NEXT_PUBLIC_API_URL
 const TOKEN = JSON.parse(localStorage.getItem("userSession") || "null")
 
@@ -9,6 +8,20 @@ export const hireServices = async (data: {
     userId: string;
     serviceId: string[];
   }) => {
+
+    // Asegurarse de que estamos en el cliente antes de acceder a localStorage
+    let TOKEN = null;
+  
+    if (typeof window !== "undefined") {
+      const storedToken = localStorage.getItem("userSession");
+      TOKEN = storedToken ? JSON.parse(storedToken) : null;
+    }
+  
+    // Verifica que haya un token disponible
+    if (!TOKEN || !TOKEN.token) {
+      console.error("Token is missing or invalid.");
+      throw new Error("Token is missing or invalid.");
+    }
     try {
       const response = await fetch(`${APIURL}/services-order`, {
         method: 'POST',
@@ -28,6 +41,5 @@ export const hireServices = async (data: {
     } catch (error) {
       console.error('Error hiring services:', error);
       throw error; // Propagar el error para manejarlo en el componente
-    }
-  };
-  
+  }
+};
