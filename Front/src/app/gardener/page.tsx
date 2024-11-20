@@ -4,7 +4,7 @@ import React from "react";
 const gardeners = () => {
   return (
     <div className="flex">
-      {/* <ProviderCardList /> */}
+      <ProviderCardList />
     </div>
   );
 };

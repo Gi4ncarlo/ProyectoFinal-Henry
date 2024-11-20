@@ -10,14 +10,13 @@ import { FaSearch } from 'react-icons/fa';
 import { IUserSession } from '@/interfaces/IUserSession';
 
 
-
 const ProviderCardList: React.FC = () => {
   const [providers, setProviders] = useState<IServiceProvider[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [TOKEN, setTOKEN] = useState<any>(null);
   const [filter, setFilter] = useState<string>(localStorage.getItem("filter") || 'ASC'); // Recupera el filtro de localStorage o usa el valor predeterminado
   const [searchTerm, setSearchTerm] = useState(localStorage.getItem("searchTerm") || ''); // Recupera el término de búsqueda de localStorage o usa una cadena vacía
-  const [userSession, setUserSession] = useState<IUserSession>();
+  const [userSession, setUserSession] = useState<IUserSession | null>(null);
   // const TOKEN = JSON.parse(localStorage.getItem("userSession") || "null")
   const router = useRouter();
 
@@ -28,7 +27,9 @@ const ProviderCardList: React.FC = () => {
       );
       setUserSession(storedSession);
     }
+  }, []);
 
+  useEffect(() => {
     const storedToken = localStorage.getItem("userSession");
   
     // Si no se encuentra el token, redirigimos al login
