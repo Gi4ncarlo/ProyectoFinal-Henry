@@ -8,6 +8,7 @@ import { getServicesProvided } from '@/helpers/service.helpers';
 import { useParams, useRouter } from 'next/navigation';
 import { IService } from '@/interfaces/IService';
 import { hireServices } from '@/helpers/order.helpers';
+import { IUserSession } from '@/interfaces/IUserSession';
 
 const ProviderDetail: React.FC = () => {
   const router = useRouter();
@@ -17,11 +18,20 @@ const ProviderDetail: React.FC = () => {
   const [gardener, setGardener] = useState<IServiceProvider | null>(null);
   const [services, setServices] = useState<IService[]>([]);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
-  const [userSession, setUserSession] = useState<{ user: { id: string } } | null>(null);
+  const [userSession, setUserSession] = useState<IUserSession | null>(null);
   const [orderService, setOrderService] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
 
   // Fetch de información inicial
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedSession = JSON.parse(
+        localStorage.getItem("userSession") || "null"
+      );
+      setUserSession(storedSession);
+    }
+  }, []);
+
   useEffect(() => {
     const fetchGardener = async () => {
       if (id) {
@@ -45,18 +55,8 @@ const ProviderDetail: React.FC = () => {
       }
     };
 
-    const fetchUserSession = () => {
-      if (typeof window !== "undefined") {
-        const storedSession = JSON.parse(
-          localStorage.getItem("userSession") || "null"
-        );
-        setUserSession(storedSession);
-      }
-
     fetchGardener();
     fetchServices();
-    fetchUserSession();
-    }
   }, [id]);
 
   // Manejar selección de servicios
@@ -85,7 +85,7 @@ const ProviderDetail: React.FC = () => {
         date: new Date().toISOString(),
         isApproved: false,
         gardenerId: gardener.id.toString(),
-        userId: userSession.user.id,
+        userId: userSession.user.id.toString(),
         serviceId: selectedServices,
       });
 
