@@ -87,11 +87,17 @@ export class UserService {
     const user = await this.userRepository.findOne({ where: { email } });
     return user;
   }
-  async googleEmail(email: string) {
-    const user = await this.userRepository.findOne({ where: { email } });
+  async googleEmail(email: { email: string }) {
+    console.log(email);
+
+    const user = await this.userRepository.findOne({ where: { email: email.email } });
     if (user) {
+      console.log('true', user);
       return true;
+
     }
+    console.log('false', user);
+
     return false;
   }
 

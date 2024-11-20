@@ -61,6 +61,7 @@ const Home: React.FC = () => {
           return; // Usuario ya logueado, no seguimos.
         }
       }
+<<<<<<< HEAD
 
       // 2. Si no hay token, consultar al endpoint de Google Auth
       try {
@@ -159,9 +160,12 @@ const Home: React.FC = () => {
         }
       } catch (error) {
         console.error("Error al verificar el usuario de Google:", error);
+=======
+      if(isUserLoggedIn){
+        console.log('Ya estas logueado');
+        return
+>>>>>>> d781ccc7a408b7f7e966dec293d4e507cef559c3
       }
-
-      // 3. Si no hay token ni usuario, continuamos sin usuario logueado
       setIsUserLoggedIn(false);
     };
 
