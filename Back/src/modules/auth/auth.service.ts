@@ -28,12 +28,14 @@ export class AuthService {
 
   async signIn(credentials: SignInAuthDto) {
     try {
+      console.log(credentials);
+      
       const user = await this.userService.findByEmail(credentials.email);
       const admin = await this.adminService.findByEmail(credentials.email);
       const gardener = await this.gardenerService.findByEmail(
         credentials.email,
       );
-
+      console.log('user1:       ' , user);
       if (user?.isBanned === true) {
         throw new HttpException(
           'El usuario esta baneado',
@@ -43,6 +45,8 @@ export class AuthService {
 
       // Validación para usuarios
       if (user) {
+        console.log(await bcrypt.compare(credentials.password, user.password));
+        
         const isPasswordMatching = await bcrypt.compare(
           credentials.password,
           user.password,
