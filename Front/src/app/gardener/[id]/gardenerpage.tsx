@@ -48,7 +48,7 @@ const ProviderDetail: React.FC = () => {
   }, [id]);
 
     useEffect(() => {
-      if (typeof window !== "undefined") {
+      if (typeof window !== 'undefined' && window.localStorage) {
         const storedSession = JSON.parse(
           localStorage.getItem("userSession") || "null"
         );
