@@ -15,6 +15,12 @@ export default function LoginForm() {
     email: "",
     password: "",
   };
+
+  interface UserSession {
+    token: string;
+    user: any; // Cambia 'any' por el tipo adecuado si tienes uno para el usuario
+  }
+  
   const [dataUser, setDataUser] = useState<ILoginProps>(initialState);
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<ILoginErrors>(initialState);
@@ -22,6 +28,7 @@ export default function LoginForm() {
     email: false,
     password: false,
   });
+  const [userSession, setUserSession] = useState<UserSession | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -55,6 +62,15 @@ export default function LoginForm() {
       router.push("/Home");
     }
   };
+
+  useEffect(() => {
+    if (userSession) {
+      if (typeof window !== "undefined") {
+        localStorage.setItem("userSession", JSON.stringify(userSession));
+        router.push("/");
+      }
+    }
+  }, [userSession, router]); // Incluye router en las dependencias
 
   useEffect(() => {
     if (Object.values(touched).some((field) => field)) {
@@ -150,7 +166,7 @@ export default function LoginForm() {
         {/* Botón para iniciar sesión con Google */}
         <div className="mt-6">
           <Link
-            href= "/api/auth/login"
+            href= "/api/auth/login?returnTo=/loginGoogle"
             className="w-full flex items-center justify-center p-2 bg-[#4caf50] text-white font-bold rounded hover:bg-[#388e3c]"
           >
             <Image

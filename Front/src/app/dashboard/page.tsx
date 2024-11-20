@@ -11,8 +11,10 @@ const Dashboard = () => {
   const [role, setRole] = useState<string | null>(null);
 
   useEffect(() => {
-    // Obtén el usuario de localStorage al cargar el componente
-    const user = JSON.parse(localStorage.getItem("userSession") || "null");
+    // Asegúrate de que el código solo se ejecute en el cliente
+    if (typeof window !== "undefined") {
+      // Obtén el usuario de localStorage al cargar el componente
+      const user = JSON.parse(localStorage.getItem("userSession") || "null");
 
     if (user && user.token && user.user.role) {
       setRole(user.user.role); // Guarda el rol del usuario
@@ -23,7 +25,8 @@ const Dashboard = () => {
         icon: "error",
       }).then(() => {
         window.location.href = "/";
-      })
+        })
+      }
     }
   }, []);
 
@@ -35,7 +38,7 @@ const Dashboard = () => {
     case "admin":
       return <AdminDashboard />;
     case "gardener":
-      return <GardenerDashboard/>;
+      return <GardenerDashboard />;
     case "user":
     default:
       return <UserDashboard />;
@@ -43,4 +46,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-

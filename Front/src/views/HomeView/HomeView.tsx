@@ -14,6 +14,7 @@ import Link from 'next/link';
 
 const Home: React.FC = () => {
   const [selectedService, setSelectedService] = useState<string>('');
+
   // const [services, setServices] = useState<ServiceProvided[]>([]);
   // const [isMounted, setIsMounted] = useState(false); // Nuevo estado para verificar si el componente está montado
   const router = useRouter();
@@ -61,10 +62,10 @@ const Home: React.FC = () => {
           return; // Usuario ya logueado, no seguimos.
         }
       }
-
-      // 2. Si no hay token, consultar al endpoint de Google Auth
-     
-      // 3. Si no hay token ni usuario, continuamos sin usuario logueado
+      if(isUserLoggedIn){
+        console.log('Ya estas logueado');
+        return
+      }
       setIsUserLoggedIn(false);
     };
 
