@@ -1,8 +1,6 @@
 "use client";
 import { IUserSession } from "@/interfaces/IUserSession";
 import Image from "next/image";
-// import { format } from 'date-fns';
-// import { es, ar } from 'date-fns/locale';
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
@@ -10,18 +8,22 @@ import Swal from "sweetalert2";
 const DashboardUserCompo: React.FC = () => {
     const [userSession, setUserSession] = useState<IUserSession | null>(null);
     const TOKEN = JSON.parse(localStorage.getItem("userSession") || "null");
-    const [imageProfile, setImageProfile] = useState<any>("");
+    const [imageProfile, setImageProfile] = useState<string | null>(null);
 
     useEffect(() => {
+        // Asegurarse de que la sesión se cargue solo una vez al inicio
         if (typeof window !== "undefined") {
             const storedSession = JSON.parse(
                 localStorage.getItem("userSession") || "null"
             );
             setUserSession(storedSession);
+            if (storedSession?.user?.profileImageUrl) {
+                setImageProfile(storedSession.user.profileImageUrl);
+            }
         }
     }, []);
 
-    //SUBIDA DE IMAGEN
+    // Manejo de la subida de la imagen
     const handleImageUpload = async (
         event: React.ChangeEvent<HTMLInputElement>
     ) => {
@@ -48,39 +50,22 @@ const DashboardUserCompo: React.FC = () => {
 
                 const data = await response.json();
 
-                console.log("data de la imagen", data);
-                const sesion = JSON.parse(
-                    localStorage.getItem("userSession") || "null"
-                );
-
-                sesion.user.profileImageUrl = data.imageUrl;
-
-                console.log("sesion:", sesion);
-                localStorage.clear();
-                localStorage.setItem("userSession", JSON.stringify(sesion));
-
+                // Actualiza la imagen en el estado y en el localStorage
+                if (userSession && userSession.user) {
+                    const updatedSession = { ...userSession };
+                    updatedSession.user.profileImageUrl = data.imageUrl;
+                
+                    // Guardar la sesión actualizada en el localStorage
+                    localStorage.setItem("userSession", JSON.stringify(updatedSession));
+                    setImageProfile(data.imageUrl); // Actualiza el estado inmediatamente
+                }
                 Swal.fire("Éxito", "Imagen subida correctamente", "success");
-                buscarImagen();
             } catch (error) {
                 Swal.fire("Error", "No se pudo subir la imagen", "error");
             }
         }
     };
 
-    //BUSCAR IMAGEN
-    const buscarImagen = async () => {
-        const response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/user/${userSession?.user?.id}`,
-            {
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${TOKEN.token}`,
-                },
-            }
-        );
-        const user = await response.json();
-        setImageProfile(user.profileImageUrl);
-    };
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col items-center py-3 px-4">
             <h1 className="text-3xl font-bold text-gray-800 mb-8">
@@ -109,9 +94,9 @@ const DashboardUserCompo: React.FC = () => {
                 </div>
 
                 <div className="flex items-center justify-center">
-                    {userSession?.user.profileImageUrl ? (
+                    {imageProfile ? (
                         <Image
-                            src={userSession?.user?.profileImageUrl || ""}
+                            src={imageProfile || ""}
                             alt="Profile"
                             className="rounded-full"
                             width={200}
