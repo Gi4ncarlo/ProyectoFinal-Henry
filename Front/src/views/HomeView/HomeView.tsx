@@ -15,6 +15,7 @@ const Home: React.FC = () => {
   return (
     <main className="min-h-screen bg-gradient-to-b from-green-100 to-green-200 flex flex-col items-center justify-center p-4">
       <h1 className="text-4xl font-bold text-green-800 mb-8">Welcome to Vicnasol</h1>
+
       
       <div className="bg-white rounded-lg shadow-xl p-8 max-w-3xl w-full mb-12">
         <div className="flex flex-col sm:flex-row items-center gap-4">
@@ -42,9 +43,17 @@ const Home: React.FC = () => {
             <option value="gutter-cleaning">Gutter Cleaning</option>
             <option value="tree-removal">Tree Removal</option>
           </select>
-
-          <h1 className="text-4xl font-bold text-green-800 mb-8">HOLAAA PRUEBA NACHO</h1>
+          <div>
+            <h1>
+              Testeando Git
+            </h1>
+            <h2>
+              esperemos no se rompa!!!
+            </h2>
+          </div>
           
+          <h1>Cambio Nacho</h1>
+
           <button
             onClick={handleSearch}
             className={`w-full sm:w-auto px-6 py-3 rounded-md text-white font-semibold transition duration-200 ease-in-out ${
@@ -80,6 +89,7 @@ const Home: React.FC = () => {
           Whether you are an experienced gardener, just starting out, or looking to hire professional services, 
           we have everything you need to help your garden and your business flourish. Explore our extensive 
           range of services, tools, and expert advice to create the perfect outdoor space.
+          Lucas Cambio
         </p>
       </div>
 
