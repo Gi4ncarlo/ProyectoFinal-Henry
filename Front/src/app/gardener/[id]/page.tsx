@@ -46,22 +46,17 @@ const ProviderDetail: React.FC = () => {
     };
 
     const fetchUserSession = () => {
-      try {
-        const session = localStorage.getItem('userSession');
-        if (session) {
-          setUserSession(JSON.parse(session));
-        } else {
-          setError('No se encontró la sesión del usuario.');
-        }
-      } catch (error) {
-        console.error('Error obteniendo la sesión del usuario:', error);
-        setError('Error cargando la sesión del usuario.');
+      if (typeof window !== "undefined") {
+        const storedSession = JSON.parse(
+          localStorage.getItem("userSession") || "null"
+        );
+        setUserSession(storedSession);
       }
-    };
 
     fetchGardener();
     fetchServices();
     fetchUserSession();
+    }
   }, [id]);
 
   // Manejar selección de servicios
