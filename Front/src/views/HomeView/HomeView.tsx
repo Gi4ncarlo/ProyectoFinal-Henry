@@ -15,7 +15,7 @@ const Home: React.FC = () => {
   return (
     <main className="min-h-screen bg-gradient-to-b from-green-100 to-green-200 flex flex-col items-center justify-center p-4">
       <h1 className="text-4xl font-bold text-green-800 mb-8">Cambio Cambio Cambio !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!</h1>
-      
+      <h1>holaaaaaa</h1>
       <div className="bg-white rounded-lg shadow-xl p-8 max-w-3xl w-full mb-12">
         <div className="flex flex-col sm:flex-row items-center gap-4">
           <select
@@ -24,6 +24,12 @@ const Home: React.FC = () => {
             className="w-full sm:w-[300px] p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200 ease-in-out"
             aria-label="Select a gardening service"
           >
+             <option value="">Select a service</option>
+            <option value="all-services">All Services</option>
+            <option value="lawn-mowing">Lawn Mowing</option>
+            <option value="tree-pruning">Tree Pruning</option>
+            <option value="hedge-trimming">Hedge Trimming</option>
+            <option value="garden-design">Garden Design</option>
             <option value="">Select a service</option>
             <option value="all-services">All Services</option>
             <option value="lawn-mowing">Lawn Mowing</option>
@@ -41,11 +47,15 @@ const Home: React.FC = () => {
             <option value="garden-pest-control">Garden Pest Control</option>
             <option value="gutter-cleaning">Gutter Cleaning</option>
             <option value="tree-removal">Tree Removal</option>
+            <option value="">Select a service</option>
+            <option value="all-services">All Services</option>
+            <option value="lawn-mowing">Lawn Mowing</option>
+            <option value="tree-pruning">Tree Pruning</option>
+            <option value="hedge-trimming">Hedge Trimming</option>
+            <option value="garden-design">Garden Design</option>
           </select>
           <div>
-            <h1>
-              Testeando Git
-            </h1>
+         
             <h2>
               esperemos no se rompa!!!
             </h2>
