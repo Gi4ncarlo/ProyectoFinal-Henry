@@ -13,91 +13,98 @@ const ProviderDetail: React.FC = () => {
   const router = useRouter();
   const params = useParams();
   const id = params?.id as string | undefined;
-  const [gardener, setGardener] = useState<any>(null);
-  const [services, setServices] = useState<IService[]>([]); // Servicios disponibles
-  const [selectedServices, setSelectedServices] = useState<string[]>([]); // Servicios seleccionados
-  const [orderService, setOrderService] = useState();
+
+  const [gardener, setGardener] = useState<IServiceProvider | null>(null);
+  const [services, setServices] = useState<IService[]>([]);
+  const [selectedServices, setSelectedServices] = useState<string[]>([]);
+  const [userSession, setUserSession] = useState<{ user: { id: string } } | null>(null);
+  const [orderService, setOrderService] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
-  
+
+  // Fetch de información inicial
   useEffect(() => {
     const fetchGardener = async () => {
       if (id) {
         try {
-          const gardenerData = await getProviderById(id as string);
+          const gardenerData = await getProviderById(id);
           setGardener(gardenerData);
         } catch (error) {
-          console.error('Error buscando informacion del Jardinero.:', error);
+          console.error('Error buscando información del jardinero:', error);
+          setError('No se pudo cargar la información del jardinero.');
         }
       }
     };
-    
-    // Fetch para obtener los servicios
+
     const fetchServices = async () => {
       try {
         const serviceData = await getServicesProvided();
         setServices(serviceData);
       } catch (error) {
-        console.error('Error buscando los servicios del Jardinero:', error);
+        console.error('Error buscando los servicios:', error);
+        setError('No se pudieron cargar los servicios.');
       }
     };
-    
+
+    const fetchUserSession = () => {
+      try {
+        const session = localStorage.getItem('userSession');
+        if (session) {
+          setUserSession(JSON.parse(session));
+        } else {
+          setError('No se encontró la sesión del usuario.');
+        }
+      } catch (error) {
+        console.error('Error obteniendo la sesión del usuario:', error);
+        setError('Error cargando la sesión del usuario.');
+      }
+    };
+
     fetchGardener();
     fetchServices();
+    fetchUserSession();
   }, [id]);
-  
+
+  // Manejar selección de servicios
   const handleServiceChange = (serviceId: string) => {
-    setSelectedServices(prevSelected =>
+    setSelectedServices((prevSelected) =>
       prevSelected.includes(serviceId)
-      ? prevSelected.filter(id => id !== serviceId) // Desmarcar si ya estaba seleccionado
-      : [...prevSelected, serviceId] // Agregar a seleccionados
-  );
-};
+        ? prevSelected.filter((id) => id !== serviceId) // Deseleccionar
+        : [...prevSelected, serviceId] // Seleccionar
+    );
+  };
+
+  // Contratar servicios
   const handleHireClick = async () => {
-    if (typeof window !== 'undefined') {
-      const userSession = localStorage.getItem("userSession");
-      
-      if (!userSession) {
-        setError('User session not found');
-        return;
-      }
-      
-      if (!gardener) return <div>Cargando...</div>;
-      
-    
-    const date = new Date().toLocaleDateString();
-    const isApproved = false;
-    const gardenerId = gardener?.id.toString();
-    
-    
-    const { user } = JSON.parse(userSession);
-    const userId = user?.id;
-    
-    if (!userId) {
-      setError('User ID not found');
+    if (!userSession || !userSession.user?.id) {
+      setError('No se encontró la sesión del usuario.');
       return;
     }
-    
+
+    if (!gardener) {
+      setError('Información del jardinero no disponible.');
+      return;
+    }
+
     try {
       const order = await hireServices({
-        date,
-        isApproved,
-        gardenerId,
-        userId,
+        date: new Date().toISOString(),
+        isApproved: false,
+        gardenerId: gardener.id.toString(),
+        userId: userSession.user.id,
         serviceId: selectedServices,
       });
+
       setOrderService(order);
       setSelectedServices([]);
-      router.push("/dashboard/userDashboard")
-          
+      router.push('/dashboard/userDashboard');
     } catch (error) {
-      setError('Error al cargar los productos');
-    }
-    } else {
-    setError('No se puede acceder a la sesión del usuario en el servidor');
+      console.error('Error contratando servicios:', error);
+      setError('Hubo un problema al contratar los servicios.');
     }
   };
 
-  if (error) return <div>{error}</div>;
+  if (error) return <div className="text-red-500">{error}</div>;
+  if (!gardener) return <div>Cargando...</div>;
 
   return (
     <div className="flex bg-[#4CAF50]">
@@ -126,25 +133,21 @@ const ProviderDetail: React.FC = () => {
               <svg
                 key={index}
                 className={`w-5 h-5 ${index < Math.floor(gardener.calification) ? 'text-yellow-400' : 'text-gray-300'}`}
-                aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="currentColor"
                 viewBox="0 0 20 20"
-                aria-label={`Rating ${index + 1} star`}
               >
                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.39 2.46a1 1 0 00-.364 1.118l1.287 3.966c.3.921-.755 1.688-1.538 1.118l-3.39-2.46a1 1 0 00-1.175 0l-3.39 2.46c-.783.57-1.838-.197-1.538-1.118l1.287-3.966a1 1 0 00-.364-1.118L2.2 8.394c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.967z" />
               </svg>
             ))}
             <span className="ml-2 text-sm text-gray-500">{gardener.calification.toFixed(1)}</span>
           </div>
-
         </div>
 
-        {/* Servicios disponibles */}
         <div className="mt-6">
           <h2 className="text-lg font-semibold text-[#263238]">Servicios Disponibles:</h2>
           <div className="mt-2">
-            {services.map(service => (
+            {services.map((service) => (
               <div key={service.id} className="mb-4">
                 <label className="block text-[#263238]">
                   <input
@@ -153,10 +156,10 @@ const ProviderDetail: React.FC = () => {
                     onChange={() => handleServiceChange(service.id)}
                     className="mr-2"
                   />
+                  {service.detailService}
                 </label>
-                <p className="ml-6 text-sm text-[#263238]">Detalle: {service.detailService}</p>
                 <p className="ml-6 text-sm text-[#263238]">Precio: ${service.price}</p>
-                <p className="ml-6 text-sm text-[#263238]">Categoria: {service.categories}</p>
+                <p className="ml-6 text-sm text-[#263238]">Categoría: {service.categories}</p>
               </div>
             ))}
           </div>
