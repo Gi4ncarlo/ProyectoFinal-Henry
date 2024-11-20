@@ -64,7 +64,7 @@ const Home: React.FC = () => {
 
       // 2. Si no hay token, consultar al endpoint de Google Auth
       try {
-        const googleResponse = await fetch('/api/auth/me', {
+        const googleResponse = await fetch(`https://vicnasol-henry.vercel.app/api/auth/me`, {
           method: 'GET',
           credentials: 'include', // Incluye cookies en la petición
           headers: {
