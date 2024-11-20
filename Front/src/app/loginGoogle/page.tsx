@@ -1,4 +1,5 @@
-import LoginGoogle from "../../components/loginGoogle/loginGoogle"
+import LoginGoogle from "@/components/loginGoogle/loginGoogle";
+
 
 function loginGooglePage() {
   return (

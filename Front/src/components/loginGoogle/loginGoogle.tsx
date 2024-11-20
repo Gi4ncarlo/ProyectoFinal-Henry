@@ -1,9 +1,10 @@
 'use client';
 
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 const APIURL = process.env.NEXT_PUBLIC_API_URL;
 export default function LoginGoogle() {
-
+    const router = useRouter();
     const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 
 
@@ -56,6 +57,7 @@ export default function LoginGoogle() {
                                 'userSession',
                                 JSON.stringify({ token: response.token, user: response.user })
                             );
+                            router.push('/Home');
 
                         }
                         if (!response) {
@@ -98,6 +100,7 @@ export default function LoginGoogle() {
                                     'userSession',
                                     JSON.stringify({ token: response.token, user: response.user })
                                 );
+                                router.push('/Home');
 
                             }
                         }
