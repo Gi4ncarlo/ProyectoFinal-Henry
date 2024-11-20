@@ -1,3 +1,5 @@
+'use client';
+
 import ProviderCardList from "@/components/ProviderCardList/ProviderCardList";
 import React from "react";
  
