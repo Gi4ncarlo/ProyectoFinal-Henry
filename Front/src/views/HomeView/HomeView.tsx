@@ -42,6 +42,8 @@ const Home: React.FC = () => {
             <option value="gutter-cleaning">Gutter Cleaning</option>
             <option value="tree-removal">Tree Removal</option>
           </select>
+
+          <h1 className="text-4xl font-bold text-green-800 mb-8">HOLAAA PRUEBA NACHO</h1>
           
           <button
             onClick={handleSearch}
