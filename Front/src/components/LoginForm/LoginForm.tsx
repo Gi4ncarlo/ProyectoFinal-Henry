@@ -150,7 +150,7 @@ export default function LoginForm() {
         {/* Botón para iniciar sesión con Google */}
         <div className="mt-6">
           <Link
-            href= "/api/auth/login"
+            href= "/api/auth/login?returnTo=/loginGoogle"
             className="w-full flex items-center justify-center p-2 bg-[#4caf50] text-white font-bold rounded hover:bg-[#388e3c]"
           >
             <Image
