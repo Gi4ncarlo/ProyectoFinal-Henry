@@ -21,17 +21,7 @@ const ProviderDetail: React.FC = () => {
   const [userSession, setUserSession] = useState<IUserSession | null>(null);
   const [orderService, setOrderService] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
-
-  // Fetch de información inicial
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedSession = JSON.parse(
-        localStorage.getItem("userSession") || "null"
-      );
-      setUserSession(storedSession);
-    }
-  }, []);
-
+                                                     
   useEffect(() => {
     const fetchGardener = async () => {
       if (id) {
@@ -44,7 +34,7 @@ const ProviderDetail: React.FC = () => {
         }
       }
     };
-
+    
     const fetchServices = async () => {
       try {
         const serviceData = await getServicesProvided();
@@ -54,10 +44,19 @@ const ProviderDetail: React.FC = () => {
         setError('No se pudieron cargar los servicios.');
       }
     };
-
+    
     fetchGardener();
     fetchServices();
   }, [id]);
+
+    useEffect(() => {
+      if (typeof window !== "undefined") {
+        const storedSession = JSON.parse(
+          localStorage.getItem("userSession") || "null"
+        );
+        setUserSession(storedSession);
+      }
+    }, []);
 
   // Manejar selección de servicios
   const handleServiceChange = (serviceId: string) => {
