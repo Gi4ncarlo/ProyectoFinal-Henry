@@ -56,7 +56,7 @@ const DashboardUserCompo: React.FC = () => {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedSession = JSON.parse(
-        localStorage.getItem("userSession") || "null"
+        localStorage.getItem("userSession") || ""
       );
       setUserSession(storedSession);
     }
@@ -142,7 +142,7 @@ const DashboardUserCompo: React.FC = () => {
 
         console.log("data de la imagen", data);
         const sesion = JSON.parse(
-          localStorage.getItem("userSession") || "null"
+          localStorage.getItem("userSession") || ""
         );
 
         sesion.user.profileImageUrl = data.imageUrl;

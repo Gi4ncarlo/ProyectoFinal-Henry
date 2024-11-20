@@ -50,7 +50,7 @@ const ProviderDetail: any = () => {
 //     useEffect(() => {
 //       if (typeof window !== 'undefined' && window.localStorage) {
 //         const storedSession = JSON.parse(
-//           localStorage.getItem("userSession") || "null"
+//           localStorage.getItem("userSession") || ""
 //         );
 //         setUserSession(storedSession);
 //       }
