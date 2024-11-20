@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
-const APIURL = process.env.NEXT_PUBLIC_API_URL;
+
 // import { getServicesProvided } from '@/helpers/service.helpers';
 
 // interface ServiceProvided {
@@ -63,104 +63,7 @@ const Home: React.FC = () => {
       }
 
       // 2. Si no hay token, consultar al endpoint de Google Auth
-      try {
-        const googleResponse = await fetch('/api/auth/me', {
-          method: 'GET',
-          credentials: 'include', // Incluye cookies en la petición
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-
-        if (googleResponse.ok) {
-          const googleUser = await googleResponse.json();
-          console.log('googleUser', googleUser);
-          if (googleUser?.email && googleUser.sub) {
-
-            const Flag = await fetch(`${APIURL}/user/google`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-
-              },
-              body: JSON.stringify({ email: googleUser.email })
-            })
-            const response = await Flag.json();
-            console.log('Flag', response);
-
-            if (response) {
-              const login = await fetch(`${APIURL}/auth/signin`, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  email: googleUser.email,
-                  password: googleUser.sub,
-                })
-
-              })
-              const response = await login.json();
-              console.log('response', response);
-
-              localStorage.setItem(
-                'userSession',
-                JSON.stringify({ token: response.token, user: response.user })
-              );
-              setIsUserLoggedIn(true);
-              return;
-
-            }
-            if (!response) {
-              const register = await fetch(`${APIURL}/auth/signup/google`, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  email: googleUser.email,
-                  password: googleUser.sub,
-                  name: googleUser.name,
-                  profileImageUrl: googleUser.picture,
-                  username: googleUser.nickname,
-                })
-              })
-              const response = await register.json();
-              console.log('response', response);
-
-              if (!response) {
-                throw new Error('Error al registrar el usuario');
-              }
-              if (response) {
-                const login = await fetch(`${APIURL}/auth/signin`, {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({
-                    email: googleUser.email,
-                    password: googleUser.sub,
-                  })
-
-                })
-                const response = await login.json();
-                console.log('response2', response);
-
-                localStorage.setItem(
-                  'userSession',
-                  JSON.stringify({ token: response.token, user: response.user })
-                );
-                setIsUserLoggedIn(true);
-                return;
-
-              }
-            }
-          }
-        }
-      } catch (error) {
-        console.error("Error al verificar el usuario de Google:", error);
-      }
-
+     
       // 3. Si no hay token ni usuario, continuamos sin usuario logueado
       setIsUserLoggedIn(false);
     };
