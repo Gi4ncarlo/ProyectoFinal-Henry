@@ -17,14 +17,14 @@ const ProviderCardList: React.FC = () => {
   const [TOKEN, setTOKEN] = useState<any>(null);
   const [filter, setFilter] = useState<string>(localStorage.getItem("filter") || 'ASC'); // Recupera el filtro de localStorage o usa el valor predeterminado
   const [searchTerm, setSearchTerm] = useState(localStorage.getItem("searchTerm") || ''); // Recupera el término de búsqueda de localStorage o usa una cadena vacía
-  const [userSession, setUserSession] = useState<IUserSession | null>(null);
+  const [userSession, setUserSession] = useState<IUserSession>();
   // const TOKEN = JSON.parse(localStorage.getItem("userSession") || "null")
   const router = useRouter();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedSession = JSON.parse(
-        localStorage.getItem("userSession") || "null"
+        localStorage.getItem("userSession") || ""
       );
       setUserSession(storedSession);
     }
