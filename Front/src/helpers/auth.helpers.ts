@@ -18,7 +18,11 @@ export async function register(dataUser: IRegisterProps): Promise<void> {
     //   }
     //   throw new Error(errorData.message || "Register error");
     // }
+    const response = await res.json(); //se trae solo la parte necesaria de todo el json
+    return response;
   } catch (error: any) {
+    console.log("error en register AuthHelper");
+    
     throw new Error(error.message);
   }
 }
@@ -33,6 +37,8 @@ export async function login(dataUser: ILoginProps) {
     const response = await res.json(); //se trae solo la parte necesaria de todo el json
     return response;
   } catch (error: any) {
+    console.log("error en login AuthHelper");
+    
     throw new Error(error);
   }
 }
