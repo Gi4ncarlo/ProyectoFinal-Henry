@@ -69,6 +69,8 @@ export default function RegisterForm() {
     });
   };
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    console.log("HANDLE SUBMIT");
+    
     event.preventDefault();
   
     const validationErrors = validateRegisterForm(dataUser);
@@ -76,18 +78,20 @@ export default function RegisterForm() {
   
     if (Object.keys(validationErrors).length === 0) {
       console.log("Email mandado: ", dataUser.email);
-      const emailValid = await checkEmailBeforeRegister(dataUser);
-      console.log("Email: ", emailValid);
+      // const emailValid = await checkEmailBeforeRegister(dataUser);
+      // console.log("Email: ", emailValid);
       
-      if (!emailValid) {
-        setErrors((prev: any) => ({
-          ...prev,
-          email: "Este correo ya está registrado.",
-        }));
-        return;
-      }
+      // if (!emailValid) {
+      //   setErrors((prev: any) => ({
+      //     ...prev,
+      //     email: "Este correo ya está registrado.",
+      //   }));
+      //   return;
+      // }
   
+      console.log("dataUser", dataUser);
       try {
+        
         await register(dataUser);
     
         Swal.fire({
@@ -95,7 +99,7 @@ export default function RegisterForm() {
           text: "Registrado correctamente",
           icon: "success",
         });
-        router.push("/login");
+        router.push("/Home");
       } catch (error) {
         alert(error);
       }

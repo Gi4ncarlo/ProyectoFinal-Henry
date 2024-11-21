@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 const APIURL = process.env.NEXT_PUBLIC_API_URL;
 export default function LoginGoogle() {
     const router = useRouter();
@@ -58,6 +59,8 @@ export default function LoginGoogle() {
 
                         }
                         if (!response) {
+                            console.log("ENTRE A !RESPONSE");
+                            
                             const register = await fetch(`${APIURL}/auth/signup/google`, {
                                 method: 'POST',
                                 headers: {
@@ -103,7 +106,12 @@ export default function LoginGoogle() {
                         }
                     }
                 }
-            } catch (error) {
+            } catch (error: any) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: error.message,
+                })
                 throw new Error("Error al verificar el usuario de Google:" + error);
             }
 
