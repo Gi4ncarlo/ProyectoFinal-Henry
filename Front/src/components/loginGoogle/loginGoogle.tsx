@@ -5,9 +5,6 @@ import { useEffect, useState } from "react";
 const APIURL = process.env.NEXT_PUBLIC_API_URL;
 export default function LoginGoogle() {
     const router = useRouter();
-    const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
-
-
     useEffect(() => {
         const handleGoogleLogin = async () => {
             console.log('APIURL entre');
@@ -112,12 +109,11 @@ export default function LoginGoogle() {
 
         }
         handleGoogleLogin();
-    }, [])
+    }, [router]);
 
     return (
         <div>
-        //isUserLoggedIn ? push('/Home') :
-            {'Verificando usuario...'}
+            <h2>'Verificando usuario...'</h2>
         </div>)
 
 }
