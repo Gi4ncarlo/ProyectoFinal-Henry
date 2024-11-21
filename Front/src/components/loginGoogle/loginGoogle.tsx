@@ -6,7 +6,6 @@ import Swal from "sweetalert2";
 const APIURL = process.env.NEXT_PUBLIC_API_URL;
 export default function LoginGoogle() {
     const router = useRouter();
-   
     useEffect(() => {
         const handleGoogleLogin = async () => {
             console.log('APIURL entre');
@@ -118,11 +117,11 @@ export default function LoginGoogle() {
 
         }
         handleGoogleLogin();
-    }, [router])
+    }, [router]);
 
     return (
         <div>
-            <h1>'Verificando usuario...'</h1>
+            <h2>'Verificando usuario...'</h2>
         </div>)
 
 }
