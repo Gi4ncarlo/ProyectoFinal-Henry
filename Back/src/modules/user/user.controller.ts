@@ -76,10 +76,10 @@ export class UserController {
   }
 
   @Post('google')
-  async findByEmail(@Body() createUserDto: any, @Res() res: Response) {
+  async findByEmail(@Body() email: { email: string }, @Res() res: Response) {
     try {
-      const email = await this.userService.googleEmail(createUserDto);
-      return res.status(HttpStatus.OK).send(email);
+      const e_mail = await this.userService.googleEmail(email);
+      return res.status(HttpStatus.OK).send(e_mail);
 
     } catch (error) {
       return res.status(HttpStatus.NOT_FOUND).send(error);
@@ -163,3 +163,4 @@ export class UserController {
     return this.userService.remove(id);
   }
 }
+

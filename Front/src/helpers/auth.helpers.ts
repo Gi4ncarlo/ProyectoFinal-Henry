@@ -3,7 +3,6 @@ import { IRegisterProps } from "@/interfaces/IRegisterProps";
 import { IServiceProps } from "@/interfaces/IServiceProps";
 
 const APIURL = process.env.NEXT_PUBLIC_API_URL;
-const TOKEN = JSON.parse(localStorage.getItem("userSession") || "null");
 export async function register(dataUser: IRegisterProps): Promise<void> {
   try {
     const res = await fetch(`${APIURL}/auth/signup`, {
@@ -38,13 +37,23 @@ export async function login(dataUser: ILoginProps) {
   }
 }
 
-export async function registerService(
-  dataService: IServiceProps
-): Promise<void> {
+export async function registerService(dataService: IServiceProps): Promise<void> {
   try {
-    if (!TOKEN.token) {
+    // Asegurarse de que estamos en el cliente y accediendo a localStorage
+    if (typeof window === "undefined") {
+      throw new Error("Cannot access localStorage on the server side.");
+    }
+
+    const storedToken = localStorage.getItem("userSession");
+    const TOKEN = storedToken ? JSON.parse(storedToken) : null;
+
+    // Verificamos que el token esté presente
+    if (!TOKEN || !TOKEN.token) {
       throw new Error("Token is missing or invalid.");
     }
+
+    console.log("DATA SERVICE:", dataService);
+
     const res = await fetch(`${APIURL}/serviceProvided`, {
       method: "POST",
       headers: {

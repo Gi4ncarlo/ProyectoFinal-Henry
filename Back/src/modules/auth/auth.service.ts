@@ -15,7 +15,6 @@ import { GardenerService } from '../gardener/gardener.service';
 import { Role } from '../user/enums/role.enum';
 import { MailService } from '../mail/mail.service';
 
-
 @Injectable()
 export class AuthService {
   constructor(
@@ -28,12 +27,14 @@ export class AuthService {
 
   async signIn(credentials: SignInAuthDto) {
     try {
+      console.log(credentials);
+      
       const user = await this.userService.findByEmail(credentials.email);
       const admin = await this.adminService.findByEmail(credentials.email);
       const gardener = await this.gardenerService.findByEmail(
         credentials.email,
       );
-
+      console.log('user1:       ' , user);
       if (user?.isBanned === true) {
         throw new HttpException(
           'El usuario esta baneado',
@@ -43,6 +44,8 @@ export class AuthService {
 
       // Validación para usuarios
       if (user) {
+        console.log(await bcrypt.compare(credentials.password, user.password));
+        
         const isPasswordMatching = await bcrypt.compare(
           credentials.password,
           user.password,
@@ -98,29 +101,6 @@ export class AuthService {
     }
   }
 
-  async signUpgoogle(createUserDto: any) {
-    try {
-      let password2 = await bcrypt.hash(createUserDto.password, 10);
-      await this.mailService.sendWelcomeEmail(createUserDto.email, createUserDto.username);
-      this.userService.create(
-        {
-          name: createUserDto.name,
-          email: createUserDto.email,
-          username: createUserDto.username,
-          password: password2,
-          passwordConfirm: password2,
-          profileImageUrl: createUserDto.profileImageUrl,
-          role: Role.User,
-          phone: '35745678',
-          age: 18,
-          address: 'google123'
-        }
-      );
-      return true
-    } catch (error) {
-      return false
-    }
-  }
   async signUp(signUpUser: SignUpAuthDto) {
     const userFinded = await this.userService.findByEmail(signUpUser.email);
     const gardenerFinded = await this.gardenerService.findByEmail(
@@ -145,6 +125,8 @@ export class AuthService {
 
     if (signUpUser.role === Role.Gardener) {
       newUsers = await this.gardenerService.create(signUpUser);
+    } else {
+      newUsers = await this.userService.create(signUpUser);
     }
 
     const newUser = await this.userService.create(signUpUser);
@@ -152,6 +134,30 @@ export class AuthService {
     return newUser;
   }
 
+  async signUpgoogle(createUserDto: any) {
+    try {
+      let password2 = await bcrypt.hash(createUserDto.password, 10);
+      await this.mailService.sendWelcomeEmail(createUserDto.email, createUserDto.username);
+      this.userService.create(
+        {
+          name: createUserDto.name,
+          email: createUserDto.email,
+          username: createUserDto.username,
+          password: password2,
+          passwordConfirm: password2,
+          profileImageUrl: createUserDto.profileImageUrl,
+          role: Role.User,
+          phone: '35745678',
+          age: 18,
+          address: 'google123'
+        }
+      );
+      return true
+    } catch (error) {
+      return false
+    }
+  }
+  
   private async createToken(user: User) {
     const payload = {
       id: user.id,
