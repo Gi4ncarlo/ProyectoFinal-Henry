@@ -14,13 +14,22 @@ export class MailService {
   });
 
   async sendWelcomeEmail(to: string, username: string) {
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to,
-      subject: 'Welcome to Vicnasol App!',
-      text: `Hello ${username},\n\nThank you for signing up to our platform. We're excited to have you with us!`,
-    };
+    console.log("dentro de sendWelcome", to, username);
+    
+    try {
+      const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to,
+        subject: 'Welcome to Vicnasol App!',
+        text: `Hello ${username},\n\nThank you for signing up to our platform. We're excited to have you with us!`,
+      };
+      await this.transporter.sendMail(mailOptions);
+      return 
+    } catch (error: any) {
+      throw new Error( error.message);
+    }
 
-    await this.transporter.sendMail(mailOptions);
+
+   
   }
 }
