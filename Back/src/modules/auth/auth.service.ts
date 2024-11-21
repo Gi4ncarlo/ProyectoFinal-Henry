@@ -123,15 +123,24 @@ export class AuthService {
 
     let newUsers;
 
+    console.log("signUpUser", signUpUser);
+    
     if (signUpUser.role === Role.Gardener) {
       newUsers = await this.gardenerService.create(signUpUser);
     } else {
       newUsers = await this.userService.create(signUpUser);
     }
 
-    const newUser = await this.userService.create(signUpUser);
-    await this.mailService.sendWelcomeEmail(newUser.email, newUser.username);
-    return newUser;
+    console.log("createdUser", newUsers);
+    
+
+    console.log("email : ", newUsers.email);
+    console.log("username : ", newUsers.username);
+    //console.log("email : ", newUsers.User.email);
+
+    
+    await this.mailService.sendWelcomeEmail(newUsers.email, newUsers.username);
+    return newUsers;
   }
 
   async signUpgoogle(createUserDto: any) {

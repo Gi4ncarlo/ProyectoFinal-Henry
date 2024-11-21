@@ -44,34 +44,34 @@ const Home: React.FC = () => {
   //     const fetchedServices = await getServicesProvided();
   //     setServices(fetchedServices);
   //   } catch (error) {
-  //     console.error('Error fetching services:', error);
-  //   }
-  // };
-
-  //   fetchServices();
-  // }, [isMounted]);
-  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
-  useEffect(() => {
-    const checkUserSession = async () => {
-      // 1. Verificar si hay un token en localStorage
-      const userSession = localStorage.getItem("userSession");
-      if (userSession) {
-        const tokenData = JSON.parse(userSession);
-        if (tokenData?.token) {
-          setIsUserLoggedIn(true);
-          return; // Usuario ya logueado, no seguimos.
+    //     console.error('Error fetching services:', error);
+    //   }
+    // };
+    
+    //   fetchServices();
+    // }, [isMounted]);
+    const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+    useEffect(() => {
+      const checkUserSession = async () => {
+        // 1. Verificar si hay un token en localStorage
+        const userSession = localStorage.getItem("userSession");
+        if (userSession) {
+          const tokenData = JSON.parse(userSession);
+          if (tokenData?.token) {
+            setIsUserLoggedIn(true);
+            return; // Usuario ya logueado, no seguimos.
+          }
         }
-      }
-      if(isUserLoggedIn){
-        console.log('Ya estas logueado');
-        return
-      }
-      setIsUserLoggedIn(false);
-    };
-
-    checkUserSession();
+        if(isUserLoggedIn){
+          console.log('Ya estas logueado');
+          return
+        }
+        setIsUserLoggedIn(false);
+      };
+      
+      checkUserSession();
   }, []);
-
+  
   const handleSearch = () => {
     if (selectedService) {
       router.push(`/gardener/${selectedService}`);
