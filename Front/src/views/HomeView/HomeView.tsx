@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
-const APIURL = process.env.NEXT_PUBLIC_API_URL;
+
 // import { getServicesProvided } from '@/helpers/service.helpers';
 
 // interface ServiceProvided {
@@ -14,6 +14,7 @@ const APIURL = process.env.NEXT_PUBLIC_API_URL;
 
 const Home: React.FC = () => {
   const [selectedService, setSelectedService] = useState<string>('');
+
   // const [services, setServices] = useState<ServiceProvided[]>([]);
   // const [isMounted, setIsMounted] = useState(false); // Nuevo estado para verificar si el componente está montado
   const router = useRouter();

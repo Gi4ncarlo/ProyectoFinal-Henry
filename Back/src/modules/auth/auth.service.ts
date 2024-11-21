@@ -136,8 +136,9 @@ export class AuthService {
 
   async signUpgoogle(createUserDto: any) {
     try {
+      console.log('createUserDto', createUserDto);
       let password2 = await bcrypt.hash(createUserDto.password, 10);
-      await this.mailService.sendWelcomeEmail(createUserDto.email, createUserDto.username);
+      console.log('encripte!', createUserDto);
       this.userService.create(
         {
           name: createUserDto.name,
@@ -152,6 +153,7 @@ export class AuthService {
           address: 'google123'
         }
       );
+      await this.mailService.sendWelcomeEmail(createUserDto.email, createUserDto.username);
       return true
     } catch (error) {
       return false
