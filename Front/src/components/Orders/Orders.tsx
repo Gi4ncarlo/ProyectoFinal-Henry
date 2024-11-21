@@ -138,6 +138,13 @@ const DashboardUserCompo: React.FC = () => {
                 Jardinero contratado: {order.gardener.name}
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Image
+                  className="rounded-full"
+                  src={order.gardener.profileImageUrl || '/default-profile.jpg'}
+                  alt={`${order.gardener.name}'s profile`}
+                  width={120}
+                  height={120}
+                />
                 <div>
                   <p className="text-gray-700">
                     <strong>Dirección:</strong> {order.gardener.address}

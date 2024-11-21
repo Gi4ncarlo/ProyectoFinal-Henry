@@ -83,6 +83,7 @@ const ProviderDetail: React.FC = () => {
         gardenerId,
         userId,
         serviceId: selectedServices,
+        
       });
 
       // Almacenar la orden en el estado si es necesario
