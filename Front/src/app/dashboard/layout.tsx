@@ -1,5 +1,4 @@
 "use client"
-import DashboardAdminCompo from '@/components/DashboardAdminCompo/DashboardAdminCompo';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 
@@ -29,6 +28,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   // Render the content once we know the authorization status
   if (!authorized) return null;
 
+  if (!authorized) return null;
   return (
     <div className='mt-32 p-8 justify-center'>
       <main>{children}</main>

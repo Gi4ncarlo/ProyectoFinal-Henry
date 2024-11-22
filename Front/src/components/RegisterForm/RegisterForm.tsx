@@ -99,7 +99,7 @@ export default function RegisterForm() {
           text: "Registrado correctamente",
           icon: "success",
         });
-        router.push("/Home");
+        router.push("/login");
       } catch (error) {
         alert(error);
       }
