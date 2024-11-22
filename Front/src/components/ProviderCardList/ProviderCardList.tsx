@@ -9,39 +9,80 @@ import { useRouter } from "next/navigation";
 import { FaSearch } from "react-icons/fa";
 import { IUserSession } from "@/interfaces/IUserSession";
 
+const Dropdown: React.FC<{ filter: string; onChange: (value: string) => void }> = ({
+  filter,
+  onChange,
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const options = [
+    { value: "ASC", label: "A-Z" },
+    { value: "DESC", label: "Z-A" },
+    { value: "1", label: "⭐" },
+    { value: "2", label: "⭐⭐" },
+    { value: "3", label: "⭐⭐⭐" },
+    { value: "4", label: "⭐⭐⭐⭐" },
+    { value: "5", label: "⭐⭐⭐⭐⭐" },
+  ];
+
+  return (
+    <div className="relative w-48">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full bg-white border border-gray-300 rounded-md shadow-sm px-4 py-2 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-400"
+      >
+        {options.find((opt) => opt.value === filter)?.label || "Ordenar por"}
+        <span className="float-right">▼</span>
+      </button>
+      {isOpen && (
+        <div className="absolute mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-10">
+          {options.map((option) => (
+            <div
+              key={option.value}
+              className={`px-4 py-2 hover:bg-[#8BC34A] hover:text-white cursor-pointer text-center ${
+                filter === option.value ? "bg-green-100" : ""
+              }`}
+              onClick={() => {
+                onChange(option.value);
+                setIsOpen(false);
+              }}
+            >
+              {option.label}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const ProviderCardList: React.FC = () => {
   const [providers, setProviders] = useState<IServiceProvider[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [TOKEN, setTOKEN] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>("ASC");
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [userSession, setUserSession] = useState<IUserSession | null>(null);
 
   const router = useRouter();
 
   useEffect(() => {
-    // Ejecutar solo en el navegador
     if (typeof window !== "undefined") {
       const storedSession = localStorage.getItem("userSession");
       if (storedSession) {
         const parsedSession = JSON.parse(storedSession);
-        setUserSession(parsedSession);
         setTOKEN(parsedSession.token);
       } else {
         router.push("/login");
       }
 
-      // Recuperar filtro y término de búsqueda de localStorage
       setFilter(localStorage.getItem("filter") || "ASC");
       setSearchTerm(localStorage.getItem("searchTerm") || "");
     }
   }, [router]);
 
-  const handleFilter = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newFilter = e.target.value;
+  const handleFilter = (newFilter: string) => {
     setFilter(newFilter);
 
-    // Guardar el filtro en localStorage (solo navegador)
     if (typeof window !== "undefined") {
       localStorage.setItem("filter", newFilter);
     }
@@ -51,7 +92,6 @@ const ProviderCardList: React.FC = () => {
     const newSearchTerm = e.target.value;
     setSearchTerm(newSearchTerm);
 
-    // Guardar el término de búsqueda en localStorage (solo navegador)
     if (typeof window !== "undefined") {
       localStorage.setItem("searchTerm", newSearchTerm);
     }
@@ -107,20 +147,7 @@ const ProviderCardList: React.FC = () => {
             </div>
           </div>
           <div className="flex justify-end mb-4">
-            <select
-              className="border rounded p-2"
-              value={filter}
-              onChange={handleFilter}
-            >
-              <option value="">Ordenar por</option>
-              <option value="ASC">Alfabetico ⬆</option>
-              <option value="DESC">Alfabetico ⬇</option>
-              <option value="1"> ⭐</option>
-              <option value="2"> ⭐⭐</option>
-              <option value="3"> ⭐⭐⭐</option>
-              <option value="4"> ⭐⭐⭐⭐</option>
-              <option value="5"> ⭐⭐⭐⭐⭐</option>
-            </select>
+            <Dropdown filter={filter} onChange={handleFilter} />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mx-auto">
             {providers.map((gardener) => (
@@ -141,3 +168,4 @@ const ProviderCardList: React.FC = () => {
 };
 
 export default ProviderCardList;
+
