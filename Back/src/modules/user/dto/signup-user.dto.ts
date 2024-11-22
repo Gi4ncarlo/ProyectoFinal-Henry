@@ -41,7 +41,7 @@ export class SignUpAuthDto {
     address: string;
 
     @IsOptional()
-    role: Role = Role.User;
+    role: Role ;
 
     constructor(partial: Partial<SignUpAuthDto>) {
         Object.assign(this, partial);
