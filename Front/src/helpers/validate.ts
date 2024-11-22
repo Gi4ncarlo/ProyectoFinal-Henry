@@ -43,6 +43,9 @@ export const validateRegisterForm = (value: IRegisterProps): IRegisterErrors => 
     tempErrors.address = "La dirección es requerida.";
   }
 
+  if (!value.name) tempErrors.name = "El nombre es obligatorio.";
+  if (!value.email) tempErrors.email = "El correo es obligatorio.";
+  
     return tempErrors;
 };
 
@@ -58,5 +61,6 @@ export const validateRegisterForm = (value: IRegisterProps): IRegisterErrors => 
     } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value.email)) {
         tempErrors.email = "Correo electrónico no registrado ";
     }
+    
     return tempErrors;
 }
