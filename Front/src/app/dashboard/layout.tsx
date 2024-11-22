@@ -23,7 +23,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
   if (!authorized) return null;
   return (
-    <div className='mt-32 p-8 justify-center'>
+    <div className='mt-10 p-8 justify-center'>
       <main>{children}</main>
     </div>
   );
