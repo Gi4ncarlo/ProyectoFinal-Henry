@@ -9,8 +9,9 @@ import Swal from 'sweetalert2';
 
 export default function RegisterForm() {
   const router = useRouter();
+  const searchParams = useSearchParams(); // Hook para leer parámetros de la URL
 
-  // Definimos el estado inicial para dataUser
+  // Estado inicial
   const initialState: IRegisterProps = {
     name: "",
     email: "",
@@ -20,7 +21,7 @@ export default function RegisterForm() {
     age: 0,
     address: "",
     phone: "",
-    role: "", // Campo para el rol (cliente o jardinero)
+    role: "",
   };
 
   const [showPassword, setShowPassword] = useState(false);
@@ -35,29 +36,31 @@ export default function RegisterForm() {
     age: false,
     address: false,
     phone: false,
-    role: false, 
+    role: false,
   });
-
-
-  const searchParams = useSearchParams(); // Hook para leer parámetros de la URL
-  const role = searchParams?.get('role'); // Obtén el valor del parámetro "role"
-  
   const [title, setTitle] = useState("");
 
-  // Cambiar dinámicamente el título basado en el parámetro
+  const role = searchParams?.get('role'); // Obtén el valor del parámetro "role"
+
+  // Cambiar dinámicamente el título basado en el parámetro `role`
   useEffect(() => {
-    if (role === 'cliente') {
+    if (role === 'user') {
       setTitle("Regístrate como Cliente");
-    } else if (role === 'jardinero') {
+    } else if (role === 'gardener') {
       setTitle("Regístrate como Jardinero");
+    }
+
+    // Configurar el campo `role` en `dataUser`
+    if (role) {
+      setDataUser((prev) => ({
+        ...prev,
+        role: role,
+      }));
     }
   }, [role]);
 
-
-
-
   // Manejo del cambio en los campos
-  const handleChange = (event: any) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = event.target;
     setDataUser({
       ...dataUser,
@@ -68,48 +71,36 @@ export default function RegisterForm() {
       [name]: true,
     });
   };
+
+  // Manejo del submit
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    console.log("HANDLE SUBMIT");
-    
     event.preventDefault();
-  
+
     const validationErrors = validateRegisterForm(dataUser);
     setErrors(validationErrors);
-  
+
     if (Object.keys(validationErrors).length === 0) {
-      console.log("Email mandado: ", dataUser.email);
-      // const emailValid = await checkEmailBeforeRegister(dataUser);
-      // console.log("Email: ", emailValid);
-      
-      // if (!emailValid) {
-      //   setErrors((prev: any) => ({
-      //     ...prev,
-      //     email: "Este correo ya está registrado.",
-      //   }));
-      //   return;
-      // }
-  
-      console.log("dataUser", dataUser);
       try {
-        
         await register(dataUser);
-    
         Swal.fire({
-          title: "Bienvenido!",
+          title: "¡Bienvenido!",
           text: "Registrado correctamente",
           icon: "success",
         });
         router.push("/login");
       } catch (error) {
-        alert(error);
+        Swal.fire({
+          title: "Error",
+          text: "Ocurrió un problema al registrarte",
+          icon: "error",
+        });
       }
     }
   };
-  
 
   // Validación en tiempo real al cambiar `dataUser` o `touched`
   useEffect(() => {
-    if (Object.values(touched).some(field => field)) {
+    if (Object.values(touched).some((field) => field)) {
       const validationErrors = validateRegisterForm(dataUser);
       setErrors(validationErrors);
     }
@@ -117,12 +108,12 @@ export default function RegisterForm() {
 
   // Alternar visibilidad de la contraseña
   const togglePasswordVisibility = () => {
-    setShowPassword(prev => !prev);
+    setShowPassword((prev) => !prev);
   };
 
   return (
     <div className="w-full max-w-md mx-auto mt-24 p-6 border rounded-lg shadow-lg bg-white">
- <h2 className="text-2xl font-bold text-center mb-4">{title}</h2>
+      <h2 className="text-2xl font-bold text-center mb-4">{title}</h2>
       <p className="text-gray-600 text-center mb-6">Crea tu cuenta y disfruta de nuestros servicios</p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -276,27 +267,11 @@ export default function RegisterForm() {
           )}
         </div>
 
-        {/* Selección de rol */}
-        <div>
-          <label htmlFor="role" className="block text-sm font-medium text-gray-700">¿Eres Cliente o Jardinero?</label>
-          <select
-            id="role"
-            name="role"
-            value={dataUser.role}
-            onChange={handleChange}
-            required
-            className="mt-1 p-2 border border-gray-300 rounded w-full"
-          >
-            <option value="">Selecciona un rol</option>
-            <option value="user">Usuario</option>
-            <option value="gardener">Jardinero</option>
-          </select>
-          {touched.role && errors.role && (
-            <span className="text-red-500 text-sm">{errors.role}</span>
-          )}
-        </div>
-        <button type="submit" disabled={Object.values(errors).some(error => error !== "")} className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-          Registrarme como {role}
+        <button
+          type="submit"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full"
+        >
+          Registrarse
         </button>
       </form>
     </div>

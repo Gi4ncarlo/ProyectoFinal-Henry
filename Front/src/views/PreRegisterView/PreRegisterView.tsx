@@ -7,7 +7,7 @@ const PreRegisterView = () => {
     <div className="flex justify-around h-screen items-center">
       {/* Cliente */}
       <div className="relative group">
-        <Link href="/register?role=cliente">
+        <Link href="/register?role=user">
           <Image
             className="rounded-full transition-all group-hover:opacity-50"
             src="/images/client.jpeg"
@@ -25,7 +25,7 @@ const PreRegisterView = () => {
 
       {/* Jardinero */}
       <div className="relative group">
-        <Link href="/register?role=jardinero">
+        <Link href="/register?role=gardener">
           <Image
             className="rounded-full transition-all group-hover:opacity-50"
             src="/images/gardeners.jpeg"
