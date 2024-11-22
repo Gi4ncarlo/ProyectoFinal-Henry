@@ -37,7 +37,7 @@ export class GardenerController {
   constructor(
     private readonly gardenerService: GardenerService,
     private readonly fileUploadService: FileUploadService,
-  ) {}
+  ) { }
 
   @Post(':id/reserve')
   async reserveDay(
@@ -47,6 +47,21 @@ export class GardenerController {
     return this.gardenerService.reserveDay(id, day);
   }
 
+  @UseGuards(AuthGuard)
+  @Get(':id/reservedDays')
+  @HttpCode(200)
+  async getReservedDays(@Param('id', new ParseUUIDPipe()) id: string) {
+    const reservedDays = await this.gardenerService.getReservedDays(id);
+
+    if (!reservedDays) {
+      throw new HttpException(
+        'No se encontraron días reservados para este Jardinero.',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return { reservedDays };
+  }
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Admin)
   @Post()
@@ -101,10 +116,10 @@ export class GardenerController {
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes("multipart/form-data")
   @ApiBody({
-    schema:{
+    schema: {
       type: "object",
-      properties:{
-        file:{
+      properties: {
+        file: {
           type: "string",
           format: "binary"
         }

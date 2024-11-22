@@ -6,11 +6,14 @@ import { IRegisterErrors, IRegisterProps } from '@/interfaces/IRegisterProps';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
+import { Eye, EyeOff } from "lucide-react";
+import Image from 'next/image';
 
 export default function RegisterForm() {
   const router = useRouter();
+  const searchParams = useSearchParams(); // Hook para leer parámetros de la URL
 
-  // Definimos el estado inicial para dataUser
+  // Estado inicial
   const initialState: IRegisterProps = {
     name: "",
     email: "",
@@ -20,7 +23,7 @@ export default function RegisterForm() {
     age: 0,
     address: "",
     phone: "",
-    role: "", // Campo para el rol (cliente o jardinero)
+    role: "",
   };
 
   const [showPassword, setShowPassword] = useState(false);
@@ -35,29 +38,31 @@ export default function RegisterForm() {
     age: false,
     address: false,
     phone: false,
-    role: false, 
+    role: false,
   });
-
-
-  const searchParams = useSearchParams(); // Hook para leer parámetros de la URL
-  const role = searchParams?.get('role'); // Obtén el valor del parámetro "role"
-  
   const [title, setTitle] = useState("");
 
-  // Cambiar dinámicamente el título basado en el parámetro
+  const role = searchParams?.get('role'); // Obtén el valor del parámetro "role"
+
+  // Cambiar dinámicamente el título basado en el parámetro `role`
   useEffect(() => {
-    if (role === 'cliente') {
+    if (role === 'user') {
       setTitle("Regístrate como Cliente");
-    } else if (role === 'jardinero') {
+    } else if (role === 'gardener') {
       setTitle("Regístrate como Jardinero");
+    }
+
+    // Configurar el campo `role` en `dataUser`
+    if (role) {
+      setDataUser((prev) => ({
+        ...prev,
+        role: role,
+      }));
     }
   }, [role]);
 
-
-
-
   // Manejo del cambio en los campos
-  const handleChange = (event: any) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = event.target;
     setDataUser({
       ...dataUser,
@@ -68,48 +73,36 @@ export default function RegisterForm() {
       [name]: true,
     });
   };
+
+  // Manejo del submit
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    console.log("HANDLE SUBMIT");
-    
     event.preventDefault();
-  
+
     const validationErrors = validateRegisterForm(dataUser);
     setErrors(validationErrors);
-  
+
     if (Object.keys(validationErrors).length === 0) {
-      console.log("Email mandado: ", dataUser.email);
-      // const emailValid = await checkEmailBeforeRegister(dataUser);
-      // console.log("Email: ", emailValid);
-      
-      // if (!emailValid) {
-      //   setErrors((prev: any) => ({
-      //     ...prev,
-      //     email: "Este correo ya está registrado.",
-      //   }));
-      //   return;
-      // }
-  
-      console.log("dataUser", dataUser);
       try {
-        
         await register(dataUser);
-    
         Swal.fire({
-          title: "Bienvenido!",
+          title: "¡Bienvenido!",
           text: "Registrado correctamente",
           icon: "success",
         });
-        router.push("/Home");
+        router.push("/login");
       } catch (error) {
-        alert(error);
+        Swal.fire({
+          title: "Error",
+          text: "Ocurrió un problema al registrarte",
+          icon: "error",
+        });
       }
     }
   };
-  
 
   // Validación en tiempo real al cambiar `dataUser` o `touched`
   useEffect(() => {
-    if (Object.values(touched).some(field => field)) {
+    if (Object.values(touched).some((field) => field)) {
       const validationErrors = validateRegisterForm(dataUser);
       setErrors(validationErrors);
     }
@@ -117,18 +110,30 @@ export default function RegisterForm() {
 
   // Alternar visibilidad de la contraseña
   const togglePasswordVisibility = () => {
-    setShowPassword(prev => !prev);
+    setShowPassword((prev) => !prev);
   };
 
   return (
-    <div className="w-full max-w-md mx-auto mt-24 p-6 border rounded-lg shadow-lg bg-white">
- <h2 className="text-2xl font-bold text-center mb-4">{title}</h2>
-      <p className="text-gray-600 text-center mb-6">Crea tu cuenta y disfruta de nuestros servicios</p>
+    <div className="h-screen w-screen relative flex items-center justify-center mt-10">
+      <Image
+        src="/images/fondo_proyectos.jpg"
+        alt="Fondo de bienvenida"
+        layout="fill"
+        objectFit="cover"
+        priority
+        quality={100}
+      />
+
+
+
+    <div className="relative w-full max-w-md mx-auto my-24 p-6 border rounded-lg shadow-lg bg-white z-9">
+      <h2 className="text-2xl font-bold text-center mb-4 text-[#4CAF50]">{title}</h2>
+      <p className="text-[#263238] text-center mb-6">Crea tu cuenta y disfruta de nuestros servicios</p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Nombre */}
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700">Nombre</label>
+          <label htmlFor="name" className="block text-sm font-medium text-[#263238]">Nombre</label>
           <input
             id="name"
             name="name"
@@ -136,7 +141,7 @@ export default function RegisterForm() {
             value={dataUser.name}
             onChange={handleChange}
             placeholder="John"
-            className="mt-1 p-2 border border-gray-300 rounded w-full"
+            className="mt-1 p-2 border border-[#CDDC39] rounded w-full focus:outline-none focus:ring-2 focus:ring-[#8BC34A] focus:border-none"
           />
           {touched.name && errors.name && (
             <span className="text-red-500 text-sm">{errors.name}</span>
@@ -145,7 +150,7 @@ export default function RegisterForm() {
 
         {/* Usuario */}
         <div>
-          <label htmlFor="username" className="block text-sm font-medium text-gray-700">Nombre de Usuario</label>
+          <label htmlFor="username" className="block text-sm font-medium text-[#263238]">Nombre de Usuario</label>
           <input
             id="username"
             name="username"
@@ -153,7 +158,7 @@ export default function RegisterForm() {
             value={dataUser.username}
             onChange={handleChange}
             placeholder="john_doe"
-            className="mt-1 p-2 border border-gray-300 rounded w-full"
+            className="mt-1 p-2 border border-[#CDDC39] rounded w-full focus:outline-none focus:ring-2 focus:ring-[#8BC34A] focus:border-none"
           />
           {touched.username && errors.username && (
             <span className="text-red-500 text-sm">{errors.username}</span>
@@ -162,7 +167,7 @@ export default function RegisterForm() {
 
         {/* Email */}
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+          <label htmlFor="email" className="block text-sm font-medium text-[#263238]">Email</label>
           <input
             id="email"
             name="email"
@@ -171,7 +176,7 @@ export default function RegisterForm() {
             value={dataUser.email}
             onChange={handleChange}
             placeholder="example@mail.com"
-            className="mt-1 p-2 border border-gray-300 rounded w-full"
+            className="mt-1 p-2 border border-[#CDDC39] rounded w-full focus:outline-none focus:ring-2 focus:ring-[#8BC34A] focus:border-none"
           />
           {touched.email && errors.email && (
             <span className="text-red-500 text-sm">{errors.email}</span>
@@ -180,7 +185,7 @@ export default function RegisterForm() {
 
         {/* Contraseña */}
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">Contraseña</label>
+          <label htmlFor="password" className="block text-sm font-medium text-[#263238]">Contraseña</label>
           <div className="relative">
             <input
               id="password"
@@ -190,14 +195,14 @@ export default function RegisterForm() {
               value={dataUser.password}
               onChange={handleChange}
               placeholder="••••••••"
-              className="mt-1 p-2 border border-gray-300 rounded w-full"
+              className="mt-1 p-2 border border-[#CDDC39] rounded w-full focus:outline-none focus:ring-2 focus:ring-[#8BC34A] focus:border-none"
             />
             <button
               type="button"
               onClick={togglePasswordVisibility}
-              className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-600 hover:text-gray-800"
+              className="absolute inset-y-0 right-0 pr-3 flex items-center text-[#263238] hover:text-[#8BC34A]"
             >
-              {showPassword ? 'Hide' : 'Show'}
+              {showPassword ? <EyeOff/> : <Eye/>}
             </button>
           </div>
           {touched.password && errors.password && (
@@ -207,7 +212,7 @@ export default function RegisterForm() {
 
         {/* Confirmar Contraseña */}
         <div>
-          <label htmlFor="passwordConfirm" className="block text-sm font-medium text-gray-700">Confirmar Contraseña</label>
+          <label htmlFor="passwordConfirm" className="block text-sm font-medium text-[#263238]">Confirmar Contraseña</label>
           <input
             id="passwordConfirm"
             name="passwordConfirm"
@@ -216,7 +221,7 @@ export default function RegisterForm() {
             value={dataUser.passwordConfirm}
             onChange={handleChange}
             placeholder="••••••••"
-            className="mt-1 p-2 border border-gray-300 rounded w-full"
+            className="mt-1 p-2 border border-[#CDDC39] rounded w-full focus:outline-none focus:ring-2 focus:ring-[#8BC34A] focus:border-none"
           />
           {touched.passwordConfirm && errors.passwordConfirm && (
             <span className="text-red-500 text-sm">{errors.passwordConfirm}</span>
@@ -225,7 +230,7 @@ export default function RegisterForm() {
 
         {/* Edad */}
         <div>
-          <label htmlFor="age" className="block text-sm font-medium text-gray-700">Edad</label>
+          <label htmlFor="age" className="block text-sm font-medium text-[#263238]">Edad</label>
           <input
             id="age"
             name="age"
@@ -234,7 +239,7 @@ export default function RegisterForm() {
             value={dataUser.age}
             onChange={handleChange}
             placeholder="30"
-            className="mt-1 p-2 border border-gray-300 rounded w-full"
+            className="mt-1 p-2 border border-[#CDDC39] rounded w-full focus:outline-none focus:ring-2 focus:ring-[#8BC34A] focus:border-none"
           />
           {touched.age && errors.age && (
             <span className="text-red-500 text-sm">{errors.age}</span>
@@ -243,7 +248,7 @@ export default function RegisterForm() {
 
         {/* Teléfono */}
         <div>
-          <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Teléfono</label>
+          <label htmlFor="phone" className="block text-sm font-medium text-[#263238]">Teléfono</label>
           <input
             id="phone"
             name="phone"
@@ -252,7 +257,7 @@ export default function RegisterForm() {
             value={dataUser.phone}
             onChange={handleChange}
             placeholder="123-456-7890"
-            className="mt-1 p-2 border border-gray-300 rounded w-full"
+            className="mt-1 p-2 border border-[#CDDC39] rounded w-full focus:outline-none focus:ring-2 focus:ring-[#8BC34A] focus:border-none"
           />
           {touched.phone && errors.phone && (
             <span className="text-red-500 text-sm">{errors.phone}</span>
@@ -261,7 +266,7 @@ export default function RegisterForm() {
 
         {/* Dirección */}
         <div>
-          <label htmlFor="address" className="block text-sm font-medium text-gray-700">Dirección</label>
+          <label htmlFor="address" className="block text-sm font-medium text-[#263238]">Dirección</label>
           <input
             id="address"
             name="address"
@@ -269,36 +274,21 @@ export default function RegisterForm() {
             value={dataUser.address}
             onChange={handleChange}
             placeholder="123 Garden St."
-            className="mt-1 p-2 border border-gray-300 rounded w-full"
+            className="mt-1 p-2 border border-[#CDDC39] rounded w-full focus:outline-none focus:ring-2 focus:ring-[#8BC34A] focus:border-none"
           />
           {touched.address && errors.address && (
             <span className="text-red-500 text-sm">{errors.address}</span>
           )}
         </div>
 
-        {/* Selección de rol */}
-        <div>
-          <label htmlFor="role" className="block text-sm font-medium text-gray-700">¿Eres Cliente o Jardinero?</label>
-          <select
-            id="role"
-            name="role"
-            value={dataUser.role}
-            onChange={handleChange}
-            required
-            className="mt-1 p-2 border border-gray-300 rounded w-full"
-          >
-            <option value="">Selecciona un rol</option>
-            <option value="user">Usuario</option>
-            <option value="gardener">Jardinero</option>
-          </select>
-          {touched.role && errors.role && (
-            <span className="text-red-500 text-sm">{errors.role}</span>
-          )}
-        </div>
-        <button type="submit" disabled={Object.values(errors).some(error => error !== "")} className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-          Registrarme como {role}
+        <button
+          type="submit"
+            className="w-full mt-4 p-2 bg-[#4caf50] text-white font-bold rounded hover:bg-[#388e3c]"
+        >
+          Registrarse
         </button>
       </form>
     </div>
+    /</div>
   );
 }

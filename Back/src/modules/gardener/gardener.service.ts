@@ -1,4 +1,10 @@
-import { BadRequestException, HttpException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateGardenerDto } from './dto/create-gardener.dto';
 import { UpdateGardenerDto } from './dto/update-gardener.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -16,11 +22,11 @@ export class GardenerService {
   async reserveDay(id: string, day: string): Promise<{ message: string }> {
     try {
       const gardener = await this.gardenerRepository.findOne({ where: { id } });
-  
+
       if (!gardener) {
         throw new Error('Jardinero no encontrado');
       }
-  
+
       if (!gardener.reservedDays) {
         gardener.reservedDays = [];
       }
@@ -28,20 +34,36 @@ export class GardenerService {
       if (gardener.reservedDays.includes(day)) {
         throw new BadRequestException('El día ya está reservado');
       }
-  
+
       gardener.reservedDays.push(day);
       await this.gardenerRepository.save(gardener);
-  
-      return { message: `Día ${day} reservado correctamente para el jardinero con ID ${id}` };
+
+      return {
+        message: `Día ${day} reservado correctamente para el jardinero con ID ${id}`,
+      };
     } catch (error) {
       if (error instanceof BadRequestException) {
-        throw error; 
+        throw error;
       }
-      throw new InternalServerErrorException(`Ocurrió un error interno al intentar reservar el día: ${error}`);
+      throw new InternalServerErrorException(
+        `Ocurrió un error interno al intentar reservar el día: ${error}`,
+      );
     }
   }
-  
-  
+
+  async getReservedDays(gardenerId: string): Promise<string[]> {
+    const gardener = await this.gardenerRepository.findOne({
+      where: { id: gardenerId },
+      relations: ['reservedDays'], // Asegúrate de que esta relación esté configurada en la entidad
+    });
+
+    if (!gardener) {
+      throw new Error('Jardinero no encontrado');
+    }
+
+    return gardener.reservedDays.map((day) => day.toString()); // Ajusta el formato según lo esperado
+  }
+
   async create(createGardenerDto: CreateGardenerDto): Promise<Gardener> {
     const gardner = this.gardenerRepository.create(createGardenerDto);
     return await this.gardenerRepository.save(gardner);
@@ -124,40 +146,38 @@ export class GardenerService {
     await this.gardenerRepository.update(id, { profileImageUrl: imageUrl });
   }
 
-    // Método para buscar gardeners por servicio
-    async findByService(serviceId: string): Promise<Gardener[]> {
-      return this.gardenerRepository
-        .createQueryBuilder('gardener')
-        .leftJoinAndSelect('gardener.services', 'service')
-        .where('service.id = :serviceId', { serviceId })
-        .getMany();
+  // Método para buscar gardeners por servicio
+  async findByService(serviceId: string): Promise<Gardener[]> {
+    return this.gardenerRepository
+      .createQueryBuilder('gardener')
+      .leftJoinAndSelect('gardener.services', 'service')
+      .where('service.id = :serviceId', { serviceId })
+      .getMany();
+  }
+
+  async findServicesProvidedByGardener(id: string) {
+    const gardener = await this.gardenerRepository.findOne({
+      where: { id: id },
+      relations: ['serviceProvided'],
+    });
+
+    if (!gardener) {
+      throw new NotFoundException(`Jardinero ${id} no encontrado`);
     }
 
-    async findServicesProvidedByGardener(id: string) {
-      const gardener = await this.gardenerRepository.findOne({
-        where : {id : id},
-        relations : ['serviceProvided'],
-      })
-  
-      if (!gardener) {
-        throw new NotFoundException(`Jardinero ${id} no encontrado`);
-      }
-  
-      return gardener.serviceProvided;
-  
+    return gardener.serviceProvided;
+  }
+
+  async findOrdersAsignedForGardener(id: string) {
+    const gardener = await this.gardenerRepository.findOne({
+      where: { id: id },
+      relations: ['serviceDetails'],
+    });
+
+    if (!gardener) {
+      throw new NotFoundException(`Jardinero ${id} no encontrado`);
     }
 
-    async findOrdersAsignedForGardener(id: string) {
-      const gardener = await this.gardenerRepository.findOne({
-        where : {id : id},
-        relations : ['serviceDetails'],
-      })
-  
-      if (!gardener) {
-        throw new NotFoundException(`Jardinero ${id} no encontrado`);
-      }
-  
-      return gardener.serviceDetails;
-  
-    }
+    return gardener.serviceDetails;
+  }
 }
