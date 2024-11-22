@@ -123,21 +123,31 @@ export class AuthService {
 
     let newUsers;
 
+    console.log("signUpUser", signUpUser);
+    
     if (signUpUser.role === Role.Gardener) {
       newUsers = await this.gardenerService.create(signUpUser);
     } else {
       newUsers = await this.userService.create(signUpUser);
     }
 
-    const newUser = await this.userService.create(signUpUser);
-    await this.mailService.sendWelcomeEmail(newUser.email, newUser.username);
-    return newUser;
+    console.log("createdUser", newUsers);
+    
+
+    console.log("email : ", newUsers.email);
+    console.log("username : ", newUsers.username);
+    //console.log("email : ", newUsers.User.email);
+
+    
+    await this.mailService.sendWelcomeEmail(newUsers.email, newUsers.username);
+    return newUsers;
   }
 
   async signUpgoogle(createUserDto: any) {
     try {
+      console.log('createUserDto', createUserDto);
       let password2 = await bcrypt.hash(createUserDto.password, 10);
-      await this.mailService.sendWelcomeEmail(createUserDto.email, createUserDto.username);
+      console.log('encripte!', createUserDto);
       this.userService.create(
         {
           name: createUserDto.name,
@@ -152,6 +162,7 @@ export class AuthService {
           address: 'google123'
         }
       );
+      await this.mailService.sendWelcomeEmail(createUserDto.email, createUserDto.username);
       return true
     } catch (error) {
       return false
