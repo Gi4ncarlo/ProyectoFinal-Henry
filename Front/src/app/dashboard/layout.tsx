@@ -10,15 +10,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     // Ensure code only runs on the client
     if (typeof window !== "undefined") {
       const user = JSON.parse(localStorage.getItem("userSession") || "null");
-      console.log(user?.token); // Logs the token if it exists
-      console.log("Usersession", user);
-
-      if (user && user.token && user.user.role) {
-        setAuthorized(true);
-      } else {
-        console.log("Redirecting to login");
-        router.push("/login");
-      }
+      if (user && user.token && user.user.role) setAuthorized(true);
+      else router.push("/login");
     }
   }, [router]);
 

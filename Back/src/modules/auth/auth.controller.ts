@@ -22,9 +22,7 @@ export class AuthController {
     try {
       const user = await this.authService.signUp(signUpUser);
       return res.status(HttpStatus.CREATED).send(user);
-    } catch (error) {
-      console.log("CATCH DE SIGNUP");
-      
+    } catch (error) {      
       return res.status(HttpStatus.BAD_REQUEST).send(error);
     }
   }

@@ -8,9 +8,6 @@ export default function LoginGoogle() {
     const router = useRouter();
     useEffect(() => {
         const handleGoogleLogin = async () => {
-            console.log('APIURL entre');
-
-
             try {
                 const googleResponse = await fetch('/api/auth/me', {
                     method: 'GET',
@@ -21,10 +18,7 @@ export default function LoginGoogle() {
 
                 if (googleResponse.ok) {
                     const googleUser = await googleResponse.json();
-                    console.log('googleUser', googleUser);
                     if (googleUser?.email && googleUser.sub) {
-                        console.log('googleEmail', googleUser.email);
-
                         const Flag = await fetch(`${APIURL}/user/google`, {
                             method: 'POST',
                             headers: {
@@ -34,8 +28,6 @@ export default function LoginGoogle() {
                             body: JSON.stringify({ email: googleUser.email })
                         })
                         const response = await Flag.json();
-                        console.log('Flag', response);
-
                         if (response) {
                             const login = await fetch(`${APIURL}/auth/signin`, {
                                 method: 'POST',
@@ -49,8 +41,6 @@ export default function LoginGoogle() {
 
                             })
                             const response = await login.json();
-                            console.log('response', response);
-
                             localStorage.setItem(
                                 'userSession',
                                 JSON.stringify({ token: response.token, user: response.user })
@@ -59,8 +49,6 @@ export default function LoginGoogle() {
 
                         }
                         if (!response) {
-                            console.log("ENTRE A !RESPONSE");
-                            
                             const register = await fetch(`${APIURL}/auth/signup/google`, {
                                 method: 'POST',
                                 headers: {
@@ -75,13 +63,10 @@ export default function LoginGoogle() {
                                 })
                             })
                             const response = await register.json();
-                            console.log('response', response);
-
                             if (!response) {
                                 throw new Error('Error al registrar el usuario');
                             }
                             if (response) {
-                                console.log('email', googleUser.email, 'sub', googleUser.sub);
                                 const login = await fetch(`${APIURL}/auth/signin`, {
                                     method: 'POST',
                                     headers: {
@@ -94,8 +79,6 @@ export default function LoginGoogle() {
 
                                 })
                                 const response = await login.json();
-                                console.log('response2', response);
-
                                 localStorage.setItem(
                                     'userSession',
                                     JSON.stringify({ token: response.token, user: response.user })
@@ -120,8 +103,16 @@ export default function LoginGoogle() {
     }, [router]);
 
     return (
-        <div>
-            <h2>'Verificando usuario...'</h2>
-        </div>)
+
+        <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
+            {/* Spinner */}
+            <div className="w-16 h-16 border-4 border-green-300 border-t-green-500 rounded-full animate-spin mb-4"></div>
+
+            {/* Texto */}
+            <h2 className="text-xl font-semibold text-gray-700">
+                Verificando credenciales...
+            </h2>
+        </div>
+    );
 
 }
