@@ -64,16 +64,13 @@ const DashboardUserCompo: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (userSession?.user?.id && userSession.token) {
-      fetchOrders(userSession.user.id, userSession.token);
-    }
+    if (userSession?.user?.id && userSession.token) fetchOrders(userSession.user.id, userSession.token);
   }, [userSession]);
 
   const fetchOrders = async (id: number, token: string) => {
     setLoading(true);
     try {
       const ordersData = await getuserOrdersDB(id, token);
-      console.log(ordersData);
       setOrders(ordersData);
       setError(null);
     } catch (err) {
@@ -96,23 +93,18 @@ const DashboardUserCompo: React.FC = () => {
         }
       );
       const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.message);
-      }
-      if (data.paymentUrl.sandbox_init_point) {
-        window.location.href = data.paymentUrl.sandbox_init_point;
-      }
+      if (!response.ok) throw new Error(data.message);
+
+      if (data.paymentUrl.sandbox_init_point) window.location.href = data.paymentUrl.sandbox_init_point;
+
     } catch (error) {
       throw error;
     }
   };
-  if (loading) {
-    return <p>Loading...</p>;
-  }
+  if (loading) return <p>Loading...</p>;
 
-  if (error) {
-    return <p>{error}</p>;
-  }
+  if (error) return <p>{error}</p>;
+
 
 
   return (
