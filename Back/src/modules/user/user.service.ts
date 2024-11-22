@@ -17,8 +17,9 @@ export class UserService {
 
   async create(createUserDto: CreateUserDto): Promise<User> {
 
-    createUserDto.role = Role.User;
-    const user = this.userRepository.create(createUserDto);
+    const { passwordConfirm, ...rest } = createUserDto
+    rest.role = Role.User;
+    const user = this.userRepository.create(rest);
     return await this.userRepository.save(user);
   }
 
@@ -88,24 +89,15 @@ export class UserService {
     return user;
   }
   async googleEmail(email: { email: string }) {
-    console.log(email);
-
     const user = await this.userRepository.findOne({ where: { email: email.email } });
-    if (user) {
-      console.log('true', user);
-      return true;
-
-    }
-    console.log('false', user);
+    if (user) return true;
 
     return false;
   }
 
   async remove(id: string): Promise<void> {
     const result = await this.userRepository.delete(id);
-    if (result.affected === 0) {
-      throw new NotFoundException('Usuario no encontrado para eliminar');
-    }
+    if (result.affected === 0) throw new NotFoundException('Usuario no encontrado para eliminar');
   }
 
   async findOneWithOrders(userId: string): Promise<User> {

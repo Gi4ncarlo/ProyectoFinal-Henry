@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
-const APIURL = process.env.NEXT_PUBLIC_API_URL;
+
 // import { getServicesProvided } from '@/helpers/service.helpers';
 
 // interface ServiceProvided {
@@ -14,6 +14,7 @@ const APIURL = process.env.NEXT_PUBLIC_API_URL;
 
 const Home: React.FC = () => {
   const [selectedService, setSelectedService] = useState<string>('');
+
   // const [services, setServices] = useState<ServiceProvided[]>([]);
   // const [isMounted, setIsMounted] = useState(false); // Nuevo estado para verificar si el componente está montado
   const router = useRouter();
@@ -43,19 +44,36 @@ const Home: React.FC = () => {
   //     const fetchedServices = await getServicesProvided();
   //     setServices(fetchedServices);
   //   } catch (error) {
-  //     console.error('Error fetching services:', error);
-  //   }
-  // };
-
-  //   fetchServices();
-  // }, [isMounted]);
+    //     console.error('Error fetching services:', error);
+    //   }
+    // };
+    
+    //   fetchServices();
+    // }, [isMounted]);
+    const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+    useEffect(() => {
+      const checkUserSession = async () => {
+        // 1. Verificar si hay un token en localStorage
+        const userSession = localStorage.getItem("userSession");
+        if (userSession) {
+          const tokenData = JSON.parse(userSession);
+          if (tokenData?.token) {
+            setIsUserLoggedIn(true);
+            return; // Usuario ya logueado, no seguimos.
+          }
+        }
+        if(isUserLoggedIn) return
+    
+        setIsUserLoggedIn(false);
+      };
+      checkUserSession();
+  }, []);
   
   const handleSearch = () => {
     if (selectedService) {
       router.push(`/gardener/${selectedService}`);
     }
   };
-
   return (
     <div className="flex flex-col items-center justify-center">
       {/* HERO SECTION */}

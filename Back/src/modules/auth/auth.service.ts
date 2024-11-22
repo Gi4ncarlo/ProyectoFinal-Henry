@@ -26,15 +26,12 @@ export class AuthService {
   ) { }
 
   async signIn(credentials: SignInAuthDto) {
-    try {
-      console.log(credentials);
-      
+    try {      
       const user = await this.userService.findByEmail(credentials.email);
       const admin = await this.adminService.findByEmail(credentials.email);
       const gardener = await this.gardenerService.findByEmail(
         credentials.email,
       );
-      console.log('user1:       ' , user);
       if (user?.isBanned === true) {
         throw new HttpException(
           'El usuario esta baneado',
@@ -43,9 +40,7 @@ export class AuthService {
       }
 
       // Validación para usuarios
-      if (user) {
-        console.log(await bcrypt.compare(credentials.password, user.password));
-        
+      if (user) {        
         const isPasswordMatching = await bcrypt.compare(
           credentials.password,
           user.password,
@@ -121,23 +116,17 @@ export class AuthService {
       throw new BadRequestException('Error at password hash');
     }
 
-    let newUsers;
+    let newUsers;    
+    if (signUpUser.role === Role.Gardener) newUsers = await this.gardenerService.create(signUpUser);
+    else newUsers = await this.userService.create(signUpUser);
 
-    if (signUpUser.role === Role.Gardener) {
-      newUsers = await this.gardenerService.create(signUpUser);
-    } else {
-      newUsers = await this.userService.create(signUpUser);
-    }
-
-    const newUser = await this.userService.create(signUpUser);
-    await this.mailService.sendWelcomeEmail(newUser.email, newUser.username);
-    return newUser;
+    await this.mailService.sendWelcomeEmail(newUsers.email, newUsers.username);
+    return newUsers;
   }
 
   async signUpgoogle(createUserDto: any) {
     try {
       let password2 = await bcrypt.hash(createUserDto.password, 10);
-      await this.mailService.sendWelcomeEmail(createUserDto.email, createUserDto.username);
       this.userService.create(
         {
           name: createUserDto.name,
@@ -152,6 +141,7 @@ export class AuthService {
           address: 'google123'
         }
       );
+      await this.mailService.sendWelcomeEmail(createUserDto.email, createUserDto.username);
       return true
     } catch (error) {
       return false

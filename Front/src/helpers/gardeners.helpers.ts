@@ -6,7 +6,7 @@ export const getGardenersDB = async (
   order: 'ASC' | 'DESC' = 'ASC',
   calification?: number,
   name?: string
-): Promise<{ data: IServiceProvider[] }> => { 
+): Promise<{ data: IServiceProvider[] }> => {
   if (!token) {
     console.error("Token is missing or invalid.");
     return { data: [] }; // Retornar un objeto con `data` vacío si no hay token válido
@@ -15,14 +15,14 @@ export const getGardenersDB = async (
   params.append('order', order);
   if (calification) params.append('calification', calification.toString());
   if (name) params.append('name', name.toString());
-  
+
   const response = await fetch(`${APIURL}/gardener?${params.toString()}`, {
     headers: {
       Authorization: `Bearer ${token}`
     }
   });
   const data = await response.json();
-  return data ;
+  return data;
 };
 
 // Nueva función para obtener un gardener por ID
@@ -39,30 +39,23 @@ export async function getProviderById(id: string): Promise<IServiceProvider | nu
     console.error("Token is missing or invalid.");
     return null; // Retornar null si no hay token válido
   }
-
-  console.log("GARDENER HELPERS ID", id);
-
   try {
     const res = await fetch(`${APIURL}/gardener/${id}`, {
-      method: 'GET', 
+      method: 'GET',
       headers: {
         'Authorization': `Bearer ${TOKEN.token}`,
-        'Content-Type': 'application/json', 
+        'Content-Type': 'application/json',
       },
       next: { revalidate: 1200 },
     });
 
-    if (!res.ok) {
-      throw new Error(`Failed to fetch gardener with ID ${id}`);
-    }
+    if (!res.ok) throw new Error(`Failed to fetch gardener with ID ${id}`);
 
     const response = await res.json();
     // Verifica si el formato es correcto
-    if (response && typeof response === 'object' && !Array.isArray(response)) {
-      return response.data || response; // Retorna 'data' si existe, sino retorna 'response'
-    } else {
-      throw new Error("Invalid data format, expected object in 'data'");
-    }
+    if (response && typeof response === 'object' && !Array.isArray(response)) return response.data || response; // Retorna 'data' si existe, sino retorna 'response'
+    else throw new Error("Invalid data format, expected object in 'data'");
+
   } catch (error: any) {
     console.error(`Error fetching gardener with ID ${id}:`, error);
     return null;

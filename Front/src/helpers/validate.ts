@@ -10,16 +10,16 @@ export const validateRegisterForm = (value: IRegisterProps): IRegisterErrors => 
     }
     if (!value.email) {
         tempErrors.email = "El email es requerido.";
-    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value.email)) {
+    } else if (!/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i.test(value.email)) {
         tempErrors.email = "Correo electrónico no válido.";
+    } else if (/[A-Z]/.test(value.email)) { // Verifica si hay letras mayúsculas
+        tempErrors.email = "El correo debe estar en minúsculas.";
     }
     if (!value.password) {
         tempErrors.password = "La contraseña es requerida.";
     } else if (!/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/.test(value.password)) {
         tempErrors.password = "La contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula, una minúscula, un número y un símbolo.";
-    }
-    
-    
+    }    
     if (value.password !== value.passwordConfirm) {
         tempErrors.passwordConfirm = "Las contraseñas no coinciden.";
       }
@@ -43,6 +43,9 @@ export const validateRegisterForm = (value: IRegisterProps): IRegisterErrors => 
     tempErrors.address = "La dirección es requerida.";
   }
 
+  if (!value.name) tempErrors.name = "El nombre es obligatorio.";
+  if (!value.email) tempErrors.email = "El correo es obligatorio.";
+  
     return tempErrors;
 };
 
@@ -58,5 +61,6 @@ export const validateRegisterForm = (value: IRegisterProps): IRegisterErrors => 
     } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value.email)) {
         tempErrors.email = "Correo electrónico no registrado ";
     }
+    
     return tempErrors;
 }

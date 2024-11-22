@@ -1,9 +1,10 @@
-import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpAuthDto } from '../user/dto/signup-user.dto';
 import { SignInAuthDto } from '../user/dto/signin-user.dto';
 import { UserResponseDto } from '../user/dto/response-user.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { Response } from 'express';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -17,10 +18,15 @@ export class AuthController {
 
   @Post('signup')
   @HttpCode(HttpStatus.CREATED)
-  async signUp(@Body() signUpUser: SignUpAuthDto) {
-    const user = await this.authService.signUp(signUpUser);  // El servicio ya maneja el envío del correo
-    return new UserResponseDto(user);  // Retorna el usuario con la respuesta deseada
+  async signUp(@Body() signUpUser: SignUpAuthDto, @Res() res : Response) {
+    try {
+      const user = await this.authService.signUp(signUpUser);
+      return res.status(HttpStatus.CREATED).send(user);
+    } catch (error) {      
+      return res.status(HttpStatus.BAD_REQUEST).send(error);
+    }
   }
+
   @Post('signup/google')
   @HttpCode(HttpStatus.CREATED)
   async signUpgoogle(@Body() signUpUser: SignUpAuthDto) {

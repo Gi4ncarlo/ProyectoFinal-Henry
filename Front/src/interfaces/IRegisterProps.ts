@@ -6,7 +6,7 @@ export interface IRegisterProps {
   password: string
   passwordConfirm: string
   phone: string
-  age: number | string; 
+  age: number | string
   address: string
   role: string,
 }
@@ -20,6 +20,6 @@ export interface IRegisterErrors {
   phone?: string
   age?: string
   address?: string
-  role?:string
+  role:string
 }
 

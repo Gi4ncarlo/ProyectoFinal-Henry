@@ -14,13 +14,47 @@ export class MailService {
   });
 
   async sendWelcomeEmail(to: string, username: string) {
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to,
-      subject: 'Welcome to Vicnasol App!',
-      text: `Hello ${username},\n\nThank you for signing up to our platform. We're excited to have you with us!`,
-    };
+    try {
+      const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to,
+        subject: 'Bienvenido a Vicnasol App!',
+        html: `
+        <div style="font-family: Arial, sans-serif; color: #2e5234; padding: 20px; line-height: 1.6;">
+          <div style="text-align: center; margin-bottom: 20px;">
+            <img src="https://res.cloudinary.com/drl20ihvq/image/upload/v1732282936/uploads/hvtjtb5poyr2clqyxdd6.jpg" alt="Vicnasol" style="max-width: 550px;">
+          </div>
+          <h1 style="color: #263238;">¡Bienvenido/a a Vicnasol, ${username}!</h1>
+          <p>
+            Nos llena de alegría que te unas a nuestra comunidad amante de la naturaleza y la jardinería. 
+            En Vicnasol encontrarás las herramientas, conocimientos y el apoyo necesario para convertir 
+            cualquier espacio en un oasis verde.
+          </p>
+          <p>
+            Desde hoy, podrás disfrutar de todas nuestras funcionalidades y explorar ideas para tus 
+            proyectos de jardinería. Nuestro equipo está siempre a tu disposición para ayudarte a crecer, 
+            florecer y alcanzar tus metas.
+          </p>
+          <div style="text-align: center; margin: 20px 0;">
+            <a href="http://vicnasol-henry.vercel.app" 
+               style="background-color: #4CAF50; color: #fff; padding: 10px 20px; text-decoration: none; 
+               border-radius: 5px; font-size: 16px;">Explorar Vicnasol</a>
+          </div>
+          <p style="color: #263238;">¡Gracias por confiar en nosotros!</p>
+          <p style="color: #263238;">El equipo de <strong>Vicnasol</strong></p>
+          <footer style="margin-top: 20px; border-top: 1px solid #ddd; padding-top: 10px; font-size: 14px; color: #666;">
+            <p>Vicnasol - Jardinería a tu alcance</p>
+            <p><a href="http://vicnasol-henry.vercel.app" style="color: #4CAF50;">www.vicnasol-henry.vercel.app.com</a></p>
+          </footer>
+        </div>
+      `,
+      };
+      await this.transporter.sendMail(mailOptions);
+      return 
+    } catch (error: any) {
+      throw new Error( error.message);
+    }
 
-    await this.transporter.sendMail(mailOptions);
+
   }
 }
