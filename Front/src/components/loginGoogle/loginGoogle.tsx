@@ -60,7 +60,7 @@ export default function LoginGoogle() {
                         }
                         if (!response) {
                             console.log("ENTRE A !RESPONSE");
-                            
+
                             const register = await fetch(`${APIURL}/auth/signup/google`, {
                                 method: 'POST',
                                 headers: {
@@ -120,8 +120,16 @@ export default function LoginGoogle() {
     }, [router]);
 
     return (
-        <div>
-            <h2>'Verificando usuario...'</h2>
-        </div>)
+
+        <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
+            {/* Spinner */}
+            <div className="w-16 h-16 border-4 border-green-300 border-t-green-500 rounded-full animate-spin mb-4"></div>
+
+            {/* Texto */}
+            <h2 className="text-xl font-semibold text-gray-700">
+                Verificando credenciales...
+            </h2>
+        </div>
+    );
 
 }
