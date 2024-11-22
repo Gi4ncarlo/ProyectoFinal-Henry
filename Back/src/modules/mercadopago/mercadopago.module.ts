@@ -10,11 +10,13 @@ import { Gardener } from '../gardener/entities/gardener.entity';
 import { ServiceProvided } from '../serviceProvided/entities/serviceProvided.entity';
 import { AdminEntity } from '../admin/entities/admin.entity';
 import { ServiceDetail } from '../service-details/entities/service-detail.entity';
+import { TokenModule } from '../tokenServices/token.module';
 
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([ServicesOrderEntity,User, Gardener, ServiceProvided,AdminEntity,ServiceDetail]),
+    TokenModule,
   ],
   providers: [MercadoPagoService, ServicesOrderService],
   controllers: [MercadoPagoController],

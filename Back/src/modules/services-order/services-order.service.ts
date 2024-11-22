@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateServiceOrderDto } from './dto/create-services-order.dto';
@@ -12,6 +12,8 @@ import { AdminEntity } from '../admin/entities/admin.entity';
 import { ServiceDetailsService } from '../service-details/service-details.service';
 import { Status } from '../service-details/enum/status.enum';
 import { ServiceDetail } from '../service-details/entities/service-detail.entity';
+import { TokenService } from '../tokenServices/token.service';
+
 @Injectable()
 export class ServicesOrderService {
 
@@ -24,13 +26,16 @@ export class ServicesOrderService {
 
     @InjectRepository(Gardener)
     private gardenerRepository: Repository<Gardener>,
+
     @InjectRepository(AdminEntity)
     private adminRepository: Repository<AdminEntity>,
 
     @InjectRepository(ServiceProvided)
     private serviceProvidedRepository: Repository<ServiceProvided>,
+
     @InjectRepository(ServiceDetail)
-    private readonly serviceDetailsRepository: Repository<ServiceDetail>
+    private readonly serviceDetailsRepository: Repository<ServiceDetail>,
+    private readonly tokenService: TokenService
 
   ) { }
 
@@ -105,10 +110,8 @@ export class ServicesOrderService {
         ...savedOrder,
         user: userResponse,
       };
-
       return response;
     }
-
     throw new Error('Order not found after saving');
   }
 
@@ -140,7 +143,6 @@ export class ServicesOrderService {
     try {
       const order = await this.findOne(id);
       if (!order) throw new NotFoundException(`Orden de servicio con id ${id} no encontrada`);
-
       order.isApproved = true;
       let price = 0;
       order.serviceProvided.map((service) => price += service.price)
@@ -152,6 +154,7 @@ export class ServicesOrderService {
         servicesOrder: order,
         assignedGardener: order.gardener
       })
+      newOrderDetail.userToken = await this.tokenService.generateToken(6)
       await this.serviceDetailsRepository.save(newOrderDetail);
       order.orderDetail = newOrderDetail;
       await this.servicesOrderRepository.save(order);
