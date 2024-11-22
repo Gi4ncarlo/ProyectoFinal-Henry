@@ -116,7 +116,7 @@ export default function LoginGoogle() {
 
     return (
         <div>
-        //isUserLoggedIn ? push('/Home') :
+            {/* isUserLoggedIn ? push('/Home') : */}            
             {'Verificando usuario...'}
         </div>)
 

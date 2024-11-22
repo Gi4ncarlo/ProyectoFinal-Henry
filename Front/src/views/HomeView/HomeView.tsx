@@ -49,28 +49,7 @@ const Home: React.FC = () => {
 
   //   fetchServices();
   // }, [isMounted]);
-  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
-  useEffect(() => {
-    const checkUserSession = async () => {
-      // 1. Verificar si hay un token en localStorage
-      const userSession = localStorage.getItem("userSession");
-      if (userSession) {
-        const tokenData = JSON.parse(userSession);
-        if (tokenData?.token) {
-          setIsUserLoggedIn(true);
-          return; // Usuario ya logueado, no seguimos.
-        }
-      }
-      if(isUserLoggedIn){
-        console.log('Ya estas logueado');
-        return
-      }
-      setIsUserLoggedIn(false);
-    };
-
-    checkUserSession();
-  }, []);
-
+  
   const handleSearch = () => {
     if (selectedService) {
       router.push(`/gardener/${selectedService}`);
