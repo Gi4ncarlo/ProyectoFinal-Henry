@@ -27,22 +27,24 @@ const DashboardUserCompo: React.FC = () => {
 
     setParams({ status, paymentId, externalReference });
   }, []);
+  useEffect(() => {
+    if (params?.status === "approved") {
+      const fetchOrders = async () => {
+        fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/services-order/orderPay/${params.externalReference}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${TOKEN.token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+      };
+      fetchOrders();
+    }
+  }, [params]);
 
-  if (params?.status === "approved") {
-    const fetchOrders = async () => {
-      fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/services-order/orderPay/${orders[0]?.servicesOrder[0].id}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${TOKEN.token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-    };
-    fetchOrders();
-  }
   if (
     params?.status === "failure" ||
     params?.status === "rejected" ||
@@ -73,12 +75,10 @@ const DashboardUserCompo: React.FC = () => {
     setLoading(true);
     try {
       const ordersData = await getuserOrdersDB(id, token);
-      console.log(ordersData);
       setOrders(ordersData);
       setError(null);
     } catch (err) {
       console.error("Error fetching orders:", err);
-      setError("Error fetching orders. Please try again later.");
     } finally {
       setLoading(false);
     }

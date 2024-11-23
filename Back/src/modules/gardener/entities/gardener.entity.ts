@@ -39,5 +39,14 @@ export class Gardener extends User {
   )
   serviceDetails: ServiceDetail[];
 
+<<<<<<< HEAD
 
+=======
+  @Column(
+    {
+      type: 'simple-array',
+      nullable: true,}
+  )
+  carrouselImages: string[];
+>>>>>>> b9082f8bb95f74e59d95cc495b89705e40f4f5f4
 }
