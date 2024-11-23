@@ -14,6 +14,7 @@ const Dropdown: React.FC<{ filter: string; onChange: (value: string) => void }> 
   onChange,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  
 
   const options = [
     { value: "ASC", label: "A-Z" },
@@ -62,6 +63,7 @@ const ProviderCardList: React.FC = () => {
   const [TOKEN, setTOKEN] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>("ASC");
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(true);
 
   const router = useRouter();
 
@@ -99,6 +101,7 @@ const ProviderCardList: React.FC = () => {
 
   useEffect(() => {
     const fetchProviders = async () => {
+      setLoading(true);
       try {
         const order = filter === "ASC" || filter === "DESC" ? filter : "ASC";
         const calification = isNaN(Number(filter)) ? undefined : Number(filter);
@@ -111,13 +114,17 @@ const ProviderCardList: React.FC = () => {
         const gardeners = await getGardenersDB(token, order, calification, searchTerm);
         setProviders(gardeners.data || []);
       } catch (error: any) {
-        setError(error.message || "Error al cargar los productos");
+        setError(error.message || "Error al cargar los Jardineros");
+      }finally{
+        setLoading(false);
       }
     };
 
     fetchProviders();
   }, [filter, searchTerm]);
 
+
+  if (loading) return <div className="container min-h-screen px-6 py-12 mx-auto"><h1 className="text-2xl text-center mt-24 bold text-[#FF5722]">Cargando ...</h1></div> ;
   if (error) return <div>{error}</div>;
 
   return (
