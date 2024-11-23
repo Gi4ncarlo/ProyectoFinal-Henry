@@ -111,7 +111,7 @@ const ProviderCardList: React.FC = () => {
         const gardeners = await getGardenersDB(token, order, calification, searchTerm);
         setProviders(gardeners.data || []);
       } catch (error: any) {
-        setError(error.message || "Error al cargar los productos");
+        setError(error.message || "Error al cargar los jardineros");
       }
     };
 

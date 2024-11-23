@@ -54,15 +54,18 @@ export class GardenerService {
   async getReservedDays(gardenerId: string): Promise<string[]> {
     const gardener = await this.gardenerRepository.findOne({
       where: { id: gardenerId },
-      relations: ['reservedDays'], // Asegúrate de que esta relación esté configurada en la entidad
+      select: ['id', 'name', 'reservedDays'],
     });
-
+  
     if (!gardener) {
       throw new Error('Jardinero no encontrado');
     }
-
-    return gardener.reservedDays.map((day) => day.toString()); // Ajusta el formato según lo esperado
+  
+    const reservedDays = gardener.reservedDays || []; 
+  
+    return reservedDays.map((day) => day.toString()); 
   }
+  
 
   async create(createGardenerDto: CreateGardenerDto): Promise<Gardener> {
     const gardner = this.gardenerRepository.create(createGardenerDto);

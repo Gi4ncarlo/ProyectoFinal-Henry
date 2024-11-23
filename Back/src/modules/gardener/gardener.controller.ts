@@ -39,29 +39,32 @@ export class GardenerController {
     private readonly fileUploadService: FileUploadService,
   ) { }
 
-  @Post(':id/reserve')
-  async reserveDay(
-    @Param('id') id: string,
-    @Body('day') day: string,
-  ) {
-    return this.gardenerService.reserveDay(id, day);
-  }
-
+  @Post(':gardenerId/reserve')
   @UseGuards(AuthGuard)
-  @Get(':id/reservedDays')
-  @HttpCode(200)
-  async getReservedDays(@Param('id', new ParseUUIDPipe()) id: string) {
-    const reservedDays = await this.gardenerService.getReservedDays(id);
-
-    if (!reservedDays) {
-      throw new HttpException(
-        'No se encontraron días reservados para este Jardinero.',
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    return { reservedDays };
+  async reserveDay(
+  @Param('gardenerId', new ParseUUIDPipe()) gardenerId: string,
+  @Body('day') day: string,
+  ) {
+  if (!day || !day.match(/^\d{2}-\d{2}-\d{4}$/)) {
+    throw new HttpException(
+      'Formato de día inválido. Debe ser DD-MM-YYYY.',
+      HttpStatus.BAD_REQUEST,
+    );
   }
+  return this.gardenerService.reserveDay(gardenerId, day);
+  }
+
+  @Get(':gardenerId/reservedDays')
+  @UseGuards(AuthGuard)
+  @HttpCode(200)
+  async getReservedDays(
+  @Param('gardenerId', new ParseUUIDPipe()) gardenerId: string,
+  ) {
+  console.log(`Solicitud recibida para el jardinero: ${gardenerId}`); 
+  const reservedDays = await this.gardenerService.getReservedDays(gardenerId);
+  return { reservedDays: reservedDays || [] };
+  }
+
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Admin)
   @Post()
