@@ -51,6 +51,7 @@ export class MercadoPagoService {
                         }
                     },
                     coupon_code: "COUPON_CODE",
+                    external_reference: `${order.id}`,
 
                     statement_descriptor: 'Pago de servicio',
                     metadata: {

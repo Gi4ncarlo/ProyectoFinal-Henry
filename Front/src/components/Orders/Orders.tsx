@@ -27,22 +27,24 @@ const DashboardUserCompo: React.FC = () => {
 
     setParams({ status, paymentId, externalReference });
   }, []);
+  useEffect(() => {
+    if (params?.status === "approved") {
+      const fetchOrders = async () => {
+        fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/services-order/orderPay/${params.externalReference}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${TOKEN.token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+      };
+      fetchOrders();
+    }
+  }, [params]);
 
-  if (params?.status === "approved") {
-    const fetchOrders = async () => {
-      fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/services-order/orderPay/${orders[0]?.servicesOrder[0].id}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${TOKEN.token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-    };
-    fetchOrders();
-  }
   if (
     params?.status === "failure" ||
     params?.status === "rejected" ||
