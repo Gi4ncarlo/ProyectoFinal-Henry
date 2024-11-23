@@ -38,4 +38,11 @@ export class Gardener extends User {
     (serviceDetail) => serviceDetail.assignedGardener,
   )
   serviceDetails: ServiceDetail[];
+
+  @Column(
+    {
+      type: 'simple-array',
+      nullable: true,}
+  )
+  carrouselImages: string[];
 }
