@@ -31,11 +31,26 @@ export class ServiceDetail {
   @Column({ type: 'text', nullable: true })
   endTime: string;
 
-  @Column({ 
+  @Column({
+    type: 'text',
+    nullable: true,
+    default: null
+  })
+  userToken: string;
+
+  @Column({
+    type: 'text',
+    nullable: true,
+    default: null
+  })
+  gardenerToken: string;
+
+
+  @Column({
     type: 'enum',
     enum: Status,
     default: Status.Pending
-   })
+  })
   status: string;
 
   @Column({ type: 'int', nullable: true })
@@ -48,6 +63,6 @@ export class ServiceDetail {
   @ManyToOne(() => Gardener, (gardener) => gardener.serviceDetails, { nullable: false })
   @JoinColumn()
   assignedGardener: Gardener;
-  
+
 
 }

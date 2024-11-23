@@ -27,22 +27,24 @@ const DashboardUserCompo: React.FC = () => {
 
     setParams({ status, paymentId, externalReference });
   }, []);
+  useEffect(() => {
+    if (params?.status === "approved") {
+      const fetchOrders = async () => {
+        fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/services-order/orderPay/${params.externalReference}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${TOKEN.token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+      };
+      fetchOrders();
+    }
+  }, [params]);
 
-  if (params?.status === "approved") {
-    const fetchOrders = async () => {
-      fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/services-order/orderPay/${orders[0]?.servicesOrder[0].id}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${TOKEN.token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-    };
-    fetchOrders();
-  }
   if (
     params?.status === "failure" ||
     params?.status === "rejected" ||
@@ -64,7 +66,9 @@ const DashboardUserCompo: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (userSession?.user?.id && userSession.token) fetchOrders(userSession.user.id, userSession.token);
+    if (userSession?.user?.id && userSession.token) {
+      fetchOrders(userSession.user.id, userSession.token);
+    }
   }, [userSession]);
 
   const fetchOrders = async (id: number, token: string) => {
@@ -75,7 +79,6 @@ const DashboardUserCompo: React.FC = () => {
       setError(null);
     } catch (err) {
       console.error("Error fetching orders:", err);
-      setError("Error fetching orders. Please try again later.");
     } finally {
       setLoading(false);
     }
@@ -93,18 +96,23 @@ const DashboardUserCompo: React.FC = () => {
         }
       );
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message);
-
-      if (data.paymentUrl.sandbox_init_point) window.location.href = data.paymentUrl.sandbox_init_point;
-
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
+      if (data.paymentUrl.sandbox_init_point) {
+        window.location.href = data.paymentUrl.sandbox_init_point;
+      }
     } catch (error) {
       throw error;
     }
   };
-  if (loading) return <p>Loading...</p>;
+  if (loading) {
+    return <p>Loading...</p>;
+  }
 
-  if (error) return <p>{error}</p>;
-
+  if (error) {
+    return <p>{error}</p>;
+  }
 
 
   return (

@@ -135,6 +135,7 @@ export class AuthService {
           password: password2,
           passwordConfirm: password2,
           profileImageUrl: createUserDto.profileImageUrl,
+          isGoogle: true,
           role: Role.User,
           phone: '35745678',
           age: 18,

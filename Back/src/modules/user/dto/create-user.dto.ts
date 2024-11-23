@@ -14,10 +14,10 @@ export class CreateUserDto {
   @Matches(
     /^(?=.[a-z])(?=.[A-Z])(?=.\d)(?=.[=!@#$%^&])[A-Za-z\d=!@#$%^&]{8,15}$/,
     {
-        message : 
+      message:
         "La contraseña debe contener una minuscula, una mayuscula, un numero, un simbolo"
     }
-)
+  )
   @IsNotEmpty()
   @IsString()
   password: string;
@@ -38,9 +38,12 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsEmail({}, { message: 'Email must be valid' })
   email: string;
- 
+
   @IsString()
   address: string
+
+  @IsOptional()
+  isGoogle?: boolean;
 
   @IsEnum(Role, { message: 'Role must be either User, Admin or Gardener' })
   role?: Role;

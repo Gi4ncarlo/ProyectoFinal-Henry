@@ -30,7 +30,7 @@ export class User {
   address: string;
 
   @Column({ default: false })
-  isBanned: boolean; 
+  isBanned: boolean;
 
   @Column({
     type: 'enum',
@@ -38,6 +38,13 @@ export class User {
     default: Role.User
   })
   role: Role;
+
+  @Column({
+    type: 'boolean',
+    default: false,
+    nullable: true
+  })
+  isGoogle: boolean
 
   @OneToMany(() => ServicesOrderEntity, (serviceOrders) => serviceOrders.user)
   servicesOrder: ServicesOrderEntity[];

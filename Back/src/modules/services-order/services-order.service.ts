@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateServiceOrderDto } from './dto/create-services-order.dto';
@@ -12,6 +12,8 @@ import { AdminEntity } from '../admin/entities/admin.entity';
 import { ServiceDetailsService } from '../service-details/service-details.service';
 import { Status } from '../service-details/enum/status.enum';
 import { ServiceDetail } from '../service-details/entities/service-detail.entity';
+import { TokenService } from '../tokenServices/token.service';
+
 @Injectable()
 export class ServicesOrderService {
 
@@ -24,13 +26,16 @@ export class ServicesOrderService {
 
     @InjectRepository(Gardener)
     private gardenerRepository: Repository<Gardener>,
+
     @InjectRepository(AdminEntity)
     private adminRepository: Repository<AdminEntity>,
 
     @InjectRepository(ServiceProvided)
     private serviceProvidedRepository: Repository<ServiceProvided>,
+
     @InjectRepository(ServiceDetail)
-    private readonly serviceDetailsRepository: Repository<ServiceDetail>
+    private readonly serviceDetailsRepository: Repository<ServiceDetail>,
+    private readonly tokenService: TokenService
 
   ) { }
 
@@ -105,10 +110,8 @@ export class ServicesOrderService {
         ...savedOrder,
         user: userResponse,
       };
-
       return response;
     }
-
     throw new Error('Order not found after saving');
   }
 
@@ -129,7 +132,7 @@ export class ServicesOrderService {
   async findOne(id: string): Promise<ServicesOrderEntity> {
     const order = await this.servicesOrderRepository.findOne({
       where: { id },
-      relations: ['user', 'gardener', 'serviceProvided'],
+      relations: ['user', 'gardener', 'serviceProvided', 'orderDetail'],
     })
     if (!order) {
       throw new NotFoundException(`Orden de servicio con id ${id} no encontrada`);
@@ -137,10 +140,10 @@ export class ServicesOrderService {
     return order;
   }
   async orderPay(id: string) {
-    try {
+    try {      
       const order = await this.findOne(id);
       if (!order) throw new NotFoundException(`Orden de servicio con id ${id} no encontrada`);
-
+      if(order.orderDetail) throw new BadRequestException('La orden de servicio ya fue pagada');
       order.isApproved = true;
       let price = 0;
       order.serviceProvided.map((service) => price += service.price)
@@ -152,18 +155,20 @@ export class ServicesOrderService {
         servicesOrder: order,
         assignedGardener: order.gardener
       })
+      newOrderDetail.userToken = await this.tokenService.generateToken(6)
       await this.serviceDetailsRepository.save(newOrderDetail);
       order.orderDetail = newOrderDetail;
       await this.servicesOrderRepository.save(order);
       const { assignedGardener, servicesOrder, ...rest } = newOrderDetail
       const { orderDetail, user, gardener, serviceProvided, ...ord } = order
+      const { password, ...userWithoutPassword } = user
 
       return {
         message: 'detalle de servicio generado exitosamente',
         data: {
           order: ord,
           datail: rest,
-          user,
+          user: userWithoutPassword,
           gardener,
         }
       }
