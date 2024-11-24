@@ -109,3 +109,42 @@ export async function getCarrouselById(id: string) {
     return null; 
   }
 }
+
+  export async function postCarrouselImage(formData: FormData, id : string | undefined) {
+    try {
+      let TOKEN = null;
+      if (typeof window !== "undefined") {
+        const storedToken = localStorage.getItem("userSession");
+        TOKEN = storedToken ? JSON.parse(storedToken) : null;
+      }
+  
+      if (!TOKEN?.token) {
+        console.error("Token is missing or invalid.");
+        return null;
+      }
+  
+      const res = await fetch(`${APIURL}/gardener/carrousel/${id}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${TOKEN.token}`,
+        },
+        body: formData,
+      });
+  
+      if (!res.ok) {
+        throw new Error(`Error al subir la imagen: ${res.status} ${res.statusText}`);
+      }
+  
+      const response = await res.json();
+  
+      if (response && typeof response === "object" && !Array.isArray(response)) {
+        return response.data || response; 
+      } else {
+        throw new Error("Formato invalido.");
+      } 
+    } catch (error: any) {
+      console.error("Error al subir la imagen:", error.message || error);
+      return null;
+    }
+  }
+
