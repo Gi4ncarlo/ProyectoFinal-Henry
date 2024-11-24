@@ -118,7 +118,7 @@ const ProviderDetail: any = () => {
   if (!gardener) return <div>Cargando...</div>;
 
   return (
-    <div className="grid grid-cols-2">
+    <div className="grid grid-cols-1 min-h-screen lg:grid-cols-2 bg-[#4CAF50]">
       <div className="flex bg-[#4CAF50]">
         <div className="max-w-3xl mx-auto mt-32 mb-14 p-6 bg-white rounded-lg shadow-lg">
           <div className="flex items-center">
@@ -206,20 +206,18 @@ const ProviderDetail: any = () => {
         </div>
       </div>
 
-      <div className="flex bg-[#4CAF50] p-6 justify-center">
-        <div className="flex gap-4 snap-x snap-mandatory align-middle my-auto">
-          {carrousel?.map((image: any, index: any) => (
-            <div
-              key={index}
-              className="grid grid-cols-2 gap-4 rounded-lg shadow-lg bg-white p-2 items-center justify-center"
-              style={{ width: "400px", height: "400px" }} 
-            >
+      {/* Carrousel */}
+      <div className="bg-white rounded-lg shadow-lg p-6 m-auto w-4/5">
+        <h2 className="text-xl font-bold text-[#4CAF50] mb-4 text-center p-3">Galería de {gardener.name}:</h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          {carrousel?.map((image: any, index: number) => (
+            <div key={index} className="overflow-hidden rounded-lg">
               <Image
                 src={image}
                 alt={`Imagen ${index + 1}`}
                 width={1920}
                 height={1080}
-                className="rounded-lg object-cover"
+                className="object-cover w-full h-40"
               />
             </div>
           ))}
