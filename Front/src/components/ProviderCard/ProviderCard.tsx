@@ -16,11 +16,11 @@ const ProviderCard: React.FC<IProviderCardProps> = ({
       : 0;
 
   return (
-    <div className="w-full max-w-xs bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 cursor-pointer hover:shadow-lg transition-shadow h-[500px] flex flex-col">
+    <div className="w-full max-w-xs bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 cursor-pointer transform hover:scale-105 hover:shadow-2xl transition duration-300 ease-in-out h-[500px] flex flex-col hover:translate-y-2">
       {/* Imagen */}
       <div className="w-full min-h-[300px] overflow-hidden rounded-t-lg">
         <Image
-          className="object-contain"
+          className="object-cover"
           src={profileImageUrl || '/default-image.jpg'}
           alt={`${name} image`}
           width={1920}
@@ -69,13 +69,6 @@ const ProviderCard: React.FC<IProviderCardProps> = ({
           ))}
           <span className="ml-2 text-sm font-medium text-[#263238] dark:text-gray-400">
             {calification ? calification.toFixed(1) : 'N/A'}
-          </span>
-        </div>
-
-        {/* Rango de precios */}
-        <div className="flex items-center mt-2">
-          <span className="text-sm text-gray-600 dark:text-gray-400">
-            Precio: <span className="font-semibold">$10000 - $40000 por hora</span>
           </span>
         </div>
       </div>
