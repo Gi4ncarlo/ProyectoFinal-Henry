@@ -70,14 +70,7 @@ const ProviderCard: React.FC<IProviderCardProps> = ({
           <span className="ml-2 text-sm font-medium text-[#263238] dark:text-gray-400">
             {calification ? calification.toFixed(1) : 'N/A'}
           </span>
-        </div>
-
-        {/* Rango de precios */}
-        <div className="flex items-center mt-2">
-          <span className="text-sm text-gray-600 dark:text-gray-400">
-            Precio: <span className="font-semibold">$10000 - $40000 por hora</span>
-          </span>
-        </div>
+        </div>  
       </div>
     </div>
   );
