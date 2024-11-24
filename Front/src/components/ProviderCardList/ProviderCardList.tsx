@@ -7,14 +7,12 @@ import { IServiceProvider } from "@/interfaces/IServiceProvider";
 import { getGardenersDB } from "@/helpers/gardeners.helpers";
 import { useRouter } from "next/navigation";
 import { FaSearch } from "react-icons/fa";
-import { IUserSession } from "@/interfaces/IUserSession";
 
 const Dropdown: React.FC<{ filter: string; onChange: (value: string) => void }> = ({
   filter,
   onChange,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  
 
   const options = [
     { value: "ASC", label: "A-Z" },
@@ -64,6 +62,9 @@ const ProviderCardList: React.FC = () => {
   const [filter, setFilter] = useState<string>("ASC");
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
+
+  const [currentPage, setCurrentPage] = useState<number>(1); // Estado para manejar la página actual
+  const itemsPerPage = 8; // Límite de cards por página
 
   const router = useRouter();
 
@@ -115,7 +116,7 @@ const ProviderCardList: React.FC = () => {
         setProviders(gardeners.data || []);
       } catch (error: any) {
         setError(error.message || "Error al cargar los Jardineros");
-      }finally{
+      } finally {
         setLoading(false);
       }
     };
@@ -123,8 +124,27 @@ const ProviderCardList: React.FC = () => {
     fetchProviders();
   }, [filter, searchTerm]);
 
+  const handleNextPage = () => {
+    setCurrentPage((prev) => prev + 1);
+  };
 
-  if (loading) return <div className="container min-h-screen px-6 py-12 mx-auto"><h1 className="text-2xl text-center mt-24 bold text-[#FF5722]">Cargando ...</h1></div> ;
+  const handlePreviousPage = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+  };
+
+  const paginatedProviders = providers.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  if (loading)
+    return (
+      <div className="container min-h-screen px-6 py-12 mx-auto">
+        <h1 className="text-2xl text-center mt-24 bold text-[#FF5722]">
+          Cargando ...
+        </h1>
+      </div>
+    );
   if (error) return <div>{error}</div>;
 
   return (
@@ -157,7 +177,7 @@ const ProviderCardList: React.FC = () => {
             <Dropdown filter={filter} onChange={handleFilter} />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mx-auto">
-            {providers.map((gardener) => (
+            {paginatedProviders.map((gardener) => (
               <Link href={`/gardener/${gardener.id}`} key={gardener.id}>
                 <ProviderCard
                   name={gardener.name}
@@ -168,6 +188,28 @@ const ProviderCardList: React.FC = () => {
               </Link>
             ))}
           </div>
+          <div className="flex justify-between mt-6 mb-8">
+              <button
+                onClick={handlePreviousPage}
+                disabled={currentPage === 1}
+                className={`px-4 py-2 bg-[#8BC34A] text-white rounded ${
+                  currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+              >
+                Página anterior
+              </button>
+              <button
+                onClick={handleNextPage}
+                disabled={currentPage * itemsPerPage >= providers.length}
+                className={`px-4 py-2 bg-[#8BC34A] text-white rounded ${
+                  currentPage * itemsPerPage >= providers.length
+                    ? "opacity-50 cursor-not-allowed"
+                    : ""
+                }`}
+              >
+              Página siguiente
+            </button>
+        </div>
         </>
       )}
     </div>
@@ -175,4 +217,6 @@ const ProviderCardList: React.FC = () => {
 };
 
 export default ProviderCardList;
+
+
 

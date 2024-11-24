@@ -124,6 +124,25 @@ export class GardenerService {
     await this.gardenerRepository.update(id, { profileImageUrl: imageUrl });
   }
 
+  async uploadCarrouselImages(id: string, imageUrl: string): Promise<void> {
+    // Obtén el jardinero actual por su ID
+    const gardener = await this.gardenerRepository.findOne({ where: { id } });
+  
+    if (!gardener) {
+      throw new Error("Gardener not found");
+    }
+  
+    // Asegúrate de que carrouselImages sea un array
+    const currentImages = gardener.carrouselImages || [];
+  
+    // Agrega la nueva URL al array
+    const updatedImages = [...currentImages, imageUrl];
+  
+    // Actualiza la entidad con el nuevo array
+    await this.gardenerRepository.update(id, { carrouselImages: updatedImages });
+  }
+  
+
     // Método para buscar gardeners por servicio
     async findByService(serviceId: string): Promise<Gardener[]> {
       return this.gardenerRepository

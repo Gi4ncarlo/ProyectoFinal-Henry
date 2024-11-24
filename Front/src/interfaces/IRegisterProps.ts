@@ -20,6 +20,6 @@ export interface IRegisterErrors {
   phone?: string
   age?: string
   address?: string
-  role:string
+  role?:string
 }
 
