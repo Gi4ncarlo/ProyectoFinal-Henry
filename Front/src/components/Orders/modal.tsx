@@ -1,4 +1,4 @@
-const Modal = ({ show, onClose, orderDetail }) => {
+const Modal = ({ show, onClose, orderDetail } : any) => {
     if (!show || !orderDetail) return null; // Asegurarse de que se muestre solo cuando la orden esté seleccionada
 
     return (
