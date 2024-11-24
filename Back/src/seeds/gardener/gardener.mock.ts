@@ -19,7 +19,8 @@ export const gardenersMock = [
         costPerHour : 2000,
         profileImageUrl:"gardener/i21jki2m58j7rrgh12rt",
         serviceProvided : [],
-        serviceDeails : []
+        serviceDeails : [],
+        carrouselImages : ["gardener/ddttgxtap1qjag8y57lu", "gardener/qbvfjr6gceby8rxmhvul", "gardener/yevdpgdamzlcekvbpbda"]
     },
     {
         name: "Ana Lopez",
@@ -37,7 +38,8 @@ export const gardenersMock = [
         costPerHour : 1800,
         profileImageUrl:"gardener/vja4j61zfcdl8qk1iccv",
         serviceProvided : [],
-        serviceDeails : []
+        serviceDeails : [],
+        carrouselImages : ["gardener/ddttgxtap1qjag8y57lu", "gardener/qbvfjr6gceby8rxmhvul", "gardener/yevdpgdamzlcekvbpbda"]
     },
     {
         name: "Carlos Ramirez",
@@ -55,7 +57,8 @@ export const gardenersMock = [
         costPerHour : 2200,
         profileImageUrl:"gardener/gnfmj6z3a7c0oncgr05i",
         serviceProvided : [],
-        serviceDeails : []
+        serviceDeails : [],
+        carrouselImages : []
     },
     {
         name: "Maria Torres",
@@ -73,7 +76,8 @@ export const gardenersMock = [
         costPerHour : 2500,
         profileImageUrl:"gardener/flkyg5ey9eamunc6fnid",
         serviceProvided : [],
-        serviceDeails : []
+        serviceDeails : [],
+        carrouselImages : []
     },
     {
         name: "Lucas Díaz",
@@ -91,6 +95,7 @@ export const gardenersMock = [
         costPerHour : 1900,
         profileImageUrl:"gardener/Perfil7.jpg",
         serviceProvided : [],
-        serviceDeails : []
+        serviceDeails : [],
+        carrouselImages : []
     },
 ];

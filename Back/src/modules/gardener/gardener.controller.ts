@@ -139,6 +139,13 @@ export class GardenerController {
     return { imageUrl: gardener.profileImageUrl };
   }
 
+  @Get('carrousel/:id')
+  @HttpCode(200)
+  async getCarrouselImages(@Param('id') id: string) {
+    const gardener = await this.gardenerService.findOne(id);
+    return { imageUrl: gardener.carrouselImages };
+  }
+
   @UseGuards(AuthGuard)
   @Get(':id/serviceProvided')
   @HttpCode(200)

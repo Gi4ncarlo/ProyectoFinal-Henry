@@ -5,12 +5,12 @@ export class SignUpAuthDto {
     @IsNotEmpty()
     @IsString()
     @Length(3, 80)
-    name: string; 
+    name: string;
 
     @IsNotEmpty()
     @IsString()
     @Length(3, 24)
-    username: string; 
+    username: string;
 
     @IsNotEmpty()
     @IsEmail()
@@ -41,7 +41,10 @@ export class SignUpAuthDto {
     address: string;
 
     @IsOptional()
-    role: Role = Role.User;
+    role: Role;
+
+    @IsOptional()
+    isGoogle?: boolean;
 
     constructor(partial: Partial<SignUpAuthDto>) {
         Object.assign(this, partial);

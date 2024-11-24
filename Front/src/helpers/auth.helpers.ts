@@ -21,8 +21,6 @@ export async function register(dataUser: IRegisterProps): Promise<void> {
     const response = await res.json(); //se trae solo la parte necesaria de todo el json
     return response;
   } catch (error: any) {
-    console.log("error en register AuthHelper");
-    
     throw new Error(error.message);
   }
 }
@@ -37,8 +35,6 @@ export async function login(dataUser: ILoginProps) {
     const response = await res.json(); //se trae solo la parte necesaria de todo el json
     return response;
   } catch (error: any) {
-    console.log("error en login AuthHelper");
-    
     throw new Error(error);
   }
 }
@@ -54,11 +50,7 @@ export async function registerService(dataService: IServiceProps): Promise<void>
     const TOKEN = storedToken ? JSON.parse(storedToken) : null;
 
     // Verificamos que el token esté presente
-    if (!TOKEN || !TOKEN.token) {
-      throw new Error("Token is missing or invalid.");
-    }
-
-    console.log("DATA SERVICE:", dataService);
+    if (!TOKEN || !TOKEN.token) throw new Error("Token is missing or invalid.");
 
     const res = await fetch(`${APIURL}/serviceProvided`, {
       method: "POST",
@@ -74,7 +66,6 @@ export async function registerService(dataService: IServiceProps): Promise<void>
       throw new Error(errorData.message || "Service registration error");
     }
   } catch (error: any) {
-    console.error("Error during service registration:", error);
     throw new Error(error.message || "Unknown error");
   }
 }
@@ -85,14 +76,13 @@ export async function checkEmailBeforeRegister(dataUser: IRegisterProps): Promis
     const res = await fetch(`${APIURL}/auth/signup`, {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ ...dataUser }), 
+      body: JSON.stringify({ ...dataUser }),
     });
 
     return res.ok; // Retorna `true` si no hay error
+
   } catch (error: any) {
-    if (error.message.includes("email")) {
-      return false; // Si el email ya existe
-    }
+    if (error.message.includes("email")) return false; // Si el email ya existe
     throw error; // Otros errores
   }
 }
