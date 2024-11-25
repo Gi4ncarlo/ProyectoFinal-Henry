@@ -16,6 +16,12 @@ export class CreateServiceDetailDto {
   endTime?: string;
 
   @IsOptional()
+  userToken?: string;
+
+  @IsOptional()
+  gardenerToken?: string;
+
+  @IsOptional()
   @IsString()
   status?: string = 'Pendiente';
 

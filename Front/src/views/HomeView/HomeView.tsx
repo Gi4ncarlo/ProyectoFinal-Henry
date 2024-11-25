@@ -62,13 +62,10 @@ const Home: React.FC = () => {
             return; // Usuario ya logueado, no seguimos.
           }
         }
-        if(isUserLoggedIn){
-          console.log('Ya estas logueado');
-          return
-        }
+        if(isUserLoggedIn) return
+    
         setIsUserLoggedIn(false);
       };
-      
       checkUserSession();
   }, []);
   
@@ -77,7 +74,6 @@ const Home: React.FC = () => {
       router.push(`/gardener/${selectedService}`);
     }
   };
-
   return (
     <div className="flex flex-col items-center justify-center">
       {/* HERO SECTION */}

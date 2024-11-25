@@ -24,18 +24,23 @@ export class GardenerSeed {
         );
 
         const services = await this.serviceProvidedRepository.find();
-          
-        // Asignar todos los servicios a cada jardinero nuevo
+
         for (const gardenerData of gardenersMock) {
             if (!existingGardenerEmail.includes(gardenerData.email)) {
+                const carrouselImagesUrls = await Promise.all(
+                    gardenerData.carrouselImages?.map((image) => 
+                        this.cloudinaryService.getUrl(image)
+                    ) || []
+                );
+
                 const gardener = this.gardenerRepository.create({
                     ...gardenerData,
                     password: await bcrypt.hash(gardenerData.password, 10),
-                    profileImageUrl :`${await this.cloudinaryService.getUrl(gardenerData.profileImageUrl)}`,
+                    profileImageUrl: await this.cloudinaryService.getUrl(gardenerData.profileImageUrl),
                     serviceProvided: services,
+                    carrouselImages: carrouselImagesUrls, 
                 });
 
-                // Guardar el jardinero con los servicios asociados
                 await this.gardenerRepository.save(gardener);
             }
         }

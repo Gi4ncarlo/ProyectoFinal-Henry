@@ -67,24 +67,23 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed z-10 top-0 w-full transition-all duration-500 ${
-        isScrolled
-          ? "bg-gradient-to-r from-[#4CAF50] to-[#388E3C] shadow-lg"
-          : "bg-gradient-to-r from-[#4CAF50] to-[#8BC34A]"
-      }`}
+      className={`fixed z-10 top-0 w-full transition-all duration-500 ${isScrolled
+        ? "bg-gradient-to-r from-[#4CAF50] to-[#388E3C] shadow-lg"
+        : "bg-gradient-to-r from-[#4CAF50] to-[#8BC34A]"
+        }`}
     >
       <div className="container flex items-center justify-between mx-auto px-4 py-3">
         {/* Logo + Text */}
         <div className="flex items-center space-x-3">
           <Link href="/Home">
-          <Image
-            src="/favicon.ico"
-            alt="Logo VICNASOL"
-            width={40}
-            height={40}
-            className="object-contain rounded-full"
-            priority={true}
-          />
+            <Image
+              src="/favicon.ico"
+              alt="Logo VICNASOL"
+              width={40}
+              height={40}
+              className="object-contain rounded-full"
+              priority={true}
+            />
           </Link>
           <div className="text-white text-xl lg:text-3xl font-bold font-cinzel">
             <Link href="/Home" className="hover:text-[#FFEB3B] transition-colors">
@@ -145,46 +144,55 @@ export default function Navbar() {
             className="flex items-center space-x-2 cursor-pointer"
             onClick={Dropdown}
           >
-            {/* Icono del usuario */}
-            <svg
-              xmlns={userData?.user.profileImageUrl || "http://www.w3.org/2000/svg"}
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-8 h-8 text-white"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+            {/* Avatar del usuario */}
+            {userData?.user?.profileImageUrl ? (
+              <img
+                src={userData.user.profileImageUrl}
+                alt="Avatar"
+                className="w-10 h-10 rounded-full border-2 border-gray-300 hover:border-blue-500 transition duration-200"
               />
-            </svg>
+            ) : (
+              <img
+                src="https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2281862025.jpg"
+                alt="Avatar"
+                className="w-10 h-10 rounded-full border-2 border-gray-300 hover:border-blue-500 transition duration-200"
+              />
+            )}
           </div>
+
           {/* Dropdown Menu */}
           {showDropdown && (
-            <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2">
+            <div
+              className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg py-2 border border-gray-200 z-50"
+              onClick={Dropdown}
+            >
               {isAuthenticated ? (
-                <>
+                <div>
                   <Link href="/dashboard">
-                    <div className="block px-4 py-2 hover:bg-gray-100">Mi Cuenta</div>
+                    <div className="block px-4 py-2 hover:bg-gray-300 text-gray-700 transition duration-150">
+                      Mi Cuenta
+                    </div>
                   </Link>
                   <button
-                    className="block px-4 py-2 text-left w-full hover:bg-gray-100"
+                    className="block px-4 py-2 text-left w-full hover:bg-gray-300 text-gray-700 transition duration-150"
                     onClick={handleLogout}
                   >
                     Cerrar sesión
                   </button>
-                </>
+                </div>
               ) : (
-                <>
+                <div>
                   <Link href="/login">
-                    <div className="block px-4 py-2 hover:bg-gray-100">Iniciar Sesión</div>
+                    <div className="block px-4 py-2 hover:bg-gray-300 text-gray-700 transition duration-150">
+                      Iniciar Sesión
+                    </div>
                   </Link>
                   <Link href="/preRegister">
-                    <div className="block px-4 py-2 hover:bg-gray-100">Registrarse</div>
+                    <div className="block px-4 py-2 hover:bg-gray-300 text-gray-700 transition duration-150">
+                      Registrarse
+                    </div>
                   </Link>
-                </>
+                </div>
               )}
             </div>
           )}

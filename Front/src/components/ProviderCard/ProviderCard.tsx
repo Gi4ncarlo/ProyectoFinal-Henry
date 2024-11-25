@@ -4,31 +4,60 @@ import React from 'react';
 import Image from 'next/image';
 import { IProviderCardProps } from '@/interfaces/IServiceProvider';
 
-const ProviderCard: React.FC<IProviderCardProps> = ({ name, experience, profileImageUrl, calification }) => {
-  const flooredRating = typeof calification === 'number' && !isNaN(calification) ? Math.floor(calification) : 0;
+const ProviderCard: React.FC<IProviderCardProps> = ({
+  name,
+  experience,
+  profileImageUrl,
+  calification,
+}) => {
+  const flooredRating =
+    typeof calification === 'number' && !isNaN(calification)
+      ? Math.floor(calification)
+      : 0;
 
   return (
-    <div className="w-full max-w-xs bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 
-    cursor-pointer hover:shadow-lg transition-shadow h-[500px] flex flex-col">
+    <div className="w-full max-w-xs bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 cursor-pointer transform hover:scale-105 hover:shadow-2xl transition duration-300 ease-in-out h-[500px] flex flex-col hover:translate-y-2">
+      {/* Imagen */}
       <div className="w-full min-h-[300px] overflow-hidden rounded-t-lg">
         <Image
-          className="object-contain"
+          className="object-cover"
           src={profileImageUrl || '/default-image.jpg'}
           alt={`${name} image`}
-          width={1920} 
-          height={1080} 
+          width={1920}
+          height={1080}
         />
       </div>
-      <div className="p-4 flex flex-col justify-between flex-grow  min-h-[200px]">
-        <h5 className="text-lg font-semibold tracking-tight text-[#263238] dark:text-white">{name}</h5>
-        <p className="text-sm text-gray-500 dark:text-gray-400 my-2">{experience}</p>
 
-        {/* Sección de calificación */}
+      {/* Información */}
+      <div className="p-4 flex flex-col justify-between flex-grow min-h-[200px]">
+        {/* Nombre */}
+        <h5 className="text-lg font-semibold tracking-tight text-[#263238] dark:text-white">
+          {name}
+        </h5>
+
+        {/* Experiencia */}
+        <p className="text-sm text-gray-500 dark:text-gray-400 my-2">
+          {experience}
+        </p>
+
+        {/* Disponibilidad */}
+        <div className="flex items-center mt-2">
+          <span className="flex items-center">
+            <span className="w-3 h-3 rounded-full bg-green-500 inline-block mr-2"></span>
+            <span className="text-sm font-medium text-[#8BC34A] dark:text-gray-400">
+              Disponible
+            </span>
+          </span>
+        </div>
+
+        {/* Calificación */}
         <div className="flex items-center mt-2">
           {Array.from({ length: 5 }).map((_, index) => (
             <svg
               key={index}
-              className={`w-5 h-5 ${index < flooredRating ? 'text-yellow-400' : 'text-gray-300'}`}
+              className={`w-5 h-5 ${
+                index < flooredRating ? 'text-yellow-400' : 'text-gray-300'
+              }`}
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="currentColor"

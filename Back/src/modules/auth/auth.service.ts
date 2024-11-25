@@ -26,15 +26,12 @@ export class AuthService {
   ) { }
 
   async signIn(credentials: SignInAuthDto) {
-    try {
-      console.log(credentials);
-      
+    try {      
       const user = await this.userService.findByEmail(credentials.email);
       const admin = await this.adminService.findByEmail(credentials.email);
       const gardener = await this.gardenerService.findByEmail(
         credentials.email,
       );
-      console.log('user1:       ' , user);
       if (user?.isBanned === true) {
         throw new HttpException(
           'El usuario esta baneado',
@@ -43,9 +40,7 @@ export class AuthService {
       }
 
       // Validación para usuarios
-      if (user) {
-        console.log(await bcrypt.compare(credentials.password, user.password));
-        
+      if (user) {        
         const isPasswordMatching = await bcrypt.compare(
           credentials.password,
           user.password,
@@ -121,33 +116,17 @@ export class AuthService {
       throw new BadRequestException('Error at password hash');
     }
 
-    let newUsers;
+    let newUsers;    
+    if (signUpUser.role === Role.Gardener) newUsers = await this.gardenerService.create(signUpUser);
+    else newUsers = await this.userService.create(signUpUser);
 
-    console.log("signUpUser", signUpUser);
-    
-    if (signUpUser.role === Role.Gardener) {
-      newUsers = await this.gardenerService.create(signUpUser);
-    } else {
-      newUsers = await this.userService.create(signUpUser);
-    }
-
-    console.log("createdUser", newUsers);
-    
-
-    console.log("email : ", newUsers.email);
-    console.log("username : ", newUsers.username);
-    //console.log("email : ", newUsers.User.email);
-
-    
     await this.mailService.sendWelcomeEmail(newUsers.email, newUsers.username);
     return newUsers;
   }
 
   async signUpgoogle(createUserDto: any) {
     try {
-      console.log('createUserDto', createUserDto);
       let password2 = await bcrypt.hash(createUserDto.password, 10);
-      console.log('encripte!', createUserDto);
       this.userService.create(
         {
           name: createUserDto.name,
@@ -156,6 +135,7 @@ export class AuthService {
           password: password2,
           passwordConfirm: password2,
           profileImageUrl: createUserDto.profileImageUrl,
+          isGoogle: true,
           role: Role.User,
           phone: '35745678',
           age: 18,

@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { IServiceProvider } from '@/interfaces/IServiceProvider';
-import { getProviderById } from '@/helpers/gardeners.helpers';
+import { getCarrouselById, getProviderById } from '@/helpers/gardeners.helpers';
 import { getServicesProvided } from '@/helpers/service.helpers';
 import { useParams, useRouter } from 'next/navigation';
 import { IService } from '@/interfaces/IService';
@@ -22,6 +22,7 @@ const ProviderDetail: any = () => {
   const [userSession, setUserSession] = useState<IUserSession | null>(null);
   const [orderService, setOrderService] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
+  const [carrousel, setCarrousel] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchGardener = async () => {
@@ -33,6 +34,18 @@ const ProviderDetail: any = () => {
           console.error('Error buscando información del jardinero:', error);
           setError('No se pudo cargar la información del jardinero.');
         }
+      }
+    };
+
+    const fetchCarrousel = async () => {
+      try {
+        if (id) {
+          const carrouselData = await getCarrouselById(id);
+          setCarrousel(carrouselData?.imageUrl || []);
+        }
+      } catch (error) {
+        console.error("Error buscando el carrousel:", error);
+        setError("No se pudo cargar el carrousel.");
       }
     };
 
@@ -48,10 +61,13 @@ const ProviderDetail: any = () => {
 
     fetchGardener();
     fetchServices();
+    fetchCarrousel();
   }, [id]);
 
+  console.log("carrousel", carrousel);
+
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.localStorage) {
+    if (typeof window !== "undefined" && window.localStorage) {
       const storedSession = JSON.parse(
         localStorage.getItem("userSession") || ""
       );
@@ -154,6 +170,15 @@ const ProviderDetail: any = () => {
             ))}
             <span className="ml-2 text-sm text-gray-500">{gardener.calification.toFixed(1)}</span>
           </div>
+
+          <div className="mt-6 flex justify-center">
+            <button
+              onClick={handleHireClick}
+              className="w-full mt-4 p-2 bg-[#4caf50] text-white font-bold rounded hover:bg-[#388e3c]"
+            >
+              Contratar Servicios
+            </button>
+          </div>
         </div>
 
         <div className="mt-6">
@@ -198,9 +223,26 @@ const ProviderDetail: any = () => {
 
 
       </div>
+
+      {/* Carrousel */}
+      <div className="bg-white rounded-lg shadow-lg p-6 m-auto w-4/5">
+        <h2 className="text-xl font-bold text-[#4CAF50] mb-4 text-center p-3">Galería de {gardener.name}:</h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          {carrousel?.map((image: any, index: number) => (
+            <div key={index} className="overflow-hidden rounded-lg">
+              <Image
+                src={image}
+                alt={`Imagen ${index + 1}`}
+                width={1920}
+                height={1080}
+                className="object-cover w-full h-40"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
 
 export default ProviderDetail;
-

@@ -8,13 +8,16 @@ import { ServiceProvided } from '../serviceProvided/entities/serviceProvided.ent
 import { User } from '../user/entities/user.entity';
 import { Gardener } from '../gardener/entities/gardener.entity';
 import { AdminEntity } from '../admin/entities/admin.entity';
+import { TokenModule } from '../tokenServices/token.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([ServicesOrderEntity, ServiceDetail, ServiceProvided, User, Gardener, AdminEntity]),
+    TokenModule,
+    
   ],
   controllers: [ServicesOrderController],
   providers: [ServicesOrderService],
-  exports:[ServicesOrderService]
+  exports: [ServicesOrderService]
 })
-export class ServicesOrderModule {}
+export class ServicesOrderModule { }

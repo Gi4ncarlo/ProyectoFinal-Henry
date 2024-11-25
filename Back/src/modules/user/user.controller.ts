@@ -78,8 +78,8 @@ export class UserController {
   @Post('google')
   async findByEmail(@Body() email: { email: string }, @Res() res: Response) {
     try {
-      const e_mail = await this.userService.googleEmail(email);
-      return res.status(HttpStatus.OK).send(e_mail);
+      const result = await this.userService.googleEmail(email);
+      return res.status(HttpStatus.OK).send(result);
 
     } catch (error) {
       return res.status(HttpStatus.NOT_FOUND).send(error);
