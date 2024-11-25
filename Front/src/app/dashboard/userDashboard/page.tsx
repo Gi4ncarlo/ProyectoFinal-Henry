@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react';
 import Orders from "../../../components/Orders/Orders"
-import UserProfile from "../../../components/UserProfile/UserProfile"
+import EditDashboard from '../../../components/EditDashboard/EditDashboard';
 
 const UserDashboard = () => {
   const [activeComponent, setActiveComponent] = useState<string>('orders'); // Controla el componente activo
@@ -29,7 +29,7 @@ const UserDashboard = () => {
       {/* Contenido dinámico */}
       <div className="mt-4">
         {activeComponent === 'orders' && <Orders />} {/* Muestra las órdenes */}
-        {activeComponent === 'userProfile' && <UserProfile />} {/* Muestra el perfil de usuario */}
+        {activeComponent === 'userProfile' && <EditDashboard />} {/* Muestra el perfil de usuario */}
       </div>
     </div>
   );

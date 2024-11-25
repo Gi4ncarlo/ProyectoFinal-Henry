@@ -6,18 +6,12 @@ import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
 // Componente para mostrar las órdenes del usuario
-const DashboardUserCompo: React.FC = () => {
+const EditDashboard: React.FC = () => {
     const [userSession, setUserSession] = useState<IUserSession | null>(null);
     const TOKEN = JSON.parse(localStorage.getItem("userSession") || "null");
     const [imageProfile, setImageProfile] = useState<string | null>(null);
-
-
-
     const [editingField, setEditingField] = useState<string | null>(null); // Campo en edición
     const [editedValue, setEditedValue] = useState<string>(''); // Valor editado
-    const [userData, setUserData] = useState<any>({}); // Estado para almacenar los datos del usuario (nombre, correo, teléfono)
-
-
 
 
     useEffect(() => {
@@ -227,4 +221,4 @@ const DashboardUserCompo: React.FC = () => {
         </div>
     );
 };
-export default DashboardUserCompo;
+export default EditDashboard;
