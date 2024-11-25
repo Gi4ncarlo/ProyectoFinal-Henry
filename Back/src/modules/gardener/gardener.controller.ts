@@ -26,7 +26,6 @@ import { Role } from '../user/enums/role.enum';
 import { Roles } from 'src/decorators/roles.decorator';
 import { RolesGuard } from 'src/guards/roles/role.guard';
 import { AuthGuard } from '../auth/auth.guard';
-import { IsUUID } from 'class-validator';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Gardener } from './entities/gardener.entity';
 
@@ -37,14 +36,39 @@ export class GardenerController {
   constructor(
     private readonly gardenerService: GardenerService,
     private readonly fileUploadService: FileUploadService,
-  ) {}
+  ) { }
 
-  @Post(':id/reserve')
+  @Post(':gardenerId/reserve')
+  @UseGuards(AuthGuard)
   async reserveDay(
-    @Param('id') id: string,
+    @Param('gardenerId', new ParseUUIDPipe()) gardenerId: string,
     @Body('day') day: string,
   ) {
-    return this.gardenerService.reserveDay(id, day);
+    try {
+      if (!day || !day.match(/^\d{2}-\d{2}-\d{4}$/)) {
+        throw new HttpException(
+          'Formato de día inválido. Debe ser DD-MM-YYYY.',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      console.log(`Gardener ID: ${gardenerId}, Day: ${day}`);
+      return this.gardenerService.reserveDay(gardenerId, day);
+    } catch (error) {
+      console.error('Error al reservar el día:', error);
+      throw error;
+    }
+  }
+
+  @Get(':gardenerId/reservedDays')
+  @UseGuards(AuthGuard)
+  @HttpCode(200)
+  async getReservedDays(
+    @Param('gardenerId', new ParseUUIDPipe()) gardenerId: string,
+  ) {
+    console.log(`Solicitud recibida para el jardinero: ${gardenerId}`);
+    const reservedDays = await this.gardenerService.getReservedDays(gardenerId);
+    return { reservedDays: reservedDays || [] };
   }
 
   @UseGuards(AuthGuard, RolesGuard)
@@ -101,10 +125,10 @@ export class GardenerController {
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes("multipart/form-data")
   @ApiBody({
-    schema:{
+    schema: {
       type: "object",
-      properties:{
-        file:{
+      properties: {
+        file: {
           type: "string",
           format: "binary"
         }
