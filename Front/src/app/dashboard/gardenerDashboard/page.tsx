@@ -175,8 +175,8 @@
 
 "use client";
 import CalendarGardener from "@/components/CalendarGardener/CalendarGardener";
+import OrderList from "@/components/DashboardGardenerCompo/orders/orders";
 import EditDashboard from "@/components/EditDashboard/EditDashboard";
-import { OrdersGardener } from "@/components/EditDashboard/orders/orders";
 import { getCarrouselById, getTasks, postCarrouselImage } from "@/helpers/gardeners.helpers";
 import { IUserSession } from "@/interfaces/IUserSession";
 import Image from "next/image";
@@ -271,9 +271,9 @@ const GardenerDashboard = () => {
             >
               Ver Tareas
             </button>
-            <OrdersGardener order={tasks}>
+            <OrderList order={tasks}>
 
-            </OrdersGardener>
+            </OrderList>
 
           </section>
         )}
