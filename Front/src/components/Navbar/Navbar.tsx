@@ -28,7 +28,25 @@ export default function Navbar() {
   }, [pathname]);
 
   const handleLogout = () => {
-    localStorage.removeItem("userSession");
+    if (userData?.user.isGoogle) {
+      Swal.fire({
+        title: "¿Seguro que quieres salir?",
+        text: "Vas a cerrar sesión",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#388E3C",
+        cancelButtonColor: "#FF5722",
+        confirmButtonText: "Sí, salir!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          localStorage.removeItem("userSession");
+          router.push("/api/auth/logout?returnTo=/Home");
+          Swal.fire("Sesión cerrada!", "Hasta pronto!", "success");
+        }
+      });
+      return;
+    }
+
     Swal.fire({
       title: "¿Seguro que quieres salir?",
       text: "Vas a cerrar sesión",
@@ -39,6 +57,7 @@ export default function Navbar() {
       confirmButtonText: "Sí, salir!",
     }).then((result) => {
       if (result.isConfirmed) {
+        localStorage.removeItem("userSession");
         Swal.fire("Sesión cerrada!", "Hasta pronto!", "success");
       }
     });
@@ -46,6 +65,7 @@ export default function Navbar() {
     setIsAuthenticated(false);
     router.push("/");
   };
+
 
   const Dropdown = () => {
     setShowDropdown(!showDropdown);
