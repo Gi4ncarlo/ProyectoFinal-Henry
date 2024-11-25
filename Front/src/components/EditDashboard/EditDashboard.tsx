@@ -5,7 +5,7 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
-// Componente para mostrar las órdenes del usuario
+
 const EditDashboard: React.FC = () => {
     const [userSession, setUserSession] = useState<IUserSession | null>(null);
     const TOKEN = JSON.parse(localStorage.getItem("userSession") || "null");
@@ -15,7 +15,6 @@ const EditDashboard: React.FC = () => {
 
 
     useEffect(() => {
-        // Asegurarse de que la sesión se cargue solo una vez al inicio
         if (typeof window !== "undefined") {
             const storedSession = JSON.parse(
                 localStorage.getItem("userSession") || "null"
