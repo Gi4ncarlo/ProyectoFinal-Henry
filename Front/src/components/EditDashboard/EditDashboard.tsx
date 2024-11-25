@@ -20,7 +20,6 @@ const EditDashboard: React.FC = () => {
                 localStorage.getItem("userSession") || "null"
 
             );
-            console.log("Token:", TOKEN);
             setUserSession(storedSession);
             if (storedSession?.user?.profileImageUrl) {
                 setImageProfile(storedSession.user.profileImageUrl);

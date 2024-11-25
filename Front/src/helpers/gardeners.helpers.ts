@@ -1,6 +1,9 @@
 import { IServiceProvider } from "@/interfaces/IServiceProvider";
 const APIURL = process.env.NEXT_PUBLIC_API_URL;
 
+
+
+
 export const getGardenersDB = async (
   token: string,
   order: "ASC" | "DESC" = "ASC",
@@ -9,7 +12,7 @@ export const getGardenersDB = async (
 ): Promise<{ data: IServiceProvider[] }> => {
   if (!token) {
     console.error("Token is missing or invalid.");
-    return { data: [] }; 
+    return { data: [] };
   }
   const params = new URLSearchParams();
   params.append("order", order);
@@ -24,6 +27,30 @@ export const getGardenersDB = async (
   const data = await response.json();
   return data;
 };
+export const getTasks = async (id: string) => {
+  let TOKEN = null;
+
+  if (typeof window !== "undefined") {
+    const storedToken = localStorage.getItem("userSession");
+    TOKEN = storedToken ? JSON.parse(storedToken) : null;
+  }
+
+  if (!TOKEN || !TOKEN.token) {
+    console.error("Token is missing or invalid.");
+    return null;
+  }
+  const response = await fetch(`${APIURL}/services-order/gardener/${id}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${TOKEN.token}`,
+      "Content-Type": "application/json",
+    },
+  });
+  const data = await response.json();
+  console.log(data);
+  
+  return data;
+}
 
 // Función para obtener un gardener por ID
 export async function getProviderById(id: string): Promise<IServiceProvider | null> {
@@ -36,7 +63,7 @@ export async function getProviderById(id: string): Promise<IServiceProvider | nu
 
   if (!TOKEN || !TOKEN.token) {
     console.error("Token is missing or invalid.");
-    return null; 
+    return null;
   }
 
   try {
@@ -54,7 +81,7 @@ export async function getProviderById(id: string): Promise<IServiceProvider | nu
     const response = await res.json();
 
     if (response && typeof response === "object" && !Array.isArray(response)) {
-      return response.data || response; 
+      return response.data || response;
     } else {
       throw new Error("Invalid data format, expected object in 'data'");
     }
@@ -67,14 +94,14 @@ export async function getProviderById(id: string): Promise<IServiceProvider | nu
 
 export async function getCarrouselById(id: string) {
   try {
- 
+
     let TOKEN = null;
     if (typeof window !== "undefined") {
       const storedToken = localStorage.getItem("userSession");
       TOKEN = storedToken ? JSON.parse(storedToken) : null;
     }
 
-   
+
     if (!TOKEN?.token) {
       console.error("Token is missing or invalid.");
       return null;
@@ -95,61 +122,61 @@ export async function getCarrouselById(id: string) {
       throw new Error(`Error con el jardinero ${id}: ${res.status} ${res.statusText}`);
     }
 
- 
+
     const response = await res.json();
 
 
     if (response && typeof response === "object" && !Array.isArray(response)) {
-      return response.data || response; 
+      return response.data || response;
     } else {
       throw new Error("Formato invalido.");
     }
   } catch (error: any) {
     console.error(`Error con el jardinero ${id}:`, error.message || error);
-    return null; 
+    return null;
   }
 }
 
-  export async function postCarrouselImage(formData: FormData, id : string | undefined) {
-    try {
-      let TOKEN = null;
-      if (typeof window !== "undefined") {
-        const storedToken = localStorage.getItem("userSession");
-        TOKEN = storedToken ? JSON.parse(storedToken) : null;
-      }
-  
-      if (!TOKEN?.token) {
-        console.error("Token is missing or invalid.");
-        return null;
-      }
-  
-      const res = await fetch(`${APIURL}/gardener/carrousel/${id}`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${TOKEN.token}`,
-        },
-        body: formData,
-      });
-  
-      if (!res.ok) {
-        throw new Error(`Error al subir la imagen: ${res.status} ${res.statusText}`);
-      }
-  
-      const response = await res.json();
-  
-      if (response && typeof response === "object" && !Array.isArray(response)) {
-        return response.data || response; 
-      } else {
-        throw new Error("Formato invalido.");
-      } 
-    } catch (error: any) {
-      console.error("Error al subir la imagen:", error.message || error);
+export async function postCarrouselImage(formData: FormData, id: string | undefined) {
+  try {
+    let TOKEN = null;
+    if (typeof window !== "undefined") {
+      const storedToken = localStorage.getItem("userSession");
+      TOKEN = storedToken ? JSON.parse(storedToken) : null;
+    }
+
+    if (!TOKEN?.token) {
+      console.error("Token is missing or invalid.");
       return null;
     }
+
+    const res = await fetch(`${APIURL}/gardener/carrousel/${id}`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${TOKEN.token}`,
+      },
+      body: formData,
+    });
+
+    if (!res.ok) {
+      throw new Error(`Error al subir la imagen: ${res.status} ${res.statusText}`);
+    }
+
+    const response = await res.json();
+
+    if (response && typeof response === "object" && !Array.isArray(response)) {
+      return response.data || response;
+    } else {
+      throw new Error("Formato invalido.");
+    }
+  } catch (error: any) {
+    console.error("Error al subir la imagen:", error.message || error);
+    return null;
   }
+}
 
 
 
 
-  
+
 
