@@ -173,17 +173,7 @@ const ProviderDetail: any = () => {
               ))}
               <span className="ml-2 text-sm text-gray-500">{gardener.calification.toFixed(1)}</span>
             </div>
-
-            <div className="mt-6 flex justify-center">
-              <button
-                onClick={handleHireClick}
-                className="w-full mt-4 p-2 bg-[#4caf50] text-white font-bold rounded hover:bg-[#388e3c]"
-              >
-                Contratar Servicios
-              </button>
-            </div>
           </div>
-
           <div className="mt-6">
             <h2 className="text-lg font-semibold text-[#263238]">Servicios Disponibles:</h2>
             <div className="mt-2">
