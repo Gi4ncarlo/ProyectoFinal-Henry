@@ -9,15 +9,14 @@ export const hireServices = async (data: {
     serviceId: string[];
   }) => {
 
-    // Asegurarse de que estamos en el cliente antes de acceder a localStorage
+    
     let TOKEN = null;
   
     if (typeof window !== "undefined") {
       const storedToken = localStorage.getItem("userSession");
       TOKEN = storedToken ? JSON.parse(storedToken) : null;
     }
-  
-    // Verifica que haya un token disponible
+ 
     if (!TOKEN || !TOKEN.token) {
       console.error("Token is missing or invalid.");
       throw new Error("Token is missing or invalid.");
@@ -40,6 +39,6 @@ export const hireServices = async (data: {
       return result;
     } catch (error) {
       console.error('Error hiring services:', error);
-      throw error; // Propagar el error para manejarlo en el componente
+      throw error; 
   }
 };
