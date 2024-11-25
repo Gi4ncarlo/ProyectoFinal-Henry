@@ -53,19 +53,19 @@ const GardenerDashboard = () => {
         <nav className="bg-[#263238] p-4 shadow-md flex justify-center space-x-4">
           <button
             onClick={() => setActiveComponent("tasks")}
-            className="p-3 bg-[#4CAF50] text-white font-bold rounded-lg hover:bg-[#388E3C] transition duration-200"
+            className=" p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded"
           >
             Tareas
           </button>
           <button
             onClick={() => setActiveComponent("calendar")}
-            className="p-3 bg-[#8BC34A] text-white font-bold rounded-lg hover:bg-[#CDDC39] transition duration-200"
+            className=" p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded"
           >
             Calendario
           </button>
           <button
             onClick={() => setActiveComponent("profile")}
-            className="p-3 bg-[#FF5722] text-white font-bold rounded-lg hover:bg-[#FF7043] transition duration-200"
+            className=" p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded"
           >
             Mi Perfil
           </button>

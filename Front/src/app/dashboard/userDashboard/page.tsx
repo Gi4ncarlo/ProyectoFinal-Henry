@@ -12,13 +12,15 @@ const UserDashboard = () => {
       <div className="bg-gray-200 p-4">
         <button
           onClick={() => setActiveComponent('orders')}
-          className="p-2 bg-blue-400 text-white rounded "
+         
+          className=" p-2 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded"
         >
           Órdenes
         </button>
         <button
           onClick={() => setActiveComponent('userProfile')}
-          className="ml-4 p-2 bg-green-400 text-white rounded"
+      
+          className="ml-4 p-2 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded"
         >
           Perfil de Usuario
         </button>
