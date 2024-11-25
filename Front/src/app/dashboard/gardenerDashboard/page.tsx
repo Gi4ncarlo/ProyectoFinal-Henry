@@ -194,36 +194,6 @@ const GardenerDashboard = () => {
     }
   }, []);
 
-  const fetchCarrousel = async () => {
-    try {
-      const id = userSession?.user.id.toString();
-      if (id) {
-        const carrouselData = await getCarrouselById(id);
-        setCarrousel(carrouselData?.imageUrl || []);
-      }
-    } catch (error) {
-      console.error("Error buscando el carrousel:", error);
-    }
-  };
-
-  const uploadImage = async (e: any) => {
-    const file = e.target.files[0];
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", "gardener");
-    const response = await postCarrouselImage(formData, userSession?.user.id.toString());
-    console.log(response);
-    if(response){
-      fetchCarrousel();
-    }
-  }
-
-  useEffect(() => {
-    fetchCarrousel();
-  },[userSession]);
-
-  console.log(carrousel);
-
   return (
     <div className="min-h-screen bg-[#F4F9F4] font-sans">
       {/* Menú de navegación */}
