@@ -156,6 +156,31 @@ export class GardenerController {
     return { imageUrl };
   }
 
+
+  @UseGuards(AuthGuard)
+  @Post('carrousel/:id')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadCarrouselImages(
+    @Param('id') id: string,
+    @UploadedFile(new ImageUploadPipe()) file: Express.Multer.File,
+  ) {
+    const uploadFileDto: UploadFileDto = {
+      fieldname: file.fieldname,
+      originalname: file.originalname,
+      mimetype: file.mimetype,
+      size: file.size,
+      buffer: file.buffer,
+    };
+
+    const imageUrl = await this.fileUploadService.uploadFile(
+      uploadFileDto,
+      'gardener',
+    );
+    await this.gardenerService.uploadCarrouselImages(id, imageUrl);
+
+    return { imageUrl };
+  }
+
   @Get(':id/image')
   @HttpCode(200)
   async getProfileImage(@Param('id') id: string) {
