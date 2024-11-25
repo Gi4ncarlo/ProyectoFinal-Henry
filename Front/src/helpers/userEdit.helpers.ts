@@ -1,6 +1,6 @@
 const TOKEN = JSON.parse(localStorage.getItem("userSession") || "null");
 
-export const userEdit = async (id: number, updatedData: any) => {
+export const userEdit = async ( updatedData: any) => {
   try {
 
     if (!TOKEN || !TOKEN.token) {
@@ -38,7 +38,7 @@ export const userEdit = async (id: number, updatedData: any) => {
     const updatedUser = await response.json();
     return updatedUser; 
   } catch (error) {
-    console.error("Error actualizando datos del usuario:", error.message);
+    console.error("Error actualizando datos del usuario:");
     return null;
   }
 };

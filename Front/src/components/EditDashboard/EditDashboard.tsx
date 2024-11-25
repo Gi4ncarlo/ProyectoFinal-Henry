@@ -84,7 +84,7 @@ const EditDashboard: React.FC = () => {
 
             try {
                 // Llamamos a la función userEdit pasando el id y los datos actualizados
-                const updatedUser = await userEdit(userSession.user.id, updatedData);
+                const updatedUser = await userEdit( updatedData);
 
                 if (updatedUser) {
 
