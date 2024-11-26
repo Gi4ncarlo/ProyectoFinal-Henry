@@ -38,21 +38,25 @@ const OrderList = ({ order }: any) => {
                                     <strong>Fecha de la solicitud:</strong> {orderItem.date.toString().slice(0, 10)}
                                 </p>
                                 <p className="text-sm text-gray-500">
-                                    <strong>Servicios Solicitado:</strong> {orderItem.serviceProvided.map((service: any) => {
+                                    <strong>Servicios Solicitado:</strong>
+                                </p>
+                                <ul>
+                                    {orderItem.serviceProvided.map((service: any, index: number) => {
                                         return (
-                                            <ul>
-                                                <li>{service.detailService}</li>
-                                            </ul>
+
+                                            <li key={index}>- {service.detailService}</li>
+
                                         );
                                     })}
-                                </p>
+                                </ul>
+
                                 <p className="text-sm text-gray-500">
                                     <strong>Solicitante:</strong> {orderItem.user.name}
                                 </p>
                                 <p className="text-sm text-gray-500">
                                     <strong>Estado de la solicitud:</strong>{" "}
                                     {orderItem.isApproved ? "Aprobada" : "Pendiente"}
-                                </p>                                
+                                </p>
                             </div>
                             {orderItem.isApproved && (
                                 <button
