@@ -28,7 +28,6 @@ export default function LoginGoogle() {
                             body: JSON.stringify({ email: googleUser.email })
                         })
                         const response = await Flag.json();
-                        console.log('google flag', response);
                         if (response) {
                             const login = await fetch(`${APIURL}/auth/signin`, {
                                 method: 'POST',
@@ -39,10 +38,8 @@ export default function LoginGoogle() {
                                     email: googleUser.email,
                                     password: googleUser.sub,
                                 })
-
                             })
                             const response = await login.json();
-                            console.log('response login sin register', response);
 
                             localStorage.setItem(
                                 'userSession',
@@ -66,7 +63,6 @@ export default function LoginGoogle() {
                                 })
                             })
                             const response = await register.json();
-                            console.log('response register', response);
                             if (!response) {
                                 throw new Error('Error al registrar el usuario');
                             }

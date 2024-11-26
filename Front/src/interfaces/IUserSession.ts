@@ -4,6 +4,7 @@ export interface IUserSession {
         address: string;
         email:string,
         id:number,
+        isGoogle: boolean,
         name:string,
         phone:string, 
          role:string,

@@ -22,7 +22,7 @@ const DashboardUserCompo: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null); // Para almacenar la orden seleccionada
 
-  const handleOpenModal = (order) => {
+  const handleOpenModal = (order: any) => {
     setSelectedOrder(order); // Establecer la orden seleccionada
     setShowModal(true); // Mostrar el modal
   };
@@ -127,8 +127,6 @@ const DashboardUserCompo: React.FC = () => {
   if (error) {
     return <p>{error}</p>;
   }
-
-  console.log(orders);
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center py-3 px-4">

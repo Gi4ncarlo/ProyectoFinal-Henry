@@ -1,57 +1,48 @@
 const Modal = ({ show, onClose, orderDetail }: any) => {
     if (!show || !orderDetail) return null; // Asegurarse de que se muestre solo cuando la orden esté seleccionada
-
     return (
-        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
-            <div className="bg-white shadow-xl rounded-2xl p-6 w-[80vw] h-[70vh] overflow-y-scroll">
-                <h1 className="text-3xl font-bold text-center mt-4">Detalles de la compra</h1>
-                <div className="grid grid-cols-2 gap-4">
-                    <p><strong>Nº de recibo:</strong> <h6 className="text-sm font-medium text-gray-900">{orderDetail.id}</h6></p>
-                    <p><strong>Fecha de trabajo:</strong> {orderDetail.startTime}</p>
+        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
+            <div className="bg-white shadow-lg rounded-xl p-8 w-[50vw] h-[70vh] overflow-y-auto max-w-3xl">
+                <div className="flex justify-end">
+                    <button
+                        onClick={onClose}
+                        className="py-2 px-4 bg-red-500 text-white rounded-full hover:bg-red-600 transition duration-200"
+                    >
+                        <span className="text-lg font-bold">×</span>
+                    </button>
                 </div>
-                <div className="grid grid-cols-2 gap-4 py-5">
-                    <p><strong>Precio total Pagado: $</strong> {orderDetail.totalPrice}</p>
+                <h1 className="text-4xl font-extrabold text-center text-gray-800 mt-6">Detalles de la compra</h1>
+
+                <div className="mt-6 space-y-6">
+                    <div className="border-t-2 border-gray-300 pt-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div>
+                                <p className="text-gray-700 font-semibold">Nº de recibo</p>
+                                <h6 className="text-gray-900 font-medium text-lg">{orderDetail.id}</h6>
+                            </div>
+                            <div>
+                                <p className="text-gray-700 font-semibold">Fecha de trabajo</p>
+                                <p className="text-gray-900">{orderDetail.startTime}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="border-t-2 border-gray-300 pt-4 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <p className="text-gray-700 font-semibold mb-2">Precio total Pagado</p>
+                        <h6 className="text-xl text-gray-900 font-bold ">${orderDetail.totalPrice}</h6>
+                    </div>
                 </div>
-                <div className="bg-gray-800 text-white p-4 rounded-lg text-center">
-                    <label htmlFor="token" className="block text-sm font-medium mb-2">
-                        Your Token
-                    </label>
+
+                <div className="mt-8 bg-gray-800 text-white p-6 rounded-lg shadow">
+                    <label htmlFor="token" className="block text-sm font-medium mb-2 text-center">Token de confirmación</label>
                     <input
                         type="text"
                         id="token"
                         value={orderDetail.userToken}
                         readOnly
-                        className="w-full bg-gray-700 text-center text-gray-200 p-2 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                        className="w-full bg-gray-700 text-center text-gray-200 p-3 rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400"
                     />
-                    <p className="text-xs text-gray-400 mt-2">
-                        Puedes seleccionar y copiar el token.
-                    </p>
-                </div>
-
-
-                {/* <p><strong>Nº de recibo:</strong> {orderDetail.id}</p>
-
-                <p><strong>Servicio:</strong> {orderDetail.usetToken}</p>
-                <p><strong>Detalles:</strong> {orderDetail.id}</p>
-                <p><strong>Fecha y Hora:</strong> {orderDetail.id} a las {orderDetail.id}</p>
-                <p><strong>Monto Pagado:</strong> ${orderDetail.id}</p>
-                <p><strong>Monto Pagado:</strong> ${orderDetail.id}</p>
-
-                <p><strong>Monto Pagado:</strong> ${orderDetail.id}</p>
-                <p><strong>Monto Pagado:</strong> ${orderDetail.id}</p>
-                <p><strong>Monto Pagado:</strong> ${orderDetail.id}</p>
-                <p><strong>Monto Pagado:</strong> ${orderDetail.id}</p>
-                <p><strong>Monto Pagado:</strong> ${orderDetail.id}</p>
-                <p><strong>Monto Pagado:</strong> ${orderDetail.id}</p>
-                <p><strong>Monto Pagado:</strong> ${orderDetail.id}</p>
-                <p><strong>Monto Pagado:</strong> ${orderDetail.id}</p>
-                <p><strong>Monto Pagado:</strong> ${orderDetail.id}</p>
-                <p><strong>Monto Pagado:</strong> ${orderDetail.id}</p> */}
-
-                <div className="mt-4 flex justify-end">
-                    <button onClick={onClose} className="py-2 px-4 bg-gray-500 text-white rounded-md">
-                        Cerrar
-                    </button>
+                    <p className="text-xs text-gray-400 mt-2 text-center">Puedes seleccionar y copiar el token.</p>
                 </div>
             </div>
         </div>
