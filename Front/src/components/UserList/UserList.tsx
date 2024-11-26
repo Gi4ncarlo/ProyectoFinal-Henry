@@ -117,7 +117,7 @@ function UserList() {
               {/* Botón de eliminar */}
               <button
                 onClick={() => handleDeleteUser(user.id)}
-                className="mt-4 px-4 py-2 rounded-md font-medium bg-red-700 text-white hover:bg-red-800 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
+                className="mt-4 px-4 py-2 m-4 rounded-md font-medium bg-red-700 text-white hover:bg-red-800 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
                 disabled={isBanning}
               >
                 Eliminar
