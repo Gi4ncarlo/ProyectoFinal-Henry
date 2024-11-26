@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import UserList from "@/components/UserList/UserList";
 import Services from "@/components/Services/Services";
-import ListGardeners from "@/components/ListGardeners/ListGardeners";
+//import ListGardeners from "@/components/ListGardeners/ListGardeners";
 
 const AdminDashboard = () => {
   const [activeComponent, setActiveComponent] = useState<string>(""); // Controla el componente activo
@@ -59,7 +59,7 @@ const AdminDashboard = () => {
         )}
         {activeComponent === "ListGardeners" && (
           <div className="bg-white p-6 rounded-lg shadow-md">
-            <ListGardeners/>
+            {/* <ListGardeners/> */}
           </div>
         )}
         {/* Mensaje inicial si no hay selección */}
