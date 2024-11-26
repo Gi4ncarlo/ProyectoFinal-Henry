@@ -8,7 +8,8 @@ export const getGardenersDB = async (
   token: string,
   order: "ASC" | "DESC" = "ASC",
   calification?: number,
-  name?: string
+  name?: string,
+  availability?: string
 ): Promise<{ data: IServiceProvider[] }> => {
   if (!token) {
     console.error("Token is missing or invalid.");
@@ -18,7 +19,7 @@ export const getGardenersDB = async (
   params.append("order", order);
   if (calification) params.append("calification", calification.toString());
   if (name) params.append("name", name.toString());
-
+  if (availability) params.append("availability", availability);
   const response = await fetch(`${APIURL}/gardener?${params.toString()}`, {
     headers: {
       Authorization: `Bearer ${token}`,
