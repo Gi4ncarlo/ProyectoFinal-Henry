@@ -10,6 +10,8 @@ import { IService } from '@/interfaces/IService';
 import { hireServices } from '@/helpers/order.helpers';
 import { IUserSession } from '@/interfaces/IUserSession';
 import Swal from 'sweetalert2';
+import GardenerMap from '@/components/GardenerMap/GardenerMap'; // Importa el componente GardenerMap
+
 
 const ProviderDetail: any = () => {
   const router = useRouter();
@@ -133,7 +135,6 @@ const ProviderDetail: any = () => {
   if (!gardener) return <div>Cargando...</div>;
 
   return (
-
     <div className="flex flex-col min-h-screen bg-[#4CAF50]">
       {/* Contenedor para centrar todo */}
       <div className="flex flex-col items-center justify-center flex-grow mx-4 md:mx-8 lg:mx-16">
@@ -172,6 +173,12 @@ const ProviderDetail: any = () => {
               <span className="ml-2 text-sm text-gray-500">{gardener.calification.toFixed(1)}</span>
             </div>
           </div>
+
+          {/* Agregar el componente GardenerMap aquí */}
+          <div className="mt-8">
+          <GardenerMap location={{ lat: 45.43713, lng: 12.33265 }} /> {/* Pasa la ubicación del jardinero al mapa */}
+          </div>
+
           <div className="mt-6">
             <h2 className="text-lg font-semibold text-[#263238]">Servicios Disponibles:</h2>
             <div className="mt-2">
@@ -186,67 +193,21 @@ const ProviderDetail: any = () => {
                     />
                     {service.detailService}
                   </label>
-                  <p className="ml-6 text-sm text-[#263238]">Precio: ${service.price}</p>
-                  <p className="ml-6 text-sm text-[#263238]">Categoría: {service.categories}</p>
                 </div>
               ))}
             </div>
-          </div>
 
-          <div className="mt-6 flex flex-col items-center">
             <button
               onClick={handleHireClick}
-              disabled={selectedServices.length === 0} // Deshabilitado si no hay servicios seleccionados
-              className={`w-full mt-4 p-2 font-bold rounded ${selectedServices.length === 0
-                ? 'bg-gray-400 cursor-not-allowed' // Estilo deshabilitado
-                : 'bg-[#4caf50] text-white hover:bg-[#388e3c]' // Estilo habilitado
-                }`}
+              className="mt-4 w-full bg-[#4CAF50] text-white py-2 px-4 rounded-lg hover:bg-[#45a049]"
             >
               Contratar Servicios
             </button>
-
-            {selectedServices.length === 0 && (
-              <p className="mt-2 text-sm text-red-500">
-                Debes seleccionar al menos un servicio para continuar.
-              </p>
-            )}
-          </div>
-        </div>
-
-        {/* Carrousel */}
-        <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-4xl mt-8">
-          <h2 className="text-xl font-bold text-[#4CAF50] mb-4 text-center p-3">Galería de {gardener.name}:</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {carrousel?.map((image: any, index: number) => (
-              <div key={index} className="overflow-hidden rounded-lg">
-                <Image
-                  src={image}
-                  alt={`Imagen ${index + 1}`}
-                  width={1920}
-                  height={1080}
-                  className="object-cover w-full h-40"
-                />
-              </div>
-            ))}
           </div>
         </div>
       </div>
-
-      {/* Espaciado para mostrar las reseñas*/}
-
-
-
-
-
-      {/* Espaciado con el footer */}
-      <footer className="mt-8 p-4 bg-[#263238] text-white text-center">
-        © {new Date().getFullYear()} Jardineros. Todos los derechos reservados.
-      </footer>
     </div>
   );
-
-
-
 };
 
 export default ProviderDetail;
