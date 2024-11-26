@@ -64,8 +64,6 @@ const ProviderDetail: any = () => {
     fetchCarrousel();
   }, [id]);
 
-  console.log("carrousel", carrousel);
-
   useEffect(() => {
     if (typeof window !== "undefined" && window.localStorage) {
       const storedSession = JSON.parse(

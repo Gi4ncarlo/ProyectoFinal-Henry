@@ -70,7 +70,7 @@
 //             Mi Perfil
 //           </button>
 //         </nav>
-  
+
 //         {/* Contenido dinámico */}
 //         <main className="p-6">
 //           {activeComponent === "tasks" && (
@@ -83,7 +83,7 @@
 //               </p>
 //             </section>
 //           )}
-  
+
 //           {activeComponent === "calendar" && (
 //             <section>
 //               <h1 className="text-2xl font-bold text-[#263238]">
@@ -94,7 +94,7 @@
 //               </p>
 //             </section>
 //           )}
-  
+
 //           {activeComponent === "profile" && (
 //             <section>
 //               <h1 className="text-2xl font-bold text-[#263238]">
@@ -111,7 +111,7 @@
 //                   <strong>Teléfono:</strong> {userSession?.user.phone}
 //                 </div>
 //               </div>
-  
+
 //               {/* Carrusel de imágenes */}
 //               <div className="mt-8">
 //                 <h2 className="text-xl font-semibold text-[#388E3C] mb-4">
@@ -139,7 +139,7 @@
 //                   </div>
 //                 </div>
 //               </div>
-  
+
 //               {/* Subir nueva imagen */}
 //               <div className="mt-8">
 //                 <h2 className="text-xl font-semibold text-[#FF5722] mb-4">
@@ -157,7 +157,7 @@
 //       </div>
 //     );
 //   };
-  
+
 
 // export default GardenerDashboard;
 
@@ -175,8 +175,9 @@
 
 "use client";
 import CalendarGardener from "@/components/CalendarGardener/CalendarGardener";
+import OrderList from "@/components/DashboardGardenerCompo/orders/orders";
 import EditDashboard from "@/components/EditDashboard/EditDashboard";
-import { getCarrouselById, postCarrouselImage } from "@/helpers/gardeners.helpers";
+import { getCarrouselById, getTasks, postCarrouselImage } from "@/helpers/gardeners.helpers";
 import { IUserSession } from "@/interfaces/IUserSession";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -184,6 +185,7 @@ const GardenerDashboard = () => {
   const [activeComponent, setActiveComponent] = useState<string>(""); // Controla el componente activo
   const [userSession, setUserSession] = useState<IUserSession | null>(null);
   const [carrousel, setCarrousel] = useState<any[]>([]);
+  const [tasks, setTasks] = useState<any[]>([]);
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.localStorage) {
@@ -194,31 +196,63 @@ const GardenerDashboard = () => {
     }
   }, []);
 
+  const fetchCarrousel = async () => {
+    try {
+      const id = userSession?.user.id.toString();
+      if (id) {
+        const carrouselData = await getCarrouselById(id);
+        setCarrousel(carrouselData?.imageUrl || []);
+      }
+    } catch (error) {
+      console.error("Error buscando el carrousel:", error);
+    }
+  };
+
+  const fetchTasks = async (id: string) => {
+    try {
+      const taskData = await getTasks(id);
+      setTasks(taskData);
+    } catch (error) {
+      console.error("Error buscando las tareas:", error);
+    }
+  };
+
+  const uploadImage = async (e: any) => {
+    const file = e.target.files[0];
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "gardener");
+    const response = await postCarrouselImage(formData, userSession?.user.id.toString());
+    if (response) {
+      fetchCarrousel();
+    }
+  }
+
+  useEffect(() => {
+    fetchCarrousel();
+  }, [userSession]);
   return (
     <div className="min-h-screen bg-[#F4F9F4] font-sans">
       {/* Menú de navegación */}
       <nav className="bg-[#263238] p-4 shadow-md flex justify-center space-x-4">
         <button
           onClick={() => setActiveComponent("tareas")}
-          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${
-            activeComponent === "tareas" ? "opacity-75" : ""
-          }`}
+          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "tareas" ? "opacity-75" : ""
+            }`}
         >
           Tareas
         </button>
         <button
           onClick={() => setActiveComponent("calendario")}
-          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${
-            activeComponent === "calendario" ? "opacity-75" : ""
-          }`}
+          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "calendario" ? "opacity-75" : ""
+            }`}
         >
           Calendario
         </button>
         <button
           onClick={() => setActiveComponent("perfil")}
-          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${
-            activeComponent === "perfil" ? "opacity-75" : ""
-          }`}
+          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "perfil" ? "opacity-75" : ""
+            }`}
         >
           Mi Perfil
         </button>
@@ -231,17 +265,24 @@ const GardenerDashboard = () => {
             <h1 className="text-2xl font-bold text-[#263238]">
               Tareas del Jardinero
             </h1>
-            <p className="mt-2 text-[#4CAF50]">
-              Aquí podrás gestionar tus tareas diarias.
-            </p>
+            <button
+              className="mt-2 text-[#4CAF50] bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded"
+              onClick={() => fetchTasks(userSession?.user?.id.toString() || "")}
+            >
+              Ver Tareas
+            </button>
+            <OrderList order={tasks}>
+
+            </OrderList>
+
           </section>
         )}
 
-       
 
-        {activeComponent === "perfil" && <EditDashboard />} 
-        {activeComponent === 'calendario' && <CalendarGardener />} 
-        {activeComponent === 'ordenes' && <CalendarGardener />} 
+
+        {activeComponent === "perfil" && <EditDashboard />}
+        {activeComponent === 'calendario' && <CalendarGardener />}
+        {activeComponent === 'ordenes' && <CalendarGardener />}
 
       </main>
     </div>
