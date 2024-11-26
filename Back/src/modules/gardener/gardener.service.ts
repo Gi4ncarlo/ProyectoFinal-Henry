@@ -4,7 +4,7 @@ import { UpdateGardenerDto } from './dto/update-gardener.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Gardener } from './entities/gardener.entity';
 import { Repository } from 'typeorm';
-import { format, parse } from 'date-fns';
+import { format } from 'date-fns';
 
 @Injectable()
 export class GardenerService {
@@ -13,45 +13,48 @@ export class GardenerService {
     private readonly gardenerRepository: Repository<Gardener>,
   ) { }
 
-  async reserveDay(id: string, day: string): Promise<{ message: string }> {
+  async reserveDay(gardenerId: string, day: any) {
     try {
-      const gardener = await this.gardenerRepository.findOne({ where: { id } });
+      console.log("Body recibido:", day);
+
+      const gardener = await this.gardenerRepository.findOne({ where: { id: gardenerId } });
+      console.log("Jardinero encontrado:", gardener);
 
       if (!gardener) {
-        throw new Error('Jardinero no encontrado');
+        throw new NotFoundException('Jardinero no encontrado');
       }
 
+      // Inicializar reservedDays si es null
       if (!gardener.reservedDays) {
         gardener.reservedDays = [];
       }
 
-      // Convertir el día (string en formato 'YYYY-MM-DD') a un objeto Date
-      const parsedDate = new Date(day);
-
-      if (isNaN(parsedDate.getTime())) {
-        throw new BadRequestException('El formato de fecha es inválido. Debe ser YYYY-MM-DD.');
-      }
+      // Convertir 'day.date' a formato 'YYYY-MM-DD'
+      const formattedDate = day.date; // Ya validamos que está en este formato en el controlador
 
       // Verificar si el día ya está reservado
-      const isReserved = gardener.reservedDays.some(
-        (reservedDay) =>
-          reservedDay.toISOString().split('T')[0] === parsedDate.toISOString().split('T')[0],
-      );
+      const isReserved = gardener.reservedDays.some((reservedDay: string) => reservedDay === formattedDate);
 
       if (isReserved) {
         throw new BadRequestException('El día ya está reservado');
       }
 
-      gardener.reservedDays.push(parsedDate);
+      // Agregar la fecha al array como string
+      gardener.reservedDays.push(formattedDate);
+
+      // Guardar los cambios en la base de datos
       await this.gardenerRepository.save(gardener);
 
-      return { message: `Día ${day} reservado correctamente para el jardinero con ID ${id}` };
+      console.log("Día reservado correctamente:", gardener.reservedDays);
+
+      return { message: `Día reservado correctamente para el jardinero con ID ${gardenerId}` };
     } catch (error) {
-      if (error instanceof BadRequestException) {
-        throw error;
-      }
+      console.error("Error en el servicio:", error);
+
+      // Si el error no tiene un mensaje específico, usa el error entero
+      const errorMessage = error instanceof Error ? error.message : JSON.stringify(error);
       throw new InternalServerErrorException(
-        `Ocurrió un error interno al intentar reservar el día: ${error}`,
+        `Ocurrió un error al intentar reservar el día: ${errorMessage}`
       );
     }
   }
@@ -68,7 +71,6 @@ export class GardenerService {
       format(day, 'yyyy-MM-dd') // Alternativa: day.toISOString().split('T')[0]
     );
   }
-
 
   async create(createGardenerDto: CreateGardenerDto): Promise<Gardener> {
     const gardner = this.gardenerRepository.create(createGardenerDto);

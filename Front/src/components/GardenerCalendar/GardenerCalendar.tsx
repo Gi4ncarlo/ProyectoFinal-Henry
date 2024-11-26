@@ -1,61 +1,56 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Calendar, message, Spin } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import { fetchReservedDays, disabledDate } from "@/helpers/calendarHelper";
 import { GardenerCalendarProps } from "@/interfaces/IGardenerCalendar";
 
-const GardenerCalendar: React.FC<GardenerCalendarProps> = ({
-  gardenerId,
-  onDateSelect,
-}) => {
+const GardenerCalendar: React.FC<GardenerCalendarProps> = ({ gardenerId, onDateSelect }) => {
   const [reservedDays, setReservedDays] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    // Asegúrate de que gardenerId esté disponible antes de realizar la llamada
     if (!gardenerId) {
-      // Mensajes de error sin modificar el estado inmediatamente
-      setTimeout(
-        () => message.error("El ID del jardinero no está disponible."),
-        0
-      );
+      message.error("El ID del jardinero no está disponible.");
       setLoading(false);
       return;
     }
 
     const fetchReserved = async () => {
-      setLoading(true); // Solo cambia el estado al inicio
       try {
-        const days = await fetchReservedDays(gardenerId);
-        setReservedDays(days);
+        setLoading(true);
+        const days = await fetchReservedDays(gardenerId); // Llama al helper para obtener días reservados
+        setReservedDays(new Set(days)); // Actualiza el estado solo después de la llamada exitosa
       } catch (error) {
-        setTimeout(
-          () => message.error("Error al cargar los días reservados."),
-          0
-        );
+        message.error("Error al cargar los días reservados.");
       } finally {
-        setLoading(false); // Solo cambia al final
+        setLoading(false); // Finaliza el loading después de la carga
       }
     };
 
     fetchReserved();
-  }, [gardenerId]);
+  }, [gardenerId]); // Solo se vuelve a ejecutar cuando gardenerId cambia
 
-  const handleSelect = (value: Dayjs) => {
-    const selectedDate = value.format("YYYY-MM-DD");
+  // Manejador de selección de fecha
+  const handleSelect = useCallback(
+    (value: Dayjs) => {
+      const selectedDate = value.format("YYYY-MM-DD");
 
-    if (reservedDays.has(selectedDate)) {
-      message.warning("Este día ya está reservado.");
-      return;
-    }
+      // Verifica si la fecha está reservada
+      if (reservedDays.has(selectedDate)) {
+        message.warning("Este día ya está reservado.");
+        return;
+      }
 
-    if (typeof onDateSelect === "function") {
-      onDateSelect(selectedDate);
-    } else {
-      console.warn(
-        "La función 'onDateSelect' no está definida o no es válida."
-      );
-    }
-  };
+      // Si la función de selección está definida, la llama
+      if (onDateSelect && typeof onDateSelect === "function") {
+        onDateSelect(selectedDate);  
+      } else {
+        console.warn("La función 'onDateSelect' no está definida o no es válida.");
+      }
+    },
+    [reservedDays, onDateSelect] // Dependencias del hook useCallback
+  );
 
   return (
     <div style={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
@@ -77,9 +72,10 @@ const GardenerCalendar: React.FC<GardenerCalendarProps> = ({
         </div>
       ) : (
         <Calendar
-          cellRender={
-            (date) =>
-              reservedDays.has(date.format("YYYY-MM-DD")) ? (
+          cellRender={(value) => {
+            const date = value.format("YYYY-MM-DD");
+            if (reservedDays.has(date)) {
+              return (
                 <div
                   style={{
                     backgroundColor: "#ff4d4f",
@@ -91,9 +87,11 @@ const GardenerCalendar: React.FC<GardenerCalendarProps> = ({
                 >
                   Reservado
                 </div>
-              ) : undefined // Devuelve `undefined` en lugar de `null` para no forzar el render
-          }
-          onSelect={handleSelect}
+              );
+            }
+            return null;
+          }}
+          onSelect={handleSelect}  // Usa la función optimizada
           disabledDate={(current) => disabledDate(current, reservedDays)}
         />
       )}

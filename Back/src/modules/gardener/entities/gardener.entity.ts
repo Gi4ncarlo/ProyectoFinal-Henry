@@ -27,9 +27,8 @@ export class Gardener extends User {
   })
   role: Role;
 
-  @Column('date', { array: true, nullable: true })
-  reservedDays: Date[];
-
+  @Column({ type: 'text', array: true, nullable: true })
+  reservedDays: string[] | null;
 
   @ManyToMany(() => ServiceProvided, (service) => service.gardener)
   serviceProvided: ServiceProvided[];
