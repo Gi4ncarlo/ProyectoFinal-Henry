@@ -126,11 +126,11 @@ export default function Navbar() {
           <li className="hover:text-[#FFEB3B]">
             <Link href="/gardener">Lista de Jardineros</Link>
           </li>
-          {userData?.user.role === "admin" ? (
+          {/* {userData?.user.role === "admin" ? (
             <li className="hover:text-[#FFEB3B]">
               <Link href="/registerService">Registrar un nuevo servicio</Link>
             </li>
-          ) : null}
+          ) : null} */}
         </ul>
 
         {/* Mobile menu icon */}
