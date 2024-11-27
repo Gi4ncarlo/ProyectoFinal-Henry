@@ -53,14 +53,14 @@ const GardenerMap: React.FC<GardenerMapProps> = ({ location }) => {
 
   return (
     <div>
-      <h1>Ubicación aproximada</h1>
+      <h1 className="text-l font-bold text-[#263238]">Ubicación aproximada</h1>
       <div
         id="map"
         style={{
           height: "400px",
           width: "100%",
           position: "relative",
-          border: "2px solid #ccc",
+          border: "2px solid #4CAF50",
           borderRadius: "8px",
           zIndex: 9,
         }}
