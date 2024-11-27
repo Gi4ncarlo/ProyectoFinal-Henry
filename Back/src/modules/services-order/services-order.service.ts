@@ -17,6 +17,7 @@ import { TokenService } from '../tokenServices/token.service';
 @Injectable()
 export class ServicesOrderService {
 
+
   constructor(
     @InjectRepository(ServicesOrderEntity)
     private servicesOrderRepository: Repository<ServicesOrderEntity>,
@@ -140,10 +141,10 @@ export class ServicesOrderService {
     return order;
   }
   async orderPay(id: string) {
-    try {      
+    try {
       const order = await this.findOne(id);
       if (!order) throw new NotFoundException(`Orden de servicio con id ${id} no encontrada`);
-      if(order.orderDetail) throw new BadRequestException('La orden de servicio ya fue pagada');
+      if (order.orderDetail) throw new BadRequestException('La orden de servicio ya fue pagada');
       order.isApproved = true;
       let price = 0;
       order.serviceProvided.map((service) => price += service.price)
@@ -177,6 +178,49 @@ export class ServicesOrderService {
     } catch (error) {
       throw new HttpException(error, 400);
     }
+  }
+  async findAllByGardener(id: string) {
+    const orders = await this.servicesOrderRepository.find({
+      where: { gardener: { id } },
+      relations: ['user', 'gardener', 'serviceProvided', 'orderDetail'],
+      select: {
+        user: {
+          id: true,
+          name: true,
+          email: true,
+          phone: true,
+          profileImageUrl: true,
+          address: true
+        },
+        gardener: {
+          id: true,
+          name: true,
+          username: true,
+          email: true,
+          age: true,
+          phone: true,
+          profileImageUrl: true,
+          experience: true,
+          calification: true,
+          ubication: true,
+        },
+        serviceProvided: {
+          id: true,
+          detailService: true,
+          categories: true,
+          price: true
+        },
+        orderDetail: {
+          id: true,
+          serviceType: true,
+          totalPrice: true,
+          startTime: true,
+          status: true,
+          rating: true
+        }
+      }
+    })
+    return orders
   }
 
   async update(id: string, updateServiceOrderDto: UpdateServicesOrderDto): Promise<ServicesOrderEntity> {

@@ -11,7 +11,8 @@ import {
   Query,
   ParseUUIDPipe,
   HttpException,
-  HttpStatus
+  HttpStatus,
+  Res
 } from '@nestjs/common';
 import { ServicesOrderService } from './services-order.service';
 import { CreateServiceOrderDto } from './dto/create-services-order.dto';
@@ -21,6 +22,7 @@ import { Roles } from 'src/decorators/roles.decorator';
 import { RolesGuard } from 'src/guards/roles/role.guard';
 import { AuthGuard } from '../auth/auth.guard';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { Response } from 'express';
 
 
 @ApiTags('serviceOrder')
@@ -30,7 +32,7 @@ export class ServicesOrderController {
   constructor(private readonly servicesOrderService: ServicesOrderService) { }
 
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles( Role.User, Role.Admin)
+  @Roles(Role.User, Role.Admin)
   @Post()
   create(@Body() createServicesOrderDto: CreateServiceOrderDto) {
     return this.servicesOrderService.create(createServicesOrderDto);
@@ -59,6 +61,16 @@ export class ServicesOrderController {
     }
 
     return serviceOrder;
+  }
+  @UseGuards(AuthGuard)
+  @Get('gardener/:id')
+  async findAllByGardener(@Param('id', new ParseUUIDPipe()) id: string, @Res() res: Response) {
+    try {
+      const serviceOrder = await this.servicesOrderService.findAllByGardener(id);
+      return res.status(200).json(serviceOrder);
+    } catch (error) {
+      throw new HttpException("Orden de servicio no encontrada", HttpStatus.NOT_FOUND);
+    }
   }
 
   @UseGuards(AuthGuard)

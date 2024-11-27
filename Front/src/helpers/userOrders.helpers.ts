@@ -1,6 +1,7 @@
-import { log } from "console";
+
 
 const APIURL: string = process.env.NEXT_PUBLIC_API_URL as string;
+const TOKEN = JSON.parse(localStorage.getItem("userSession") || "null")
 
 // Función para obtener las órdenes de un usuario
 export async function getuserOrdersDB(id: number, token: string) {
@@ -24,7 +25,7 @@ export async function getuserOrdersDB(id: number, token: string) {
 }
 
 
- const TOKEN = JSON.parse(localStorage.getItem("userSession") || "null")
+
 export async function getAllUsers() {
   try {
   
@@ -46,7 +47,7 @@ export async function getAllUsers() {
     return users;
   } catch (error) {
     console.error('Error al recuperar usuarios', error);
-    throw error; // Re-throw the error for proper handling in the calling component
+    throw error; 
   }
 }
 
@@ -54,7 +55,7 @@ export async function getAllUsers() {
 
 
 
-export async function banUser(userId: string, token: string, isBanned: boolean) {
+export async function banUser(userId: string,  isBanned: boolean) {
   const response = await fetch(`${APIURL}/user/${userId}/ban`, {
     method: 'PATCH',
     headers: {
@@ -66,6 +67,25 @@ export async function banUser(userId: string, token: string, isBanned: boolean) 
 
   if (!response.ok) {
     throw new Error('Failed to ban user');
+  }
+  return await response.json();
+}
+
+
+
+export async function deleteUser(userId: string) {
+  const response = await fetch(`${APIURL}/user/${userId}`, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${TOKEN.token}`,
+      'Content-Type': 'application/json',
+    },
+  });
+if (!response.ok) {
+    throw new Error('Failed to delete user');
+  }
+  if (response.headers.get('content-length') === '0') {
+    return null; 
   }
   return await response.json();
 }

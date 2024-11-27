@@ -1,28 +1,66 @@
-import Image from "next/image";
+"use client"
+
+import { useState } from 'react';
+import Swal from 'sweetalert2';
+const APIURL = process.env.NEXT_PUBLIC_API_URL;
 
 const ContactView = () => {
+  const [formData, setFormData] = useState({ email: '', phone: '', message: '' });
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  const handleChange = (e: any) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  
+  
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault(); 
+    setLoading(true); 
+    setSuccess(false); 
+    try {
+      const response = await fetch(`${APIURL}/mail/send`, {
+        method: 'POST',
+        headers: { "content-type": 'application/json' },
+        body: JSON.stringify(formData), 
+      });
+  
+      if (!response.ok) {
+        const errorMessage = await response.json();
+        throw new Error(errorMessage.message || 'Error al enviar el correo.');
+      }
+  
+      setSuccess(true); 
+      setFormData({ email: '', phone: '', message: '' }); 
+      Swal.fire({
+        icon: 'success',
+        title: 'Correo enviado',
+        text: 'Gracias por tus sugerencias. Nos pondremos en contacto contigo pronto.',
+      });
+    } catch (error: any) {
+      console.error('Error al enviar el correo:', error.message);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error al enviar el correo',
+        text: error.message,
+      })
+    } finally {
+      setLoading(false); 
+    }
+  };
+  
+
   return (
     <div className="min-h-screen grid grid-cols-1 place-items-center lg:grid-cols-2 bg-[url('/images/fondo_contacto.jpg')] bg-cover bg-center pt-16 lg:pt-24">
-      {/* Contenedor principal */}
       <div className="container bg-white m-auto mt-8 p-4 max-w-full shadow-sm rounded-sm lg:m-0 lg:p-8 lg:max-w-lg lg:shadow-lg lg:rounded-lg">
-        <h2 className="text-4xl font-extrabold mb-6 text-center text-[#263238] font-cinzel">Contacto</h2>
+        <h2 className="text-4xl font-extrabold mb-6 text-center text-[#263238]">Sugerencias</h2>
         <p className="mb-6 text-[#263238] text-center font-nunito text-sm lg:text-lg">
-          Por favor llene el formulario para más información, y nos pondremos en contacto lo más pronto posible. Debes completar todos los campos.
+          Por favor llene el formulario para enviar tus sugerencias.
         </p>
-        <form className="space-y-6">
-          <div>
-            <label htmlFor="name" className="block text-base font-medium text-[#263238] font-roboto">
-              Nombre:
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              required
-              placeholder="Introduce tu nombre"
-              className="mt-1 p-3 block w-full border border-[#388E3C] rounded-md shadow-sm focus:ring-[#388E3C] focus:border-[#388E3C]"
-            />
-          </div>
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label htmlFor="email" className="block text-base font-medium text-[#263238] font-roboto">
               Email:
@@ -32,6 +70,8 @@ const ContactView = () => {
               id="email"
               name="email"
               required
+              value={formData.email}
+              onChange={handleChange}
               placeholder="Ingresa tu correo electrónico"
               className="mt-1 p-3 block w-full border border-[#388E3C] rounded-md shadow-sm focus:ring-[#388E3C] focus:border-[#388E3C]"
             />
@@ -45,6 +85,8 @@ const ContactView = () => {
               id="phone"
               name="phone"
               required
+              value={formData.phone}
+              onChange={handleChange}
               placeholder="Introduce tu número de teléfono"
               className="mt-1 p-3 block w-full border border-[#388E3C] rounded-md shadow-sm focus:ring-[#388E3C] focus:border-[#388E3C]"
             />
@@ -57,6 +99,8 @@ const ContactView = () => {
               id="message"
               name="message"
               required
+              value={formData.message}
+              onChange={handleChange}
               placeholder="Introduce tu mensaje"
               className="mt-1 p-3 block w-full border border-[#388E3C] rounded-md shadow-sm focus:ring-[#388E3C] focus:border-[#388E3C] h-32"
               style={{ resize: 'none' }}
@@ -64,22 +108,13 @@ const ContactView = () => {
           </div>
           <button
             type="submit"
+            disabled={loading}
             className="w-full mt-4 p-2 bg-[#4CAF50] text-white font-bold rounded hover:bg-[#388E3C] focus:outline-none focus:ring-2 focus:ring-[#388E3C]"
           >
-            ENVIAR
+            {loading ? 'Enviando...' : 'ENVIAR'}
           </button>
         </form>
-      </div>
-
-      {/* Contenedor de la imagen */}
-      <div className='container p-2 bg-white shadow-sm rounded-sm lg:max-w-[600px] lg:p-4 lg:shadow-lg lg:rounded-lg'>
-        <Image
-          src="/images/vicnasolContacto.jpg"
-          alt="contacto"
-          width={1920}
-          height={1080}
-          className="min-w-full hover:transform hover:scale-105 transition duration-200 sm:min-h-full p-2 rounded-sm sm:w-[200px] lg:w-[400px] lg:max-h-[600px] lg:max-w-[400px]"
-        />
+        {success && <p className="mt-4 text-center text-green-600">¡Correo enviado con éxito!</p>}
       </div>
     </div>
   );

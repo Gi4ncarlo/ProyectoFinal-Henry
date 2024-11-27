@@ -14,6 +14,7 @@ import {
   HttpException,
   HttpStatus,
   ParseUUIDPipe,
+  Res,
 } from '@nestjs/common';
 import { GardenerService } from './gardener.service';
 import { CreateGardenerDto } from './dto/create-gardener.dto';
@@ -26,9 +27,10 @@ import { Role } from '../user/enums/role.enum';
 import { Roles } from 'src/decorators/roles.decorator';
 import { RolesGuard } from 'src/guards/roles/role.guard';
 import { AuthGuard } from '../auth/auth.guard';
-import { IsUUID } from 'class-validator';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Gardener } from './entities/gardener.entity';
+import { Response } from 'express';
+
 
 @ApiTags('gardener')
 @ApiBearerAuth()
@@ -37,14 +39,47 @@ export class GardenerController {
   constructor(
     private readonly gardenerService: GardenerService,
     private readonly fileUploadService: FileUploadService,
-  ) {}
+  ) { }
 
-  @Post(':id/reserve')
+  @Post(':gardenerId/reserve')
+  @UseGuards(AuthGuard)
   async reserveDay(
-    @Param('id') id: string,
-    @Body('day') day: string,
+    @Param('gardenerId', new ParseUUIDPipe()) gardenerId: string,
+    @Body() day: any,
+    @Res() res: Response
   ) {
-    return this.gardenerService.reserveDay(id, day);
+    try {
+      console.log("Body recibido en el controlador:", day);
+
+      if (!day?.date) {
+        return res.status(400).json({ message: 'El campo "date" es requerido' });
+      }
+
+      // Validar formato de la fecha 'YYYY-MM-DD'
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(day.date)) {
+        return res.status(400).json({ message: 'El campo "date" debe estar en formato YYYY-MM-DD' });
+      }
+
+      console.log(`Gardener ID: ${gardenerId}, Day: ${day.date}`);
+
+      const response = await this.gardenerService.reserveDay(gardenerId, day);
+      return res.status(200).json(response);
+    } catch (error) {
+      console.error("Error en el controlador:", error);
+      return res.status(500).json({ message: 'Error interno', error });
+    }
+  }
+
+
+  @Get(':gardenerId/reservedDays')
+  @UseGuards(AuthGuard)
+  @HttpCode(200)
+  async getReservedDays(
+    @Param('gardenerId', new ParseUUIDPipe()) gardenerId: string,
+  ) {
+    console.log(`Solicitud recibida para el jardinero: ${gardenerId}`);
+    const reservedDays = await this.gardenerService.getReservedDays(gardenerId);
+    return { reservedDays: reservedDays || [] };
   }
 
   @UseGuards(AuthGuard, RolesGuard)
@@ -101,10 +136,10 @@ export class GardenerController {
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes("multipart/form-data")
   @ApiBody({
-    schema:{
+    schema: {
       type: "object",
-      properties:{
-        file:{
+      properties: {
+        file: {
           type: "string",
           format: "binary"
         }
@@ -128,6 +163,31 @@ export class GardenerController {
       'gardener',
     );
     await this.gardenerService.updateProfileImage(id, imageUrl);
+
+    return { imageUrl };
+  }
+
+
+  @UseGuards(AuthGuard)
+  @Post('carrousel/:id')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadCarrouselImages(
+    @Param('id') id: string,
+    @UploadedFile(new ImageUploadPipe()) file: Express.Multer.File,
+  ) {
+    const uploadFileDto: UploadFileDto = {
+      fieldname: file.fieldname,
+      originalname: file.originalname,
+      mimetype: file.mimetype,
+      size: file.size,
+      buffer: file.buffer,
+    };
+
+    const imageUrl = await this.fileUploadService.uploadFile(
+      uploadFileDto,
+      'gardener',
+    );
+    await this.gardenerService.uploadCarrouselImages(id, imageUrl);
 
     return { imageUrl };
   }

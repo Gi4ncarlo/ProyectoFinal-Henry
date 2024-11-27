@@ -9,8 +9,11 @@ import { useParams, useRouter } from "next/navigation";
 import { IService } from "@/interfaces/IService";
 import { hireServices } from "@/helpers/order.helpers";
 import { IUserSession } from "@/interfaces/IUserSession";
+import Swal from "sweetalert2";
+import GardenerCalendar from "@/components/GardenerCalendar/GardenerCalendar";
+import GardenerMap from "@/components/GardenerMap/GardenerMap"; // Importa el componente GardenerMap
 
-const ProviderDetail: any = () => {
+const ProviderDetail: React.FC = () => {
   const router = useRouter();
   const params = useParams();
   const id = params?.id as string | undefined;
@@ -22,6 +25,11 @@ const ProviderDetail: any = () => {
   const [orderService, setOrderService] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [carrousel, setCarrousel] = useState<any[]>([]);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [coordinates, setCoordinates] = useState<{ lat: number; lng: number }>({
+    lat: 0,
+    lng: 0,
+  });
 
   useEffect(() => {
     const fetchGardener = async () => {
@@ -29,6 +37,26 @@ const ProviderDetail: any = () => {
         try {
           const gardenerData = await getProviderById(id);
           setGardener(gardenerData);
+
+          // Convertir dirección a coordenadas
+          if (gardenerData) {
+            const response = await fetch(
+              `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+                gardenerData.address
+              )}`
+            );
+            const data = await response.json();
+            if (data.length > 0) {
+              setCoordinates({
+                lat: parseFloat(data[0].lat),
+                lng: parseFloat(data[0].lon),
+              });
+            } else {
+              console.error(
+                "No se encontraron coordenadas para la dirección proporcionada."
+              );
+            }
+          }
         } catch (error) {
           console.error("Error buscando información del jardinero:", error);
           setError("No se pudo cargar la información del jardinero.");
@@ -63,8 +91,6 @@ const ProviderDetail: any = () => {
     fetchCarrousel();
   }, [id]);
 
-  console.log("carrousel", carrousel);
-
   useEffect(() => {
     if (typeof window !== "undefined" && window.localStorage) {
       const storedSession = JSON.parse(
@@ -74,17 +100,18 @@ const ProviderDetail: any = () => {
     }
   }, []);
 
-  // Manejar selección de servicios
   const handleServiceChange = (serviceId: string) => {
-    setSelectedServices(
-      (prevSelected) =>
-        prevSelected.includes(serviceId)
-          ? prevSelected.filter((id) => id !== serviceId) // Deseleccionar
-          : [...prevSelected, serviceId] // Seleccionar
+    setSelectedServices((prevSelected) =>
+      prevSelected.includes(serviceId)
+        ? prevSelected.filter((id) => id !== serviceId)
+        : [...prevSelected, serviceId]
     );
   };
 
-  // Contratar servicios
+  const handleDateSelect = (date: string) => {
+    setSelectedDate(date);
+  };
+
   const handleHireClick = async () => {
     if (!userSession || !userSession.user?.id) {
       setError("No se encontró la sesión del usuario.");
@@ -95,32 +122,55 @@ const ProviderDetail: any = () => {
       setError("Información del jardinero no disponible.");
       return;
     }
+    if (selectedServices.length === 0) {
+      Swal.fire({
+        icon: "warning",
+        title: "Selecciona un servicio",
+        text: "Debes seleccionar al menos un servicio para continuar.",
+      });
+    }
+
+    if (!selectedDate) {
+      setError("Por favor, seleccione una fecha.");
+      return;
+    }
 
     try {
       const order = await hireServices({
-        date: new Date().toISOString(),
+        date: selectedDate,
         isApproved: false,
         gardenerId: gardener.id.toString(),
         userId: userSession.user.id.toString(),
         serviceId: selectedServices,
       });
+      // Mostrar mensaje de éxito con Swal
+      Swal.fire({
+        icon: "success",
+        title: "Servicios Contratados",
+        text: "Tu orden ha sido creada con éxito.",
+      });
 
       setOrderService(order);
       setSelectedServices([]);
+      setSelectedDate(null);
       router.push("/dashboard/userDashboard");
     } catch (error) {
       console.error("Error contratando servicios:", error);
-      setError("Hubo un problema al contratar los servicios.");
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Hubo un problema al contratar los servicios. Inténtalo de nuevo.",
+      });
     }
   };
 
   if (error) return <div className="text-red-500">{error}</div>;
   if (!gardener) return <div>Cargando...</div>;
-
   return (
-    <div className="grid grid-cols-2">
-      <div className="flex bg-[#4CAF50]">
-        <div className="max-w-3xl mx-auto mt-32 mb-14 p-6 bg-white rounded-lg shadow-lg">
+    <div className="flex flex-col min-h-screen bg-[url('/images/fondoJardineros2.jpg')] bg-cover bg-center">
+      {/* Contenedor para centrar todo */}
+      <div className="flex flex-col items-center justify-center flex-grow mx-4 md:mx-8 lg:mx-16">
+        <div className="max-w-3xl mt-32 mb-14 p-6 bg-white rounded-lg shadow-lg">
           <div className="flex items-center">
             <Image
               className="rounded-full"
@@ -168,6 +218,11 @@ const ProviderDetail: any = () => {
             </div>
           </div>
 
+          {/* Agregar el componente GardenerMap aquí */}
+          <div className="mt-8">
+            <GardenerMap location={coordinates} />
+          </div>
+
           <div className="mt-6">
             <h2 className="text-lg font-semibold text-[#263238]">
               Servicios Disponibles:
@@ -184,45 +239,37 @@ const ProviderDetail: any = () => {
                     />
                     {service.detailService}
                   </label>
-                  <p className="ml-6 text-sm text-[#263238]">
-                    Precio: ${service.price}
-                  </p>
-                  <p className="ml-6 text-sm text-[#263238]">
-                    Categoría: {service.categories}
-                  </p>
                 </div>
               ))}
             </div>
-          </div>
 
-          <div className="mt-6 flex justify-center">
-            <button
-              onClick={handleHireClick}
-              className="w-full mt-4 p-2 bg-[#4caf50] text-white font-bold rounded hover:bg-[#388e3c]"
-            >
-              Contratar Servicios
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div className="flex bg-[#4CAF50] p-6 justify-center">
-        <div className="flex gap-4 snap-x snap-mandatory align-middle my-auto">
-          {carrousel?.map((image: any, index: any) => (
-            <div
-              key={index}
-              className="grid grid-cols-2 gap-4 rounded-lg shadow-lg bg-white p-2 items-center justify-center"
-              style={{ width: "400px", height: "400px" }} 
-            >
-              <Image
-                src={image}
-                alt={`Imagen ${index + 1}`}
-                width={1920}
-                height={1080}
-                className="rounded-lg object-cover"
+            <div className="mt-6">
+              <h2 className="text-lg font-semibold text-[#263238]">
+                Calendario de Disponibilidad:
+              </h2>
+              <GardenerCalendar
+                gardenerId={gardener.id.toString()}
+                onDateSelect={handleDateSelect}
               />
             </div>
-          ))}
+
+            <div className="mt-6 flex justify-center">
+              <button
+                onClick={handleHireClick}
+                className="mt-4 w-full bg-[#4CAF50] text-white py-2 px-4 rounded-lg hover:bg-[#45a049]"
+              >
+                Contratar Servicios
+              </button>
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center justify-center w-full mt-10">
+          <button
+            onClick={() => router.push("/gardener")}
+            className="px-6 py-3 mb-8 text-[#263238] bg-[#CDDC39] rounded-lg shadow-md hover:bg-[#8BC34A] focus:ring-4 focus:ring-[#689F38] transition-all"
+          >
+            Volver a la lista de jardineros
+          </button>
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus, HttpException } from '@nestjs/common';
 import { MailService } from './mail.service';
 import { SendMailDto } from './dto/send-mail.dto';
 
@@ -18,4 +18,32 @@ export class MailController {
       message: `Welcome email sent successfully to ${to}`,
     };
   }
+
+  @Post('send')
+  async sendMail(@Body() body: { email: string; phone: string; message: string }) {
+    const { email, phone, message } = body;
+  
+    console.log("estoy dentro del controlador de email");
+    
+    const subject = `Sugerencia enviada por ${email}`;
+    const text = `Detalles:
+    - Email: ${email}
+    - Teléfono: ${phone}
+    - Mensaje: ${message}`;
+  
+    try {
+      await this.mailService.sendMail(email, subject, text);
+      return { message: `Correo enviado correctamente a hpfinal21@gmail.com` };
+    } catch (error: any) {
+      throw new HttpException(
+        {
+          message: 'Error al enviar el correo.',
+          error: error.message,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+  
+
 }
