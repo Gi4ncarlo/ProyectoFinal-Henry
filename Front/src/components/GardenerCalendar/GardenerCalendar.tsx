@@ -4,7 +4,10 @@ import dayjs, { Dayjs } from "dayjs";
 import { fetchReservedDays, disabledDate } from "@/helpers/calendarHelper";
 import { GardenerCalendarProps } from "@/interfaces/IGardenerCalendar";
 
-const GardenerCalendar: React.FC<GardenerCalendarProps> = ({ gardenerId, onDateSelect }) => {
+const GardenerCalendar: React.FC<GardenerCalendarProps> = ({
+  gardenerId,
+  onDateSelect,
+}) => {
   const [reservedDays, setReservedDays] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -20,17 +23,18 @@ const GardenerCalendar: React.FC<GardenerCalendarProps> = ({ gardenerId, onDateS
       try {
         setLoading(true);
         const days = await fetchReservedDays(gardenerId); // Llama al helper para obtener días reservados
-        setReservedDays(new Set(days)); // Actualiza el estado solo después de la llamada exitosa
+        setReservedDays(new Set(days));
+        console.log("Días reservados:", days);
+        
       } catch (error) {
         message.error("Error al cargar los días reservados.");
       } finally {
         setLoading(false); // Finaliza el loading después de la carga
       }
     };
-
     fetchReserved();
   }, [gardenerId]); // Solo se vuelve a ejecutar cuando gardenerId cambia
-
+  
   // Manejador de selección de fecha
   const handleSelect = useCallback(
     (value: Dayjs) => {
@@ -44,9 +48,11 @@ const GardenerCalendar: React.FC<GardenerCalendarProps> = ({ gardenerId, onDateS
 
       // Si la función de selección está definida, la llama
       if (onDateSelect && typeof onDateSelect === "function") {
-        onDateSelect(selectedDate);  
+        onDateSelect(selectedDate);
       } else {
-        console.warn("La función 'onDateSelect' no está definida o no es válida.");
+        console.warn(
+          "La función 'onDateSelect' no está definida o no es válida."
+        );
       }
     },
     [reservedDays, onDateSelect] // Dependencias del hook useCallback
@@ -80,7 +86,7 @@ const GardenerCalendar: React.FC<GardenerCalendarProps> = ({ gardenerId, onDateS
                   style={{
                     backgroundColor: "#ff4d4f",
                     color: "white",
-                    borderRadius: "50%",
+                    borderRadius: "2%",
                     textAlign: "center",
                     padding: "2px 0",
                   }}
@@ -91,7 +97,7 @@ const GardenerCalendar: React.FC<GardenerCalendarProps> = ({ gardenerId, onDateS
             }
             return null;
           }}
-          onSelect={handleSelect}  // Usa la función optimizada
+          onSelect={handleSelect} // Usa la función optimizada
           disabledDate={(current) => disabledDate(current, reservedDays)}
         />
       )}

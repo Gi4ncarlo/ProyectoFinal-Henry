@@ -10,6 +10,7 @@ import { IService } from "@/interfaces/IService";
 import { hireServices } from "@/helpers/order.helpers";
 import { IUserSession } from "@/interfaces/IUserSession";
 import GardenerCalendar from "@/components/GardenerCalendar/GardenerCalendar";
+import Swal from "sweetalert2";
 
 const ProviderDetail: React.FC = () => {
   const router = useRouter();
@@ -250,25 +251,6 @@ const ProviderDetail: React.FC = () => {
         </div>
       </div>
 
-      {/* Carrousel */}
-      <div className="bg-white rounded-lg shadow-lg p-6 m-auto w-4/5">
-        <h2 className="text-xl font-bold text-[#4CAF50] mb-4 text-center p-3">
-          Galería de {gardener.name}:
-        </h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {carrousel?.map((image: any, index: number) => (
-            <div key={index} className="overflow-hidden rounded-lg">
-              <Image
-                src={image}
-                alt={`Imagen ${index + 1}`}
-                width={1920}
-                height={1080}
-                className="object-cover w-full h-40"
-              />
-            </div>
-          ))}
-        </div>
-      </div>
       {/* Espaciado para mostrar las reseñas*/}
 
 

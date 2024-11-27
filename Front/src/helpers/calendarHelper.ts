@@ -1,4 +1,5 @@
-import axios from "axios";
+// helpers/calendarHelper.ts
+
 import dayjs from "dayjs";
 import { message } from "antd";
 
@@ -17,32 +18,52 @@ const getAuthToken = (): string | null => {
   }
 };
 
-// Fetch días reservados del backend
+// Fetch días reservados del backend utilizando fetch
 export const fetchReservedDays = async (gardenerId: string): Promise<Set<string>> => {
+  console.log("ID del jardinero:", gardenerId);
+
   if (!gardenerId) {
     message.error("El ID del jardinero no está disponible.");
     return new Set<string>();
   }
 
-  const token = getAuthToken();
-  if (!token) return new Set<string>();
+  let token = null;
+
+  if (typeof window !== "undefined") {
+    const storedToken = localStorage.getItem("userSession");
+    token = storedToken ? JSON.parse(storedToken) : null;
+  }
+
+  if (!token || !token.token) {
+    console.error("Token is missing or invalid.");
+    throw new Error("Token is missing or invalid.");
+  }
 
   try {
-    // Realizar la solicitud al API
-    const response = await axios.get(
+    // Realizar la solicitud al API usando fetch
+    const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/gardener/${gardenerId}/reservedDays`,
       {
+        method: "GET",
         headers: {
-          Authorization: `Bearer ${token}`,
+          "Authorization": `Bearer ${token.token}`,
+          "Content-Type": "application/json", // Asegúrate de enviar el tipo de contenido correcto
         },
       }
     );
 
-    // Aquí agregamos el console.log para ver los datos que devuelve el API
-    console.log("Días reservados desde el API:", response.data.reservedDays);
 
+    // Verificar si la respuesta es exitosa
+    if (!response.ok) {
+      throw new Error("Error en la solicitud al servidor.");
+    }
+
+    const data = await response.json();
+    console.log("Días reservados desde el API:", data.reservedDays.toLocaleString());
+
+    // Filtrar y formatear las fechas
     const formattedDays = new Set<string>(
-      response.data.reservedDays
+      data.reservedDays
         .filter((day: unknown): day is string => typeof day === "string")
         .map((day: string) => dayjs(day).format("YYYY-MM-DD"))
     );
@@ -55,7 +76,6 @@ export const fetchReservedDays = async (gardenerId: string): Promise<Set<string>
     return new Set<string>();
   }
 };
-
 
 // Deshabilitar fechas pasadas y reservadas
 export const disabledDate = (current: dayjs.Dayjs, reservedDays: Set<string>): boolean => {

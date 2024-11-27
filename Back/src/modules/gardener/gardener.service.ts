@@ -68,7 +68,7 @@ export class GardenerService {
 
     // Formatear las fechas a 'YYYY-MM-DD'
     return gardener.reservedDays.map((day) =>
-      format(day, 'yyyy-MM-dd') // Alternativa: day.toISOString().split('T')[0]
+      day
     );
   }
 
