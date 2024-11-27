@@ -1,4 +1,5 @@
-const Modal = ({ show, onClose, orderDetail }: any) => {
+const Modal = ({ show, onClose, orderDetail } : any) => {
+
     if (!show || !orderDetail) return null; // Asegurarse de que se muestre solo cuando la orden esté seleccionada
     return (
         <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
