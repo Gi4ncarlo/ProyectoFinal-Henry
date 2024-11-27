@@ -240,7 +240,7 @@ const GardenerDashboard = () => {
               Tareas del Jardinero
             </h1>
             <button
-              className="mt-2 text-[#4CAF50] bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded"
+              className="mt-2 text-[#4CAF50] bg-green-600 hover:bg-green-700 font-semibold py-2 px-4 rounded"
               onClick={() => fetchTasks(userSession?.user?.id.toString() || "")}
             >
               Ver Tareas

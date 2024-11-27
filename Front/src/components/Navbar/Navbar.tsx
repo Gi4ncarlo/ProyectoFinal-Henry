@@ -121,7 +121,7 @@ export default function Navbar() {
             <Link href="/sobreNosotros">Sobre Nosotros</Link>
           </li>
           <li className="hover:text-[#FFEB3B]">
-            <Link href="/contacto">Contacto</Link>
+            <Link href="/contacto">Enviar Sugerencia</Link>
           </li>
           <li className="hover:text-[#FFEB3B]">
             <Link href="/gardener">Lista de Jardineros</Link>
