@@ -25,6 +25,8 @@ const ProviderDetail: any = () => {
   const [orderService, setOrderService] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [carrousel, setCarrousel] = useState<any[]>([]);
+  const [coordinates, setCoordinates] = useState<{ lat: number; lng: number }>({ lat: 0, lng: 0 });
+
 
   useEffect(() => {
     const fetchGardener = async () => {
@@ -32,12 +34,29 @@ const ProviderDetail: any = () => {
         try {
           const gardenerData = await getProviderById(id);
           setGardener(gardenerData);
+
+          // Convertir dirección a coordenadas
+          if (gardenerData) {
+            const response = await fetch(
+              `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(gardenerData.address)}`
+            );
+            const data = await response.json();
+            if (data.length > 0) {
+              setCoordinates({
+                lat: parseFloat(data[0].lat),
+                lng: parseFloat(data[0].lon),
+              });
+            } else {
+              console.error('No se encontraron coordenadas para la dirección proporcionada.');
+            }
+          }
         } catch (error) {
           console.error('Error buscando información del jardinero:', error);
           setError('No se pudo cargar la información del jardinero.');
         }
       }
     };
+
 
     const fetchCarrousel = async () => {
       try {
@@ -176,7 +195,7 @@ const ProviderDetail: any = () => {
 
           {/* Agregar el componente GardenerMap aquí */}
           <div className="mt-8">
-          <GardenerMap location={{ lat: 45.43713, lng: 12.33265 }} /> {/* Pasa la ubicación del jardinero al mapa */}
+            <GardenerMap location={coordinates} />
           </div>
 
           <div className="mt-6">
@@ -206,6 +225,14 @@ const ProviderDetail: any = () => {
           </div>
         </div>
       </div>
+      <div className="flex items-center justify-center w-full mt-10">
+          <button
+            onClick={() => router.push('/gardener')}
+            className="px-6 py-3 mb-8 text-[#263238] bg-[#CDDC39] rounded-lg shadow-md hover:bg-[#8BC34A] focus:ring-4 focus:ring-[#689F38] transition-all"
+          >
+            Volver a la lista de jardineros
+          </button>
+        </div>
     </div>
   );
 };
