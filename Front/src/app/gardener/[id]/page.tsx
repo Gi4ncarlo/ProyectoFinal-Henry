@@ -167,7 +167,7 @@ const ProviderDetail: React.FC = () => {
   if (error) return <div className="text-red-500">{error}</div>;
   if (!gardener) return <div>Cargando...</div>;
   return (
-    <div className="flex flex-col min-h-screen bg-[#4CAF50]">
+    <div className="flex flex-col min-h-screen bg-[url('/images/fondoJardineros2.jpg')] bg-cover bg-center">
       {/* Contenedor para centrar todo */}
       <div className="flex flex-col items-center justify-center flex-grow mx-4 md:mx-8 lg:mx-16">
         <div className="max-w-3xl mt-32 mb-14 p-6 bg-white rounded-lg shadow-lg">
