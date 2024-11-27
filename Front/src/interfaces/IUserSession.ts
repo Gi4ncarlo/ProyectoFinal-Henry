@@ -10,5 +10,7 @@ export interface IUserSession {
          role:string,
          profileImageUrl?:string,
          orders: []
+         experience?: string; // Propiedad opcional para el jardinero
+         services?: string;   // Propiedad opcional para el jardinero
     }
 }
