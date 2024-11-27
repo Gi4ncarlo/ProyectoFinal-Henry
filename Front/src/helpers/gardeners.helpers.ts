@@ -181,3 +181,49 @@ export async function postCarrouselImage(formData: FormData, id: string | undefi
 
 
 
+export const deleteGardener = async (token: string, id: number): Promise<void> => {
+  if (!token) {
+    throw new Error("Token is missing or invalid.");
+  }
+
+  const response = await fetch(`${APIURL}/gardener/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || "Error al eliminar el jardinero");
+  }
+};
+
+
+
+export const updateGardener = async (
+  token: string,
+  id: number,
+  updateGardenerDto: Partial<IServiceProvider>
+): Promise<IServiceProvider> => {
+  if (!token) {
+    throw new Error("Token inválido o ausente");
+  }
+
+  const response = await fetch(`${APIURL}/gardener/${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(updateGardenerDto),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || "Error al actualizar el jardinero");
+  }
+
+  return response.json();
+};

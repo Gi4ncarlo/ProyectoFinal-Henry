@@ -4,9 +4,11 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import ProviderCard from "../ProviderCard/ProviderCard";
 import { IServiceProvider } from "@/interfaces/IServiceProvider";
-import { getGardenersDB } from "@/helpers/gardeners.helpers";
+import { deleteGardener, getGardenersDB } from "@/helpers/gardeners.helpers";
 import { useRouter } from "next/navigation";
 import { FaSearch } from "react-icons/fa";
+import EditGardenerForm from "../EditGardenerForm/EditGardenerForm";
+import CardGardener from "../CardGardener/CardGardener";
 
 const Dropdown: React.FC<{ filter: string; onChange: (value: string) => void }> = ({
   filter,
@@ -40,9 +42,8 @@ const Dropdown: React.FC<{ filter: string; onChange: (value: string) => void }> 
           {options.map((option) => (
             <div
               key={option.value}
-              className={`px-4 py-2 hover:bg-[#8BC34A] hover:text-white cursor-pointer text-center ${
-                filter === option.value ? "bg-green-100" : ""
-              }`}
+              className={`px-4 py-2 hover:bg-[#8BC34A] hover:text-white cursor-pointer text-center ${filter === option.value ? "bg-green-100" : ""
+                }`}
               onClick={() => {
                 onChange(option.value);
                 setIsOpen(false);
@@ -68,7 +69,7 @@ const ListGardeners: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1); // Estado para manejar la página actual
   const itemsPerPage = 8; // Límite de cards por página
   const [availability, setAvailability] = useState<string | undefined>(undefined);
-
+  const [editGardener, setEditGardener] = useState<IServiceProvider | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -88,20 +89,20 @@ const ListGardeners: React.FC = () => {
 
   const handleFilter = (newFilter: string) => {
     setFilter(newFilter);
-  
+
     if (newFilter === "AVAILABLE") {
-      setAvailability("true"); // Filtrar por disponibles
+      setAvailability("true");
     } else if (newFilter === "NOT_AVAILABLE") {
-      setAvailability("false"); // Filtrar por no disponibles
+      setAvailability("false");
     } else {
-      setAvailability(undefined); // No filtrar por disponibilidad
+      setAvailability(undefined);
     }
-  
+
     if (typeof window !== "undefined") {
       localStorage.setItem("filter", newFilter);
     }
   };
-  
+
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newSearchTerm = e.target.value;
@@ -112,6 +113,50 @@ const ListGardeners: React.FC = () => {
     }
   };
 
+  {/*Fn para eliminar un jardinero */}
+  const handleDelete = async (id: number) => {
+    const confirmed = window.confirm("¿Estás seguro de que quieres eliminar este jardinero?");
+    if (!confirmed) return;
+
+    try {
+      const token =
+        typeof window !== "undefined"
+          ? JSON.parse(localStorage.getItem("userSession") || "{}").token
+          : null;
+
+      if (!token) {
+        throw new Error("Usuario no autenticado");
+      }
+
+      await deleteGardener(token, id);
+
+      // Actualizar la lista de jardineros después de eliminar
+      setProviders((prev) => prev.filter((gardener) => gardener.id !== id));
+      alert("Jardinero eliminado exitosamente.");
+    } catch (error: any) {
+      alert(error.message || "Error al eliminar el jardinero.");
+    }
+  };
+
+{/*fn para editar un jardinero */}
+const handleEdit = (gardener: IServiceProvider) => {
+  setEditGardener(gardener);
+};
+
+const handleSaveEdit = (updatedGardener: IServiceProvider) => {
+  setProviders((prev) =>
+    prev.map((gardener) =>
+      gardener.id === updatedGardener.id ? updatedGardener : gardener
+    )
+  );
+  setEditGardener(null);
+};
+
+const handleCancelEdit = () => {
+  setEditGardener(null);
+};
+
+
   useEffect(() => {
     const fetchProviders = async () => {
       setLoading(true);
@@ -120,16 +165,15 @@ const ListGardeners: React.FC = () => {
         const calification = isNaN(Number(filter)) ? undefined : Number(filter);
         let availability: string | undefined = undefined;
 
-         // Si el filtro es por disponibilidad, lo ajustamos
-      if (filter === "AVAILABLE") {
-        availability = "true";  // Aquí asumo que tienes un campo booleano o similar para la disponibilidad.
-      }
+        if (filter === "AVAILABLE") {
+          availability = "true";
+        }
         const token =
           typeof window !== "undefined"
             ? JSON.parse(localStorage.getItem("userSession") || "{}").token
             : null;
 
-        const gardeners = await getGardenersDB(token, order, calification, searchTerm,availability);
+        const gardeners = await getGardenersDB(token, order, calification, searchTerm, availability);
         setProviders(gardeners.data || []);
       } catch (error: any) {
         setError(error.message || "Error al cargar los Jardineros");
@@ -155,6 +199,8 @@ const ListGardeners: React.FC = () => {
   );
 
   if (loading)
+
+
     return (
       <div className="container min-h-screen px-6 py-12 mx-auto">
         <h1 className="text-2xl text-center mt-24 bold text-[#FF5722]">
@@ -162,50 +208,77 @@ const ListGardeners: React.FC = () => {
         </h1>
       </div>
     );
-  if (error) return <div>{error}</div>;
-
-  return (
-    <div className="mx-auto mt-24">
-      {providers.length === 0 ? (
-        <div className="text-center mb-8 mx-auto">
-          <h1 className="text-2xl font-bold mb-4">No hay jardineros</h1>
-          <button
-            className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
-            onClick={() => setSearchTerm("")}
-          >
-            Back
-          </button>
-        </div>
-      ) : (
-        <>
+    
+    if (error) return <div>{error}</div>;
+    
+    return (
+      <div className="mx-auto mt-24">
+        {providers.length === 0 ? (
           <div className="text-center mb-8 mx-auto">
-            <div className="relative w-1/2 mx-auto flex items-center mb-8">
-              <input
-                type="text"
-                placeholder="Buscar jardinero..."
-                value={searchTerm}
-                onChange={handleSearch}
-                className="w-full pl-4 pr-12 py-2 text-lg rounded-full border border-gray-300 shadow-lg focus:outline-none focus:ring-2 focus:ring-green-400"
-              />
-              <FaSearch className="absolute right-4 text-gray-500" />
-            </div>
+            <h1 className="text-2xl font-bold mb-4">No hay jardineros</h1>
+            <button
+              className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
+              onClick={() => setSearchTerm("")}
+            >
+              Back
+            </button>
           </div>
-          <div className="flex justify-end mb-4">
-            <Dropdown filter={filter} onChange={handleFilter} />
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mx-auto">
-            {paginatedProviders.map((gardener) => (
-              <Link href={`/gardener/${gardener.id}`} key={gardener.id}>
-                <ProviderCard
-                  name={gardener.name}
-                  experience={gardener.experience}
-                  profileImageUrl={gardener.profileImageUrl}
-                  calification={gardener.calification}
+        ) : (
+          <>
+            <div className="flex justify-between items-center bg-white p-4 shadow-sm rounded-lg mb-4">
+              <div className="relative w-1/2">
+                <input
+                  type="text"
+                  placeholder="Buscar jardinero..."
+                  value={searchTerm}
+                  onChange={handleSearch}
+                  className="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:outline-none"
                 />
-              </Link>
-            ))}
-          </div>
-          <div className="flex justify-between mt-6 mb-8">
+                <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+              </div>
+              <Dropdown filter={filter} onChange={handleFilter} />
+            </div>
+    
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mx-auto">
+              {paginatedProviders.map((gardener) => (
+                <div key={gardener.id} className="relative bg-white shadow-md rounded-lg p-4 border border-gray-200">
+                  {editGardener?.id === gardener.id ? (
+                    <EditGardenerForm
+                      gardener={editGardener}
+                      onSave={handleSaveEdit}
+                      onCancel={handleCancelEdit}
+                    />
+                  ) : (
+                    <>
+                      <CardGardener
+                        name={gardener.name}
+                        experience={gardener.experience}
+                        profileImageUrl={gardener.profileImageUrl}
+                        calification={gardener.calification}
+                      />
+                      
+                      {/* Contenedor de los botones debajo de la tarjeta */}
+                      <div className="mt-4 flex justify-between">
+                        <button
+                          onClick={() => handleEdit(gardener)}
+                          className="bg-blue-500 text-white rounded px-4 py-2 text-sm hover:bg-blue-600"
+                        >
+                          Editar
+                        </button>
+                        <button
+                          onClick={() => handleDelete(gardener.id)}
+                          className="bg-red-500 text-white rounded px-4 py-2 text-sm hover:bg-red-600"
+                        >
+                          Eliminar
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              ))}
+            </div>
+    
+            <div className="flex justify-between mt-6 mb-8">
               <button
                 onClick={handlePreviousPage}
                 disabled={currentPage === 1}
@@ -224,17 +297,14 @@ const ListGardeners: React.FC = () => {
                     : ""
                 }`}
               >
-              Página siguiente
-            </button>
-        </div>
-        </>
-      )}
-    </div>
-  );
-};
+                Página siguiente
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    );
+  }
 
 
-
-
-
-export default ListGardeners
+export default ListGardeners;
