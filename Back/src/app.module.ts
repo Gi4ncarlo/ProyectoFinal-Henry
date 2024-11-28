@@ -12,6 +12,7 @@ import { AdminModule } from './modules/admin/admin.module';
 import { MailModule } from './modules/mail/mail.module';
 import { MercadopagoModule } from './modules/mercadopago/mercadopago.module';
 import { TokenModule } from './modules/tokenServices/token.module';
+import { ReviewsModule } from './modules/reviews/reviews.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -29,7 +30,8 @@ import { TokenModule } from './modules/tokenServices/token.module';
     AdminModule,
     MercadopagoModule,
     MailModule,
-    TokenModule
+    TokenModule,
+    ReviewsModule
   ],
   controllers: [],
   providers: [],
