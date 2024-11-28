@@ -9,6 +9,6 @@ import { ServiceProvided } from '../serviceProvided/entities/serviceProvided.ent
   imports: [TypeOrmModule.forFeature([Gardener, ServiceProvided])],
   controllers: [GardenerController],
   providers: [GardenerService],
-  exports: [GardenerService],
+  exports: [GardenerService, TypeOrmModule],
 })
 export class GardenerModule {}
