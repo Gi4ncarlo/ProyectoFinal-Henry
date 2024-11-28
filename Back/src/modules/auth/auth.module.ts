@@ -15,7 +15,7 @@ import { Gardener } from '../gardener/entities/gardener.entity';
 import { MailModule } from '../mail/mail.module';
 
 @Module({
-  imports: [UserModule, TypeOrmModule.forFeature([User, AdminEntity,Gardener]), SharedModule, AdminModule, GardenerModule,MailModule],
+  imports: [UserModule, TypeOrmModule.forFeature([User, AdminEntity, Gardener]), SharedModule, AdminModule, GardenerModule, MailModule],
   controllers: [AuthController],
   providers: [AuthService, UserService, GardenerService, AdminService],
 })
