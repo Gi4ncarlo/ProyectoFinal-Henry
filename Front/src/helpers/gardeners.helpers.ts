@@ -1,3 +1,4 @@
+import { IService } from "@/interfaces/IService";
 import { IServiceProvider } from "@/interfaces/IServiceProvider";
 const APIURL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -147,4 +148,69 @@ export async function getCarrouselById(id: string) {
       return null;
     }
   }
+  
+  export const updateProviderServices = async (gardenerId: string, serviceIds: string[]): Promise<IServiceProvider> => {
+    try {
+      let TOKEN = null;
+      if (typeof window !== "undefined") {
+        const storedToken = localStorage.getItem("userSession");
+        TOKEN = storedToken ? JSON.parse(storedToken) : null;
+      }
+  
+      if (!TOKEN?.token) {
+        console.error("Token is missing or invalid.");
+        throw new Error("Unauthorized");
+      }
+  
+      const response = await fetch(`${APIURL}/gardener/${gardenerId}/serviceProvided`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${TOKEN.token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ services: serviceIds }),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error al actualizar los servicios del proveedor con ID ${gardenerId}`);
+      }
+  
+      const updatedProvider = await response.json();
+      return updatedProvider;
+    } catch (error) {
+      console.error('Error al actualizar los servicios del proveedor:', error);
+      throw error;
+    }
+  };
+  
+
+  export const getProviderServices = async (gardenerId: string): Promise<IService[]> => {
+    try {
+      let TOKEN = null;
+      if (typeof window !== "undefined") {
+        const storedToken = localStorage.getItem("userSession");
+        TOKEN = storedToken ? JSON.parse(storedToken) : null;
+      }
+  
+      if (!TOKEN?.token) {
+        console.error("Token is missing or invalid.");
+      }
+
+      const response = await fetch(`${APIURL}/gardener/${gardenerId}/serviceProvided`, {
+        headers: {
+          'Authorization': `Bearer ${TOKEN?.token}`,
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error al obtener los servicios del proveedor con ID ${gardenerId}`);
+      }
+  
+      const services = await response.json();
+      return services;
+    } catch (error) {
+      console.error('Error al obtener los servicios del proveedor:', error);
+      throw error;
+    }
+  };
 

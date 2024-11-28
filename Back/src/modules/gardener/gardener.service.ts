@@ -5,13 +5,18 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Gardener } from './entities/gardener.entity';
 import { Repository } from 'typeorm';
 import { format, parse } from 'date-fns';
+import { ServiceProvided } from '../serviceProvided/entities/serviceProvided.entity';
 
 @Injectable()
 export class GardenerService {
   constructor(
     @InjectRepository(Gardener)
-    private readonly gardenerRepository: Repository<Gardener>,
+    private gardenerRepository: Repository<Gardener>,
+    
+    @InjectRepository(ServiceProvided)
+    private serviceProvidedRepository: Repository<ServiceProvided>, 
   ) {}
+
 
   async reserveDay(id: string, day: string): Promise<{ message: string }> {
     try {
@@ -105,10 +110,25 @@ export class GardenerService {
   ): Promise<Gardener> {
     const gardener = await this.gardenerRepository.findOneBy({ id });
     if (!gardener) {
-      throw new NotFoundException(`Gardener with the ID ${id} not Found`);
+      throw new NotFoundException(`Gardener with the ID ${id} not found`);
     }
-    await this.gardenerRepository.update(id, updateGardenerDto);
-    return this.gardenerRepository.findOneBy({ id });
+
+    if (updateGardenerDto.serviceProvided) {
+      const serviceProvidedEntities = await Promise.all(
+        updateGardenerDto.serviceProvided.map(async (serviceId) => {
+          const service = await this.serviceProvidedRepository.findOneBy({ id: serviceId });
+          if (!service) {
+            throw new NotFoundException(`Service with ID ${serviceId} not found`);
+          }
+          return service;
+        }),
+      );
+
+      gardener.serviceProvided = serviceProvidedEntities;
+    }
+
+    Object.assign(gardener, updateGardenerDto);
+    return this.gardenerRepository.save(gardener);
   }
 
   async remove(id: string): Promise<string | void> {
@@ -179,4 +199,27 @@ export class GardenerService {
       return gardener.serviceDetails;
   
     }
+
+    async updateGardener(id: string, updateGardenerDto: UpdateGardenerDto): Promise<Gardener> {
+      const gardener = await this.gardenerRepository.findOne({
+        where: { id },
+        relations: ['serviceProvided'], // Cambia "services" a "serviceProvided"
+      });
+    
+      if (!gardener) {
+        throw new NotFoundException(`Gardener with ID ${id} not found`);
+      }
+    
+      // Actualizar las propiedades del jardinero
+      Object.assign(gardener, updateGardenerDto);
+    
+      if (updateGardenerDto.serviceProvided) {
+        gardener.serviceProvided = updateGardenerDto.serviceProvided.map(serviceId => ({ id: serviceId } as any));
+      }
+    
+      await this.gardenerRepository.save(gardener);
+      return gardener;
+    }
+    
+    
 }
