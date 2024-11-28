@@ -31,7 +31,7 @@ const Dropdown: React.FC<{ filter: string; onChange: (value: string) => void }> 
         className="w-full bg-white border border-gray-300 rounded-md shadow-sm px-4 py-2 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-400"
       >
         {options.find((opt) => opt.value === filter)?.label || "Ordenar por"}
-        <span className="float-right">▼</span>
+        <span className="float-right text-[#263238]">▼</span>
       </button>
       {isOpen && (
         <div className="absolute mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-10">
@@ -207,7 +207,7 @@ const ProviderCardList: React.FC = () => {
                     : ""
                 }`}
               >
-              Página siguiente
+                Página siguiente
             </button>
         </div>
         </>
