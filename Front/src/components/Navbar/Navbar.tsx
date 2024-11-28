@@ -87,7 +87,7 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed z-10 top-0 w-full transition-all duration-500 ${isScrolled
+      className={`fixed z-20 top-0 w-full transition-all duration-500 ${isScrolled
         ? "bg-gradient-to-r from-[#4CAF50] to-[#388E3C] shadow-lg"
         : "bg-gradient-to-r from-[#4CAF50] to-[#8BC34A]"
         }`}
@@ -189,9 +189,11 @@ export default function Navbar() {
               {isAuthenticated ? (
                 <div>
                   <Link href="/dashboard">
-                    <div className="block px-4 py-2 hover:bg-gray-300 text-gray-700 transition duration-150">
-                      Mi Cuenta
-                    </div>
+                
+                      <button className="block px-4 py-2 text-left w-full hover:bg-gray-300 text-gray-700 transition duration-150">
+                        Mi Cuenta
+                      </button>
+            
                   </Link>
                   <button
                     className="block px-4 py-2 text-left w-full hover:bg-gray-300 text-gray-700 transition duration-150"
