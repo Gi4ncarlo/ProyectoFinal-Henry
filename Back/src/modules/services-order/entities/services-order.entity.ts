@@ -4,6 +4,7 @@ import { v4 as uuid } from 'uuid';
 import { User } from "src/modules/user/entities/user.entity";
 import { ServiceProvided } from "src/modules/serviceProvided/entities/serviceProvided.entity";
 import { Gardener } from "src/modules/gardener/entities/gardener.entity";
+import { ReviewsEntity } from "src/modules/reviews/entities/reviews.entity";
 
 @Entity({ name: "service_order" })
 export class ServicesOrderEntity {
@@ -35,4 +36,8 @@ export class ServicesOrderEntity {
     @ManyToOne(() => User, (user) => user.servicesOrder)
     @JoinColumn()
     user: User;
+
+    @OneToOne(() => ReviewsEntity, (reviews) => reviews.serviceOrder)
+    @JoinColumn()
+    reviews: ReviewsEntity
 }
