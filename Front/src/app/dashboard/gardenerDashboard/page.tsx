@@ -206,9 +206,9 @@ const GardenerDashboard = () => {
 
 
   return (
-    <div className="min-h-screen bg-[#F4F9F4] font-sans">
+    <div >
       {/* Menú de navegación */}
-      <nav className="bg-[#263238] p-4 shadow-md flex justify-center space-x-4">
+      <nav className="flex justify-around bg-primary text-white p-4 rounded-md">
         <button
           onClick={() => setActiveComponent("tareas")}
           className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "tareas" ? "opacity-75" : ""
@@ -233,7 +233,9 @@ const GardenerDashboard = () => {
       </nav>
 
       {/* Contenido dinámico */}
-      <main className="p-6">
+      <div className="p-6 bg-secondary">
+        
+    
         {activeComponent === "tareas" && (
           <section>
             <h1 className="text-2xl font-bold text-[#263238]">
@@ -249,7 +251,8 @@ const GardenerDashboard = () => {
 
             </OrderList>
 
-          </section>
+          </section>  
+       
         )}
 
 
@@ -258,7 +261,7 @@ const GardenerDashboard = () => {
         {activeComponent === 'calendario' && <CalendarGardener />}
         {activeComponent === 'ordenes' && <CalendarGardener />}
 
-      </main>
+        </div>
     </div>
   );
 };

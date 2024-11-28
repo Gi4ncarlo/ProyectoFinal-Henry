@@ -32,7 +32,7 @@ const Dropdown: React.FC<{ filter: string; onChange: (value: string) => void }> 
     <div className="relative w-48">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full bg-white border border-gray-300 rounded-md shadow-sm px-4 py-2 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-400"
+        className="w-full bg-white border border-gray-300 rounded-md shadow-sm px-4 py-2 text-left text-slate-400 cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-400"
       >
         {options.find((opt) => opt.value === filter)?.label || "Ordenar por"}
         <span className="float-right text-[#263238]">▼</span>
@@ -54,6 +54,7 @@ const Dropdown: React.FC<{ filter: string; onChange: (value: string) => void }> 
           ))}
         </div>
       )}
+
     </div>
   );
 };
@@ -225,7 +226,8 @@ const handleCancelEdit = () => {
           </div>
         ) : (
           <>
-            <div className="flex justify-between items-center bg-white p-4 shadow-sm rounded-lg mb-4">
+            <div className="flex justify-between items-center text-orange-950 bg-white p-3 shadow-sm rounded-lg mb-4">
+              <h2>Jardineros Disponibles</h2>
               <div className="relative w-1/2">
                 <input
                   type="text"

@@ -5,69 +5,35 @@ import Services from "@/components/Services/Services";
 import ListGardeners from "@/components/ListGardeners/ListGardeners";
 
 const AdminDashboard = () => {
-  const [activeComponent, setActiveComponent] = useState<string>(""); // Controla el componente activo
+  const [activeComponent, setActiveComponent] = useState<string>("");
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-100">
-      {/* Barra de navegación */}
-      <div className="bg-green-600 text-white py-4 px-6 flex justify-between items-center shadow-md">
-        <h1 className="text-xl font-bold">Admin Dashboard</h1>
-        <div className="flex gap-4">
-          <button
-            onClick={() => setActiveComponent("userList")}
-            className={`px-4 py-2 rounded-lg transition ${activeComponent === "userList"
-                ? "bg-white text-green-600"
-                : "bg-green-700 hover:bg-green-800"
-              }`}
-          >
-            Lista de Usuarios
-          </button>
-          <button
-            onClick={() => setActiveComponent("services")}
-            className={`px-4 py-2 rounded-lg transition ${activeComponent === "services"
-                ? "bg-white text-green-600"
-                : "bg-green-700 hover:bg-green-800"
-              }`}
-          >
-            Servicios Disponibles
-          </button>
+    <div className=" bg-[url('/images/dashboard.png')] bg-cover bg-center">
+         <nav className="flex justify-around bg-primary text-white p-4 rounded-md">
+        <button
+          onClick={() => setActiveComponent("userList")}
+          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "userList" ? "opacity-75" : ""}`}
 
-
-          <button
-            onClick={() => setActiveComponent("ListGardeners")}
-            className={`px-4 py-2 rounded-lg transition ${activeComponent === "ListGardeners"
-                ? "bg-white text-green-600"
-                : "bg-green-700 hover:bg-green-800"
-              }`}
-          >
-            Lista de Jardineros
-          </button>
-        </div>
-      </div>
-
-      {/* Contenido dinámico */}
-      <div className="flex-grow p-6">
-        {activeComponent === "userList" && (
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <UserList />
-          </div>
-        )}
-        {activeComponent === "services" && (
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <Services />
-          </div>
-        )}
-        {activeComponent === "ListGardeners" && (
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <ListGardeners/>
-          </div>
-        )}
-        {/* Mensaje inicial si no hay selección */}
-        {!activeComponent && (
-          <div className="text-gray-500 text-center mt-20">
-            <p className="text-lg text-[#263238]">Selecciona una opción del menú para empezar.</p>
-          </div>
-        )}
+        >
+          Usuarios
+        </button>
+        <button
+          onClick={() => setActiveComponent("services")}
+          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "services" ? "opacity-75" : ""}`}
+        >
+          Servicios
+        </button>
+        <button
+          onClick={() => setActiveComponent("listGardeners")}
+          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "listGardeners" ? "opacity-75" : ""}`}
+        >
+          Jardineros
+        </button>
+      </nav>
+      <div className="p-6 bg-secondary">
+        {activeComponent === "userList" && <UserList />}
+        {activeComponent === "services" && <Services />}
+        {activeComponent === "listGardeners" && <ListGardeners />}
       </div>
     </div>
   );

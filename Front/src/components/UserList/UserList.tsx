@@ -14,9 +14,12 @@ function UserList() {
   const [users, setUsers] = useState<User[]>([]);
   const [isBanning, setIsBanning] = useState(false);
   const [banError, setBanError] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
 
   useEffect(() => {
     const fetchUsers = async () => {
+      setLoading(true);
       try {
         const response = await getAllUsers();
         if (response) {
@@ -26,6 +29,8 @@ function UserList() {
         }
       } catch (error) {
         console.error("Error fetching users:", error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchUsers();
@@ -76,6 +81,18 @@ function UserList() {
       alert("Error al eliminar el usuario");
     }
   };
+  if (loading)
+
+
+    return (
+      <div className="container min-h-screen px-6 py-12 mx-auto">
+        <h1 className="text-2xl text-center mt-24 bold text-[#FF5722]">
+          Cargando ...
+        </h1>
+      </div>
+    );
+    
+
 
   return (
     <div className="container mx-auto px-4 py-6">
