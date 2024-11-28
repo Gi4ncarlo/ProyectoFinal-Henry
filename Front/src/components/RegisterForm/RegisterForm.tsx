@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import { Eye, EyeOff } from "lucide-react";
 import Image from 'next/image';
+import { Spin } from 'antd';
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -41,6 +42,8 @@ export default function RegisterForm() {
     role: false,
   });
   const [title, setTitle] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
 
   const role = searchParams?.get('role'); // Obtén el valor del parámetro "role"
 
@@ -82,6 +85,7 @@ export default function RegisterForm() {
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length === 0) {
+      setIsSubmitting(true);
       try {
         await register(dataUser);
         Swal.fire({
@@ -96,9 +100,12 @@ export default function RegisterForm() {
           text: "Ocurrió un problema al registrarte",
           icon: "error",
         });
+      } finally {
+        setIsSubmitting(false);
       }
     }
   };
+
 
   // Validación en tiempo real al cambiar `dataUser` o `touched`
   useEffect(() => {
@@ -126,8 +133,8 @@ export default function RegisterForm() {
 
 
 
-    <div className="relative w-full max-w-md mx-auto my-24 p-6 border rounded-lg shadow-lg bg-white z-9">
-      <h2 className="text-2xl font-bold text-center mb-4 text-[#4CAF50]">{title}</h2>
+<div className="relative w-full max-w-screen-md mx-auto p-6 border rounded-lg shadow-lg bg-white z-9 overflow-y-auto max-h-[90vh]">
+<h2 className="text-2xl font-bold text-center mb-4 text-[#4CAF50]">{title}</h2>
       <p className="text-[#263238] text-center mb-6">Crea tu cuenta y disfruta de nuestros servicios</p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -175,7 +182,7 @@ export default function RegisterForm() {
             required
             value={dataUser.email}
             onChange={handleChange}
-            placeholder="example@mail.com"
+            placeholder="ejemplo@mail.com"
             className="mt-1 p-2 border border-[#CDDC39] rounded w-full focus:outline-none focus:ring-2 focus:ring-[#8BC34A] focus:border-none"
           />
           {touched.email && errors.email && (
@@ -273,7 +280,7 @@ export default function RegisterForm() {
             required
             value={dataUser.address}
             onChange={handleChange}
-            placeholder="123 Garden St."
+            placeholder="Calle 123, Ciudad"
             className="mt-1 p-2 border border-[#CDDC39] rounded w-full focus:outline-none focus:ring-2 focus:ring-[#8BC34A] focus:border-none"
           />
           {touched.address && errors.address && (
@@ -282,11 +289,14 @@ export default function RegisterForm() {
         </div>
 
         <button
-          type="submit"
-            className="w-full mt-4 p-2 bg-[#4caf50] text-white font-bold rounded hover:bg-[#388e3c]"
-        >
-          Registrarse
-        </button>
+            type="submit"
+            disabled={isSubmitting}
+            className={`w-full p-2 mt-4 text-white bg-[#4CAF50] rounded-lg focus:outline-none ${
+              isSubmitting ? 'cursor-not-allowed opacity-70' : 'hover:bg-[#388E3C]'
+            }`}
+          >
+            {isSubmitting ? <Spin /> : 'Registrarse'}
+          </button>
       </form>
     </div>
     /</div>

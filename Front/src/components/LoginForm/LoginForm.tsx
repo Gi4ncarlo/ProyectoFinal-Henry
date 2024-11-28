@@ -94,7 +94,7 @@ export default function LoginForm() {
         quality={100}
       />
 
-      <div className="relative w-full max-w-md mx-auto p-6 border rounded-lg shadow-lg bg-white z-10">
+      <div className="relative w-full max-w-md mx-auto p-6 border rounded-lg shadow-lg bg-white z-9">
         <h2 className="text-3xl font-bold text-center mb-4 text-[#263238]">
           Inicia sesión
         </h2>

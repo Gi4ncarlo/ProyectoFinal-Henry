@@ -27,8 +27,8 @@ export class Gardener extends User {
   })
   role: Role;
 
-  @Column({ type: 'simple-array', array: true, nullable: true }) 
-  reservedDays: string[];
+  @Column({ type: 'text', array: true, nullable: true })
+  reservedDays: string[] | null;
 
   @ManyToMany(() => ServiceProvided, (service) => service.gardener)
   serviceProvided: ServiceProvided[];
@@ -42,7 +42,8 @@ export class Gardener extends User {
   @Column(
     {
       type: 'simple-array',
-      nullable: true,}
+      nullable: true,
+    }
   )
   carrouselImages: string[];
 }

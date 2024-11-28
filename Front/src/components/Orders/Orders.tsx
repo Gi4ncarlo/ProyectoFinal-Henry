@@ -1,4 +1,3 @@
-
 "use client";
 
 import { getuserOrdersDB } from "@/helpers/userOrders.helpers";
@@ -9,6 +8,7 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import Modal from "./modal";
+import { format } from "date-fns";
 
 // Componente para mostrar las órdenes del usuario
 const DashboardUserCompo: React.FC = () => {
@@ -22,7 +22,7 @@ const DashboardUserCompo: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null); // Para almacenar la orden seleccionada
 
-  const handleOpenModal = (order) => {
+  const handleOpenModal = (order: any) => {
     setSelectedOrder(order); // Establecer la orden seleccionada
     setShowModal(true); // Mostrar el modal
   };
@@ -31,7 +31,6 @@ const DashboardUserCompo: React.FC = () => {
     setShowModal(false); // Cerrar el modal
     setSelectedOrder(null); // Resetear la orden seleccionada
   };
-
 
   useEffect(() => {
     // Usamos URLSearchParams para obtener los query params
@@ -129,8 +128,6 @@ const DashboardUserCompo: React.FC = () => {
     return <p>{error}</p>;
   }
 
-  console.log(orders);
-
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center py-3 px-4">
       <h1 className="text-3xl font-bold text-gray-800 mb-8">
@@ -155,7 +152,7 @@ const DashboardUserCompo: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Image
                   className="rounded-full"
-                  src={order.gardener.profileImageUrl || '/default-profile.jpg'}
+                  src={order.gardener.profileImageUrl || "/default-profile.jpg"}
                   alt={`${order.gardener.name}'s profile`}
                   width={120}
                   height={120}
@@ -181,10 +178,10 @@ const DashboardUserCompo: React.FC = () => {
                   <p className="text-gray-700">
                     <strong>Fecha de Orden:</strong> {order.date}
                   </p>
-                  <p className="text-gray-700">
-                    <strong>Fecha del Servicio:</strong>{" "}
-                    {false || "No esta definida"}
-                  </p>
+                  <strong>Fecha del Servicio:</strong>{" "}
+                  {order.dateService
+                    ? format(new Date(order.dateService), "yyyy/MM/dd")
+                    : "No está definida"}
                 </div>
               </div>
 
@@ -219,14 +216,16 @@ const DashboardUserCompo: React.FC = () => {
               <div className="mt-6 flex justify-between items-center">
                 <div className="flex items-center gap-2">
                   <span
-                    className={`inline-block px-4 py-2 rounded-full text-white font-semibold ${order.isApproved ? "bg-green-500" : "bg-red-500"
-                      }`}
+                    className={`inline-block px-4 py-2 rounded-full text-white font-semibold ${
+                      order.isApproved ? "bg-green-500" : "bg-red-500"
+                    }`}
                   >
                     {order.isApproved ? "Aprobada" : "No Aprobada"}
                   </span>
                   <span
-                    className={`inline-block px-4 py-2 rounded-full text-white font-semibold ${order.isApproved ? "bg-green-500" : "bg-red-500"
-                      }`}
+                    className={`inline-block px-4 py-2 rounded-full text-white font-semibold ${
+                      order.isApproved ? "bg-green-500" : "bg-red-500"
+                    }`}
                   >
                     {order.isApproved ? "Aprobada" : "No Aprobada"}
                   </span>
@@ -255,7 +254,11 @@ const DashboardUserCompo: React.FC = () => {
           ))}
         </div>
       )}
-      <Modal show={showModal} onClose={handleCloseModal} orderDetail={selectedOrder} />
+      <Modal
+        show={showModal}
+        onClose={handleCloseModal}
+        orderDetail={selectedOrder}
+      />
     </div>
   );
 };

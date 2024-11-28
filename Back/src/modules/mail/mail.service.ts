@@ -54,7 +54,22 @@ export class MailService {
     } catch (error: any) {
       throw new Error( error.message);
     }
+  }
 
-
+  async sendMail(to: string, subject: string, text: string) {
+    try {
+      const mailOptions = {
+        from: to,
+        to : process.env.EMAIL_USER,
+        subject,
+        text,
+      };
+  
+      await this.transporter.sendMail(mailOptions);
+      return
+    } catch (error : any) {
+      throw new Error( error.message);
+    }
+ 
   }
 }

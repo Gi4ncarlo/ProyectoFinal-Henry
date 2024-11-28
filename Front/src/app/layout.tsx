@@ -8,6 +8,7 @@ import Footer from "@/components/Footer/Footer";
 import { UserProvider } from "@auth0/nextjs-auth0/client";
 import { usePathname } from "next/navigation";
 
+
 const inter = Inter({ subsets: ["latin"] });
 
 // export const metadata: Metadata = {

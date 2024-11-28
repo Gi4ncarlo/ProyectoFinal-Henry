@@ -26,6 +26,31 @@ export const getGardenersDB = async (
   return data;
 };
 
+export const getTasks = async (id: string) => {
+  let TOKEN = null;
+
+  if (typeof window !== "undefined") {
+    const storedToken = localStorage.getItem("userSession");
+    TOKEN = storedToken ? JSON.parse(storedToken) : null;
+  }
+
+  if (!TOKEN || !TOKEN.token) {
+    console.error("Token is missing or invalid.");
+    return null;
+  }
+  const response = await fetch(`${APIURL}/services-order/gardener/${id}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${TOKEN.token}`,
+      "Content-Type": "application/json",
+    },
+  });
+  const data = await response.json();
+  console.log(data);
+  
+  return data;
+}
+
 // Función para obtener un gardener por ID
 export async function getProviderById(id: string): Promise<IServiceProvider | null> {
   let TOKEN = null;
@@ -212,5 +237,52 @@ export async function getCarrouselById(id: string) {
       console.error('Error al obtener los servicios del proveedor:', error);
       throw error;
     }
+  };
+
+  export const deleteGardener = async (token: string, id: number): Promise<void> => {
+    if (!token) {
+      throw new Error("Token is missing or invalid.");
+    }
+  
+    const response = await fetch(`${APIURL}/gardener/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+  
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Error al eliminar el jardinero");
+    }
+  };
+  
+  
+  
+  export const updateGardener = async (
+    token: string,
+    id: number,
+    updateGardenerDto: Partial<IServiceProvider>
+  ): Promise<IServiceProvider> => {
+    if (!token) {
+      throw new Error("Token inválido o ausente");
+    }
+  
+    const response = await fetch(`${APIURL}/gardener/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(updateGardenerDto),
+    });
+  
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Error al actualizar el jardinero");
+    }
+  
+    return response.json();
   };
 

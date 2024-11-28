@@ -1,13 +1,35 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bree+Serif&family=Nunito:wght@400;600;700&family=Raleway:wght@400;600;700&family=Open+Sans:wght@400;600;700&family=Oswald:wght@400;500;700&family=Quattrocento:wght@400;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-background-image: url('/images/fondo_contacto.jpg');
-
-/* main{
-    height: 1000px;
-} */
-
-
-
+@layer base {
+    h1 {
+      @apply font-h1 text-5xl font-bold text-white;
+    }
+  
+    h2 {
+      @apply font-h2 text-4xl font-semibold text-white;
+    }
+  
+    h3, h4 {
+      @apply font-subtitle text-2xl font-medium text-white;
+    }
+  
+    nav {
+      @apply font-navbar text-lg font-semibold text-white;
+    }
+  
+    p {
+      @apply font-body text-base text-white leading-relaxed;
+    }
+  
+    button {
+      @apply font-button text-lg text-white tracking-wider;
+    }
+  
+    footer {
+      @apply font-footer text-sm font-light text-white;
+    }
+  }
+  

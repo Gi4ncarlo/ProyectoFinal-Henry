@@ -25,25 +25,3 @@ export const getServicesProvided = async(): Promise<IService[]> => {
   }
 };
 
-export const updateProviderServices = async (gardenerId: string, serviceIds: string[]): Promise<IService[]> => {
-  try {
-    const response = await fetch(`${APIURL}/serviceProvided/${gardenerId}`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${TOKEN.token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ services: serviceIds }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to update provider services');
-    }
-
-    const updatedServices = await response.json();
-    return updatedServices;
-  } catch (error) {
-    console.error('Error updating provider services:', error);
-    throw error;
-  }
-};
