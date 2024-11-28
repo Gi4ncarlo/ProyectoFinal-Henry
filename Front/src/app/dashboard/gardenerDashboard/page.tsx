@@ -197,6 +197,8 @@ const GardenerDashboard = () => {
 
   const fetchTasks = async (id: string) => {
     try {
+      console.log(id);
+
       const taskData = await getTasks(id);
       setTasks(taskData);
     } catch (error) {
