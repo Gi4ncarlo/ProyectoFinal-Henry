@@ -9,6 +9,8 @@ import { useRouter } from "next/navigation";
 import { FaSearch } from "react-icons/fa";
 import EditGardenerForm from "../EditGardenerForm/EditGardenerForm";
 import CardGardener from "../CardGardener/CardGardener";
+import { Spin, Flex } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 
 const Dropdown: React.FC<{ filter: string; onChange: (value: string) => void }> = ({
   filter,
@@ -113,7 +115,7 @@ const ListGardeners: React.FC = () => {
     }
   };
 
-  {/*Fn para eliminar un jardinero */}
+  {/*Fn para eliminar un jardinero */ }
   const handleDelete = async (id: number) => {
     const confirmed = window.confirm("¿Estás seguro de que quieres eliminar este jardinero?");
     if (!confirmed) return;
@@ -138,23 +140,23 @@ const ListGardeners: React.FC = () => {
     }
   };
 
-{/*fn para editar un jardinero */}
-const handleEdit = (gardener: IServiceProvider) => {
-  setEditGardener(gardener);
-};
+  {/*fn para editar un jardinero */ }
+  const handleEdit = (gardener: IServiceProvider) => {
+    setEditGardener(gardener);
+  };
 
-const handleSaveEdit = (updatedGardener: IServiceProvider) => {
-  setProviders((prev) =>
-    prev.map((gardener) =>
-      gardener.id === updatedGardener.id ? updatedGardener : gardener
-    )
-  );
-  setEditGardener(null);
-};
+  const handleSaveEdit = (updatedGardener: IServiceProvider) => {
+    setProviders((prev) =>
+      prev.map((gardener) =>
+        gardener.id === updatedGardener.id ? updatedGardener : gardener
+      )
+    );
+    setEditGardener(null);
+  };
 
-const handleCancelEdit = () => {
-  setEditGardener(null);
-};
+  const handleCancelEdit = () => {
+    setEditGardener(null);
+  };
 
 
   useEffect(() => {
@@ -202,109 +204,109 @@ const handleCancelEdit = () => {
 
 
     return (
-      <div className="container min-h-screen px-6 py-12 mx-auto">
-        <h1 className="text-2xl text-center mt-24 bold text-[#FF5722]">
+      <div className="flex flex-col justify-center items-center min-h-screen px-6 py-12 mx-auto">
+        <h1 className="text-2xl text-center font-bold text-[#FF5722] mb-4">
           Cargando ...
         </h1>
+        <Spin indicator={<LoadingOutlined spin />} size="large" />
       </div>
     );
     
-    if (error) return <div>{error}</div>;
-    
-    return (
-      <div className="mx-auto mt-24">
-        {providers.length === 0 ? (
-          <div className="text-center mb-8 mx-auto">
-            <h1 className="text-2xl font-bold mb-4">No hay jardineros</h1>
+
+  if (error) return <div>{error}</div>;
+
+  return (
+    <div className="mx-auto mt-24">
+      {providers.length === 0 ? (
+        <div className="text-center mb-8 mx-auto">
+          <h1 className="text-2xl font-bold mb-4">No hay jardineros</h1>
+          <button
+            className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
+            onClick={() => setSearchTerm("")}
+          >
+            Back
+          </button>
+        </div>
+      ) : (
+        <>
+          <div className="flex justify-between items-center bg-white p-4 shadow-sm rounded-lg mb-4">
+            <div className="relative w-1/2">
+              <input
+                type="text"
+                placeholder="Buscar jardinero..."
+                value={searchTerm}
+                onChange={handleSearch}
+                className="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:outline-none"
+              />
+              <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+            </div>
+            <Dropdown filter={filter} onChange={handleFilter} />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mx-auto">
+            {paginatedProviders.map((gardener) => (
+              <div key={gardener.id} className="relative bg-white shadow-md rounded-lg p-4 border border-gray-200">
+                {editGardener?.id === gardener.id ? (
+                  <EditGardenerForm
+                    gardener={editGardener}
+                    onSave={handleSaveEdit}
+                    onCancel={handleCancelEdit}
+                  />
+                ) : (
+                  <>
+                    <CardGardener
+                      name={gardener.name}
+                      experience={gardener.experience}
+                      profileImageUrl={gardener.profileImageUrl}
+                      calification={gardener.calification}
+                    />
+
+                    {/* Contenedor de los botones debajo de la tarjeta */}
+                    <div className="mt-4 flex justify-between">
+                      <button
+                        onClick={() => handleEdit(gardener)}
+                        className="bg-blue-500 text-white rounded px-4 py-2 text-sm hover:bg-blue-600"
+                      >
+                        Editar
+                      </button>
+                      <button
+                        onClick={() => handleDelete(gardener.id)}
+                        className="bg-red-500 text-white rounded px-4 py-2 text-sm hover:bg-red-600"
+                      >
+                        Eliminar
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <div className="flex justify-between mt-6 mb-8">
             <button
-              className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
-              onClick={() => setSearchTerm("")}
+              onClick={handlePreviousPage}
+              disabled={currentPage === 1}
+              className={`px-4 py-2 bg-[#8BC34A] text-white rounded ${currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+                }`}
             >
-              Back
+              Página anterior
+            </button>
+            <button
+              onClick={handleNextPage}
+              disabled={currentPage * itemsPerPage >= providers.length}
+              className={`px-4 py-2 bg-[#8BC34A] text-white rounded ${currentPage * itemsPerPage >= providers.length
+                  ? "opacity-50 cursor-not-allowed"
+                  : ""
+                }`}
+            >
+              Página siguiente
             </button>
           </div>
-        ) : (
-          <>
-            <div className="flex justify-between items-center bg-white p-4 shadow-sm rounded-lg mb-4">
-              <div className="relative w-1/2">
-                <input
-                  type="text"
-                  placeholder="Buscar jardinero..."
-                  value={searchTerm}
-                  onChange={handleSearch}
-                  className="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:outline-none"
-                />
-                <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-              </div>
-              <Dropdown filter={filter} onChange={handleFilter} />
-            </div>
-    
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mx-auto">
-              {paginatedProviders.map((gardener) => (
-                <div key={gardener.id} className="relative bg-white shadow-md rounded-lg p-4 border border-gray-200">
-                  {editGardener?.id === gardener.id ? (
-                    <EditGardenerForm
-                      gardener={editGardener}
-                      onSave={handleSaveEdit}
-                      onCancel={handleCancelEdit}
-                    />
-                  ) : (
-                    <>
-                      <CardGardener
-                        name={gardener.name}
-                        experience={gardener.experience}
-                        profileImageUrl={gardener.profileImageUrl}
-                        calification={gardener.calification}
-                      />
-                      
-                      {/* Contenedor de los botones debajo de la tarjeta */}
-                      <div className="mt-4 flex justify-between">
-                        <button
-                          onClick={() => handleEdit(gardener)}
-                          className="bg-blue-500 text-white rounded px-4 py-2 text-sm hover:bg-blue-600"
-                        >
-                          Editar
-                        </button>
-                        <button
-                          onClick={() => handleDelete(gardener.id)}
-                          className="bg-red-500 text-white rounded px-4 py-2 text-sm hover:bg-red-600"
-                        >
-                          Eliminar
-                        </button>
-                      </div>
-                    </>
-                  )}
-                </div>
-              ))}
-            </div>
-    
-            <div className="flex justify-between mt-6 mb-8">
-              <button
-                onClick={handlePreviousPage}
-                disabled={currentPage === 1}
-                className={`px-4 py-2 bg-[#8BC34A] text-white rounded ${
-                  currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-              >
-                Página anterior
-              </button>
-              <button
-                onClick={handleNextPage}
-                disabled={currentPage * itemsPerPage >= providers.length}
-                className={`px-4 py-2 bg-[#8BC34A] text-white rounded ${
-                  currentPage * itemsPerPage >= providers.length
-                    ? "opacity-50 cursor-not-allowed"
-                    : ""
-                }`}
-              >
-                Página siguiente
-              </button>
-            </div>
-          </>
-        )}
-      </div>
-    );
-  }
+        </>
+      )}
+    </div>
+  );
+}
 
 
 export default ListGardeners;
