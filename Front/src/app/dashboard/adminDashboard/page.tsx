@@ -65,7 +65,7 @@ const AdminDashboard = () => {
         {/* Mensaje inicial si no hay selección */}
         {!activeComponent && (
           <div className="text-gray-500 text-center mt-20">
-            <p className="text-lg">Selecciona una opción del menú para empezar.</p>
+            <p className="text-lg text-[#263238]">Selecciona una opción del menú para empezar.</p>
           </div>
         )}
       </div>
