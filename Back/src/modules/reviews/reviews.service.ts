@@ -14,6 +14,7 @@ export class ReviewsService {
         private readonly servicesOrderRepository: Repository<ServicesOrderEntity>,
         @InjectRepository(Gardener)
         private readonly gardenerRepository: Repository<Gardener>,
+   
     ) { }
     async createReview(id: string, body: any) {
         console.log(body);
@@ -65,4 +66,21 @@ export class ReviewsService {
         }
     }
 
+   
+    // Método para obtener las reseñas de un jardinero específico
+    async getReviewsByGardener(gardenerId: string) {
+        try {
+            const reviews = await this.reviewsRepository.find({
+                where: { gardener: { id: gardenerId } },
+                relations: ['gardener'],
+            });
+            return reviews;
+        } catch (error) {
+            throw new HttpException('Error fetching reviews', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+   
+
 }
+
