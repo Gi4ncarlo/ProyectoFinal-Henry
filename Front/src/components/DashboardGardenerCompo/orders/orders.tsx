@@ -14,7 +14,7 @@ const OrderList = ({ order }: any) => {
         setSelectedOrder(null); // Cierra el modal
     };
     console.log(order);
-    
+
     return (
         <div className="py-16 px-6 bg-gray-50">
             <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
@@ -55,8 +55,13 @@ const OrderList = ({ order }: any) => {
                                     <strong>Solicitante:</strong> {orderItem.user.name}
                                 </p>
                                 <p className="text-sm text-gray-500">
-                                    <strong>Estado de la solicitud:</strong>{" "}
-                                    {orderItem.isApproved ? "Aprobada" : "Pendiente"}
+                                    <strong>Estado de la Orden:</strong>{" "}
+                                    {orderItem.isApproved ? "Aprobada" : "Pendiente de pago"}
+                                </p>
+                                <p className="text-sm text-gray-500">
+                                    <strong>Proceso del servicio:</strong>{" "}
+                                    {orderItem.isApproved ?
+                                        orderItem.orderDetail.status : "Pendiente de pago"}
                                 </p>
                             </div>
                             {orderItem.isApproved && (

@@ -140,6 +140,17 @@ export class ServicesOrderService {
     }
     return order;
   }
+  async obtenerFechaSiguiente(fechaInicial: string): Promise<string> {
+    const [año, mes, dia] = fechaInicial.split('-').map(Number);
+    const fecha = new Date(año, mes - 1, dia);
+    fecha.setDate(fecha.getDate() + 1);
+    const diaFinal = fecha.getDate().toString().padStart(2, '0');
+    const mesFinal = (fecha.getMonth() + 1).toString().padStart(2, '0');
+    const añoFinal = fecha.getFullYear();
+
+    return `${añoFinal}-${mesFinal}-${diaFinal}`;
+  }
+
   async orderPay(id: string) {
     try {
       const order = await this.findOne(id);
@@ -151,7 +162,8 @@ export class ServicesOrderService {
       const newOrderDetail = await this.serviceDetailsRepository.create({
         serviceType: order.serviceProvided.map((service) => service.detailService),
         totalPrice: price,
-        startTime: new Date().toLocaleString(),
+        startTime: order.date,
+        endTime: await this.obtenerFechaSiguiente(order.date),
         status: Status.Pending,
         servicesOrder: order,
         assignedGardener: order.gardener
@@ -215,6 +227,7 @@ export class ServicesOrderService {
           serviceType: true,
           totalPrice: true,
           startTime: true,
+          endTime: true,
           status: true,
           rating: true
         }
