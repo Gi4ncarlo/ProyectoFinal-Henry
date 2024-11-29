@@ -14,6 +14,7 @@ import GardenerCalendar from "@/components/GardenerCalendar/GardenerCalendar";
 import GardenerMap from "@/components/GardenerMap/GardenerMap"; // Importa el componente GardenerMap
 import { Rate } from "antd";
 import { fetchReviews } from "@/helpers/comments.helpers";
+import { Checkbox } from 'antd';
 
 const ProviderDetail: React.FC = () => {
   const router = useRouter();
@@ -131,6 +132,13 @@ const ProviderDetail: React.FC = () => {
     );
   };
 
+  const calculateTotal = () => {
+    return selectedServices.reduce((total, serviceId) => {
+      const service = services.find((service) => service.id === serviceId);
+      return total + (service?.price || 0);
+    }, 0);
+  };
+
   const handleDateSelect = (date: string) => {
     setSelectedDate(date);
   };
@@ -241,20 +249,31 @@ const ProviderDetail: React.FC = () => {
             <h2 className="text-lg font-semibold text-[#263238]">
               Servicios Disponibles:
             </h2>
-            <div className="mt-2">
+            <ul className="mt-4">
               {services.map((service) => (
-                <div key={service.id} className="mb-4">
-                  <label className="block text-[#263238]">
-                    <input
-                      type="checkbox"
+                <li
+                  key={service.id}
+                  className="flex justify-between items-center py-2 border-b border-gray-200"
+                >
+                  <div className="flex-1 text-left">
+                    <span className="font-medium text-gray-800">{service.detailService}</span>
+                  </div>
+                  <div className="flex-1 text-center">
+                    <span className="font-semibold text-green-600">${service.price}</span>
+                  </div>
+                  <div className="flex-1 text-right">
+                    <Checkbox
                       checked={selectedServices.includes(service.id)}
                       onChange={() => handleServiceChange(service.id)}
-                      className="mr-2"
                     />
-                    {service.detailService}
-                  </label>
-                </div>
+                  </div>
+                </li>
               ))}
+            </ul>
+            <div className="mt-4">
+              <h3 className="text-xl bg-[#8BC34A] rounded-lg font-bold text-[#263238] flex justify-center">
+                Total: <span className="text-[#263238]">${calculateTotal()}</span>
+              </h3>
             </div>
 
 

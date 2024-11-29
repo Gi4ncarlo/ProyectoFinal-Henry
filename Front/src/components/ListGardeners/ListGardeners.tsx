@@ -9,6 +9,8 @@ import { useRouter } from "next/navigation";
 import { FaSearch } from "react-icons/fa";
 import EditGardenerForm from "../EditGardenerForm/EditGardenerForm";
 import CardGardener from "../CardGardener/CardGardener";
+import { Spin, Flex } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 
 const Dropdown: React.FC<{ filter: string; onChange: (value: string) => void }> = ({
   filter,
@@ -114,7 +116,7 @@ const ListGardeners: React.FC = () => {
     }
   };
 
-  {/*Fn para eliminar un jardinero */}
+  {/*Fn para eliminar un jardinero */ }
   const handleDelete = async (id: number) => {
     const confirmed = window.confirm("¿Estás seguro de que quieres eliminar este jardinero?");
     if (!confirmed) return;
@@ -139,23 +141,23 @@ const ListGardeners: React.FC = () => {
     }
   };
 
-{/*fn para editar un jardinero */}
-const handleEdit = (gardener: IServiceProvider) => {
-  setEditGardener(gardener);
-};
+  {/*fn para editar un jardinero */ }
+  const handleEdit = (gardener: IServiceProvider) => {
+    setEditGardener(gardener);
+  };
 
-const handleSaveEdit = (updatedGardener: IServiceProvider) => {
-  setProviders((prev) =>
-    prev.map((gardener) =>
-      gardener.id === updatedGardener.id ? updatedGardener : gardener
-    )
-  );
-  setEditGardener(null);
-};
+  const handleSaveEdit = (updatedGardener: IServiceProvider) => {
+    setProviders((prev) =>
+      prev.map((gardener) =>
+        gardener.id === updatedGardener.id ? updatedGardener : gardener
+      )
+    );
+    setEditGardener(null);
+  };
 
-const handleCancelEdit = () => {
-  setEditGardener(null);
-};
+  const handleCancelEdit = () => {
+    setEditGardener(null);
+  };
 
 
   useEffect(() => {
@@ -203,10 +205,11 @@ const handleCancelEdit = () => {
 
 
     return (
-      <div className="container min-h-screen px-6 py-12 mx-auto">
-        <h1 className="text-2xl text-center mt-24 bold text-[#FF5722]">
+      <div className="flex flex-col justify-center items-center min-h-screen px-6 py-12 mx-auto">
+        <h1 className="text-2xl text-center font-bold text-[#FF5722] mb-4">
           Cargando ...
         </h1>
+        <Spin indicator={<LoadingOutlined spin />} size="large" />
       </div>
     );
     
@@ -287,26 +290,25 @@ const handleCancelEdit = () => {
                 className={`px-4 py-2 bg-[#8BC34A] text-white rounded ${
                   currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
                 }`}
-              >
-                Página anterior
-              </button>
-              <button
-                onClick={handleNextPage}
-                disabled={currentPage * itemsPerPage >= providers.length}
-                className={`px-4 py-2 bg-[#8BC34A] text-white rounded ${
-                  currentPage * itemsPerPage >= providers.length
-                    ? "opacity-50 cursor-not-allowed"
-                    : ""
+            >
+              Página anterior
+            </button>
+            <button
+              onClick={handleNextPage}
+              disabled={currentPage * itemsPerPage >= providers.length}
+              className={`px-4 py-2 bg-[#8BC34A] text-white rounded ${currentPage * itemsPerPage >= providers.length
+                  ? "opacity-50 cursor-not-allowed"
+                  : ""
                 }`}
-              >
-                Página siguiente
-              </button>
-            </div>
-          </>
-        )}
-      </div>
-    );
-  }
+            >
+              Página siguiente
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
 
 
 export default ListGardeners;
