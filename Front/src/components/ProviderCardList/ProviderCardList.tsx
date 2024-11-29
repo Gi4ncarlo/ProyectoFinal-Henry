@@ -207,7 +207,7 @@ const ProviderCardList: React.FC = () => {
                     : ""
                 }`}
               >
-              Página siguiente
+                Página siguiente
             </button>
         </div>
         </>

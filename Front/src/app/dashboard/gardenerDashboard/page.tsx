@@ -171,17 +171,23 @@
 
 
 "use client";
+
+import { getServicesProvided } from "@/helpers/service.helpers";
 import CalendarGardener from "@/components/CalendarGardener/CalendarGardener";
 import OrderList from "@/components/DashboardGardenerCompo/orders/orders";
 import EditDashboard from "@/components/EditDashboard/EditDashboard";
-import { getCarrouselById, getTasks, postCarrouselImage } from "@/helpers/gardeners.helpers";
+import { getCarrouselById, getProviderById, getTasks, postCarrouselImage, updateProviderServices } from "@/helpers/gardeners.helpers";
 import { IUserSession } from "@/interfaces/IUserSession";
+import { IService } from "@/interfaces/IService";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
+
 const GardenerDashboard = () => {
-  const [activeComponent, setActiveComponent] = useState<string>(""); // Controla el componente activo
+  const [activeComponent, setActiveComponent] = useState<string>("perfil");
   const [userSession, setUserSession] = useState<IUserSession | null>(null);
-  const [carrousel, setCarrousel] = useState<any[]>([]);
+  const [carrousel, setCarrousel] = useState<string[]>([]);
+  const [services, setServices] = useState<IService[]>([]);
+  const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [tasks, setTasks] = useState<any[]>([]);
 
   useEffect(() => {
@@ -193,10 +199,22 @@ const GardenerDashboard = () => {
     }
   }, []);
 
-
+  const fetchCarrousel = async () => {
+    try {
+      const id = userSession?.user.id.toString();
+      if (id) {
+        const carrouselData = await getCarrouselById(id);
+        setCarrousel(carrouselData?.imageUrl || []);
+      }
+    } catch (error) {
+      console.error("Error buscando el carrousel:", error);
+    }
+  };
 
   const fetchTasks = async (id: string) => {
     try {
+      console.log(id);
+      setActiveComponent("tareas")
       const taskData = await getTasks(id);
       setTasks(taskData);
     } catch (error) {
@@ -204,13 +222,86 @@ const GardenerDashboard = () => {
     }
   };
 
+  const fetchServices = async () => {
+    try {
+      const serviceData = await getServicesProvided();
+      setServices(serviceData);
+
+      const userId = userSession?.user?.id?.toString();
+      if (userId) {
+        const gardenerData = await getProviderById(userId);
+        if (gardenerData && gardenerData.services) {
+          setSelectedServices(gardenerData.services.map((s: any) => s.id));
+        } else {
+          setSelectedServices([]);
+        }
+      } else {
+        setSelectedServices([]);
+      }
+    } catch (error) {
+      console.error("Error fetching services:", error);
+    }
+  };
+
+  const uploadImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", "gardener");
+
+      const response = await postCarrouselImage(
+        formData,
+        userSession?.user.id.toString()
+      );
+
+      if (response) {
+        alert("Imagen subida con éxito");
+        fetchCarrousel();
+      } else {
+        console.error("Error subiendo la imagen");
+      }
+    } catch (error) {
+      console.error("Error subiendo la imagen:", error);
+    }
+  };
+
+  const handleServiceChange = (serviceId: string) => {
+    setSelectedServices(prev =>
+      prev.includes(serviceId)
+        ? prev.filter(id => id !== serviceId)
+        : [...prev, serviceId]
+    );
+  };
+
+  const saveServices = async () => {
+    try {
+      const id = userSession?.user.id.toString();
+      if (id) {
+        await updateProviderServices(id, selectedServices);
+        alert("Servicios actualizados correctamente");
+      }
+    } catch (error) {
+      console.error("Error actualizando servicios:", error);
+      alert("Error al actualizar servicios");
+    }
+  };
+
+  useEffect(() => {
+    if (userSession) {
+      fetchCarrousel();
+      fetchServices();
+    }
+  }, [userSession]);
 
   return (
     <div className="min-h-screen bg-[#F4F9F4] font-sans">
       {/* Menú de navegación */}
       <nav className="bg-[#263238] p-4 shadow-md flex justify-center space-x-4">
         <button
-          onClick={() => setActiveComponent("tareas")}
+          onClick={() => fetchTasks(userSession?.user?.id.toString() || "")}
           className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "tareas" ? "opacity-75" : ""
             }`}
         >
@@ -230,34 +321,61 @@ const GardenerDashboard = () => {
         >
           Mi Perfil
         </button>
+        <button
+          onClick={() => setActiveComponent("services")}
+          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "services" ? "opacity-75" : ""
+            }`}
+        >
+          Servicios
+        </button>
       </nav>
 
       {/* Contenido dinámico */}
       <main className="p-6">
         {activeComponent === "tareas" && (
           <section>
-            <h1 className="text-2xl font-bold text-[#263238]">
+            <h1 className="text-2xl font-bold text-[#263238] m-3 text-center">
               Tareas del Jardinero
             </h1>
-            <button
-              className="mt-2 text-[#4CAF50] bg-green-600 hover:bg-green-700 font-semibold py-2 px-4 rounded"
-              onClick={() => fetchTasks(userSession?.user?.id.toString() || "")}
-            >
-              Ver Tareas
-            </button>
-            <OrderList order={tasks}>
-
-            </OrderList>
-
+            <OrderList order={tasks}></OrderList>
           </section>
         )}
 
-
-
         {activeComponent === "perfil" && <EditDashboard />}
-        {activeComponent === 'calendario' && <CalendarGardener />}
-        {activeComponent === 'ordenes' && <CalendarGardener />}
 
+        {activeComponent === "calendario" && <CalendarGardener />}
+
+        {activeComponent === "services" && (
+          <section>
+            <h1 className="text-2xl font-bold text-[#263238] mb-6">
+              Servicios que Ofrezco
+            </h1>
+            <div className="space-y-4">
+              {services.map((service) => (
+                <div key={service.id} className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id={service.id}
+                    checked={selectedServices.includes(service.id)}
+                    onChange={() => handleServiceChange(service.id)}
+                    className="mr-3"
+                  />
+                  <label htmlFor={service.id} className="flex-grow">
+                    <span className="font-semibold">{service.detailService}</span>
+                    <span className="text-sm text-gray-500 ml-2">
+                      (${service.price} - {service.categories})
+                    </span>
+                  </label>
+                </div>
+              ))}
+              <button
+                onClick={saveServices}
+                className="mt-4 w-full p-2 bg-[#4CAF50] text-white rounded hover:bg-[#388E3C]">
+                Guardar Servicios
+              </button>
+            </div>
+          </section>
+        )}
       </main>
     </div>
   );

@@ -273,4 +273,21 @@ export class GardenerController {
   async findGardenersByService(@Query('serviceId') serviceId: string): Promise<Gardener[]> {
     return this.gardenerService.findByService(serviceId);
   }
+
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Admin, Role.Gardener)
+  @HttpCode(200)
+  @Patch(':id/serviceProvided')
+  async updateGardener(
+    @Param('id') id: string,
+    @Body() updateGardenerDto: UpdateGardenerDto,
+  ) {
+    if (updateGardenerDto.serviceProvided) {
+      updateGardenerDto.serviceProvided = updateGardenerDto.serviceProvided;
+      delete updateGardenerDto.serviceProvided;
+    }
+  
+    return this.gardenerService.updateGardener(id, updateGardenerDto);
+  }
+  
 }

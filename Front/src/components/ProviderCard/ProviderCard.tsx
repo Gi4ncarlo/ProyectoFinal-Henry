@@ -22,7 +22,7 @@ const ProviderCard: React.FC<IProviderCardProps> = ({
       <div className="w-full min-h-[300px] overflow-hidden rounded-t-lg">
         <Image
           className="object-cover"
-          src={profileImageUrl || '/default-image.jpg'}
+          src={profileImageUrl || '/images/nuevo_usuarioGardener.jpg'}
           alt={`${name} image`}
           width={1920}
           height={1080}
