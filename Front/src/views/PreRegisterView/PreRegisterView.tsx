@@ -32,7 +32,7 @@ const PreRegisterView = () => {
               <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden shadow-lg transition-all group-hover:shadow-xl group-hover:shadow-gray-400">
                 <Image
                   className="object-cover h-full w-full transition-transform group-hover:scale-110"
-                  src="/images/client.jpeg"
+                  src="/images/client.webp"
                   alt="Cliente"
                   width={384}
                   height={384}

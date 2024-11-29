@@ -4,10 +4,10 @@ import React, { useEffect, useState } from 'react';
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
-  const [authorized, setAuthorized] = useState<boolean | null>(null);  // Start as null
+  const [authorized, setAuthorized] = useState<boolean | null>(null);  
 
   useEffect(() => {
-    // Ensure code only runs on the client
+
     if (typeof window !== "undefined") {
       const user = JSON.parse(localStorage.getItem("userSession") || "null");
       if (user && user.token && user.user.role) setAuthorized(true);
@@ -15,10 +15,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     }
   }, [router]);
 
-  // Show nothing while determining authorization (prevents rendering issues)
   if (authorized === null) return null;
-
-  // Render the content once we know the authorization status
   if (!authorized) return null;
 
   if (!authorized) return null;

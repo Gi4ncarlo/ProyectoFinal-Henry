@@ -123,7 +123,7 @@ export default function RegisterForm() {
   return (
     <div className="h-screen w-screen relative flex items-center justify-center mt-10">
       <Image
-        src="/images/fondo_proyectos.jpg"
+        src="/images/fondo_proyectos.webp"
         alt="Fondo de bienvenida"
         layout="fill"
         objectFit="cover"

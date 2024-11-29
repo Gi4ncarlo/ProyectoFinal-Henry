@@ -60,8 +60,13 @@ const OrderList = ({ order }: any) => {
                                     <strong>Solicitante:</strong> {orderItem.user.name}
                                 </p>
                                 <p className="text-sm text-gray-500">
-                                    <strong>Estado de la solicitud:</strong>{" "}
-                                    {orderItem.isApproved ? "Aprobada" : "Pendiente"}
+                                    <strong>Estado de la Orden:</strong>{" "}
+                                    {orderItem.isApproved ? "Aprobada" : "Pendiente de pago"}
+                                </p>
+                                <p className="text-sm text-gray-500">
+                                    <strong>Proceso del servicio:</strong>{" "}
+                                    {orderItem.isApproved ?
+                                        orderItem.orderDetail.status : "Pendiente de pago"}
                                 </p>
                             </div>
                             {orderItem.isApproved && (

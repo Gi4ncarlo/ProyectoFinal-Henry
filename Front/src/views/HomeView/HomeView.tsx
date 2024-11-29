@@ -81,7 +81,7 @@ const Home: React.FC = () => {
         id="hero"
         className="w-full h-screen flex flex-col items-center justify-center relative text-white"
         style={{
-          backgroundImage: "url('/images/fondo_home.jpg')",
+          backgroundImage: "url('/images/fondo_home.webp')",
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -123,7 +123,7 @@ const Home: React.FC = () => {
         id="services"
         className="w-full py-20 bg-gradient-to-b from-green-500 to-green-700 text-white flex flex-col items-center"
         style={{
-          backgroundImage: "url('/images/fondo_home.jpg')",
+          backgroundImage: "url('/images/fondo_home.webp')",
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}

@@ -1,8 +1,8 @@
-import first from '../../public/images/fondopagprincipal.jpg'
-import second from '../../public/images/112.jpg'
-import rosas from '../../public/images/rosas.jpg'
-import cantero from '../../public/images/entrada.jpg'
-import ia from '../../public/images/logoia.jpg'
+import first from '../../public/images/fondopagprincipal.webp'
+import second from '../../public/images/112.webp'
+import rosas from '../../public/images/rosas.webp'
+import cantero from '../../public/images/entrada.webp'
+import ia from '../../public/images/logoia.webp'
 
 export const images = [
   { src: first, alt: 'First' },

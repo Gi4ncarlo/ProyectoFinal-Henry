@@ -13,6 +13,8 @@ import Swal from "sweetalert2";
 import GardenerCalendar from "@/components/GardenerCalendar/GardenerCalendar";
 import GardenerMap from "@/components/GardenerMap/GardenerMap"; // Importa el componente GardenerMap
 import { Rate } from "antd";
+import { fetchReviews } from "@/helpers/comments.helpers";
+import { Checkbox } from 'antd';
 
 const ProviderDetail: React.FC = () => {
   const router = useRouter();
@@ -27,6 +29,7 @@ const ProviderDetail: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [carrousel, setCarrousel] = useState<any[]>([]);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [reviews, setReviews] = useState<any[]>([]);
   const [coordinates, setCoordinates] = useState<{ lat: number; lng: number }>({
     lat: 0,
     lng: 0,
@@ -101,12 +104,39 @@ const ProviderDetail: React.FC = () => {
     }
   }, []);
 
+
+  {/*Solicitud de reseñas */ }
+  useEffect(() => {
+    const fetchGardenerReviews = async () => {
+      if (id) {
+        try {
+          const reviewsData = await fetchReviews(id);
+          console.log("reviewsData",reviewsData);
+          
+          setReviews(reviewsData || []);
+        } catch (error) {
+          console.error("Error  en obtener las reseñas:", error);
+        }
+      }
+    };
+
+    fetchGardenerReviews();
+  }, [id]);
+
+
   const handleServiceChange = (serviceId: string) => {
     setSelectedServices((prevSelected) =>
       prevSelected.includes(serviceId)
         ? prevSelected.filter((id) => id !== serviceId)
         : [...prevSelected, serviceId]
     );
+  };
+
+  const calculateTotal = () => {
+    return selectedServices.reduce((total, serviceId) => {
+      const service = services.find((service) => service.id === serviceId);
+      return total + (service?.price || 0);
+    }, 0);
   };
 
   const handleDateSelect = (date: string) => {
@@ -168,7 +198,7 @@ const ProviderDetail: React.FC = () => {
   if (error) return <div className="text-red-500">{error}</div>;
   if (!gardener) return <div>Cargando...</div>;
   return (
-    <div className="flex flex-col min-h-screen bg-[url('/images/fondoJardineros2.jpg')] bg-cover bg-center">
+    <div className="flex flex-col min-h-screen bg-[url('/images/fondoJardineros2.webp')] bg-cover bg-center">
       {/* Contenedor para centrar todo */}
       <div className="flex flex-col items-center justify-center flex-grow mx-4 md:mx-8 lg:mx-16">
         <div className="max-w-3xl mt-32 mb-14 p-6 bg-white rounded-lg shadow-lg">
@@ -219,21 +249,33 @@ const ProviderDetail: React.FC = () => {
             <h2 className="text-lg font-semibold text-[#263238]">
               Servicios Disponibles:
             </h2>
-            <div className="mt-2">
+            <ul className="mt-4">
               {services.map((service) => (
-                <div key={service.id} className="mb-4">
-                  <label className="block text-[#263238]">
-                    <input
-                      type="checkbox"
+                <li
+                  key={service.id}
+                  className="flex justify-between items-center py-2 border-b border-gray-200"
+                >
+                  <div className="flex-1 text-left">
+                    <span className="font-medium text-gray-800">{service.detailService}</span>
+                  </div>
+                  <div className="flex-1 text-center">
+                    <span className="font-semibold text-green-600">${service.price}</span>
+                  </div>
+                  <div className="flex-1 text-right">
+                    <Checkbox
                       checked={selectedServices.includes(service.id)}
                       onChange={() => handleServiceChange(service.id)}
-                      className="mr-2"
                     />
-                    {service.detailService}
-                  </label>
-                </div>
+                  </div>
+                </li>
               ))}
+            </ul>
+            <div className="mt-4">
+              <h3 className="text-xl bg-[#8BC34A] rounded-lg font-bold text-[#263238] flex justify-center">
+                Total: <span className="text-[#263238]">${calculateTotal()}</span>
+              </h3>
             </div>
+
 
             <div className="mt-6">
               <h2 className="text-lg font-semibold text-[#263238]">
@@ -245,6 +287,7 @@ const ProviderDetail: React.FC = () => {
               />
             </div>
 
+
             <div className="mt-6 flex justify-center">
               <button
                 onClick={handleHireClick}
@@ -253,7 +296,43 @@ const ProviderDetail: React.FC = () => {
                 Contratar Servicios
               </button>
             </div>
+
+
+
           </div>
+
+
+          <div className="mt-8">
+            <h2 className="text-lg font-semibold text-[#263238]">Reseñas de Clientes:</h2>
+            {reviews.length > 0 ? (
+              <div className="mt-4">
+                {reviews.map((review) => (
+                  <div key={review.id} className="mb-4 border-b pb-4">
+
+                    <div className="flex items-center mt-3">
+                      <Rate
+                        allowHalf
+                        disabled
+                        defaultValue={review.rate}
+                        style={{ color: "#FFD700" }}
+                      />
+                      <span className="ml-2 text-sm text-gray-500">
+                        {review.rate.toFixed(1)}
+                      </span>
+
+                      <span className="ml-2 text-sm text-gray-500">
+                        {new Date(review.date).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <p className="text-gray-600 mt-2">{review.comment}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-500">No hay reseñas disponibles.</p>
+            )}
+          </div>
+
         </div>
         <div className="flex items-center justify-center w-full mt-10">
           <button
@@ -269,3 +348,6 @@ const ProviderDetail: React.FC = () => {
 };
 
 export default ProviderDetail;
+
+
+
