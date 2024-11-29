@@ -63,7 +63,12 @@ const DashboardUserCompo: React.FC = () => {
         console.log('Calificación:', calificacion);
         const comments = await fetchComments(id, { comentario, calificacion });
 
-        // Aquí puedes manejar los datos, por ejemplo, enviar a la API
+        Swal.fire({
+          title: '¡Reseña creada con éxito!',
+          text: 'Puedes ver tu reseña en el perfil del jardinero.',
+          icon: 'success',
+          confirmButtonText: 'Aceptar'
+        });
       }
     });
   };
@@ -298,7 +303,9 @@ const DashboardUserCompo: React.FC = () => {
                   >
                     Califica el Servicio
                   </button>
+                  
                 )}
+
               </div>
             </div>
           ))}
