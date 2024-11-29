@@ -36,25 +36,29 @@ const DashboardUserCompo: React.FC = () => {
     Swal.fire({
       title: 'Califica el Servicio',
       html: `
-        <input id="comentario" class="swal2-input" placeholder="Escribe tu comentario..." />
-        <input id="calificacion" type="range" min="1" max="5" value="5" class="swal2-input" style="width: 90%;" />
+        <input id="comentario" class="swal2-input swal2-input" style="width: 90%; margin: 0 auto;" placeholder="Escribe tu comentario..." />
+        <input id="calificacion" type="range" min="1" max="5" value="5" class="swal2-input" style="width: 90%; margin: 0 auto;" />
         <div style="text-align: center;">
           <span id="rangeValue">5</span> / 5
         </div>
       `,
       focusConfirm: false,
       preConfirm: async () => {
-        const comentario = document.getElementById('comentario').value;
-        const calificacion = document.getElementById('calificacion').value;
+        const comentario = (document.getElementById('comentario') as HTMLInputElement).value;
+        const calificacion = (document.getElementById('calificacion') as HTMLInputElement).value;
         return { comentario, calificacion };
       },
       didOpen: async () => {
         const rangeInput = document.getElementById('calificacion');
         const rangeValue = document.getElementById('rangeValue');
 
-        rangeInput.addEventListener('input', (e) => {
-          rangeValue.textContent = e.target.value;
-        });
+        if (rangeInput !== null && rangeValue !== null) {
+          rangeInput.addEventListener('input', (e) => {
+            rangeValue.textContent = (e.target as HTMLInputElement).value;
+          });
+        } else {
+          console.error('Los elementos no se encontraron en el DOM');
+        }
       }
     }).then(async (result) => {
       if (result.isConfirmed) {
@@ -170,6 +174,7 @@ const DashboardUserCompo: React.FC = () => {
   if (error) {
     return <p>{error}</p>;
   }
+  console.log(orders[0].servicesOrder);
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center py-6 px-4">
@@ -278,7 +283,7 @@ const DashboardUserCompo: React.FC = () => {
                 {/* Botón de pago solo si no está aprobada */}
                 {!order.isApproved && (
                   <button
-                    className="p-3 bg-[#4caf50] text-white text-lg font-medium rounded-lg hover:bg-[#388e3c] transition-colors w-full"
+                    className="py-2 px-4 bg-[#4caf50] text-white text-sm font-medium rounded-lg hover:bg-[#388e3c] transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#388e3c] w-full"
                     onClick={() => handlePayment(order.id)}
                   >
                     Pagar con MercadoPago
@@ -288,7 +293,7 @@ const DashboardUserCompo: React.FC = () => {
                 {/* Botón "Ver detalles" */}
                 {order.isApproved && (
                   <button
-                    className="p-3 bg-[#2196f3] text-white text-lg font-medium rounded-lg hover:bg-[#1976d2] transition-colors w-full"
+                    className="py-2 px-4 bg-[#2196f3] text-white text-sm font-medium rounded-lg hover:bg-[#1976d2] transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#1976d2] w-full"
                     onClick={() => handleOpenModal(order.orderDetail)}
                   >
                     Ver detalles

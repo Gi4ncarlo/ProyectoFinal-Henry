@@ -24,7 +24,7 @@ export class ReviewsService {
                 where: { id },
                 relations: ['user', 'gardener', 'serviceProvided', 'orderDetail', 'reviews'],
             })
-            if (order.reviews) {
+            if (order.reviews ) {
                 throw new HttpException('Order already has a review', HttpStatus.BAD_REQUEST)
             }
             if (!order) {
@@ -46,10 +46,8 @@ export class ReviewsService {
             order.reviews = review
             gardener.reviews.push(review)
             console.log(gardener), 'gardener';
-            let suma = gardener.calification
-            for (let i = 0; i < gardener.reviews.length; i++) {
-                suma += gardener.reviews[i].rate
-            }
+            let suma = gardener.calification || 0
+            gardener.reviews.forEach(r => suma += r.rate)
             const promedio = suma / (gardener.reviews.length + 1) // solamente el +1 para el seed
             gardener.calification = Math.floor(promedio)
             const newReview = await this.reviewsRepository.save(review)
