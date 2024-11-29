@@ -34,7 +34,7 @@ const Dropdown: React.FC<{ filter: string; onChange: (value: string) => void }> 
     <div className="relative w-48">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full bg-white border border-gray-300 rounded-md shadow-sm px-4 py-2 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-400"
+        className="w-full bg-white border border-gray-300 rounded-md shadow-sm px-4 py-2 text-left text-slate-400 cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-400"
       >
         {options.find((opt) => opt.value === filter)?.label || "Ordenar por"}
         <span className="float-right text-[#263238]">▼</span>
@@ -56,6 +56,7 @@ const Dropdown: React.FC<{ filter: string; onChange: (value: string) => void }> 
           ))}
         </div>
       )}
+
     </div>
   );
 };
@@ -212,81 +213,82 @@ const ListGardeners: React.FC = () => {
       </div>
     );
     
-
-  if (error) return <div>{error}</div>;
-
-  return (
-    <div className="mx-auto mt-24">
-      {providers.length === 0 ? (
-        <div className="text-center mb-8 mx-auto">
-          <h1 className="text-2xl font-bold mb-4">No hay jardineros</h1>
-          <button
-            className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
-            onClick={() => setSearchTerm("")}
-          >
-            Back
-          </button>
-        </div>
-      ) : (
-        <>
-          <div className="flex justify-between items-center bg-white p-4 shadow-sm rounded-lg mb-4">
-            <div className="relative w-1/2">
-              <input
-                type="text"
-                placeholder="Buscar jardinero..."
-                value={searchTerm}
-                onChange={handleSearch}
-                className="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:outline-none"
-              />
-              <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-            </div>
-            <Dropdown filter={filter} onChange={handleFilter} />
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mx-auto">
-            {paginatedProviders.map((gardener) => (
-              <div key={gardener.id} className="relative bg-white shadow-md rounded-lg p-4 border border-gray-200">
-                {editGardener?.id === gardener.id ? (
-                  <EditGardenerForm
-                    gardener={editGardener}
-                    onSave={handleSaveEdit}
-                    onCancel={handleCancelEdit}
-                  />
-                ) : (
-                  <>
-                    <CardGardener
-                      name={gardener.name}
-                      experience={gardener.experience}
-                      profileImageUrl={gardener.profileImageUrl}
-                      calification={gardener.calification}
-                    />
-
-                    {/* Contenedor de los botones debajo de la tarjeta */}
-                    <div className="mt-4 flex justify-between">
-                      <button
-                        onClick={() => handleEdit(gardener)}
-                        className="bg-blue-500 text-white rounded px-4 py-2 text-sm hover:bg-blue-600"
-                      >
-                        Editar
-                      </button>
-                      <button
-                        onClick={() => handleDelete(gardener.id)}
-                        className="bg-red-500 text-white rounded px-4 py-2 text-sm hover:bg-red-600"
-                      >
-                        Eliminar
-                      </button>
-                    </div>
-                  </>
-                )}
-              </div>
-            ))}
-          </div>
-
-          <div className="flex justify-between mt-6 mb-8">
+    if (error) return <div>{error}</div>;
+    
+    return (
+      <div className="mx-auto mt-24">
+        {providers.length === 0 ? (
+          <div className="text-center mb-8 mx-auto">
+            <h1 className="text-2xl font-bold mb-4">No hay jardineros</h1>
             <button
-              onClick={handlePreviousPage}
-              disabled={currentPage === 1}
-              className={`px-4 py-2 bg-[#8BC34A] text-white rounded ${currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+              className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
+              onClick={() => setSearchTerm("")}
+            >
+              Back
+            </button>
+          </div>
+        ) : (
+          <>
+            <div className="flex justify-between items-center text-orange-950 bg-white p-3 shadow-sm rounded-lg mb-4">
+              <h2>Jardineros Disponibles</h2>
+              <div className="relative w-1/2">
+                <input
+                  type="text"
+                  placeholder="Buscar jardinero..."
+                  value={searchTerm}
+                  onChange={handleSearch}
+                  className="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:outline-none"
+                />
+                <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+              </div>
+              <Dropdown filter={filter} onChange={handleFilter} />
+            </div>
+    
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mx-auto">
+              {paginatedProviders.map((gardener) => (
+                <div key={gardener.id} className="relative bg-white shadow-md rounded-lg p-4 border border-gray-200">
+                  {editGardener?.id === gardener.id ? (
+                    <EditGardenerForm
+                      gardener={editGardener}
+                      onSave={handleSaveEdit}
+                      onCancel={handleCancelEdit}
+                    />
+                  ) : (
+                    <>
+                      <CardGardener
+                        name={gardener.name}
+                        experience={gardener.experience}
+                        profileImageUrl={gardener.profileImageUrl}
+                        calification={gardener.calification}
+                      />
+                      
+                      {/* Contenedor de los botones debajo de la tarjeta */}
+                      <div className="mt-4 flex justify-between">
+                        <button
+                          onClick={() => handleEdit(gardener)}
+                          className="bg-blue-500 text-white rounded px-4 py-2 text-sm hover:bg-blue-600"
+                        >
+                          Editar
+                        </button>
+                        <button
+                          onClick={() => handleDelete(gardener.id)}
+                          className="bg-red-500 text-white rounded px-4 py-2 text-sm hover:bg-red-600"
+                        >
+                          Eliminar
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              ))}
+            </div>
+    
+            <div className="flex justify-between mt-6 mb-8">
+              <button
+                onClick={handlePreviousPage}
+                disabled={currentPage === 1}
+                className={`px-4 py-2 bg-[#8BC34A] text-white rounded ${
+                  currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
                 }`}
             >
               Página anterior
