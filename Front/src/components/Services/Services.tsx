@@ -8,6 +8,7 @@ import React, { useEffect, useState } from "react";
 import { Categories } from "../RegisterServiceForm/enums/categories.enum";
 import { validateServiceForm } from "@/helpers/validateService";
 import { registerService } from "@/helpers/auth.helpers";
+import Swal from "sweetalert2";
 
 const Services = () => {
   const [services, setServices] = useState<IService[]>([]); // Servicios disponibles
@@ -94,7 +95,11 @@ const Services = () => {
     // Si no hay errores, enviamos el servicio
     if (Object.keys(validationErrors).length === 0) {
       await registerService(dataService);
-      alert("Servicio agregado con éxito");
+      Swal.fire({
+        title: "Hecho!",
+        text: "Servicio agregado con éxito",
+        icon: "success"
+      });
       router.push("/Home"); // Redirigir a la lista de servicios
     }
   };

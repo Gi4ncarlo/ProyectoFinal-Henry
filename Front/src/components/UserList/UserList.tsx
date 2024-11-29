@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { banUser, deleteUser, getAllUsers } from "@/helpers/userOrders.helpers";
 import { log } from "console";
+import Swal from "sweetalert2";
 
 interface User {
   id: string;
@@ -16,6 +17,17 @@ function UserList() {
   const [banError, setBanError] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
+  const Toast = Swal.mixin({
+    toast: true,
+    position: "top",
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.onmouseenter = Swal.stopTimer;
+      toast.onmouseleave = Swal.resumeTimer;
+    }
+  });
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -47,8 +59,10 @@ function UserList() {
 
         const updatedUsers = await getAllUsers();
         setUsers(updatedUsers.data);
-
-        alert(isBanned ? "Usuario desbaneado" : "Usuario baneado");
+        Toast.fire({
+          icon: isBanned ? "success" : "warning",
+          title: isBanned ? "Usuario desbaneado" : "Usuario baneado"
+        });
       } else {
         console.error("User token not found");
         setBanError("Token de usuario no encontrado");
@@ -71,14 +85,20 @@ function UserList() {
         await deleteUser(userId);
         const updatedUsers = await getAllUsers();
         setUsers(updatedUsers.data);
-        alert("Usuario eliminado correctamente");
+        Toast.fire({
+          icon: "success",
+          title: "Usuario eliminado correctamente"
+        });
       } else {
         console.error("User token not found");
         setBanError("Token de usuario no encontrado");
       }
     } catch (error: any) {
       console.error("Error deleting user:", error);
-      alert("Error al eliminar el usuario");
+      Toast.fire({
+        icon: "error",
+        title: "Error al eliminar el usuario"
+      });      
     }
   };
   if (loading)
