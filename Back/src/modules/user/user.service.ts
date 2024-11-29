@@ -104,7 +104,7 @@ export class UserService {
     try {
       const user = await this.userRepository.findOne({
         where: { id: userId },
-        relations: ['servicesOrder', 'servicesOrder.gardener', 'servicesOrder.serviceProvided', 'servicesOrder.orderDetail'],
+        relations: ['servicesOrder', 'servicesOrder.gardener', 'servicesOrder.serviceProvided', 'servicesOrder.orderDetail','servicesOrder.reviews'],
       });
 
       if (!user) {
