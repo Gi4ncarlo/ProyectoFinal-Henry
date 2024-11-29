@@ -60,10 +60,10 @@ export default function Navbar() {
         localStorage.removeItem("userSession");
         Swal.fire("Sesión cerrada!", "Hasta pronto!", "success");
       }
+      setUserData(null);
+      setIsAuthenticated(false);
+      router.push("/");
     });
-    setUserData(null);
-    setIsAuthenticated(false);
-    router.push("/");
   };
 
 
@@ -166,17 +166,25 @@ export default function Navbar() {
           >
             {/* Avatar del usuario */}
             {userData?.user?.profileImageUrl ? (
-              <img
-                src={userData.user.profileImageUrl}
-                alt="Avatar"
-                className="w-10 h-10 rounded-full border-2 border-gray-300 hover:border-blue-500 transition duration-200"
-              />
+              <div className="relative w-10 h-10">
+                <Image
+                  src={userData.user.profileImageUrl}
+                  alt="Avatar"
+                  className="rounded-full border-2 border-gray-300 hover:border-blue-500 transition duration-200"
+                  fill // Asegura que ocupe el contenedor
+                  sizes="40px" // Tamaño esperado
+                />
+              </div>
             ) : (
-              <img
-                src="https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2281862025.jpg"
-                alt="Avatar"
-                className="w-10 h-10 rounded-full border-2 border-gray-300 hover:border-blue-500 transition duration-200"
-              />
+              <div className="relative w-10 h-10">
+                <Image
+                  src="https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2281862025.jpg"
+                  alt="Avatar"
+                  className="rounded-full border-2 border-gray-300 hover:border-blue-500 transition duration-200"
+                  fill
+                  sizes="40px"
+                />
+              </div>
             )}
           </div>
 
@@ -189,11 +197,11 @@ export default function Navbar() {
               {isAuthenticated ? (
                 <div>
                   <Link href="/dashboard">
-                
-                      <button className="block px-4 py-2 text-left w-full hover:bg-gray-300 text-gray-700 transition duration-150">
-                        Mi Cuenta
-                      </button>
-            
+
+                    <button className="block px-4 py-2 text-left w-full hover:bg-gray-300 text-gray-700 transition duration-150">
+                      Mi Cuenta
+                    </button>
+
                   </Link>
                   <button
                     className="block px-4 py-2 text-left w-full hover:bg-gray-300 text-gray-700 transition duration-150"

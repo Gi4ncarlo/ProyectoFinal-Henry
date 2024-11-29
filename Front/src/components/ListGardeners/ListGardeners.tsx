@@ -11,6 +11,7 @@ import EditGardenerForm from "../EditGardenerForm/EditGardenerForm";
 import CardGardener from "../CardGardener/CardGardener";
 import { Spin, Flex } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
+import Swal from 'sweetalert2';
 
 const Dropdown: React.FC<{ filter: string; onChange: (value: string) => void }> = ({
   filter,
@@ -117,29 +118,53 @@ const ListGardeners: React.FC = () => {
   };
 
   {/*Fn para eliminar un jardinero */ }
-  const handleDelete = async (id: number) => {
-    const confirmed = window.confirm("¿Estás seguro de que quieres eliminar este jardinero?");
-    if (!confirmed) return;
+const handleDelete = async (id: number) => {
+  const { isConfirmed } = await Swal.fire({
+    title: "¿Estás seguro?",
+    text: "No podrás revertir esta acción.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "Sí, eliminar",
+    cancelButtonText: "Cancelar"
+  });
 
-    try {
-      const token =
-        typeof window !== "undefined"
-          ? JSON.parse(localStorage.getItem("userSession") || "{}").token
-          : null;
+  if (!isConfirmed) return;
 
-      if (!token) {
-        throw new Error("Usuario no autenticado");
-      }
+  try {
+    const token =
+      typeof window !== "undefined"
+        ? JSON.parse(localStorage.getItem("userSession") || "{}").token
+        : null;
 
-      await deleteGardener(token, id);
-
-      // Actualizar la lista de jardineros después de eliminar
-      setProviders((prev) => prev.filter((gardener) => gardener.id !== id));
-      alert("Jardinero eliminado exitosamente.");
-    } catch (error: any) {
-      alert(error.message || "Error al eliminar el jardinero.");
+    if (!token) {
+      throw new Error("Usuario no autenticado");
     }
-  };
+
+    await deleteGardener(token, id);
+
+    // Actualizar la lista de jardineros después de eliminar
+    setProviders((prev) => prev.filter((gardener) => gardener.id !== id));
+
+    await Swal.fire({
+      icon: "success",
+      title: "Eliminado",
+      text: "El jardinero fue eliminado exitosamente.",
+      timer: 3000,
+      showConfirmButton: false
+    });
+  } catch (error: any) {
+    await Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: error.message || "Hubo un problema al eliminar el jardinero.",
+      timer: 3000,
+      showConfirmButton: false
+    });
+  }
+};
+
 
   {/*fn para editar un jardinero */ }
   const handleEdit = (gardener: IServiceProvider) => {
