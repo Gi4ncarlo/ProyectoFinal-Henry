@@ -86,7 +86,7 @@ export default function LoginForm() {
   return (
     <div className="h-screen w-screen relative flex items-center justify-center">
       <Image
-        src="/images/fondoLogin.jpg"
+        src="/images/fondoLogin.webp"
         alt="Fondo de bienvenida"
         layout="fill"
         objectFit="cover"
@@ -170,7 +170,7 @@ export default function LoginForm() {
             className="w-full flex items-center justify-center p-2 bg-[#4caf50] text-white font-bold rounded hover:bg-[#388e3c]"
           >
             <Image
-              src="/images/LogoGoogle.png"
+              src="/images/LogoGoogle.webp"
               alt="Google Logo"
               width={20}
               height={20}

@@ -36,7 +36,7 @@ export default function Footer() {
               rel="noopener noreferrer"
             >
               <Image
-                src={"/images/LogosFacebook.png"}
+                src={"/images/LogosFacebook.webp"}
                 alt="Facebook"
                 width={40}
                 height={40}
@@ -56,7 +56,7 @@ export default function Footer() {
               rel="noopener noreferrer"
             >
               <Image
-                src={"/images/LogoInstagram.png"}
+                src={"/images/LogoInstagram.webp"}
                 alt="Instagram"
                 width={40}
                 height={40}
@@ -76,7 +76,7 @@ export default function Footer() {
               rel="noopener noreferrer"
             >
               <Image
-                src={"/images/LogosWhatsappIcon.png"}
+                src={"/images/LogosWhatsappIcon.webp"}
                 alt="WhatsApp"
                 width={40}
                 height={40}

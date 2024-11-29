@@ -78,7 +78,7 @@ const Dashboard = () => {
   // Renderiza el componente correspondiente según el rol
   return (
 
-    // <div className=" bg-[url('/images/dashboard.png')] bg-cover bg-center">
+    // <div className=" bg-[url('/images/dashboard.webp')] bg-cover bg-center">
         <div > 
            {role === "admin" && <AdminDashboard />}
       {role === "gardener" && <GardenerDashboard />}

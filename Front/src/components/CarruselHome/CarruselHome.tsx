@@ -17,7 +17,7 @@ const CarruselHome = () => {
     // <main className="bg-green-50">
     //   {/* <section className="relative w-full h-64 md:h-96 lg:h-[400px] overflow-hidden">
     //     <Image
-    //       src="/images/fondopagprincipal.jpg"
+    //       src="/images/fondopagprincipal.webp"
     //       alt="Fondo principal"
     //       fill
     //       className="object-cover object-center"

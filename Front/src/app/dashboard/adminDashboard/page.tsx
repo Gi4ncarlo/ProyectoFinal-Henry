@@ -8,7 +8,7 @@ const AdminDashboard = () => {
   const [activeComponent, setActiveComponent] = useState<string>("");
 
   return (
-    <div className=" bg-[url('/images/dashboard.png')] bg-cover bg-center">
+    <div className=" bg-[url('/images/dashboard.webp')] bg-cover bg-center">
          <nav className="flex justify-around bg-primary text-white p-4 rounded-md">
         <button
           onClick={() => setActiveComponent("userList")}
