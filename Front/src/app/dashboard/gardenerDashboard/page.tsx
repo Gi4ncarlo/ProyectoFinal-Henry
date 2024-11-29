@@ -224,8 +224,12 @@ const GardenerDashboard = () => {
 
   const fetchServices = async () => {
     try {
-      const serviceData = await getServicesProvided();
-      setServices(serviceData);
+      const id = userSession?.user.id.toString();
+      if(id){
+
+        const serviceData =await getServicesProvided(id);
+        setServices(serviceData);
+      }
 
       const userId = userSession?.user?.id?.toString();
       if (userId) {
