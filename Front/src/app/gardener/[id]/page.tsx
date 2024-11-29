@@ -80,9 +80,9 @@ const ProviderDetail: React.FC = () => {
       }
     };
 
-    const fetchServices = async () => {
+    const fetchServices = async (id: any) => {
       try {
-        const serviceData = await getServicesProvided();
+        const serviceData = await getServicesProvided(id);
         setServices(serviceData);
       } catch (error) {
         console.error("Error buscando los servicios:", error);
@@ -91,7 +91,7 @@ const ProviderDetail: React.FC = () => {
     };
 
     fetchGardener();
-    fetchServices();
+    fetchServices(id);
     fetchCarrousel();
   }, [id]);
 
