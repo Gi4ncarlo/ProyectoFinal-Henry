@@ -214,7 +214,7 @@ const GardenerDashboard = () => {
   const fetchTasks = async (id: string) => {
     try {
       console.log(id);
-
+      setActiveComponent("tareas")
       const taskData = await getTasks(id);
       setTasks(taskData);
     } catch (error) {
@@ -226,12 +226,12 @@ const GardenerDashboard = () => {
     try {
       const serviceData = await getServicesProvided();
       setServices(serviceData);
-  
+
       const userId = userSession?.user?.id?.toString();
       if (userId) {
         const gardenerData = await getProviderById(userId);
         if (gardenerData && gardenerData.services) {
-          setSelectedServices(gardenerData.services.map((s) => s.id));
+          setSelectedServices(gardenerData.services.map((s: any) => s.id));
         } else {
           setSelectedServices([]);
         }
@@ -259,7 +259,7 @@ const GardenerDashboard = () => {
 
       if (response) {
         alert("Imagen subida con éxito");
-        fetchCarrousel(); 
+        fetchCarrousel();
       } else {
         console.error("Error subiendo la imagen");
       }
@@ -269,7 +269,7 @@ const GardenerDashboard = () => {
   };
 
   const handleServiceChange = (serviceId: string) => {
-    setSelectedServices(prev => 
+    setSelectedServices(prev =>
       prev.includes(serviceId)
         ? prev.filter(id => id !== serviceId)
         : [...prev, serviceId]
@@ -301,7 +301,7 @@ const GardenerDashboard = () => {
       {/* Menú de navegación */}
       <nav className="bg-[#263238] p-4 shadow-md flex justify-center space-x-4">
         <button
-          onClick={() => setActiveComponent("tareas")}
+          onClick={() => fetchTasks(userSession?.user?.id.toString() || "")}
           className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "tareas" ? "opacity-75" : ""
             }`}
         >
@@ -334,15 +334,9 @@ const GardenerDashboard = () => {
       <main className="p-6">
         {activeComponent === "tareas" && (
           <section>
-            <h1 className="text-2xl font-bold text-[#263238]">
+            <h1 className="text-2xl font-bold text-[#263238] m-3 text-center">
               Tareas del Jardinero
             </h1>
-            <button
-              className="mt-2 text-[#4CAF50] bg-green-600 hover:bg-green-700 font-semibold py-2 px-4 rounded"
-              onClick={() => fetchTasks(userSession?.user?.id.toString() || "")}
-            >
-              Ver Tareas
-            </button>
             <OrderList order={tasks}></OrderList>
           </section>
         )}

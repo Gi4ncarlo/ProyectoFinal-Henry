@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 interface ModalDetailsProps {
     order: any;
@@ -39,13 +40,32 @@ const ModalDetails: React.FC<ModalDetailsProps> = ({ order, onClose }) => {
         )
         const data = await (await response).json();
         console.log(data);
+        if (data) {
+            Swal.fire({
+                icon: "success",
+                title: "Token verificado",
+                text: "El token es correcto",
+                showConfirmButton: false,
+                timer: 1500
+            })
+            onClose();
+
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "Token incorrecto",
+                text: "El token es incorrecto",
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
     };
 
     if (!order) return null;
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
-            <div className="relative bg-gradient-to-br from-white to-gray-100 p-8 rounded-3xl shadow-2xl w-full max-w-lg">
+            <div className="relative bg-gradient-to-br from-white to-gray-100 p-6 rounded-3xl shadow-2xl w-full max-w-md max-h-[80vh] overflow-auto">
                 {/* Botón de cierre */}
                 <button
                     onClick={onClose}
