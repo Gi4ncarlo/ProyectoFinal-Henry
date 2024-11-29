@@ -12,7 +12,7 @@ import { registerService } from "@/helpers/auth.helpers";
 const Services = () => {
   const [services, setServices] = useState<IService[]>([]); // Servicios disponibles
   const [sortOrder] = useState<"asc" | "desc">("asc");
-
+  const [loading, setLoading] = useState<boolean>(true);
 
   const router = useRouter();
 
@@ -32,28 +32,23 @@ const Services = () => {
     categories: false,
   });
 
-
-
-
-
   useEffect(() => {
-    // Cargar los servicios cuando el componente se monta
     fetchServices();
   }, [sortOrder]);
 
-  // Fetch para obtener los servicios
+
   const fetchServices = async () => {
     try {
+      setLoading(true);
       const serviceData = await getServicesProvided();
       setServices(serviceData);
     } catch (error) {
       console.error("Error fetching services:", error);
+    }  finally {
+      setLoading(false);
     }
   };
 
-
-
-  // Manejo de cambios en los campos del formulario
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -111,7 +106,17 @@ const Services = () => {
       setErrors(validationErrors);
     }
   }, [dataService, touched]);
+  if (loading)
 
+
+    return (
+      <div className="container min-h-screen px-6 py-12 mx-auto">
+        <h1 className="text-2xl text-center mt-24 bold text-[#FF5722]">
+          Cargando ...
+        </h1>
+      </div>
+    );
+    
   return (
     <div className="container mx-auto px-4 py-6">
       {/* Título principal */}

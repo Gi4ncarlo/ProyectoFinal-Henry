@@ -176,16 +176,17 @@ import { getServicesProvided } from "@/helpers/service.helpers";
 import CalendarGardener from "@/components/CalendarGardener/CalendarGardener";
 import OrderList from "@/components/DashboardGardenerCompo/orders/orders";
 import EditDashboard from "@/components/EditDashboard/EditDashboard";
-import { getCarrouselById, getProviderById, getTasks, postCarrouselImage, updateProviderServices } from "@/helpers/gardeners.helpers";
+import {  getProviderById, getTasks, updateProviderServices } from "@/helpers/gardeners.helpers";
 import { IUserSession } from "@/interfaces/IUserSession";
 import { IService } from "@/interfaces/IService";
-import Image from "next/image";
+
 import React, { useEffect, useState } from "react";
+import CarrouselGardener from "@/components/carrouselGardener/CarrouselGardener";
+import EditServicesGardener from "@/components/EditServicesGardener/EditServicesGardener";
 
 const GardenerDashboard = () => {
   const [activeComponent, setActiveComponent] = useState<string>("perfil");
   const [userSession, setUserSession] = useState<IUserSession | null>(null);
-  const [carrousel, setCarrousel] = useState<string[]>([]);
   const [services, setServices] = useState<IService[]>([]);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [tasks, setTasks] = useState<any[]>([]);
@@ -199,17 +200,7 @@ const GardenerDashboard = () => {
     }
   }, []);
 
-  const fetchCarrousel = async () => {
-    try {
-      const id = userSession?.user.id.toString();
-      if (id) {
-        const carrouselData = await getCarrouselById(id);
-        setCarrousel(carrouselData?.imageUrl || []);
-      }
-    } catch (error) {
-      console.error("Error buscando el carrousel:", error);
-    }
-  };
+
 
   const fetchTasks = async (id: string) => {
     try {
@@ -243,30 +234,7 @@ const GardenerDashboard = () => {
     }
   };
 
-  const uploadImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    try {
-      const file = e.target.files?.[0];
-      if (!file) return;
-
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("upload_preset", "gardener");
-
-      const response = await postCarrouselImage(
-        formData,
-        userSession?.user.id.toString()
-      );
-
-      if (response) {
-        alert("Imagen subida con éxito");
-        fetchCarrousel();
-      } else {
-        console.error("Error subiendo la imagen");
-      }
-    } catch (error) {
-      console.error("Error subiendo la imagen:", error);
-    }
-  };
+ 
 
   const handleServiceChange = (serviceId: string) => {
     setSelectedServices(prev =>
@@ -275,14 +243,23 @@ const GardenerDashboard = () => {
         : [...prev, serviceId]
     );
   };
-
-  const saveServices = async () => {
+ const saveServices = async () => {
     try {
-      const id = userSession?.user.id.toString();
-      if (id) {
-        await updateProviderServices(id, selectedServices);
-        alert("Servicios actualizados correctamente");
+      const userId = userSession?.user?.id?.toString();
+      if (!userId) {
+        throw new Error("No se encontró el ID del usuario");
       }
+
+      await updateProviderServices(userId, selectedServices);
+      alert("Servicios actualizados correctamente");
+
+      // Reflejar cambios sin recargar del backend
+      setServices((prev) =>
+        prev.map((service) => ({
+          ...service,
+          isSelected: selectedServices.includes(service.id),
+        }))
+      );
     } catch (error) {
       console.error("Error actualizando servicios:", error);
       alert("Error al actualizar servicios");
@@ -291,15 +268,13 @@ const GardenerDashboard = () => {
 
   useEffect(() => {
     if (userSession) {
-      fetchCarrousel();
       fetchServices();
     }
   }, [userSession]);
-
   return (
-    <div className="min-h-screen bg-[#F4F9F4] font-sans">
+    <div >
       {/* Menú de navegación */}
-      <nav className="bg-[#263238] p-4 shadow-md flex justify-center space-x-4">
+      <nav className="flex justify-around bg-primary text-white p-4 rounded-md">
         <button
           onClick={() => fetchTasks(userSession?.user?.id.toString() || "")}
           className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "tareas" ? "opacity-75" : ""
@@ -322,16 +297,18 @@ const GardenerDashboard = () => {
           Mi Perfil
         </button>
         <button
-          onClick={() => setActiveComponent("services")}
-          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "services" ? "opacity-75" : ""
+          onClick={() => setActiveComponent("Editar Servicios")}
+          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "Editar Servicios" ? "opacity-75" : ""
             }`}
         >
-          Servicios
+          Editar Servicios
         </button>
       </nav>
 
       {/* Contenido dinámico */}
-      <main className="p-6">
+      <main className="p-6 bg-secondary">
+
+
         {activeComponent === "tareas" && (
           <section>
             <h1 className="text-2xl font-bold text-[#263238] m-3 text-center">
@@ -345,34 +322,72 @@ const GardenerDashboard = () => {
 
         {activeComponent === "calendario" && <CalendarGardener />}
 
-        {activeComponent === "services" && (
-          <section>
-            <h1 className="text-2xl font-bold text-[#263238] mb-6">
-              Servicios que Ofrezco
-            </h1>
-            <div className="space-y-4">
-              {services.map((service) => (
-                <div key={service.id} className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id={service.id}
-                    checked={selectedServices.includes(service.id)}
-                    onChange={() => handleServiceChange(service.id)}
-                    className="mr-3"
-                  />
-                  <label htmlFor={service.id} className="flex-grow">
-                    <span className="font-semibold">{service.detailService}</span>
-                    <span className="text-sm text-gray-500 ml-2">
-                      (${service.price} - {service.categories})
-                    </span>
-                  </label>
-                </div>
+        {activeComponent === "Editar Servicios" && (
+  <section>
+    <div className="space-y-4">
+      <div>
+        <h1 className="text-2xl font-bold text-[#263238] mb-6">
+          Servicios que Ofrezco
+        </h1>
+        {services.map((service) => (
+          <div key={service.id} className="flex items-center">
+            <input
+              type="checkbox"
+              id={service.id}
+              checked={selectedServices.includes(service.id)}
+              onChange={() => handleServiceChange(service.id)}
+              className="mr-3"
+            />
+            <label htmlFor={service.id} className="flex-grow">
+              <span className="font-semibold">{service.detailService}</span>
+              <span className="text-sm text-gray-500 ml-2">
+                (${service.price} - {service.categories})
+              </span>
+            </label>
+          </div>
+        ))}
+
+        <button
+          onClick={saveServices}
+          className="mt-4 w-full p-2 bg-[#4CAF50] text-white rounded hover:bg-[#388E3C]"
+        >
+          Guardar Servicios
+        </button>
+      </div>
+
+      {/* Mostrar los servicios seleccionados */}
+      {selectedServices.length > 0 && (
+        <div className="mt-6">
+          <h2 className="text-xl font-semibold text-[#263238]">Servicios Seleccionados</h2>
+          <ul className="space-y-2 mt-3">
+            {services
+              .filter((service) => selectedServices.includes(service.id))
+              .map((service) => (
+                <li key={service.id} className="flex justify-between items-center">
+                  <span className="font-semibold">{service.detailService}</span>
+                  <span className="text-sm text-gray-500">
+                    (${service.price} - {service.categories})
+                  </span>
+                  <button
+                    onClick={() => handleServiceChange(service.id)} // Permite desmarcar el servicio
+                    className="text-red-500 text-sm ml-4"
+                  >
+                    Eliminar
+                  </button>
+                </li>
               ))}
-              <button
-                onClick={saveServices}
-                className="mt-4 w-full p-2 bg-[#4CAF50] text-white rounded hover:bg-[#388E3C]">
-                Guardar Servicios
-              </button>
+          </ul>
+        </div>
+      )}
+ 
+
+
+              <div>
+                <CarrouselGardener/>
+              </div>
+              <div>
+                <EditServicesGardener/>
+              </div>
             </div>
           </section>
         )}
@@ -382,3 +397,7 @@ const GardenerDashboard = () => {
 };
 
 export default GardenerDashboard;
+
+
+
+

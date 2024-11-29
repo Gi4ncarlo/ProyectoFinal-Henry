@@ -66,6 +66,13 @@ const DashboardUserCompo: React.FC = () => {
         console.log('Comentario:', comentario);
         console.log('Calificación:', calificacion);
         const comments = await fetchComments(id, { comentario, calificacion });
+
+        Swal.fire({
+          title: '¡Reseña creada con éxito!',
+          text: 'Puedes ver tu reseña en el perfil del jardinero.',
+          icon: 'success',
+          confirmButtonText: 'Aceptar'
+        });
       }
     });
   };
@@ -295,21 +302,15 @@ const DashboardUserCompo: React.FC = () => {
 
                 {/* Botón para calificar el servicio si está finalizado */}
                 {order?.orderDetail?.status === "Finalizado" && (
-                  order.reviews === null ? (
-                    <button
-                      className="py-2 px-4 bg-[#ff9800] text-white text-sm font-medium rounded-lg hover:bg-[#f57c00] transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#f57c00] w-full"
-                      onClick={() => showRatingModal(order.id)}
-                    >
-                      Califica el Servicio
-                    </button>
-                  ) : (
-                    <p className="text-gray-700 font-semibold text-lg mt-4 text-center w-full bg-[#ff9800] text-white text-sm font-medium rounded-lg hover:bg-[#f57c00] transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#f57c00]">
-                      Gracias por tu comentario!:
-                      <br />
-                      {order.reviews.rate}⭐
-                    </p>
-                  )
+                  <button
+                    className="p-3 bg-[#ff9800] text-white text-lg font-medium rounded-lg hover:bg-[#f57c00] transition-colors w-full"
+                    onClick={() => showRatingModal(order.id)}
+                  >
+                    Califica el Servicio
+                  </button>
+                  
                 )}
+
               </div>
             </div>
           ))}
