@@ -175,7 +175,7 @@ const ProviderDetail: React.FC = () => {
           <div className="flex items-center">
             <Image
               className="rounded-full"
-              src={gardener.profileImageUrl || "/default-profile.jpg"}
+              src={gardener.profileImageUrl || "/nuevo_usuarioGardener.jpg"}
               alt={`${gardener.name}'s profile`}
               width={120}
               height={120}

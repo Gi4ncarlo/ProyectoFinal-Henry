@@ -2,7 +2,6 @@ import {
   IsOptional,
   IsString,
   IsInt,
-  IsNumber,
   IsUrl,
   Min,
   Max,
@@ -53,6 +52,6 @@ export class UpdateGardenerDto {
   @IsArray()
   @IsUUID('4', { each: true })
   @IsOptional()
-  serviceProvided?: string[];
+  serviceProvided: string[];
 }
 

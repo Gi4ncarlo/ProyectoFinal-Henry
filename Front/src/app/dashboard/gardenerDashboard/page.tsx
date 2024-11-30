@@ -176,10 +176,15 @@ import { getServicesProvided } from "@/helpers/service.helpers";
 import CalendarGardener from "@/components/CalendarGardener/CalendarGardener";
 import OrderList from "@/components/DashboardGardenerCompo/orders/orders";
 import EditDashboard from "@/components/EditDashboard/EditDashboard";
-import { getCarrouselById, getProviderById, getTasks, postCarrouselImage, updateProviderServices } from "@/helpers/gardeners.helpers";
+import {
+  getCarrouselById,
+  getProviderById,
+  getTasks,
+  postCarrouselImage,
+  updateProviderServices,
+} from "@/helpers/gardeners.helpers";
 import { IUserSession } from "@/interfaces/IUserSession";
 import { IService } from "@/interfaces/IService";
-import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
 const GardenerDashboard = () => {
@@ -187,18 +192,20 @@ const GardenerDashboard = () => {
   const [userSession, setUserSession] = useState<IUserSession | null>(null);
   const [carrousel, setCarrousel] = useState<string[]>([]);
   const [services, setServices] = useState<IService[]>([]);
-  const [selectedServices, setSelectedServices] = useState<string[]>([]);
+  const [selectedServices, setSelectedServices] = useState<any>([]);
   const [tasks, setTasks] = useState<any[]>([]);
 
+  // Cargar la sesión del usuario desde localStorage
   useEffect(() => {
     if (typeof window !== "undefined" && window.localStorage) {
-      const storedSession = JSON.parse(
-        localStorage.getItem("userSession") || ""
-      );
-      setUserSession(storedSession);
+      const storedSession = localStorage.getItem("userSession");
+      if (storedSession) {
+        setUserSession(JSON.parse(storedSession));
+      }
     }
   }, []);
 
+  // Fetch para el carrousel
   const fetchCarrousel = async () => {
     try {
       const id = userSession?.user.id.toString();
@@ -211,10 +218,10 @@ const GardenerDashboard = () => {
     }
   };
 
+  // Fetch para las tareas
   const fetchTasks = async (id: string) => {
     try {
-      console.log(id);
-      setActiveComponent("tareas")
+      setActiveComponent("tareas");
       const taskData = await getTasks(id);
       setTasks(taskData);
     } catch (error) {
@@ -222,6 +229,7 @@ const GardenerDashboard = () => {
     }
   };
 
+  // Fetch para los servicios
   const fetchServices = async () => {
     try {
       const serviceData = await getServicesProvided();
@@ -230,19 +238,28 @@ const GardenerDashboard = () => {
       const userId = userSession?.user?.id?.toString();
       if (userId) {
         const gardenerData = await getProviderById(userId);
-        if (gardenerData && gardenerData.services) {
-          setSelectedServices(gardenerData.services.map((s: any) => s.id));
-        } else {
-          setSelectedServices([]);
+        console.log("Que trae gardenerData? ", gardenerData?.serviceProvided)
+        if (gardenerData && gardenerData.serviceProvided) {
+          let searchServices = gardenerData.serviceProvided.map((s: any) => s.id)
+          console.log("Que guarda en esta variable: ", searchServices)
+          setSelectedServices(searchServices);
+          console.log("Que recibo: ", selectedServices);
+      //   } else {
+      //     setSelectedServices([]);
+      //   }
+      // } else {
+      //   setSelectedServices([]);
+      // }
         }
-      } else {
-        setSelectedServices([]);
       }
     } catch (error) {
-      console.error("Error fetching services:", error);
+      console.error("Error buscando servicios:", error);
     }
   };
 
+  console.log("Que pasa fuera de la funcion: ", selectedServices)
+
+  // Subir imagen al carrusel
   const uploadImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
       const file = e.target.files?.[0];
@@ -268,14 +285,16 @@ const GardenerDashboard = () => {
     }
   };
 
+  // Manejar cambio en los checkboxes de servicios
   const handleServiceChange = (serviceId: string) => {
-    setSelectedServices(prev =>
+    setSelectedServices((prev: any) =>
       prev.includes(serviceId)
-        ? prev.filter(id => id !== serviceId)
-        : [...prev, serviceId]
+        ? prev.filter((id: any) => id !== serviceId) // Deseleccionar
+        : [...prev, serviceId] // Seleccionar
     );
   };
 
+  // Guardar servicios seleccionados
   const saveServices = async () => {
     try {
       const id = userSession?.user.id.toString();
@@ -289,6 +308,7 @@ const GardenerDashboard = () => {
     }
   };
 
+  // Llamar a los datos iniciales cuando el usuario está disponible
   useEffect(() => {
     if (userSession) {
       fetchCarrousel();
@@ -302,29 +322,33 @@ const GardenerDashboard = () => {
       <nav className="bg-[#263238] p-4 shadow-md flex justify-center space-x-4">
         <button
           onClick={() => fetchTasks(userSession?.user?.id.toString() || "")}
-          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "tareas" ? "opacity-75" : ""
-            }`}
+          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${
+            activeComponent === "tareas" ? "opacity-75" : ""
+          }`}
         >
           Tareas
         </button>
         <button
           onClick={() => setActiveComponent("calendario")}
-          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "calendario" ? "opacity-75" : ""
-            }`}
+          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${
+            activeComponent === "calendario" ? "opacity-75" : ""
+          }`}
         >
           Calendario
         </button>
         <button
           onClick={() => setActiveComponent("perfil")}
-          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "perfil" ? "opacity-75" : ""
-            }`}
+          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${
+            activeComponent === "perfil" ? "opacity-75" : ""
+          }`}
         >
           Mi Perfil
         </button>
         <button
           onClick={() => setActiveComponent("services")}
-          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "services" ? "opacity-75" : ""
-            }`}
+          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${
+            activeComponent === "services" ? "opacity-75" : ""
+          }`}
         >
           Servicios
         </button>
@@ -337,7 +361,7 @@ const GardenerDashboard = () => {
             <h1 className="text-2xl font-bold text-[#263238] m-3 text-center">
               Tareas del Jardinero
             </h1>
-            <OrderList order={tasks}></OrderList>
+            <OrderList order={tasks} />
           </section>
         )}
 
@@ -363,14 +387,15 @@ const GardenerDashboard = () => {
                   <label htmlFor={service.id} className="flex-grow">
                     <span className="font-semibold">{service.detailService}</span>
                     <span className="text-sm text-gray-500 ml-2">
-                      (${service.price} - {service.categories})
+                      (${service.price} - {service.categories.join(", ")})
                     </span>
                   </label>
                 </div>
               ))}
               <button
                 onClick={saveServices}
-                className="mt-4 w-full p-2 bg-[#4CAF50] text-white rounded hover:bg-[#388E3C]">
+                className="mt-4 w-full p-2 bg-[#4CAF50] text-white rounded hover:bg-[#388E3C]"
+              >
                 Guardar Servicios
               </button>
             </div>
