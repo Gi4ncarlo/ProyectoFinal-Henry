@@ -188,7 +188,7 @@ const DashboardUserCompo: React.FC = () => {
           No se encontraron órdenes.
         </p>
       ) : (
-        <div className="w-full max-w-7xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="w-full max-w-7xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {orders[0].servicesOrder.map((order: any) => (
             <div
               key={order.id}
@@ -234,8 +234,8 @@ const DashboardUserCompo: React.FC = () => {
                     <strong>Fecha de Orden:</strong> {order.date}
                   </p>
                   <strong>Fecha del Servicio:</strong>{" "}
-                  {order.dateService
-                    ? format(new Date(order.dateService), "yyyy/MM/dd")
+                  {order.orderDetail
+                    ? order.orderDetail.startTime
                     : "No está definida"}
                 </div>
               </div>
