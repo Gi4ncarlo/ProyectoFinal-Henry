@@ -94,6 +94,7 @@ const DashboardUserCompo: React.FC = () => {
     console.log("cambie el estado a ", status);
     
     setParams({ status, paymentId, externalReference });
+
   }, []);
 
   if (
@@ -326,14 +327,13 @@ const DashboardUserCompo: React.FC = () => {
                 )}
 
                 {/* Botón para calificar el servicio si está finalizado */}
-                {order?.orderDetail?.status === "Finalizado" && (
+                {order?.orderDetail?.status === "Finalizado" && !order?.reviews && (
                   <button
                     className="p-3 bg-[#ff9800] text-white text-lg font-medium rounded-lg hover:bg-[#f57c00] transition-colors w-full"
                     onClick={() => showRatingModal(order.id)}
                   >
                     Califica el Servicio
                   </button>
-                  
                 )}
 
               </div>

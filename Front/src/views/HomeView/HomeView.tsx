@@ -44,31 +44,36 @@ const Home: React.FC = () => {
   //     const fetchedServices = await getServicesProvided();
   //     setServices(fetchedServices);
   //   } catch (error) {
-    //     console.error('Error fetching services:', error);
-    //   }
-    // };
-    
-    //   fetchServices();
-    // }, [isMounted]);
-    const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
-    useEffect(() => {
-      const checkUserSession = async () => {
-        // 1. Verificar si hay un token en localStorage
-        const userSession = localStorage.getItem("userSession");
-        if (userSession) {
-          const tokenData = JSON.parse(userSession);
-          if (tokenData?.token) {
-            setIsUserLoggedIn(true);
-            return; // Usuario ya logueado, no seguimos.
-          }
+  //     console.error('Error fetching services:', error);
+  //   }
+  // };
+
+  //   fetchServices();
+  // }, [isMounted]);
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  const [mostrarVentana, setMostrarVentana] = useState(false);
+
+  const toggleVentana = () => {
+    setMostrarVentana(!mostrarVentana);
+  };
+  useEffect(() => {
+    const checkUserSession = async () => {
+      // 1. Verificar si hay un token en localStorage
+      const userSession = localStorage.getItem("userSession");
+      if (userSession) {
+        const tokenData = JSON.parse(userSession);
+        if (tokenData?.token) {
+          setIsUserLoggedIn(true);
+          return; // Usuario ya logueado, no seguimos.
         }
-        if(isUserLoggedIn) return
-    
-        setIsUserLoggedIn(false);
-      };
-      checkUserSession();
+      }
+      if (isUserLoggedIn) return
+
+      setIsUserLoggedIn(false);
+    };
+    checkUserSession();
   }, []);
-  
+
   const handleSearch = () => {
     if (selectedService) {
       router.push(`/gardener/${selectedService}`);
@@ -181,6 +186,25 @@ const Home: React.FC = () => {
           Enviar Mensaje
         </a>
       </section>
+      <div className="min-h-screen bg-gray-100 flex justify-center items-center">
+        <button
+          onClick={toggleVentana}
+          className="fixed bottom-5 right-5 bg-blue-500 text-white p-4 rounded-full text-xl shadow-lg cursor-pointer hover:bg-blue-600 transition"
+        >
+          🗨️
+        </button>
+
+        {/* Ventana Emergente */}
+        {mostrarVentana && (
+          <div className="fixed bottom-20 right-5 w-96 h-96 bg-white border border-gray-300 rounded-lg shadow-lg overflow-hidden">
+            <iframe
+              src="https://landbot.online/v3/H-2702970-T4MR6WL77PM8Z6WY/index.html"
+              className="w-full h-full border-none"
+              title="Chatbot"
+            ></iframe>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
