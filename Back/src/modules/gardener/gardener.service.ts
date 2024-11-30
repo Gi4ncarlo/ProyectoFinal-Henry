@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateGardenerDto } from './dto/create-gardener.dto';
 import { UpdateGardenerDto } from './dto/update-gardener.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -12,73 +12,57 @@ export class GardenerService {
   constructor(
     @InjectRepository(Gardener)
     private gardenerRepository: Repository<Gardener>,
-    
+
     @InjectRepository(ServiceProvided)
-    private serviceProvidedRepository: Repository<ServiceProvided>, 
-  ) {}
+    private serviceProvidedRepository: Repository<ServiceProvided>,
+  ) { }
 
   async reserveDay(gardenerId: string, day: any) {
     try {
-      console.log("Body recibido:", day);
-
       const gardener = await this.gardenerRepository.findOne({ where: { id: gardenerId } });
-      console.log("Jardinero encontrado:", gardener);
+      if (!gardener) throw new NotFoundException('Jardinero no encontrado');
 
-      if (!gardener) {
-        throw new NotFoundException('Jardinero no encontrado');
-      }
+      if (!gardener.reservedDays) gardener.reservedDays = [];
 
-      // Inicializar reservedDays si es null
-      if (!gardener.reservedDays) {
-        gardener.reservedDays = [];
-      }
+      const formattedDate = day.date;
 
-      // Convertir 'day.date' a formato 'YYYY-MM-DD'
-      const formattedDate = day.date; // Ya validamos que está en este formato en el controlador
-
-      // Verificar si el día ya está reservado
       const isReserved = gardener.reservedDays.some((reservedDay: string) => reservedDay === formattedDate);
 
-      if (isReserved) {
-        throw new BadRequestException('El día ya está reservado');
-      }
+      if (isReserved) throw new BadRequestException('El día ya está reservado');
 
-      // Agregar la fecha al array como string
       gardener.reservedDays.push(formattedDate);
 
-      // Guardar los cambios en la base de datos
       await this.gardenerRepository.save(gardener);
-
-      console.log("Día reservado correctamente:", gardener.reservedDays);
 
       return { message: `Día reservado correctamente para el jardinero con ID ${gardenerId}` };
     } catch (error) {
-      console.error("Error en el servicio:", error);
-
-      // Si el error no tiene un mensaje específico, usa el error entero
-      const errorMessage = error instanceof Error ? error.message : JSON.stringify(error);
-      throw new InternalServerErrorException(
-        `Ocurrió un error al intentar reservar el día: ${errorMessage}`
-      );
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
   async getReservedDays(id: string): Promise<string[]> {
-    const gardener = await this.gardenerRepository.findOne({ where: { id } });
+    try {
+      const gardener = await this.gardenerRepository.findOne({ where: { id } });
 
-    if (!gardener) {
-      throw new Error('Jardinero no encontrado');
+      if (!gardener) throw new HttpException('Jardinero no encontrado.', HttpStatus.NOT_FOUND);
+      const formattedReservedDays = gardener.reservedDays.map((day) => day)
+      if (!formattedReservedDays) throw new HttpException('No hay dias reservados', HttpStatus.NOT_FOUND);
+
+      return formattedReservedDays;
+
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-    // Formatear las fechas a 'YYYY-MM-DD'
-    return gardener.reservedDays.map((day) =>
-      day
-    );
   }
 
   async create(createGardenerDto: CreateGardenerDto): Promise<Gardener> {
-    const gardner = this.gardenerRepository.create(createGardenerDto);
-    return await this.gardenerRepository.save(gardner);
+    try {
+      const gardner = this.gardenerRepository.create(createGardenerDto);
+      return await this.gardenerRepository.save(gardner);
+
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   async findAll(
@@ -88,33 +72,28 @@ export class GardenerService {
     calification?: number,
     order: 'ASC' | 'DESC' = 'ASC',
   ): Promise<{ data: Gardener[]; count: number }> {
-    const skip = (page - 1) * limit;
+    try {
+      const skip = (page - 1) * limit;
+      const query = this.gardenerRepository
+        .createQueryBuilder('gardener')
+        .leftJoinAndSelect('gardener.serviceProvided', 'serviceProvided')
+        .leftJoinAndSelect('gardener.serviceDetails', 'serviceDetails')
+        .take(limit)
+        .skip(skip)
+        .orderBy('gardener.name', order);
 
-    const query = this.gardenerRepository
-      .createQueryBuilder('gardener')
-      .leftJoinAndSelect('gardener.serviceProvided', 'serviceProvided')
-      .leftJoinAndSelect('gardener.serviceDetails', 'serviceDetails')
-      .take(limit)
-      .skip(skip)
-      .orderBy('gardener.name', order);
+      if (name) query.andWhere('gardener.name ILIKE :name', { name: `%${name}%` });
 
-    // Filtro por nombre
-    if (name) {
-      query.andWhere('gardener.name ILIKE :name', { name: `%${name}%` });
+      if (calification !== undefined) query.andWhere('gardener.calification = :calification', { calification });
+
+      const [data, count] = await query.getManyAndCount();
+
+      if (count === 0) throw new NotFoundException('Gardener not found');
+
+      return { count, data };
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-    // Filtro por calificación
-    if (calification !== undefined) {
-      query.andWhere('gardener.calification = :calification', { calification });
-    }
-
-    const [data, count] = await query.getManyAndCount();
-
-    if (count === 0) {
-      throw new NotFoundException('Gardener not found');
-    }
-
-    return { count, data };
   }
 
   async findOne(id: string): Promise<Gardener> {
@@ -214,39 +193,39 @@ export class GardenerService {
     await this.gardenerRepository.update(id, { carrouselImages: updatedImages });
   }
 
-    async findOrdersAsignedForGardener(id: string) {
-      const gardener = await this.gardenerRepository.findOne({
-        where : {id : id},
-        relations : ['serviceDetails'],
-      })
-  
-      if (!gardener) {
-        throw new NotFoundException(`Jardinero ${id} no encontrado`);
-      }
-  
-      return gardener.serviceDetails;
-  
+  async findOrdersAsignedForGardener(id: string) {
+    const gardener = await this.gardenerRepository.findOne({
+      where: { id: id },
+      relations: ['serviceDetails'],
+    })
+
+    if (!gardener) {
+      throw new NotFoundException(`Jardinero ${id} no encontrado`);
     }
 
-    async updateGardener(id: string, updateGardenerDto: UpdateGardenerDto): Promise<Gardener> {
-      const gardener = await this.gardenerRepository.findOne({
-        where: { id },
-        relations: ['serviceProvided'], // Cambia "services" a "serviceProvided"
-      });
-    
-      if (!gardener) {
-        throw new NotFoundException(`Gardener with ID ${id} not found`);
-      }
-    
-      // Actualizar las propiedades del jardinero
-      Object.assign(gardener, updateGardenerDto);
-    
-      if (updateGardenerDto.serviceProvided) {
-        gardener.serviceProvided = updateGardenerDto.serviceProvided.map(serviceId => ({ id: serviceId } as any));
-      }
-    
-      await this.gardenerRepository.save(gardener);
-      return gardener;
-    }   
+    return gardener.serviceDetails;
+
+  }
+
+  async updateGardener(id: string, updateGardenerDto: UpdateGardenerDto): Promise<Gardener> {
+    const gardener = await this.gardenerRepository.findOne({
+      where: { id },
+      relations: ['serviceProvided'], // Cambia "services" a "serviceProvided"
+    });
+
+    if (!gardener) {
+      throw new NotFoundException(`Gardener with ID ${id} not found`);
+    }
+
+    // Actualizar las propiedades del jardinero
+    Object.assign(gardener, updateGardenerDto);
+
+    if (updateGardenerDto.serviceProvided) {
+      gardener.serviceProvided = updateGardenerDto.serviceProvided.map(serviceId => ({ id: serviceId } as any));
+    }
+
+    await this.gardenerRepository.save(gardener);
+    return gardener;
+  }
 }
 

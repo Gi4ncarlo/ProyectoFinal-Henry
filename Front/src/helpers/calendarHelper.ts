@@ -71,8 +71,6 @@ export const fetchReservedDays = async (gardenerId: string): Promise<Set<string>
     console.log("Días formateados:", Array.from(formattedDays));
     return formattedDays;
   } catch (error) {
-    console.error("Error al obtener los días reservados:", error);
-    message.error("No se pudieron cargar los días reservados. Intenta nuevamente.");
     return new Set<string>();
   }
 };
