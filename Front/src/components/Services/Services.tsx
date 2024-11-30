@@ -1,6 +1,6 @@
 "use client";
 
-import { getServicesProvided } from "@/helpers/service.helpers";
+import { getAllServices, deleteService } from "@/helpers/service.helpers";
 import { IService } from "@/interfaces/IService";
 import { IServiceErrors, IServiceProps } from "@/interfaces/IServiceProps";
 import { useRouter } from "next/navigation";
@@ -37,15 +37,14 @@ const Services = () => {
     fetchServices();
   }, [sortOrder]);
 
-
   const fetchServices = async () => {
     try {
       setLoading(true);
-      const serviceData = await getServicesProvided();
+      const serviceData = await getAllServices();
       setServices(serviceData);
     } catch (error) {
       console.error("Error fetching services:", error);
-    }  finally {
+    } finally {
       setLoading(false);
     }
   };
@@ -98,9 +97,35 @@ const Services = () => {
       Swal.fire({
         title: "Hecho!",
         text: "Servicio agregado con éxito",
-        icon: "success"
+        icon: "success",
       });
       router.push("/Home"); // Redirigir a la lista de servicios
+    }
+  };
+
+
+  const handleServiceClick = async (service: IService) => {
+    try {
+      setLoading(true);
+      const deleted = await deleteService(service.id);
+      if (deleted) {
+        Swal.fire({
+          title: "Hecho!",
+          text: "Servicio eliminado con éxito",
+          icon: "success",
+        })
+        const serviceData = await getAllServices();
+        setServices(serviceData);
+      }
+    } catch (error) {
+      console.error("Error fetching services:", error);
+      Swal.fire({
+        title: "Error!",
+        text: "Error al eliminar el servicio",
+        icon: "error",
+      })
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -112,8 +137,6 @@ const Services = () => {
     }
   }, [dataService, touched]);
   if (loading)
-
-
     return (
       <div className="container min-h-screen px-6 py-12 mx-auto">
         <h1 className="text-2xl text-center mt-24 bold text-[#FF5722]">
@@ -121,17 +144,19 @@ const Services = () => {
         </h1>
       </div>
     );
-    
+
   return (
     <div className="container mx-auto px-4 py-6">
       {/* Título principal */}
       <h1 className="text-3xl font-bold text-green-800 mb-8 text-center">
         Servicios de Jardinería Disponibles
       </h1>
-  
+
       {/* Lista de servicios */}
       {services.length === 0 ? (
-        <p className="text-gray-500 text-center">No hay servicios disponibles.</p>
+        <p className="text-gray-500 text-center">
+          No hay servicios disponibles.
+        </p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {services.map((service) => (
@@ -139,6 +164,14 @@ const Services = () => {
               key={service.id}
               className="bg-white border border-gray-200 rounded-lg shadow-md p-6 hover:shadow-lg transition"
             >
+              <div className="flex justify-end">
+                <button
+                  onClick={() => handleServiceClick(service)}
+                  className="my-2 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-full justify-end text-sm"
+                >
+                  X
+                </button>
+              </div>
               <h2 className="font-semibold text-lg text-green-700 mb-2">
                 {service.detailService}
               </h2>
@@ -147,14 +180,14 @@ const Services = () => {
                 {service.categories}
               </p>
               <p className="text-gray-600">
-                <span className="font-medium text-gray-700">Precio: </span>
-                ${service.price}
+                <span className="font-medium text-gray-700">Precio: </span>$
+                {service.price}
               </p>
             </div>
           ))}
         </div>
       )}
-  
+
       {/* Formulario para agregar servicios */}
       <div className="w-full max-w-lg mx-auto mt-12 p-8 border border-gray-200 rounded-lg shadow-md bg-gray-50">
         <h2 className="text-2xl font-bold text-center mb-6 text-green-700">
@@ -179,10 +212,12 @@ const Services = () => {
               className="mt-1 p-3 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-green-700"
             />
             {touched.detailService && errors.detailService && (
-              <span className="text-red-500 text-sm">{errors.detailService}</span>
+              <span className="text-red-500 text-sm">
+                {errors.detailService}
+              </span>
             )}
           </div>
-  
+
           {/* Precio */}
           <div>
             <label
@@ -206,7 +241,7 @@ const Services = () => {
               <span className="text-red-500 text-sm">{errors.price}</span>
             )}
           </div>
-  
+
           {/* Categorías */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
@@ -236,11 +271,11 @@ const Services = () => {
               <span className="text-red-500 text-sm">{errors.categories}</span>
             )}
           </div>
-  
+
           {/* Botón de enviar */}
           <button
             type="submit"
-            disabled={Object.values(errors).some((error) => error !== '')}
+            disabled={Object.values(errors).some((error) => error !== "")}
             className="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 transition"
           >
             Agregar Servicio
@@ -249,7 +284,6 @@ const Services = () => {
       </div>
     </div>
   );
-  
-}
+};
 
 export default Services;
