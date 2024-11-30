@@ -14,7 +14,7 @@ import GardenerCalendar from "@/components/GardenerCalendar/GardenerCalendar";
 import GardenerMap from "@/components/GardenerMap/GardenerMap"; // Importa el componente GardenerMap
 import { Rate } from "antd";
 import { fetchReviews } from "@/helpers/comments.helpers";
-import { Checkbox } from 'antd';
+import { Checkbox } from "antd";
 
 const ProviderDetail: React.FC = () => {
   const router = useRouter();
@@ -34,6 +34,7 @@ const ProviderDetail: React.FC = () => {
     lat: 0,
     lng: 0,
   });
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchGardener = async () => {
@@ -104,15 +105,16 @@ const ProviderDetail: React.FC = () => {
     }
   }, []);
 
-
-  {/*Solicitud de reseñas */ }
+  {
+    /*Solicitud de reseñas */
+  }
   useEffect(() => {
     const fetchGardenerReviews = async () => {
       if (id) {
         try {
           const reviewsData = await fetchReviews(id);
-          console.log("reviewsData",reviewsData);
-          
+          console.log("reviewsData", reviewsData);
+
           setReviews(reviewsData || []);
         } catch (error) {
           console.error("Error  en obtener las reseñas:", error);
@@ -122,7 +124,6 @@ const ProviderDetail: React.FC = () => {
 
     fetchGardenerReviews();
   }, [id]);
-
 
   const handleServiceChange = (serviceId: string) => {
     setSelectedServices((prevSelected) =>
@@ -165,6 +166,7 @@ const ProviderDetail: React.FC = () => {
       setError("Por favor, seleccione una fecha.");
       return;
     }
+    setLoading(true);
 
     try {
       const order = await hireServices({
@@ -174,6 +176,7 @@ const ProviderDetail: React.FC = () => {
         userId: userSession.user.id.toString(),
         serviceId: selectedServices,
       });
+      setLoading(false);
       // Mostrar mensaje de éxito con Swal
       Swal.fire({
         icon: "success",
@@ -195,8 +198,33 @@ const ProviderDetail: React.FC = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen w-screen">
+        {/* Spinner */}
+        <div className="w-16 h-16 border-4 border-green-300 border-t-green-500 rounded-full animate-spin mb-4"></div>
+
+        {/* Texto */}
+        <h2 className="text-xl font-semibold text-[#263238]">
+          Cargando la informacion..
+        </h2>
+      </div>
+    );
+  }
+
   if (error) return <div className="text-red-500">{error}</div>;
-  if (!gardener) return <div>Cargando...</div>;
+  if (!gardener)
+    return (
+      <div className="flex flex-col items-center justify-center h-screen w-screen">
+        {/* Spinner */}
+        <div className="w-16 h-16 border-4 border-green-300 border-t-green-500 rounded-full animate-spin mb-4"></div>
+
+        {/* Texto */}
+        <h2 className="text-xl font-semibold text-[#263238]">
+          Cargando la informacion..
+        </h2>
+      </div>
+    );
   return (
     <div className="flex flex-col min-h-screen bg-[url('/images/fondoJardineros2.webp')] bg-cover bg-center">
       {/* Contenedor para centrar todo */}
@@ -256,10 +284,14 @@ const ProviderDetail: React.FC = () => {
                   className="flex justify-between items-center py-2 border-b border-gray-200"
                 >
                   <div className="flex-1 text-left">
-                    <span className="font-medium text-gray-800">{service.detailService}</span>
+                    <span className="font-medium text-gray-800">
+                      {service.detailService}
+                    </span>
                   </div>
                   <div className="flex-1 text-center">
-                    <span className="font-semibold text-green-600">${service.price}</span>
+                    <span className="font-semibold text-green-600">
+                      ${service.price}
+                    </span>
                   </div>
                   <div className="flex-1 text-right">
                     <Checkbox
@@ -272,10 +304,10 @@ const ProviderDetail: React.FC = () => {
             </ul>
             <div className="mt-4">
               <h3 className="text-xl bg-[#8BC34A] rounded-lg font-bold text-[#263238] flex justify-center">
-                Total: <span className="text-[#263238]">${calculateTotal()}</span>
+                Total:{" "}
+                <span className="text-[#263238]">${calculateTotal()}</span>
               </h3>
             </div>
-
 
             <div className="mt-6">
               <h2 className="text-lg font-semibold text-[#263238]">
@@ -287,7 +319,6 @@ const ProviderDetail: React.FC = () => {
               />
             </div>
 
-
             <div className="mt-6 flex justify-center">
               <button
                 onClick={handleHireClick}
@@ -296,19 +327,16 @@ const ProviderDetail: React.FC = () => {
                 Contratar Servicios
               </button>
             </div>
-
-
-
           </div>
 
-
           <div className="mt-8">
-            <h2 className="text-lg font-semibold text-[#263238]">Reseñas de Clientes:</h2>
+            <h2 className="text-lg font-semibold text-[#263238]">
+              Reseñas de Clientes:
+            </h2>
             {reviews.length > 0 ? (
               <div className="mt-4">
                 {reviews.map((review) => (
                   <div key={review.id} className="mb-4 border-b pb-4">
-
                     <div className="flex items-center mt-3">
                       <Rate
                         allowHalf
@@ -332,7 +360,6 @@ const ProviderDetail: React.FC = () => {
               <p className="text-gray-500">No hay reseñas disponibles.</p>
             )}
           </div>
-
         </div>
         <div className="flex items-center justify-center w-full mt-10">
           <button
@@ -348,6 +375,3 @@ const ProviderDetail: React.FC = () => {
 };
 
 export default ProviderDetail;
-
-
-

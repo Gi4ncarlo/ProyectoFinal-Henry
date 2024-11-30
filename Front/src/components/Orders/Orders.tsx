@@ -22,12 +22,15 @@ const DashboardUserCompo: React.FC = () => {
   const [imageProfile, setImageProfile] = useState<any>("");
   const [showModal, setShowModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null); // Para almacenar la orden seleccionada
+  const [status, setStatus] = useState<string | null>("");
+  
+  let contador = 0;
 
   const handleOpenModal = (order: any) => {
     setSelectedOrder(order); // Establecer la orden seleccionada
     setShowModal(true); // Mostrar el modal
   };
-
+  
   const handleCloseModal = () => {
     setShowModal(false); // Cerrar el modal
     setSelectedOrder(null); // Resetear la orden seleccionada
@@ -83,28 +86,15 @@ const DashboardUserCompo: React.FC = () => {
     // Usamos URLSearchParams para obtener los query params
     const urlParams = new URLSearchParams(window.location.search);
     const status = urlParams.get("status");
+    setStatus(status);
     const paymentId = urlParams.get("payment_id");
     const externalReference = urlParams.get("external_reference");
 
+
+    console.log("cambie el estado a ", status);
+    
     setParams({ status, paymentId, externalReference });
   }, []);
-  useEffect(() => {
-    if (params?.status === "approved") {
-      const fetchOrders = async () => {
-        fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/services-order/orderPay/${params.externalReference}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${TOKEN.token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-      };
-      fetchOrders();
-    }
-  }, [params]);
 
   if (
     params?.status === "failure" ||
@@ -126,24 +116,26 @@ const DashboardUserCompo: React.FC = () => {
     }
   }, []);
 
-  useEffect(() => {
-    if (userSession?.user?.id && userSession.token) {
-      fetchOrders(userSession.user.id, userSession.token);
-    }
-  }, [userSession]);
-
   const fetchOrders = async (id: number, token: string) => {
     setLoading(true);
     try {
+      setOrders([]);
       const ordersData = await getuserOrdersDB(id, token);
       setOrders(ordersData);
       setError(null);
+     
+      contador ++;
+      console.log("cuantas veces hice fetch", contador);
+      console.log("orders", ordersData);
+      
     } catch (err) {
       console.error("Error fetching orders:", err);
     } finally {
       setLoading(false);
     }
   };
+
+  console.log("orders afuera", orders);
   const handlePayment = async (id: string) => {
     try {
       const response = await fetch(
@@ -163,19 +155,52 @@ const DashboardUserCompo: React.FC = () => {
       if (data.paymentUrl.sandbox_init_point) {
         window.location.href = data.paymentUrl.sandbox_init_point;
       }
+      setStatus("approved");
+     // if (params?.status === "approved") {
+       
+          fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/services-order/orderPay/${params.externalReference}`,
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${TOKEN.token}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+      //}
     } catch (error) {
       throw error;
     }
   };
+
+  
+
+  useEffect(() => {
+    if (userSession?.user?.id && userSession.token) {
+      fetchOrders(userSession.user.id, userSession.token);
+    }
+  }, [userSession, status]);
+
+
   if (loading) {
-    return <p>Loading...</p>;
+    return(
+      <div className="flex flex-col items-center justify-center h-screen w-screen">
+        {/* Spinner */}
+        <div className="w-16 h-16 border-4 border-green-300 border-t-green-500 rounded-full animate-spin mb-4"></div>
+
+        {/* Texto */}
+        <h2 className="text-xl font-semibold text-[#263238]">
+          Cargando la informacion..
+        </h2>
+      </div>
+    );
   }
 
   if (error) {
     return <p>{error}</p>;
   }
-  console.log(orders[0].servicesOrder);
-
+ 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center py-6 px-4">
       <h1 className="text-3xl font-bold text-gray-800 mb-12">
@@ -187,7 +212,7 @@ const DashboardUserCompo: React.FC = () => {
           No se encontraron órdenes.
         </p>
       ) : (
-        <div className="w-full max-w-7xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-8">
           {orders[0].servicesOrder.map((order: any) => (
             <div
               key={order.id}
@@ -273,7 +298,7 @@ const DashboardUserCompo: React.FC = () => {
                     className={`inline-block px-4 py-2 rounded-full text-white font-semibold ${order.isApproved ? "bg-green-500" : "bg-red-500"
                       }`}
                   >
-                    {order.isApproved ? `Aprobada: Estado del trabajo ${order.orderDetail.status}` : "No Aprobada"}
+                    {order.isApproved ? `Pagada: Estado del trabajo ${order.orderDetail.status}` : "Pendiente de Pago"}
                   </span>
                 </div>
               </div>
@@ -293,7 +318,7 @@ const DashboardUserCompo: React.FC = () => {
                 {/* Botón "Ver detalles" */}
                 {order.isApproved && (
                   <button
-                    className="py-2 px-4 bg-[#2196f3] text-white text-sm font-medium rounded-lg hover:bg-[#1976d2] transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#1976d2] w-full"
+                    className="py-2 px-4 bg-[#4CAF50] text-white text-sm font-medium rounded-lg hover:bg-[#388e3c] transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#1976d2] w-full"
                     onClick={() => handleOpenModal(order.orderDetail)}
                   >
                     Ver detalles
