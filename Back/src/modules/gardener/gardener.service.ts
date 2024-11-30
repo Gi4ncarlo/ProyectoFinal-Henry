@@ -9,6 +9,7 @@ import { format } from 'date-fns';
 
 @Injectable()
 export class GardenerService {
+
   constructor(
     @InjectRepository(Gardener)
     private gardenerRepository: Repository<Gardener>,
@@ -183,14 +184,19 @@ export class GardenerService {
       throw new Error("Gardener not found");
     }
 
-    // Asegúrate de que carrouselImages sea un array
     const currentImages = gardener.carrouselImages || [];
 
-    // Agrega la nueva URL al array
+
     const updatedImages = [...currentImages, imageUrl];
 
-    // Actualiza la entidad con el nuevo array
+
     await this.gardenerRepository.update(id, { carrouselImages: updatedImages });
+  }
+
+
+  updateCarrouselImages(id: string, carrousel : string[] ) {
+    
+    return this.gardenerRepository.update(id, { carrouselImages: carrousel });
   }
 
   async findOrdersAsignedForGardener(id: string) {

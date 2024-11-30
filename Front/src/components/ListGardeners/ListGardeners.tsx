@@ -187,7 +187,7 @@ const handleDelete = async (id: number) => {
 
   useEffect(() => {
     const fetchProviders = async () => {
-      setLoading(true);
+      //setLoading(true);
       try {
         const order = filter === "ASC" || filter === "DESC" ? filter : "ASC";
         const calification = isNaN(Number(filter)) ? undefined : Number(filter);
@@ -201,7 +201,7 @@ const handleDelete = async (id: number) => {
             ? JSON.parse(localStorage.getItem("userSession") || "{}").token
             : null;
 
-        const gardeners = await getGardenersDB(token, order, calification, searchTerm, availability);
+        const gardeners = await getGardenersDB(token, order, calification, searchTerm,) //availability);
         setProviders(gardeners.data || []);
       } catch (error: any) {
         setError(error.message || "Error al cargar los Jardineros");
@@ -230,12 +230,15 @@ const handleDelete = async (id: number) => {
 
 
     return (
-      <div className="flex flex-col justify-center items-center min-h-screen px-6 py-12 mx-auto">
-        <h1 className="text-2xl text-center font-bold text-[#FF5722] mb-4">
-          Cargando ...
-        </h1>
-        <Spin indicator={<LoadingOutlined spin />} size="large" />
-      </div>
+      <div className="flex flex-col items-center justify-center h-screen w-screen">
+      {/* Spinner */}
+      <div className="w-16 h-16 border-4 border-green-300 border-t-green-500 rounded-full animate-spin mb-4"></div>
+
+      {/* Texto */}
+      <h2 className="text-xl font-semibold text-[#263238]">
+        Cargando la informacion..
+      </h2>
+    </div>
     );
     
     if (error) return <div>{error}</div>;
@@ -244,7 +247,7 @@ const handleDelete = async (id: number) => {
       <div className="mx-auto mt-24">
         {providers.length === 0 ? (
           <div className="text-center mb-8 mx-auto">
-            <h1 className="text-2xl font-bold mb-4">No hay jardineros</h1>
+            <h1 className="text-2xl font-bold mb-4">No se encontraron Jardineros</h1>
             <button
               className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
               onClick={() => setSearchTerm("")}

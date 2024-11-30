@@ -7,6 +7,7 @@ import { IServiceProvider } from "@/interfaces/IServiceProvider";
 import { getGardenersDB } from "@/helpers/gardeners.helpers";
 import { useRouter } from "next/navigation";
 import { FaSearch } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 const Dropdown: React.FC<{ filter: string; onChange: (value: string) => void }> = ({
   filter,
@@ -75,6 +76,11 @@ const ProviderCardList: React.FC = () => {
         const parsedSession = JSON.parse(storedSession);
         setTOKEN(parsedSession.token);
       } else {
+        Swal.fire({  
+          icon: "error",
+          title: "Oops...",
+          text: "Inicia sesión para acceder a esta sección",
+        })
         router.push("/login");
       }
 
@@ -139,11 +145,15 @@ const ProviderCardList: React.FC = () => {
 
   if (loading)
     return (
-      <div className="container min-h-screen px-6 py-12 mx-auto">
-        <h1 className="text-2xl text-center mt-24 bold text-[#FF5722]">
-          Cargando ...
-        </h1>
-      </div>
+      <div className="flex flex-col items-center justify-center h-screen w-screen">
+      {/* Spinner */}
+      <div className="w-16 h-16 border-4 border-green-300 border-t-green-500 rounded-full animate-spin mb-4"></div>
+
+      {/* Texto */}
+      <h2 className="text-xl font-semibold text-[#263238]">
+          Cargando la informacion..
+      </h2>
+  </div>
     );
   if (error) return <div>{error}</div>;
 
