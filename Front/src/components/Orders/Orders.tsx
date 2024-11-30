@@ -259,8 +259,8 @@ const DashboardUserCompo: React.FC = () => {
                     <strong>Fecha de Orden:</strong> {order.date}
                   </p>
                   <strong>Fecha del Servicio:</strong>{" "}
-                  {order.dateService
-                    ? format(new Date(order.dateService), "yyyy/MM/dd")
+                  {order.orderDetail
+                    ? order.orderDetail.startTime
                     : "No está definida"}
                 </div>
               </div>
