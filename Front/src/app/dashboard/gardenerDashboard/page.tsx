@@ -172,14 +172,17 @@
 
 "use client";
 
-import { getServicesProvided } from "@/helpers/service.helpers";
+import { getAllServices, getServicesProvided } from "@/helpers/service.helpers";
 import CalendarGardener from "@/components/CalendarGardener/CalendarGardener";
 import OrderList from "@/components/DashboardGardenerCompo/orders/orders";
 import EditDashboard from "@/components/EditDashboard/EditDashboard";
-import {  getProviderById, getTasks, updateProviderServices } from "@/helpers/gardeners.helpers";
+import {
+  getProviderById,
+  getTasks,
+  updateProviderServices,
+} from "@/helpers/gardeners.helpers";
 import { IUserSession } from "@/interfaces/IUserSession";
 import { IService } from "@/interfaces/IService";
-
 import React, { useEffect, useState } from "react";
 import CarrouselGardener from "@/components/carrouselGardener/CarrouselGardener";
 import EditServicesGardener from "@/components/EditServicesGardener/EditServicesGardener";
@@ -192,63 +195,67 @@ const GardenerDashboard = () => {
   const [tasks, setTasks] = useState<any[]>([]);
   const [loader, setLoader] = useState(false);
 
+  // Cargar la sesión del usuario desde localStorage
   useEffect(() => {
     if (typeof window !== "undefined" && window.localStorage) {
-      const storedSession = JSON.parse(
-        localStorage.getItem("userSession") || ""
-      );
-      setUserSession(storedSession);
+      const storedSession = localStorage.getItem("userSession");
+      if (storedSession) {
+        setUserSession(JSON.parse(storedSession));
+      }
     }
   }, []);
 
-
-
+  // Fetch para las tareas
   const fetchTasks = async (id: string) => {
     try {
       setLoader(true);
-      setActiveComponent("tareas")
+      setActiveComponent("tareas");
       const taskData = await getTasks(id);
       setTasks(taskData);
       setLoader(false);
     } catch (error) {
       console.error("Error buscando las tareas:", error);
+      setLoader(false);
     }
   };
 
+  // Fetch para los servicios
   const fetchServices = async () => {
     try {
+      setLoader(true);
       const id = userSession?.user.id.toString();
-      if(id){
-
-        const serviceData =await getServicesProvided(id);
+      if (id) {
+        // Obtener todos los servicios disponibles
+        const serviceData = await getAllServices();
         setServices(serviceData);
-      }
 
-      const userId = userSession?.user?.id?.toString();
-      if (userId) {
-        const gardenerData = await getProviderById(userId);
-        if (gardenerData && gardenerData.services) {
-          setSelectedServices(gardenerData.services.map((s: any) => s.id));
-        } else {
-          setSelectedServices([]);
+        // Obtener los servicios asociados al jardinero
+        const gardenerData = await getProviderById(id);
+        if (gardenerData?.serviceProvided) {
+          const associatedServices = gardenerData.serviceProvided.map(
+            (s: any) => s.id
+          );
+          setSelectedServices(associatedServices);
         }
-      } else {
-        setSelectedServices([]);
       }
+      setLoader(false);
     } catch (error) {
-      console.error("Error fetching services:", error);
+      console.error("Error buscando servicios:", error);
+      setLoader(false);
     }
   };
 
-
+  // Manejar cambio en los checkboxes de servicios
   const handleServiceChange = (serviceId: string) => {
-    setSelectedServices(prev =>
+    setSelectedServices((prev) =>
       prev.includes(serviceId)
-        ? prev.filter(id => id !== serviceId)
-        : [...prev, serviceId]
+        ? prev.filter((id) => id !== serviceId) // Deseleccionar
+        : [...prev, serviceId] // Seleccionar
     );
   };
- const saveServices = async () => {
+
+  // Guardar los servicios seleccionados
+  const saveServices = async () => {
     try {
       const userId = userSession?.user?.id?.toString();
       if (!userId) {
@@ -257,69 +264,64 @@ const GardenerDashboard = () => {
 
       await updateProviderServices(userId, selectedServices);
       alert("Servicios actualizados correctamente");
-
-      // Reflejar cambios sin recargar del backend
-      setServices((prev) =>
-        prev.map((service) => ({
-          ...service,
-          isSelected: selectedServices.includes(service.id),
-        }))
-      );
     } catch (error) {
       console.error("Error actualizando servicios:", error);
       alert("Error al actualizar servicios");
     }
   };
 
+  // Llamar a los datos iniciales cuando el usuario está disponible
   useEffect(() => {
     if (userSession) {
       fetchServices();
     }
   }, [userSession]);
 
-if(loader){
-  return (
-    <div className="flex flex-col items-center justify-center h-screen w-screen">
-    {/* Spinner */}
-    <div className="w-16 h-16 border-4 border-green-300 border-t-green-500 rounded-full animate-spin mb-4"></div>
-
-    {/* Texto */}
-    <h2 className="text-xl font-semibold text-[#263238]">
-      Cargando la informacion..
-    </h2>
-  </div>
-  )
-}
+  // Mostrar spinner mientras se cargan los datos
+  if (loader) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen w-screen">
+        <div className="w-16 h-16 border-4 border-green-300 border-t-green-500 rounded-full animate-spin mb-4"></div>
+        <h2 className="text-xl font-semibold text-[#263238]">
+          Cargando la información...
+        </h2>
+      </div>
+    );
+  }
 
   return (
-    <div >
+    <div>
       {/* Menú de navegación */}
       <nav className="flex justify-around bg-primary text-white p-4 rounded-md">
         <button
           onClick={() => fetchTasks(userSession?.user?.id.toString() || "")}
-          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "tareas" ? "opacity-75" : ""
-            }`}
+          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${
+            activeComponent === "tareas" ? "opacity-75" : ""
+          }`}
         >
           Tareas
         </button>
         <button
           onClick={() => setActiveComponent("calendario")}
-          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "calendario" ? "opacity-75" : ""
-            }`}
+          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${
+            activeComponent === "calendario" ? "opacity-75" : ""
+          }`}
         >
           Calendario
         </button>
         <button
           onClick={() => setActiveComponent("perfil")}
-          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "perfil" ? "opacity-75" : ""
-            }`}
+          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${
+            activeComponent === "perfil" ? "opacity-75" : ""
+          }`}
         >
           Mi Perfil
         </button>
         <button
           onClick={() => setActiveComponent("Editar Servicios")}
-          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "Editar Servicios" ? "opacity-75" : ""
-            }`}
+          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${
+            activeComponent === "Editar Servicios" ? "opacity-75" : ""
+          }`}
         >
           Editar Servicios
         </button>
@@ -327,14 +329,12 @@ if(loader){
 
       {/* Contenido dinámico */}
       <main className="p-6 bg-secondary">
-
-
         {activeComponent === "tareas" && (
           <section>
             <h1 className="text-2xl font-bold text-[#263238] m-3 text-center">
               Tareas del Jardinero
             </h1>
-            <OrderList order={tasks}></OrderList>
+            <OrderList order={tasks} />
           </section>
         )}
 
@@ -343,70 +343,39 @@ if(loader){
         {activeComponent === "calendario" && <CalendarGardener />}
 
         {activeComponent === "Editar Servicios" && (
-  <section>
-    <div className="space-y-4">
-      <div>
-        <h1 className="text-2xl font-bold text-[#263238] mb-6">
-          Servicios que Ofrezco
-        </h1>
-        {services.map((service) => (
-          <div key={service.id} className="flex items-center">
-            <input
-              type="checkbox"
-              id={service.id}
-              checked={selectedServices.includes(service.id)}
-              onChange={() => handleServiceChange(service.id)}
-              className="mr-3"
-            />
-            <label htmlFor={service.id} className="flex-grow">
-              <span className="font-semibold">{service.detailService}</span>
-              <span className="text-sm text-gray-500 ml-2">
-                (${service.price} - {service.categories})
-              </span>
-            </label>
-          </div>
-        ))}
-
-        <button
-          onClick={saveServices}
-          className="mt-4 w-full p-2 bg-[#4CAF50] text-white rounded hover:bg-[#388E3C]"
-        >
-          Guardar Servicios
-        </button>
-      </div>
-
-      {/* Mostrar los servicios seleccionados */}
-      {selectedServices.length > 0 && (
-        <div className="mt-6">
-          <h2 className="text-xl font-semibold text-[#263238]">Servicios Seleccionados</h2>
-          <ul className="space-y-2 mt-3">
-            {services
-              .filter((service) => selectedServices.includes(service.id))
-              .map((service) => (
-                <li key={service.id} className="flex justify-between items-center">
-                  <span className="font-semibold">{service.detailService}</span>
-                  <span className="text-sm text-gray-500">
-                    (${service.price} - {service.categories})
-                  </span>
-                  <button
-                    onClick={() => handleServiceChange(service.id)} // Permite desmarcar el servicio
-                    className="text-red-500 text-sm ml-4"
-                  >
-                    Eliminar
-                  </button>
-                </li>
+          <section>
+            <h1 className="text-2xl font-bold text-[#263238] mb-6">
+              Servicios que Ofrezco
+            </h1>
+            <div className="space-y-4">
+              {services.map((service) => (
+                <div key={service.id} className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id={service.id}
+                    checked={selectedServices.includes(service.id)}
+                    onChange={() => handleServiceChange(service.id)}
+                    className="mr-3"
+                  />
+                  <label htmlFor={service.id} className="flex-grow">
+                    <span className="font-semibold">{service.detailService}</span>
+                    <span className="text-sm text-gray-500 ml-2">
+                      (${service.price} - {service.categories.join(", ")})
+                    </span>
+                  </label>
+                </div>
               ))}
-          </ul>
-        </div>
-      )}
- 
-
-
+              <button
+                onClick={saveServices}
+                className="mt-4 w-full p-2 bg-[#4CAF50] text-white rounded hover:bg-[#388E3C]"
+              >
+                Guardar Servicios
+              </button>
               <div>
-                <CarrouselGardener/>
+                <CarrouselGardener />
               </div>
               <div>
-                <EditServicesGardener/>
+                <EditServicesGardener />
               </div>
             </div>
           </section>
@@ -417,6 +386,7 @@ if(loader){
 };
 
 export default GardenerDashboard;
+
 
 
 

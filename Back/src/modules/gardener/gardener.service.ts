@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Gardener } from './entities/gardener.entity';
 import { Repository } from 'typeorm';
 import { ServiceProvided } from '../serviceProvided/entities/serviceProvided.entity';
+import { In } from 'typeorm';
 import { format } from 'date-fns';
 
 @Injectable()
@@ -98,12 +99,17 @@ export class GardenerService {
   }
 
   async findOne(id: string): Promise<Gardener> {
-    const gardner = await this.gardenerRepository.findOneBy({ id });
+    const gardner = await this.gardenerRepository.findOne({ 
+      where: { id },
+      relations: ['serviceProvided'] 
+    });
     if (!gardner) {
       throw new NotFoundException(`Gardener with the ID ${id} not Found`);
     }
     return gardner;
   }
+
+
   findByEmail(email: string) {
     try {
       const gardener = this.gardenerRepository.findOne({ where: { email } });
@@ -113,33 +119,31 @@ export class GardenerService {
     }
   }
 
-  async update(
-    id: string,
-    updateGardenerDto: UpdateGardenerDto,
-  ): Promise<Gardener> {
-    const gardener = await this.gardenerRepository.findOneBy({ id });
+  async update(id: string, updateGardenerDto: UpdateGardenerDto): Promise<Gardener> {
+    const { serviceProvided } = updateGardenerDto;
+
+    // Encuentra el jardinero existente
+    const gardener = await this.gardenerRepository.findOne({
+      where: { id },
+      relations: ['serviceProvided'],
+    });
+
     if (!gardener) {
-      throw new NotFoundException(`Gardener with the ID ${id} not found`);
+      throw new NotFoundException(`Gardener with ID ${id} not found`);
     }
 
-    if (updateGardenerDto.serviceProvided) {
-      const serviceProvidedEntities = await Promise.all(
-        updateGardenerDto.serviceProvided.map(async (serviceId) => {
-          const service = await this.serviceProvidedRepository.findOneBy({ id: serviceId });
-          if (!service) {
-            throw new NotFoundException(`Service with ID ${serviceId} not found`);
-          }
-          return service;
-        }),
-      );
+    // Encuentra los servicios proporcionados por sus IDs
+    const services = await this.serviceProvidedRepository.findBy({
+      id: In(serviceProvided),
+    });
 
-      gardener.serviceProvided = serviceProvidedEntities;
-    }
+    // Actualiza la relación
+    gardener.serviceProvided = services;
 
-    Object.assign(gardener, updateGardenerDto);
+    // Guarda los cambios
     return this.gardenerRepository.save(gardener);
   }
-
+  
   async remove(id: string): Promise<string | void> {
     const result = await this.gardenerRepository.delete(id);
     if (result.affected === 0) {

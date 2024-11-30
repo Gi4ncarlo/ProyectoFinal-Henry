@@ -2,7 +2,6 @@ import {
   IsOptional,
   IsString,
   IsInt,
-  IsNumber,
   IsUrl,
   Min,
   Max,
