@@ -190,6 +190,7 @@ const GardenerDashboard = () => {
   const [services, setServices] = useState<IService[]>([]);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [tasks, setTasks] = useState<any[]>([]);
+  const [loader, setLoader] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.localStorage) {
@@ -204,10 +205,11 @@ const GardenerDashboard = () => {
 
   const fetchTasks = async (id: string) => {
     try {
-      console.log(id);
+      setLoader(true);
       setActiveComponent("tareas")
       const taskData = await getTasks(id);
       setTasks(taskData);
+      setLoader(false);
     } catch (error) {
       console.error("Error buscando las tareas:", error);
     }
@@ -238,7 +240,6 @@ const GardenerDashboard = () => {
     }
   };
 
- 
 
   const handleServiceChange = (serviceId: string) => {
     setSelectedServices(prev =>
@@ -275,6 +276,21 @@ const GardenerDashboard = () => {
       fetchServices();
     }
   }, [userSession]);
+
+if(loader){
+  return (
+    <div className="flex flex-col items-center justify-center h-screen w-screen">
+    {/* Spinner */}
+    <div className="w-16 h-16 border-4 border-green-300 border-t-green-500 rounded-full animate-spin mb-4"></div>
+
+    {/* Texto */}
+    <h2 className="text-xl font-semibold text-[#263238]">
+      Cargando la informacion..
+    </h2>
+  </div>
+  )
+}
+
   return (
     <div >
       {/* Menú de navegación */}

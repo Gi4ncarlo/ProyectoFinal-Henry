@@ -7,6 +7,7 @@ import { IServiceProvider } from "@/interfaces/IServiceProvider";
 import { getGardenersDB } from "@/helpers/gardeners.helpers";
 import { useRouter } from "next/navigation";
 import { FaSearch } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 const Dropdown: React.FC<{ filter: string; onChange: (value: string) => void }> = ({
   filter,
@@ -75,6 +76,11 @@ const ProviderCardList: React.FC = () => {
         const parsedSession = JSON.parse(storedSession);
         setTOKEN(parsedSession.token);
       } else {
+        Swal.fire({  
+          icon: "error",
+          title: "Oops...",
+          text: "Inicia sesión para acceder a esta sección",
+        })
         router.push("/login");
       }
 

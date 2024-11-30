@@ -54,5 +54,9 @@ export class UpdateGardenerDto {
   @IsUUID('4', { each: true })
   @IsOptional()
   serviceProvided?: string[];
+
+  @IsArray()
+  @IsOptional()
+  carrouselImages?: string[];
 }
 
