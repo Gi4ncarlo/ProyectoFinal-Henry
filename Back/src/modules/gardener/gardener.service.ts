@@ -163,17 +163,17 @@ export class GardenerService {
 
   async findServicesProvidedByGardener(id: string) {
     const gardener = await this.gardenerRepository.findOne({
-      where: { id: id },
-      relations: ['serviceProvided'],
-    })
-
+      where: { id },
+      relations: ['serviceProvided'], // Asegura que se carguen los servicios relacionados
+    });
+  
     if (!gardener) {
       throw new NotFoundException(`Jardinero ${id} no encontrado`);
     }
-
+  
     return gardener.serviceProvided;
-
   }
+  
 
   async uploadCarrouselImages(id: string, imageUrl: string): Promise<void> {
     // Obtén el jardinero actual por su ID

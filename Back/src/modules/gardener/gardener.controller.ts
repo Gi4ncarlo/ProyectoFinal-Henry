@@ -231,9 +231,8 @@ export class GardenerController {
   @UseGuards(AuthGuard)
   @Get(':id/serviceProvided')
   @HttpCode(200)
-  getServiceProvided(@Param('id', new ParseUUIDPipe()) id: string) {
-    const servicesOfTheGardener =
-      this.gardenerService.findServicesProvidedByGardener(id);
+  async getServiceProvided(@Param('id', new ParseUUIDPipe()) id: string) {
+    const servicesOfTheGardener = await this.gardenerService.findServicesProvidedByGardener(id);
 
     if (!servicesOfTheGardener) {
       throw new HttpException(
