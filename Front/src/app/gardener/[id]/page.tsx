@@ -268,8 +268,25 @@ const ProviderDetail: React.FC = () => {
             </div>
           </div>
 
+          <div className="flex snap-x snap-mandatory overflow-x-auto mt-6">
+              {carrousel?.map((image: string, index: number) => (
+                <div
+                  key={index}
+                  className="relative snap-center flex-none w-full"
+                  style={{ maxWidth: "400px" }}
+                >
+                  <Image
+                    src={image}
+                    alt={`Imagen ${index + 1}`}
+                    width={1920}
+                    height={1080}
+                    className="w-full h-full object-cover rounded-lg"
+                  />
+                </div>
+                ))}
+              </div>
           {/* Agregar el componente GardenerMap aquí */}
-          <div className="mt-8">
+          <div className="mt-10">
             <GardenerMap location={coordinates} />
           </div>
 
@@ -319,17 +336,7 @@ const ProviderDetail: React.FC = () => {
               />
             </div>
 
-            <div className="mt-6 flex justify-center">
-              <button
-                onClick={handleHireClick}
-                className="mt-4 w-full bg-[#4CAF50] text-white py-2 px-4 rounded-lg hover:bg-[#45a049]"
-              >
-                Contratar Servicios
-              </button>
-            </div>
-          </div>
-
-          <div className="mt-8">
+          <div className="">
             <h2 className="text-lg font-semibold text-[#263238]">
               Reseñas de Clientes:
             </h2>
@@ -361,6 +368,17 @@ const ProviderDetail: React.FC = () => {
             )}
           </div>
         </div>
+
+              <div className="mt-6 flex justify-center">
+                <button
+                  onClick={handleHireClick}
+                  className="mt-4 w-full bg-[#4CAF50] text-white py-2 px-4 rounded-lg hover:bg-[#45a049]"
+                >
+                  Contratar Servicios
+                </button>
+              </div>
+            </div>
+
         <div className="flex items-center justify-center w-full mt-10">
           <button
             onClick={() => router.push("/gardener")}
