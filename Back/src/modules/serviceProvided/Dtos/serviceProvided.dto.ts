@@ -22,9 +22,9 @@ export class UpdateServiceProvidedDto {
 
     @IsNotEmpty()
     @IsString()
-    price?: string
+    price?: number
     @IsArray()
-    categories?: string[]
+    categories?: Categories[]
 
 
 }

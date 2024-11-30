@@ -2,12 +2,12 @@ import { HttpException, Injectable } from "@nestjs/common";
 import { ServiceProvided } from "./entities/serviceProvided.entity";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
+import { UpdateServiceProvidedDto } from "./Dtos/serviceProvided.dto";
 
 
 @Injectable()
 export class ServiceProvidedService {
-
-
+ 
     constructor(
         @InjectRepository(ServiceProvided)
         private readonly serviceProvidedRepository: Repository<ServiceProvided>,
@@ -61,12 +61,21 @@ export class ServiceProvidedService {
             throw new HttpException(error, 400);
         }
     }
-    // async updateServiceProvided(id: string, updateServiceProvidedDto: UpdateServiceProvidedDto) {
-    //     const data = await this.getServiceProvidedByIdRepository(id);
-    //     if (!data) {
-    //         throw new HttpException('Servicio no encontrado', 400);
-    //     }
-    //     return await this.serviceProvidedRepository.save({ ...data, ...updateServiceProvidedDto });
 
-    // }
+    async updateServiceProvided(id: string, updateServiceProvidedDto: UpdateServiceProvidedDto) {
+        const data = await this.serviceProvidedRepository.findOneBy({id});
+        if (!data) {
+            throw new HttpException('Servicio no encontrado', 400);
+        }
+        return await this.serviceProvidedRepository.update(data.id, updateServiceProvidedDto);
+
+    }
+
+   async deleteServiceProvided(id: string) {
+        const data = await this.serviceProvidedRepository.findOneBy({id});
+        if (!data) {
+            throw new HttpException('Servicio no encontrado', 400);
+        }
+        return await this.serviceProvidedRepository.delete(id);
+    }
 }
