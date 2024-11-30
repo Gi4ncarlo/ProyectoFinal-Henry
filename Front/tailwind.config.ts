@@ -20,6 +20,12 @@ const config: Config = {
         button: ['Oswald', 'sans-serif'], // Botones
         footer: ['Quattrocento', 'serif'], // Footer
       },
+      colors: {
+        primary: "#2E7D32", // Verde primario
+        secondary: "#F4F9F4", // Blanco verdoso
+        dark: "#263238", // Color oscuro para texto
+      },
+      
     },
   },
   plugins: [],

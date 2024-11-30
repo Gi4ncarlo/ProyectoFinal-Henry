@@ -174,6 +174,45 @@ export async function getCarrouselById(id: string) {
       return null;
     }
   }
+  export async function updateCarrousel(id: string, carrousel: string[]) {
+    try {
+      let TOKEN = null;
+      if (typeof window !== "undefined") {
+        const storedToken = localStorage.getItem("userSession");
+        TOKEN = storedToken ? JSON.parse(storedToken) : null;
+      }
+  
+      if (!TOKEN?.token) {
+        console.error("Token is missing or invalid.");
+        return null;
+      }
+  
+      const res = await fetch(`${APIURL}/gardener/carrousel/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json", // Indica que el cuerpo es JSON
+          Authorization: `Bearer ${TOKEN.token}`,
+        },
+        body: JSON.stringify(carrousel), // Serializa el arreglo a JSON
+      });
+  
+      if (!res.ok) {
+        throw new Error(`Error al modificar el carrousel: ${res.status} ${res.statusText}`);
+      }
+  
+      const response = await res.json();
+  
+      if (response && typeof response === "object" && !Array.isArray(response)) {
+        return response.data || response; 
+      } else {
+        throw new Error("Formato inválido.");
+      }
+    } catch (error: any) {
+      console.error("Error al modificar el carrousel:", error.message || error);
+      return null;
+    }
+  }
+  
   
   export const updateProviderServices = async (gardenerId: string, serviceIds: string[]): Promise<IServiceProvider> => {
     try {

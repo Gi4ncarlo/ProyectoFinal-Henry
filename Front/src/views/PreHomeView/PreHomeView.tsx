@@ -7,7 +7,7 @@ const PreHomeView = () => {
     <div className="relative h-screen w-screen">
       {/* Imagen de fondo */}
       <Image
-        src="/images/fondo_landingPage.jpg" // Reemplaza por el nombre exacto de tu archivo
+        src="/images/fondo_landingPage.webp" // Reemplaza por el nombre exacto de tu archivo
         alt="Fondo de bienvenida"
         fill
         className="object-cover object-center w-full h-full"

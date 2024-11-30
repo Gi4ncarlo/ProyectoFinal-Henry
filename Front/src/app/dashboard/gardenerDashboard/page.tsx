@@ -172,28 +172,28 @@
 
 "use client";
 
-import { getServicesProvided } from "@/helpers/service.helpers";
+import { getAllServices, getServicesProvided } from "@/helpers/service.helpers";
 import CalendarGardener from "@/components/CalendarGardener/CalendarGardener";
 import OrderList from "@/components/DashboardGardenerCompo/orders/orders";
 import EditDashboard from "@/components/EditDashboard/EditDashboard";
 import {
-  getCarrouselById,
   getProviderById,
   getTasks,
-  postCarrouselImage,
   updateProviderServices,
 } from "@/helpers/gardeners.helpers";
 import { IUserSession } from "@/interfaces/IUserSession";
 import { IService } from "@/interfaces/IService";
 import React, { useEffect, useState } from "react";
+import CarrouselGardener from "@/components/carrouselGardener/CarrouselGardener";
+import EditServicesGardener from "@/components/EditServicesGardener/EditServicesGardener";
 
 const GardenerDashboard = () => {
   const [activeComponent, setActiveComponent] = useState<string>("perfil");
   const [userSession, setUserSession] = useState<IUserSession | null>(null);
-  const [carrousel, setCarrousel] = useState<string[]>([]);
   const [services, setServices] = useState<IService[]>([]);
-  const [selectedServices, setSelectedServices] = useState<any>([]);
+  const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [tasks, setTasks] = useState<any[]>([]);
+  const [loader, setLoader] = useState(false);
 
   // Cargar la sesión del usuario desde localStorage
   useEffect(() => {
@@ -205,103 +205,65 @@ const GardenerDashboard = () => {
     }
   }, []);
 
-  // Fetch para el carrousel
-  const fetchCarrousel = async () => {
-    try {
-      const id = userSession?.user.id.toString();
-      if (id) {
-        const carrouselData = await getCarrouselById(id);
-        setCarrousel(carrouselData?.imageUrl || []);
-      }
-    } catch (error) {
-      console.error("Error buscando el carrousel:", error);
-    }
-  };
-
   // Fetch para las tareas
   const fetchTasks = async (id: string) => {
     try {
+      setLoader(true);
       setActiveComponent("tareas");
       const taskData = await getTasks(id);
       setTasks(taskData);
+      setLoader(false);
     } catch (error) {
       console.error("Error buscando las tareas:", error);
+      setLoader(false);
     }
   };
 
   // Fetch para los servicios
   const fetchServices = async () => {
     try {
-      const serviceData = await getServicesProvided();
-      setServices(serviceData);
+      setLoader(true);
+      const id = userSession?.user.id.toString();
+      if (id) {
+        // Obtener todos los servicios disponibles
+        const serviceData = await getAllServices();
+        setServices(serviceData);
 
-      const userId = userSession?.user?.id?.toString();
-      if (userId) {
-        const gardenerData = await getProviderById(userId);
-        console.log("Que trae gardenerData? ", gardenerData?.serviceProvided)
-        if (gardenerData && gardenerData.serviceProvided) {
-          let searchServices = gardenerData.serviceProvided.map((s: any) => s.id)
-          console.log("Que guarda en esta variable: ", searchServices)
-          setSelectedServices(searchServices);
-          console.log("Que recibo: ", selectedServices);
-      //   } else {
-      //     setSelectedServices([]);
-      //   }
-      // } else {
-      //   setSelectedServices([]);
-      // }
+        // Obtener los servicios asociados al jardinero
+        const gardenerData = await getProviderById(id);
+        if (gardenerData?.serviceProvided) {
+          const associatedServices = gardenerData.serviceProvided.map(
+            (s: any) => s.id
+          );
+          setSelectedServices(associatedServices);
         }
       }
+      setLoader(false);
     } catch (error) {
       console.error("Error buscando servicios:", error);
-    }
-  };
-
-  console.log("Que pasa fuera de la funcion: ", selectedServices)
-
-  // Subir imagen al carrusel
-  const uploadImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    try {
-      const file = e.target.files?.[0];
-      if (!file) return;
-
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("upload_preset", "gardener");
-
-      const response = await postCarrouselImage(
-        formData,
-        userSession?.user.id.toString()
-      );
-
-      if (response) {
-        alert("Imagen subida con éxito");
-        fetchCarrousel();
-      } else {
-        console.error("Error subiendo la imagen");
-      }
-    } catch (error) {
-      console.error("Error subiendo la imagen:", error);
+      setLoader(false);
     }
   };
 
   // Manejar cambio en los checkboxes de servicios
   const handleServiceChange = (serviceId: string) => {
-    setSelectedServices((prev: any) =>
+    setSelectedServices((prev) =>
       prev.includes(serviceId)
-        ? prev.filter((id: any) => id !== serviceId) // Deseleccionar
+        ? prev.filter((id) => id !== serviceId) // Deseleccionar
         : [...prev, serviceId] // Seleccionar
     );
   };
 
-  // Guardar servicios seleccionados
+  // Guardar los servicios seleccionados
   const saveServices = async () => {
     try {
-      const id = userSession?.user.id.toString();
-      if (id) {
-        await updateProviderServices(id, selectedServices);
-        alert("Servicios actualizados correctamente");
+      const userId = userSession?.user?.id?.toString();
+      if (!userId) {
+        throw new Error("No se encontró el ID del usuario");
       }
+
+      await updateProviderServices(userId, selectedServices);
+      alert("Servicios actualizados correctamente");
     } catch (error) {
       console.error("Error actualizando servicios:", error);
       alert("Error al actualizar servicios");
@@ -311,15 +273,26 @@ const GardenerDashboard = () => {
   // Llamar a los datos iniciales cuando el usuario está disponible
   useEffect(() => {
     if (userSession) {
-      fetchCarrousel();
       fetchServices();
     }
   }, [userSession]);
 
+  // Mostrar spinner mientras se cargan los datos
+  if (loader) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen w-screen">
+        <div className="w-16 h-16 border-4 border-green-300 border-t-green-500 rounded-full animate-spin mb-4"></div>
+        <h2 className="text-xl font-semibold text-[#263238]">
+          Cargando la información...
+        </h2>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-[#F4F9F4] font-sans">
+    <div>
       {/* Menú de navegación */}
-      <nav className="bg-[#263238] p-4 shadow-md flex justify-center space-x-4">
+      <nav className="flex justify-around bg-primary text-white p-4 rounded-md">
         <button
           onClick={() => fetchTasks(userSession?.user?.id.toString() || "")}
           className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${
@@ -345,17 +318,17 @@ const GardenerDashboard = () => {
           Mi Perfil
         </button>
         <button
-          onClick={() => setActiveComponent("services")}
+          onClick={() => setActiveComponent("Editar Servicios")}
           className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${
-            activeComponent === "services" ? "opacity-75" : ""
+            activeComponent === "Editar Servicios" ? "opacity-75" : ""
           }`}
         >
-          Servicios
+          Editar Servicios
         </button>
       </nav>
 
       {/* Contenido dinámico */}
-      <main className="p-6">
+      <main className="p-6 bg-secondary">
         {activeComponent === "tareas" && (
           <section>
             <h1 className="text-2xl font-bold text-[#263238] m-3 text-center">
@@ -369,7 +342,7 @@ const GardenerDashboard = () => {
 
         {activeComponent === "calendario" && <CalendarGardener />}
 
-        {activeComponent === "services" && (
+        {activeComponent === "Editar Servicios" && (
           <section>
             <h1 className="text-2xl font-bold text-[#263238] mb-6">
               Servicios que Ofrezco
@@ -398,6 +371,12 @@ const GardenerDashboard = () => {
               >
                 Guardar Servicios
               </button>
+              <div>
+                <CarrouselGardener />
+              </div>
+              <div>
+                <EditServicesGardener />
+              </div>
             </div>
           </section>
         )}
@@ -407,3 +386,8 @@ const GardenerDashboard = () => {
 };
 
 export default GardenerDashboard;
+
+
+
+
+
