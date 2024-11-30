@@ -53,7 +53,7 @@ const GardenerMap: React.FC<GardenerMapProps> = ({ location }) => {
 
   return (
     <div>
-      <h2 className="text-lg font-bold text-[#263238]">Ubicación aproximada</h2>
+      <h2 className="text-lg font-bold text-[#263238] mb-4">Ubicación aproximada</h2>
       <div
         id="map"
         style={{

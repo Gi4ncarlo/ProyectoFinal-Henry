@@ -59,10 +59,10 @@ export default function Navbar() {
       if (result.isConfirmed) {
         localStorage.removeItem("userSession");
         Swal.fire("Sesión cerrada!", "Hasta pronto!", "success");
-      }
-      setUserData(null);
-      setIsAuthenticated(false);
-      router.push("/");
+        setUserData(null);
+        setIsAuthenticated(false);
+        router.push("/");
+      } 
     });
   };
 
