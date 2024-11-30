@@ -187,7 +187,7 @@ const handleDelete = async (id: number) => {
 
   useEffect(() => {
     const fetchProviders = async () => {
-      setLoading(true);
+      //setLoading(true);
       try {
         const order = filter === "ASC" || filter === "DESC" ? filter : "ASC";
         const calification = isNaN(Number(filter)) ? undefined : Number(filter);
@@ -201,7 +201,7 @@ const handleDelete = async (id: number) => {
             ? JSON.parse(localStorage.getItem("userSession") || "{}").token
             : null;
 
-        const gardeners = await getGardenersDB(token, order, calification, searchTerm, availability);
+        const gardeners = await getGardenersDB(token, order, calification, searchTerm,) //availability);
         setProviders(gardeners.data || []);
       } catch (error: any) {
         setError(error.message || "Error al cargar los Jardineros");
@@ -227,6 +227,8 @@ const handleDelete = async (id: number) => {
   );
 
   if (loading)
+
+
     return (
       <div className="flex flex-col items-center justify-center h-screen w-screen">
       {/* Spinner */}
@@ -245,7 +247,7 @@ const handleDelete = async (id: number) => {
       <div className="mx-auto mt-24">
         {providers.length === 0 ? (
           <div className="text-center mb-8 mx-auto">
-            <h1 className="text-2xl font-bold mb-4">No hay jardineros</h1>
+            <h1 className="text-2xl font-bold mb-4">No se encontraron Jardineros</h1>
             <button
               className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
               onClick={() => setSearchTerm("")}

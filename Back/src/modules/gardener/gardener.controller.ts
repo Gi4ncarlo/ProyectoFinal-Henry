@@ -228,6 +228,12 @@ export class GardenerController {
     return { imageUrl: gardener.carrouselImages };
   }
 
+  @Patch("carrousel/:id")
+  @HttpCode(200)
+  async updateCarrouselImages(@Param('id') id: string, @Body() carrousel : string[]) {
+    return this.gardenerService.updateCarrouselImages(id, carrousel);
+  }
+
   @UseGuards(AuthGuard)
   @Get(':id/serviceProvided')
   @HttpCode(200)
