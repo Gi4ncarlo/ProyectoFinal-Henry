@@ -1,5 +1,0 @@
-Implementar la Logica para que cuando un order de servicio 
-pasa a estar pagada, aparezca un nuevo registro (fila), 
-con todos los datos necesarios (usuario que realizo el pedido, 
-que servicio es, que fecha, estado del pago, estado del trabajo, etc) 
-y que pueda dar aviso de concluido, que afectara al dashboard del usuario

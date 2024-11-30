@@ -87,6 +87,7 @@ const DashboardUserCompo: React.FC = () => {
     const externalReference = urlParams.get("external_reference");
 
     setParams({ status, paymentId, externalReference });
+
   }, []);
   useEffect(() => {
     if (params?.status === "approved") {
@@ -301,14 +302,13 @@ const DashboardUserCompo: React.FC = () => {
                 )}
 
                 {/* Botón para calificar el servicio si está finalizado */}
-                {order?.orderDetail?.status === "Finalizado" && (
+                {order?.orderDetail?.status === "Finalizado" && !order?.reviews && (
                   <button
                     className="p-3 bg-[#ff9800] text-white text-lg font-medium rounded-lg hover:bg-[#f57c00] transition-colors w-full"
                     onClick={() => showRatingModal(order.id)}
                   >
                     Califica el Servicio
                   </button>
-                  
                 )}
 
               </div>
