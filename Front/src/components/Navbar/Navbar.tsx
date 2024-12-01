@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { HiMenu, HiX } from "react-icons/hi";
 import { IUserSession } from "@/interfaces/IUserSession";
@@ -16,6 +16,7 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.localStorage) {
@@ -84,6 +85,23 @@ export default function Navbar() {
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
+
+  const handleClickOutside = (event: any) => {
+    // Cierra el menú si haces clic fuera
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setShowDropdown(false);
+    }
+  };
+
+  useEffect(() => {
+    // Añadir el evento al montar el componente
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      // Eliminar el evento al desmontar el componente
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <nav
@@ -170,7 +188,7 @@ export default function Navbar() {
                 <Image
                   src={userData.user.profileImageUrl}
                   alt="Avatar"
-                  className="rounded-full border-2 border-gray-300 hover:border-blue-500 transition duration-200"
+                  className="rounded-full border-2 border-gray-300 hover:border-green-500 transition duration-200"
                   fill // Asegura que ocupe el contenedor
                   sizes="40px" // Tamaño esperado
                 />
@@ -180,7 +198,7 @@ export default function Navbar() {
                 <Image
                   src="https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2281862025.jpg"
                   alt="Avatar"
-                  className="rounded-full border-2 border-gray-300 hover:border-blue-500 transition duration-200"
+                  className="rounded-full border-2 border-gray-300 hover:border-green-500 transition duration-200"
                   fill
                   sizes="40px"
                 />
@@ -191,6 +209,7 @@ export default function Navbar() {
           {/* Dropdown Menu */}
           {showDropdown && (
             <div
+              ref={dropdownRef} 
               className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg py-2 border border-gray-200 z-50"
               onClick={Dropdown}
             >

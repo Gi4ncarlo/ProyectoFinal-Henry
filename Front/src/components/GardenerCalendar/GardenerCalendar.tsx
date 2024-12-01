@@ -60,9 +60,9 @@ const GardenerCalendar: React.FC<GardenerCalendarProps> = ({
 
   return (
     <div style={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
-      <h2 style={{ textAlign: "center", marginBottom: "20px" }}>
+      {/* <h2 style={{ textAlign: "center", marginBottom: "20px" }}>
         Calendario del Jardinero
-      </h2>
+      </h2> */}
       {loading ? (
         <div
           style={{

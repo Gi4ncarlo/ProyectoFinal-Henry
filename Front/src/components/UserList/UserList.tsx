@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { banUser, deleteUser, getAllUsers } from "@/helpers/userOrders.helpers";
-import { log } from "console";
 import Swal from "sweetalert2";
 
 interface User {

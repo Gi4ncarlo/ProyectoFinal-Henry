@@ -194,17 +194,21 @@ const DashboardUserCompo: React.FC = () => {
     }
   }, [params]);
 
-  if (
-    params?.status === "failure" ||
-    params?.status === "rejected" ||
-    params?.status === "null"
-  ) {
-    Swal.fire({
-      title: "Error",
-      text: "El pago ha fallado",
-      icon: "error",
-    });
-  }
+  useEffect(() => {
+    if (
+      params?.status === "failure" ||
+      params?.status === "rejected" ||
+      params?.status === "null"
+    ) {
+      Swal.fire({
+        title: "Error",
+        text: "El pago ha fallado",
+        icon: "error",
+      });
+    }
+  },[])
+
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedSession = JSON.parse(
@@ -305,7 +309,16 @@ const DashboardUserCompo: React.FC = () => {
 
 
   if (loading) {
-    return <p>Loading...</p>;
+    return (
+      <div className="flex flex-col items-center justify-center h-screen w-screen">
+      {/* Spinner */}
+      <div className="w-16 h-16 border-4 border-green-300 border-t-green-500 rounded-full animate-spin mb-4"></div>
+
+      {/* Texto */}
+      <h2 className="text-xl font-semibold text-[#263238]">
+        Cargando la informacion..
+      </h2>
+    </div>);
   }
 
   if (error) {
@@ -348,7 +361,7 @@ const DashboardUserCompo: React.FC = () => {
           No se encontraron órdenes.
         </p>
       ) : (
-        <div className="w-full max-w-7xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="w-full max-w-7xl grid grid-cols-1 sm:grid-cols-2 gap-6">
           {orders[0].servicesOrder.map((order: any) => (
             <div
               key={order.id}
@@ -375,7 +388,7 @@ const DashboardUserCompo: React.FC = () => {
                 </div>
 
                 {/* Información del jardinero */}
-                <div className="flex flex-col space-y-1 justify-center items-center mt-4 ">
+                <div className="flex flex-col space-y-1 mt-4 ">
                   <p className="text-gray-700">
                     <strong>Dirección:</strong> {order.gardener.address}
                   </p>
@@ -387,12 +400,12 @@ const DashboardUserCompo: React.FC = () => {
                   </p>
                 </div>
 
+              </div>
                 {/* Información de la orden */}
-                <div className="flex flex-col space-y-3">
-                  <h1 className="text-gray-700 text-xl">
-                    <strong>Nº de Orden:</strong>
-                    <br />
-                    {order.id.slice(0, 8)}
+                <div className="flex flex-col space-y-6">
+                  <h1 className="text-gray-700 text-xl mt-6">
+                    <strong>Nº de Orden: </strong>
+                    {order.id}
                   </h1>
                   <p className="text-gray-700">
                     <strong>Fecha de Orden:</strong> {order.date}
@@ -400,7 +413,6 @@ const DashboardUserCompo: React.FC = () => {
                   <strong>Fecha del Servicio:</strong>{" "}
                   {order.orderDetail ? order.orderDetail.startTime : "No está definida"}
                 </div>
-              </div>
 
               {/* Detalles del Servicio */}
               <div className="mt-6">
