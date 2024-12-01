@@ -89,3 +89,21 @@ if (!response.ok) {
   }
   return await response.json();
 }
+
+
+export async function deleteOrder(orderId: string) {
+  const response = await fetch(`${APIURL}/services-order/${orderId}`, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${TOKEN.token}`,
+      'Content-Type': 'application/json',
+    },
+  });
+if (!response.ok) {
+    throw new Error('Failed to delete Order');
+  }
+  if (response.headers.get('content-length') === '0') {
+    return null; 
+  }
+  return await response.json();
+}

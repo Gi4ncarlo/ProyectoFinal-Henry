@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { MercadoPagoConfig, Preference } from 'mercadopago';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ServicesOrderEntity } from '../services-order/entities/services-order.entity';
@@ -70,8 +70,7 @@ export class MercadoPagoService {
             return { paymentUrl };
 
         } catch (error) {
-            console.error('Error al crear la preferencia de pago:', error);
-            throw new Error('Error al crear la preferencia de pago');
+            throw new HttpException(error, 400);
         }
     }
 }

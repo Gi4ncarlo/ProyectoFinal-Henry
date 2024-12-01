@@ -87,6 +87,8 @@ export class ServiceProvidedController {
   }
 
   @UseGuards(AuthGuard)
+  @HttpCode(200)
+  @Roles(Role.Admin)
   @Patch('/:id')
   async updateServiceProvided(
     @Res() res: Response, 

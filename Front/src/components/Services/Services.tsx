@@ -1,6 +1,10 @@
 "use client";
 
-import { getAllServices, deleteService } from "@/helpers/service.helpers";
+import {
+  getAllServices,
+  deleteService,
+  editService,
+} from "@/helpers/service.helpers";
 import { IService } from "@/interfaces/IService";
 import { IServiceErrors, IServiceProps } from "@/interfaces/IServiceProps";
 import { useRouter } from "next/navigation";
@@ -9,11 +13,14 @@ import { Categories } from "../RegisterServiceForm/enums/categories.enum";
 import { validateServiceForm } from "@/helpers/validateService";
 import { registerService } from "@/helpers/auth.helpers";
 import Swal from "sweetalert2";
+import EditServiceModal from "./editServicesModal";
 
 const Services = () => {
   const [services, setServices] = useState<IService[]>([]); // Servicios disponibles
   const [sortOrder] = useState<"asc" | "desc">("asc");
   const [loading, setLoading] = useState<boolean>(true);
+  const [isEditing, setIsEditing] = useState(false);
+  const [selectedService, setSelectedService] = useState<IService | null>(null);
 
   const router = useRouter();
 
@@ -103,7 +110,6 @@ const Services = () => {
     }
   };
 
-
   const handleServiceClick = async (service: IService) => {
     try {
       setLoading(true);
@@ -113,7 +119,7 @@ const Services = () => {
           title: "Hecho!",
           text: "Servicio eliminado con éxito",
           icon: "success",
-        })
+        });
         const serviceData = await getAllServices();
         setServices(serviceData);
       }
@@ -123,9 +129,49 @@ const Services = () => {
         title: "Error!",
         text: "Error al eliminar el servicio",
         icon: "error",
-      })
+      });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleEditService = (service: IService) => {
+    setSelectedService(service);
+    setIsEditing(true);
+  };
+
+  const handleSave = async (updatedData: Partial<IService>) => {
+    if (!selectedService) return;
+
+    const updatedService = { ...selectedService, ...updatedData };
+
+    const id = selectedService.id;
+    try {
+      const response = await editService(id, updatedService);
+
+      if (!response) {
+        throw new Error("Error al actualizar el servicio");
+      }
+
+      Swal.fire({
+        title: "Hecho!",
+        text: "Servicio actualizado con éxito",
+        icon: "success",
+      });
+
+      const updatedServices = services.map((service) =>
+        service.id === selectedService.id ? updatedService : service
+      );
+      setServices(updatedServices);
+      setIsEditing(false);
+      setSelectedService(null);
+    } catch (error) {
+      Swal.fire({
+        title: "Error!",
+        text: "Error al actualizar el servicio",
+        icon: "error",
+      })
+      console.error("Error al actualizar el servicio:", error);
     }
   };
 
@@ -139,14 +185,14 @@ const Services = () => {
   if (loading)
     return (
       <div className="flex flex-col items-center justify-center h-screen w-screen">
-      {/* Spinner */}
-      <div className="w-16 h-16 border-4 border-green-300 border-t-green-500 rounded-full animate-spin mb-4"></div>
+        {/* Spinner */}
+        <div className="w-16 h-16 border-4 border-green-300 border-t-green-500 rounded-full animate-spin mb-4"></div>
 
-      {/* Texto */}
-      <h2 className="text-xl font-semibold text-[#263238]">
-        Cargando la informacion..
-      </h2>
-    </div>
+        {/* Texto */}
+        <h2 className="text-xl font-semibold text-[#263238]">
+          Cargando la informacion..
+        </h2>
+      </div>
     );
 
   return (
@@ -169,6 +215,9 @@ const Services = () => {
               className="bg-white border border-gray-200 rounded-lg shadow-md p-6 hover:shadow-lg transition"
             >
               <div className="flex justify-end">
+                <button onClick={() => handleEditService(service)}>
+                  <span className="text-lg font-bold mr-2">✏️</span>
+                </button>
                 <button
                   onClick={() => handleServiceClick(service)}
                   className="my-2 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-full justify-end text-sm"
@@ -189,6 +238,13 @@ const Services = () => {
               </p>
             </div>
           ))}
+          {isEditing && selectedService && (
+            <EditServiceModal
+              service={selectedService}
+              onClose={() => setIsEditing(false)}
+              onSave={handleSave}
+            />
+          )}
         </div>
       )}
 

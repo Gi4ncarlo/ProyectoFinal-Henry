@@ -1,11 +1,11 @@
 "use client";
 
-import { getuserOrdersDB } from "@/helpers/userOrders.helpers";
+import { deleteOrder, getuserOrdersDB } from "@/helpers/userOrders.helpers";
 import { IOrderProps } from "@/interfaces/IOrdersProps";
 import { IUserSession } from "@/interfaces/IUserSession";
 
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import Modal from "./modal";
 import { format } from "date-fns";
@@ -22,15 +22,13 @@ const DashboardUserCompo: React.FC = () => {
   const [imageProfile, setImageProfile] = useState<any>("");
   const [showModal, setShowModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null); // Para almacenar la orden seleccionada
-  const [status, setStatus] = useState<string | null>("");
-  
-  let contador = 0;
+  const [status , setStatus] = useState<string>("");
 
   const handleOpenModal = (order: any) => {
     setSelectedOrder(order); // Establecer la orden seleccionada
     setShowModal(true); // Mostrar el modal
   };
-  
+
   const handleCloseModal = () => {
     setShowModal(false); // Cerrar el modal
     setSelectedOrder(null); // Resetear la orden seleccionada
@@ -39,42 +37,118 @@ const DashboardUserCompo: React.FC = () => {
     Swal.fire({
       title: 'Califica el Servicio',
       html: `
-        <input id="comentario" class="swal2-input swal2-input" style="width: 90%; margin: 0 auto;" placeholder="Escribe tu comentario..." />
-        <input id="calificacion" type="range" min="1" max="5" value="5" class="swal2-input" style="width: 90%; margin: 0 auto;" />
-        <div style="text-align: center;">
-          <span id="rangeValue">5</span> / 5
+        <div class="modal-content w-11/12 max-w-lg bg-white rounded-lg p-6 shadow-lg text-center">
+          <div class="modal-header mb-4">
+            <h2 class="text-2xl font-semibold text-gray-800">Tu Comentario</h2>
+          </div>
+  
+          <div class="modal-body mb-6">
+            <!-- Área de texto para comentario -->
+            <textarea id="comentario" class="w-full h-24 p-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Escribe tu comentario..."></textarea>
+  
+            <!-- Estrellas de calificación -->
+            <div class="stars-rating flex justify-center mt-4">
+              <span class="star text-3xl cursor-pointer text-gray-400" data-value="1">&#9733;</span>
+              <span class="star text-3xl cursor-pointer text-gray-400" data-value="2">&#9733;</span>
+              <span class="star text-3xl cursor-pointer text-gray-400" data-value="3">&#9733;</span>
+              <span class="star text-3xl cursor-pointer text-gray-400" data-value="4">&#9733;</span>
+              <span class="star text-3xl cursor-pointer text-gray-400" data-value="5">&#9733;</span>
+            </div>
+  
+            <!-- Mostrar calificación -->
+            <div class="rating-display text-xl font-bold mt-2 text-gray-800">
+              <span id="ratingValue">5</span> / 5
+            </div>
+          </div>
+          
+          <div class="modal-footer">
+            <button id="submitButton" class="w-full py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 flex justify-center items-center">
+              <span id="submitText">Enviar</span> <!-- Texto del botón -->
+              <div id="loader" class="hidden w-5 h-5 border-4 border-t-4 border-white border-solid rounded-full animate-spin ml-2"></div> <!-- Círculo de carga -->
+            </button>
+          </div>
         </div>
       `,
       focusConfirm: false,
+      showConfirmButton: false, // Desactivar el botón de confirmación de Swal
       preConfirm: async () => {
-        const comentario = (document.getElementById('comentario') as HTMLInputElement).value;
-        const calificacion = (document.getElementById('calificacion') as HTMLInputElement).value;
+        const comentario = (document.getElementById('comentario') as HTMLTextAreaElement).value;
+        const calificacion = (document.getElementById('ratingValue') as HTMLElement).textContent;
         return { comentario, calificacion };
       },
       didOpen: async () => {
-        const rangeInput = document.getElementById('calificacion');
-        const rangeValue = document.getElementById('rangeValue');
+        const stars = document.querySelectorAll('.star');
+        const ratingValue = document.getElementById('ratingValue');
 
-        if (rangeInput !== null && rangeValue !== null) {
-          rangeInput.addEventListener('input', (e) => {
-            rangeValue.textContent = (e.target as HTMLInputElement).value;
+        // Manejar la selección de las estrellas (solo clic)
+        stars.forEach(star => {
+          star.addEventListener('click', () => {
+            const rating = star.getAttribute('data-value');
+            updateStars(rating as string);
           });
-        } else {
-          console.error('Los elementos no se encontraron en el DOM');
-        }
-      }
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        const { comentario, calificacion } = result.value;
-        console.log('Comentario:', comentario);
-        console.log('Calificación:', calificacion);
-        const comments = await fetchComments(id, { comentario, calificacion });
+        });
 
-        Swal.fire({
-          title: '¡Reseña creada con éxito!',
-          text: 'Puedes ver tu reseña en el perfil del jardinero.',
-          icon: 'success',
-          confirmButtonText: 'Aceptar'
+        function updateStars(rating: string) {
+          stars.forEach(star => {
+            const starValue = star.getAttribute('data-value');
+            if (starValue && parseInt(starValue) <= parseInt(rating)) {
+              // Añadir clase de color dorado a las estrellas seleccionadas
+              star.classList.add('text-yellow-400');
+              star.classList.remove('text-gray-400');
+            } else {
+              // Quitar el color dorado y restaurar al gris
+              star.classList.remove('text-yellow-400');
+              star.classList.add('text-gray-400');
+            }
+          });
+          if (ratingValue) {
+            ratingValue.textContent = rating;
+          }
+        }
+
+        // Inicializar con calificación de 5 estrellas
+        updateStars('5');
+
+        // Agregar el evento de clic al botón "Enviar"
+        const submitButton = document.getElementById('submitButton') as HTMLButtonElement;
+        const submitText = document.getElementById('submitText') as HTMLElement;
+        const loader = document.getElementById('loader') as HTMLElement;
+
+        submitButton.addEventListener('click', async () => {
+          const comentario = (document.getElementById('comentario') as HTMLTextAreaElement).value;
+          const calificacion = (document.getElementById('ratingValue') as HTMLElement).textContent;
+
+          // Mostrar el loader y ocultar el texto del botón
+          loader.classList.remove('hidden');
+          submitText.classList.add('hidden');
+
+          try {
+            // Realizar el fetch cuando el usuario haga clic en "Enviar"
+            const comments = await fetchComments(id, { comentario, calificacion });
+            console.log('Comentarios:', comments);
+
+            if (comments.status === 400) {
+              Swal.fire({
+                title: 'Error',
+                text: "Ya has calificado este servicio.",
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+              });
+            } else {
+              Swal.fire({
+                title: '¡Reseña creada con éxito!',
+                text: 'Puedes ver tu reseña en el perfil del jardinero.',
+                icon: 'success',
+                confirmButtonText: 'Aceptar'
+              });
+            }
+          } catch (error) {
+            throw new Error('Error al enviar la reseña');
+          } finally {
+            // Ocultar el loader y restaurar el texto del botón
+            loader.classList.add('hidden');
+            submitText.classList.remove('hidden');
+          }
         });
       }
     });
@@ -82,20 +156,43 @@ const DashboardUserCompo: React.FC = () => {
 
 
 
+
+  const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValue = event.target.value;
+
+  }
+
+  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedDate = event.target.value;
+  }
+
   useEffect(() => {
     // Usamos URLSearchParams para obtener los query params
     const urlParams = new URLSearchParams(window.location.search);
     const status = urlParams.get("status");
-    setStatus(status);
     const paymentId = urlParams.get("payment_id");
     const externalReference = urlParams.get("external_reference");
 
-
-    console.log("cambie el estado a ", status);
-    
     setParams({ status, paymentId, externalReference });
 
   }, []);
+  useEffect(() => {
+    if (params?.status === "approved") {
+      const fetchOrders = async () => {
+        fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/services-order/orderPay/${params.externalReference}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${TOKEN.token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+      };
+      fetchOrders();
+    }
+  }, [params]);
 
   if (
     params?.status === "failure" ||
@@ -117,17 +214,18 @@ const DashboardUserCompo: React.FC = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (userSession?.user?.id && userSession.token) {
+      fetchOrders(userSession.user.id, userSession.token);
+    }
+  }, [userSession]);
+
   const fetchOrders = async (id: number, token: string) => {
     setLoading(true);
     try {
-      setOrders([]);
       const ordersData = await getuserOrdersDB(id, token);
       setOrders(ordersData);
       setError(null);
-     
-      contador ++;
-      console.log("cuantas veces hice fetch", contador);
-      console.log("orders", ordersData);
       
     } catch (err) {
       console.error("Error fetching orders:", err);
@@ -136,7 +234,30 @@ const DashboardUserCompo: React.FC = () => {
     }
   };
 
-  console.log("orders afuera", orders);
+  const deleteOrders = async (id : string) => {
+    try {
+      await deleteOrder(id);
+      Swal.fire({
+        title: "Orden Eliminada",
+        text: "Orden eliminada correctamente",
+        icon: "success",
+        confirmButtonText: "OK",
+      })
+      if (userSession?.user?.id && userSession.token) {
+        fetchOrders(userSession.user.id, userSession.token);
+      }
+    } catch (error) {
+      console.error("Error al eliminar la orden:", error);
+      Swal.fire({
+        title: "Error",
+        text: "Error al eliminar la orden",
+        icon: "error",
+        confirmButtonText: "OK",
+      })
+
+    }
+  }
+
   const handlePayment = async (id: string) => {
     try {
       const response = await fetch(
@@ -159,7 +280,7 @@ const DashboardUserCompo: React.FC = () => {
       setStatus("approved");
      // if (params?.status === "approved") {
        
-          fetch(
+         await fetch(
             `${process.env.NEXT_PUBLIC_API_URL}/services-order/orderPay/${params.externalReference}`,
             {
               method: "GET",
@@ -176,7 +297,6 @@ const DashboardUserCompo: React.FC = () => {
   };
 
   
-
   useEffect(() => {
     if (userSession?.user?.id && userSession.token) {
       fetchOrders(userSession.user.id, userSession.token);
@@ -185,40 +305,59 @@ const DashboardUserCompo: React.FC = () => {
 
 
   if (loading) {
-    return(
-      <div className="flex flex-col items-center justify-center h-screen w-screen">
-        {/* Spinner */}
-        <div className="w-16 h-16 border-4 border-green-300 border-t-green-500 rounded-full animate-spin mb-4"></div>
-
-        {/* Texto */}
-        <h2 className="text-xl font-semibold text-[#263238]">
-          Cargando la informacion..
-        </h2>
-      </div>
-    );
+    return <p>Loading...</p>;
   }
 
   if (error) {
     return <p>{error}</p>;
   }
- 
+  console.log(orders[0].servicesOrder);
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center py-6 px-4">
-      <h1 className="text-3xl font-bold text-gray-800 mb-12">
+      <h1 className="text-3xl font-bold text-gray-800 mb-6">
         Bienvenido a su historial de Operaciones
       </h1>
+
+      {/* Barra de Filtros */}
+      <div className="w-full max-w-2xl mb-6">
+        <div className="flex items-center justify-between bg-white p-4 rounded-lg shadow-md">
+          <div className="flex flex-col sm:flex-row gap-4 w-full">
+            {/* Filtro por estado de la orden */}
+            <select
+              className="py-2 px-4 border border-gray-300 rounded-lg text-sm text-gray-700"
+              onChange={(e) => handleFilterChange(e)}
+            >
+              <option value="">Filtrar por Estado</option>
+              <option value="1">Aprobada</option>
+              <option value="0">No Aprobada</option>
+            </select>
+
+            {/* Filtro por Fecha (opcional) */}
+            <input
+              type="date"
+              className="py-2 px-4 border border-gray-300 rounded-lg text-sm text-gray-700"
+              onChange={(e) => handleDateChange(e)}
+            />
+          </div>
+        </div>
+      </div>
 
       {!orders[0].servicesOrder.length ? (
         <p className="text-xl mt-6 text-[#FF5722]">
           No se encontraron órdenes.
         </p>
       ) : (
-        <div className="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="w-full max-w-7xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {orders[0].servicesOrder.map((order: any) => (
             <div
               key={order.id}
               className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
             >
+              {!order.isApproved ? (
+                <button onClick={() => deleteOrders(order.id)} className="absolute top-4 right-4 text-white bg-red-600 rounded-full w-8 h-8 flex items-center justify-center">X</button>
+                
+              ) : ""}
               {/* ID de la Orden y Detalles Generales */}
               <h2 className="text-2xl font-semibold text-gray-800 mb-4">
                 Jardinero contratado: {order.gardener.name}
@@ -236,7 +375,7 @@ const DashboardUserCompo: React.FC = () => {
                 </div>
 
                 {/* Información del jardinero */}
-                <div className="flex flex-col space-y-3">
+                <div className="flex flex-col space-y-1 justify-center items-center mt-4 ">
                   <p className="text-gray-700">
                     <strong>Dirección:</strong> {order.gardener.address}
                   </p>
@@ -253,15 +392,13 @@ const DashboardUserCompo: React.FC = () => {
                   <h1 className="text-gray-700 text-xl">
                     <strong>Nº de Orden:</strong>
                     <br />
-                    {order.id}
+                    {order.id.slice(0, 8)}
                   </h1>
                   <p className="text-gray-700">
                     <strong>Fecha de Orden:</strong> {order.date}
                   </p>
                   <strong>Fecha del Servicio:</strong>{" "}
-                  {order.orderDetail
-                    ? order.orderDetail.startTime
-                    : "No está definida"}
+                  {order.orderDetail ? order.orderDetail.startTime : "No está definida"}
                 </div>
               </div>
 
@@ -299,7 +436,7 @@ const DashboardUserCompo: React.FC = () => {
                     className={`inline-block px-4 py-2 rounded-full text-white font-semibold ${order.isApproved ? "bg-green-500" : "bg-red-500"
                       }`}
                   >
-                    {order.isApproved ? `Pagada: Estado del trabajo ${order.orderDetail.status}` : "Pendiente de Pago"}
+                    {order.isApproved ? `Aprobada: Estado del trabajo ${order.orderDetail.status}` : "No Aprobada"}
                   </span>
                 </div>
               </div>
@@ -319,7 +456,7 @@ const DashboardUserCompo: React.FC = () => {
                 {/* Botón "Ver detalles" */}
                 {order.isApproved && (
                   <button
-                    className="py-2 px-4 bg-[#4CAF50] text-white text-sm font-medium rounded-lg hover:bg-[#388e3c] transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#1976d2] w-full"
+                    className="py-2 px-4 bg-[#2196f3] text-white text-sm font-medium rounded-lg hover:bg-[#1976d2] transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#1976d2] w-full"
                     onClick={() => handleOpenModal(order.orderDetail)}
                   >
                     Ver detalles
@@ -335,7 +472,6 @@ const DashboardUserCompo: React.FC = () => {
                     Califica el Servicio
                   </button>
                 )}
-
               </div>
             </div>
           ))}
@@ -348,8 +484,7 @@ const DashboardUserCompo: React.FC = () => {
         orderDetail={selectedOrder}
       />
     </div>
-
-  );
-};
+  )
+}
 
 export default DashboardUserCompo;

@@ -70,3 +70,27 @@ export const deleteService = async(id : string): Promise<IService[]> => {
   }
 };
 
+
+export const editService = async(id : string, updatedData: Partial<IService>): Promise<any> => {
+  try {
+    const response = await fetch(`${APIURL}/serviceProvided/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Authorization': `Bearer ${TOKEN.token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedData),
+    });
+
+    if (!response.ok) {
+      throw new Error('Error al Editar el servicio');
+    }
+
+    const services = await response.json();
+    return services;
+  } catch (error) {
+    console.error('Detalle del error al Editar el servicio:', error);
+    return [];
+  }
+};
+
