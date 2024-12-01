@@ -70,7 +70,7 @@ export class ReviewsService {
         try {
             const reviews = await this.reviewsRepository.find({
                 where: { gardener: { id: gardenerId } },
-                relations: ['gardener'],
+                relations: ['gardener', 'serviceOrder'],
             });
             return reviews;
         } catch (error) {
