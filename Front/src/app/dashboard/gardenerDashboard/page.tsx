@@ -211,7 +211,7 @@ const GardenerDashboard = () => {
       setTasks(taskData);
       setLoader(false);
     } catch (error) {
-      console.error("Error buscando las tareas:", error);
+      throw new Error("Error buscando tareas");
     }
   };
 
@@ -236,7 +236,7 @@ const GardenerDashboard = () => {
         setSelectedServices([]);
       }
     } catch (error) {
-      console.error("Error fetching services:", error);
+      throw new Error("Error buscando servicios");
     }
   };
 
@@ -266,8 +266,7 @@ const GardenerDashboard = () => {
         }))
       );
     } catch (error) {
-      console.error("Error actualizando servicios:", error);
-      alert("Error al actualizar servicios");
+      throw new Error("Error actualizando servicios");
     }
   };
 
