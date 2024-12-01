@@ -1,6 +1,6 @@
 "use client";
 
-import { getuserOrdersDB } from "@/helpers/userOrders.helpers";
+import { deleteOrder, getuserOrdersDB } from "@/helpers/userOrders.helpers";
 import { IOrderProps } from "@/interfaces/IOrdersProps";
 import { IUserSession } from "@/interfaces/IUserSession";
 
@@ -124,10 +124,6 @@ const DashboardUserCompo: React.FC = () => {
       const ordersData = await getuserOrdersDB(id, token);
       setOrders(ordersData);
       setError(null);
-     
-      contador ++;
-      console.log("cuantas veces hice fetch", contador);
-      console.log("orders", ordersData);
       
     } catch (err) {
       console.error("Error fetching orders:", err);
@@ -136,7 +132,30 @@ const DashboardUserCompo: React.FC = () => {
     }
   };
 
-  console.log("orders afuera", orders);
+  const deleteOrders = async (id : string) => {
+    try {
+      await deleteOrder(id);
+      Swal.fire({
+        title: "Orden Eliminada",
+        text: "Orden eliminada correctamente",
+        icon: "success",
+        confirmButtonText: "OK",
+      })
+      if (userSession?.user?.id && userSession.token) {
+        fetchOrders(userSession.user.id, userSession.token);
+      }
+    } catch (error) {
+      console.error("Error al eliminar la orden:", error);
+      Swal.fire({
+        title: "Error",
+        text: "Error al eliminar la orden",
+        icon: "error",
+        confirmButtonText: "OK",
+      })
+
+    }
+  }
+
   const handlePayment = async (id: string) => {
     try {
       const response = await fetch(
@@ -159,7 +178,7 @@ const DashboardUserCompo: React.FC = () => {
       setStatus("approved");
      // if (params?.status === "approved") {
        
-          fetch(
+         await fetch(
             `${process.env.NEXT_PUBLIC_API_URL}/services-order/orderPay/${params.externalReference}`,
             {
               method: "GET",
@@ -176,7 +195,6 @@ const DashboardUserCompo: React.FC = () => {
   };
 
   
-
   useEffect(() => {
     if (userSession?.user?.id && userSession.token) {
       fetchOrders(userSession.user.id, userSession.token);
@@ -219,6 +237,10 @@ const DashboardUserCompo: React.FC = () => {
               key={order.id}
               className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
             >
+              {!order.isApproved ? (
+                <button onClick={() => deleteOrders(order.id)} className="absolute top-4 right-4 text-white bg-red-600 rounded-full w-8 h-8 flex items-center justify-center">X</button>
+                
+              ) : ""}
               {/* ID de la Orden y Detalles Generales */}
               <h2 className="text-2xl font-semibold text-gray-800 mb-4">
                 Jardinero contratado: {order.gardener.name}

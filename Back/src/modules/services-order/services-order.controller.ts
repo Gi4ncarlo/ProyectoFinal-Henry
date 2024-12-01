@@ -84,7 +84,7 @@ export class ServicesOrderController {
 
   @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(200)
-  @Roles(Role.Admin)
+  @Roles(Role.Admin, Role.User)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.servicesOrderService.remove(id);
