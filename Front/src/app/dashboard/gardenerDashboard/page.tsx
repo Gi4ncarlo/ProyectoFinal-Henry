@@ -265,8 +265,7 @@ const GardenerDashboard = () => {
       await updateProviderServices(userId, selectedServices);
       alert("Servicios actualizados correctamente");
     } catch (error) {
-      console.error("Error actualizando servicios:", error);
-      alert("Error al actualizar servicios");
+      throw new Error("Error actualizando servicios");
     }
   };
 

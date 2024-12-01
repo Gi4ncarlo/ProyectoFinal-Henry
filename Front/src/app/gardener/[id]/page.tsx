@@ -356,7 +356,7 @@ const ProviderDetail: React.FC = () => {
                       </span>
 
                       <span className="ml-2 text-sm text-gray-500">
-                        {new Date(review.date).toLocaleDateString()}
+                        {new Date(review.serviceOrder.date).toLocaleDateString()}
                       </span>
                     </div>
                     <p className="text-gray-600 mt-2">{review.comment}</p>
