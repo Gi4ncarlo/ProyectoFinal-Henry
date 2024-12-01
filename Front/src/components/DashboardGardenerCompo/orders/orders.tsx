@@ -4,16 +4,25 @@ import Image from "next/image";
 
 
 
-const OrderList = ({ order }: any) => {
-    const [selectedOrder, setSelectedOrder] = useState(null);
+const OrderList = ({ order, getTasks }: any) => {
+    const [selectedOrder, setSelectedOrder] = useState<any>(null);
 
     const handleOpenModal = (order: any) => {
         setSelectedOrder(order); // Almacena la orden seleccionada para mostrar en el modal
     };
 
-    const handleCloseModal = () => {
+    const handleCloseModal = async () => {
         setSelectedOrder(null); // Cierra el modal
-    };
+
+        console.log("cerre el modal");
+        
+        if (selectedOrder?.gardener.id) {
+            console.log("dentro del if del modal");
+            
+          // Llama a la función pasada por props con el id de la orden seleccionada
+          await getTasks(selectedOrder.gardener.id);
+        }
+      };
 
 
     console.log("dentro de orders:", order);
@@ -41,10 +50,11 @@ const OrderList = ({ order }: any) => {
                         <div className="p-6 space-y-4">
                             <div className="space-y-2">
                                 <p className="text-sm text-gray-500">
-                                    <strong>Fecha de la solicitud:</strong> {orderItem.date.toString().slice(0, 10)}
+                                    <strong>Fecha contratada para el servicio:</strong> {orderItem.date.toString().slice(0, 10)}
+                                   
                                 </p>
                                 <p className="text-sm text-gray-500">
-                                    <strong>Servicios Solicitado:</strong>
+                                    <strong>Servicios Solicitado/s:</strong>
                                 </p>
                                 <ul>
                                     {orderItem.serviceProvided.map((service: any, index: number) => {
@@ -57,16 +67,16 @@ const OrderList = ({ order }: any) => {
                                 </ul>
 
                                 <p className="text-sm text-gray-500">
-                                    <strong>Solicitante:</strong> {orderItem.user.name}
+                                    <strong>Cliente:</strong> {orderItem.user.name}
                                 </p>
                                 <p className="text-sm text-gray-500">
                                     <strong>Estado de la Orden:</strong>{" "}
-                                    {orderItem.isApproved ? "Aprobada" : "Pendiente de pago"}
+                                    {orderItem.isApproved ? <span className="text-green-500">Aprobada</span> : <span className="text-red-500">Pendiente de pago</span> }
                                 </p>
                                 <p className="text-sm text-gray-500">
                                     <strong>Proceso del servicio:</strong>{" "}
                                     {orderItem.isApproved ?
-                                        orderItem.orderDetail.status : "Pendiente de pago"}
+                                        <span className="text-green-500">{orderItem.orderDetail.status }</span>: <span className="text-red-500">Pendiente de pago</span> }
                                 </p>
                             </div>
                             {orderItem.isApproved && (

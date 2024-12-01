@@ -8,8 +8,11 @@ const AdminDashboard = () => {
   const [activeComponent, setActiveComponent] = useState<string>("");
 
   return (
-    <div className=" bg-[url('/images/dashboard.webp')] bg-cover bg-center">
+    <div className="">
          <nav className="flex justify-around bg-primary text-white p-4 rounded-md">
+         <div>
+        <h1>Admin Dashboard</h1>
+      </div>
         <button
           onClick={() => setActiveComponent("userList")}
           className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "userList" ? "opacity-75" : ""}`}
@@ -30,7 +33,7 @@ const AdminDashboard = () => {
           Jardineros
         </button>
       </nav>
-      <div className="p-6 bg-secondary">
+      <div className="p-6">
         {activeComponent === "userList" && <UserList />}
         {activeComponent === "services" && <Services />}
         {activeComponent === "listGardeners" && <ListGardeners />}

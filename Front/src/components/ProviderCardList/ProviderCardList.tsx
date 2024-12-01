@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import ProviderCard from "../ProviderCard/ProviderCard";
 import { IServiceProvider } from "@/interfaces/IServiceProvider";
@@ -14,6 +14,7 @@ const Dropdown: React.FC<{ filter: string; onChange: (value: string) => void }> 
   onChange,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement | null>(null); // Referencia para el contenedor del Dropdown
 
   const options = [
     { value: "ASC", label: "A-Z" },
@@ -25,14 +26,29 @@ const Dropdown: React.FC<{ filter: string; onChange: (value: string) => void }> 
     { value: "5", label: "⭐⭐⭐⭐⭐" },
   ];
 
+  const handleClickOutside = (event: MouseEvent) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      setIsOpen(false); // Cierra el menú si haces clic fuera
+    }
+  };
+
+  useEffect(() => {
+    // Agregar evento para detectar clics fuera del Dropdown
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      // Eliminar evento para evitar fugas de memoria
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div className="relative w-48">
+    <div className="relative w-48" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-full bg-white border border-gray-300 rounded-md shadow-sm px-4 py-2 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-400"
       >
         {options.find((opt) => opt.value === filter)?.label || "Ordenar por"}
-        <span className="float-right text-[#263238]">▼</span>
+        <span className="float-right text-[#263238]">Filtrar por ▼</span>
       </button>
       {isOpen && (
         <div className="absolute mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-10">

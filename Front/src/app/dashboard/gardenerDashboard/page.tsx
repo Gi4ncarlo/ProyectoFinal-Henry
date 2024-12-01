@@ -333,13 +333,13 @@ const GardenerDashboard = () => {
             <h1 className="text-2xl font-bold text-[#263238] m-3 text-center">
               Tareas del Jardinero
             </h1>
-            <OrderList order={tasks} />
+            <OrderList order={tasks} getTasks={fetchTasks} />
           </section>
         )}
 
         {activeComponent === "perfil" && <EditDashboard />}
 
-        {activeComponent === "calendario" && <CalendarGardener />}
+        {activeComponent === "calendario" && <CalendarGardener id={userSession?.user?.id.toString() || ""} />}
 
         {activeComponent === "Editar Servicios" && (
           <section>
