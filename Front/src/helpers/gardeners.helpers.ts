@@ -1,5 +1,6 @@
 import { IService } from "@/interfaces/IService";
 import { IServiceProvider } from "@/interfaces/IServiceProvider";
+import { getServicesProvided } from "./service.helpers";
 const APIURL = process.env.NEXT_PUBLIC_API_URL;
 
 export const getGardenersDB = async (
@@ -225,14 +226,15 @@ export async function getCarrouselById(id: string) {
         console.error("Token is missing or invalid.");
         throw new Error("Unauthorized");
       }
-  
-      const response = await fetch(`${APIURL}/gardener/${gardenerId}/serviceProvided`, {
+      console.log("Que estoy recibiendo en serviceIds: ", serviceIds);
+      
+      const response = await fetch(`${APIURL}/gardener/${gardenerId}`, {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${TOKEN.token}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ services: serviceIds }),
+        body: JSON.stringify({ serviceProvided: serviceIds }),
       });
   
       if (!response.ok) {

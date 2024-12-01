@@ -56,7 +56,7 @@ export default function RootLayout({
 
         {/* Ventana Emergente */}
         {mostrarVentana && (
-          <div className="fixed bottom-20 right-5 w-96 h-96 bg-white border border-gray-300 rounded-lg shadow-lg overflow-hidden">
+          <div className="fixed z-10 bottom-20 right-5 w-64 h-64 lg:w-96 lg:h-96 bg-white border border-gray-300 rounded-lg shadow-lg overflow-hidden">
             <iframe
               src="https://landbot.online/v3/H-2702970-T4MR6WL77PM8Z6WY/index.html"
               className="w-full h-full border-none"

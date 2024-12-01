@@ -28,7 +28,7 @@ const OrderList = ({ order }: any) => {
                     >
                         <div className="relative">
                             <img
-                                src={orderItem.user.profileImageUrl || "https://via.placeholder.com/400x250"}
+                                src={orderItem.user.profileImageUrl || "/images/nuevo_usuarioGardener.jpg"}
                                 alt="Imagen de ejemplo"
                                 className="w-full h-56 object-cover rounded-t-2xl"
                                 width={400}
