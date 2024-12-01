@@ -13,32 +13,33 @@ import { ServiceDetailsService } from '../service-details/service-details.servic
 import { Status } from '../service-details/enum/status.enum';
 import { ServiceDetail } from '../service-details/entities/service-detail.entity';
 import { TokenService } from '../tokenServices/token.service';
-
+import { MailService } from '../mail/mail.service';
 @Injectable()
 export class ServicesOrderService {
-
-
   constructor(
     @InjectRepository(ServicesOrderEntity)
-    private servicesOrderRepository: Repository<ServicesOrderEntity>,
+    private readonly servicesOrderRepository: Repository<ServicesOrderEntity>,
 
     @InjectRepository(User)
-    private userRepository: Repository<User>,
+    private readonly userRepository: Repository<User>,
 
     @InjectRepository(Gardener)
-    private gardenerRepository: Repository<Gardener>,
+    private readonly gardenerRepository: Repository<Gardener>,
 
     @InjectRepository(AdminEntity)
-    private adminRepository: Repository<AdminEntity>,
+    private readonly adminRepository: Repository<AdminEntity>,
 
     @InjectRepository(ServiceProvided)
-    private serviceProvidedRepository: Repository<ServiceProvided>,
+    private readonly serviceProvidedRepository: Repository<ServiceProvided>,
 
     @InjectRepository(ServiceDetail)
     private readonly serviceDetailsRepository: Repository<ServiceDetail>,
-    private readonly tokenService: TokenService
 
+    private readonly tokenService: TokenService,
+
+    private readonly mailService: MailService 
   ) { }
+
 
   async create(createServicesOrderDto: CreateServiceOrderDto): Promise<any> {
     const { date, isApproved, gardenerId, userId, serviceId } = createServicesOrderDto;
@@ -56,6 +57,7 @@ export class ServicesOrderService {
       }
       serviceProvided.push(service);
     }
+
     if (!gardener) {
       throw new Error('Gardener not found');
     }
@@ -63,6 +65,7 @@ export class ServicesOrderService {
     if (!serviceProvided) {
       throw new Error('Service Provided not found');
     }
+
     const newOrder = this.servicesOrderRepository.create({
       date: date || new Date().toLocaleString(),
       isApproved,
@@ -70,6 +73,7 @@ export class ServicesOrderService {
       gardener,
       serviceProvided,
     });
+
     await this.servicesOrderRepository.save(newOrder);
 
     const savedOrder = await this.servicesOrderRepository.findOne({
@@ -81,7 +85,7 @@ export class ServicesOrderService {
           name: true,
           email: true,
           phone: true,
-          profileImageUrl: true
+          profileImageUrl: true,
         },
         gardener: {
           id: true,
@@ -99,11 +103,11 @@ export class ServicesOrderService {
           id: true,
           detailService: true,
           categories: true,
-          price: true
-        }
-      }
+          price: true,
+        },
+      },
     });
-    console.log(savedOrder, 'savedOrder');
+
     if (savedOrder) {
       const userResponse = new UserResponseDto(savedOrder.user);
 
@@ -111,10 +115,20 @@ export class ServicesOrderService {
         ...savedOrder,
         user: userResponse,
       };
+
+      // Enviar el correo de confirmación
+      await this.mailService.sendOrderConfirmationEmail(
+        savedOrder.user.email,
+        savedOrder.user.name,
+        savedOrder,
+      );
+
       return response;
     }
+
     throw new Error('Order not found after saving');
   }
+
 
   async findAll(page: number, limit: number): Promise<{ data: ServicesOrderEntity[]; count: number }> {
     const skip = (page - 1) * limit;

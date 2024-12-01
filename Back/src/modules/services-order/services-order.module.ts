@@ -1,3 +1,4 @@
+// services-order.module.ts
 import { Module } from '@nestjs/common';
 import { ServicesOrderService } from './services-order.service';
 import { ServicesOrderController } from './services-order.controller';
@@ -9,15 +10,16 @@ import { User } from '../user/entities/user.entity';
 import { Gardener } from '../gardener/entities/gardener.entity';
 import { AdminEntity } from '../admin/entities/admin.entity';
 import { TokenModule } from '../tokenServices/token.module';
+import { MailModule } from '../mail/mail.module'; // Importar correctamente el MailModule
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([ServicesOrderEntity, ServiceDetail, ServiceProvided, User, Gardener, AdminEntity]),
     TokenModule,
-    
+    MailModule, // Asegúrate de importar el MailModule aquí
   ],
   controllers: [ServicesOrderController],
   providers: [ServicesOrderService],
-  exports: [ServicesOrderService]
+  exports: [ServicesOrderService],
 })
-export class ServicesOrderModule { }
+export class ServicesOrderModule {}
