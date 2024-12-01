@@ -98,7 +98,7 @@ export class MailService {
               </li>
             </ul>
             <div style="text-align: center; margin: 20px 0;">
-              <a href="http://vicnasol-henry.vercel.app/orders/${order.id}" 
+              <a href="http://localhost:3001/dashboard/userDashboard" 
                  style="background-color: #4CAF50; color: #fff; padding: 10px 20px; text-decoration: none; 
                  border-radius: 5px; font-size: 16px;">Ver mi Orden</a>
             </div>
@@ -115,6 +115,5 @@ export class MailService {
       throw new Error(error.message);
     }
   }
-  
   
 }

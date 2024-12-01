@@ -22,10 +22,10 @@ const GardenerCalendar: React.FC<GardenerCalendarProps> = ({
     const fetchReserved = async () => {
       try {
         setLoading(true);
-        const days = await fetchReservedDays(gardenerId); // Llama al helper para obtener días reservados
+        const days = await fetchReservedDays(gardenerId);
+        console.log("Días reservados obtenidos A:", days); // Verifica si los datos son correctos
         setReservedDays(new Set(days));
         console.log("Días reservados:", days);
-        
       } catch (error) {
         message.error("Error al cargar los días reservados.");
       } finally {
@@ -34,7 +34,7 @@ const GardenerCalendar: React.FC<GardenerCalendarProps> = ({
     };
     fetchReserved();
   }, [gardenerId]); // Solo se vuelve a ejecutar cuando gardenerId cambia
-  
+
   // Manejador de selección de fecha
   const handleSelect = useCallback(
     (value: Dayjs) => {

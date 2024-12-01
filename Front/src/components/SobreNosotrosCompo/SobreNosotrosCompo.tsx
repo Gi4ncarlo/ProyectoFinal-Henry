@@ -68,7 +68,7 @@ const SobreNosotrosCompo = () => {
                 linkedin: "https://www.linkedin.com/in/pablo-ricci-628ba19a/",
               },
               {
-                name: "Mauricio Ricci",
+                name: "Mauricio Pino",
                 role: "Backend Developer",
                 github: "https://github.com/MauriPinoRicci",
                 linkedin: "https://www.linkedin.com/in/mauricio-joaqu%C3%ADn-pino-ricci-055858140/",
