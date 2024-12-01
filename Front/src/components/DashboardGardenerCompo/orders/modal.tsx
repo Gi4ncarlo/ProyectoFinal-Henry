@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 interface ModalDetailsProps {
     order: any;
@@ -23,6 +24,24 @@ const ModalDetails: React.FC<ModalDetailsProps> = ({ order, onClose }) => {
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setToken(event.target.value);
     };
+    const handleDateExpiration = (value: string) => {
+        const endTimeStr = value;  // Ejemplo de fecha en formato string
+        const [year, month, day] = endTimeStr.split("-").map(Number);  // Separa el string por "-" y convierte a número
+
+        // Crea el objeto Date
+        const endTimeDate = new Date(year, month - 1, day); // Los meses en JavaScript son 0-indexados
+
+        const currentDate = new Date();
+        console.log(endTimeDate, currentDate);
+
+        // Comparar las fechas
+        if (endTimeDate > currentDate) {
+            return true
+        } else {
+            return false
+        }
+
+    }
     const handleOnClick = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         console.log(token);
 
@@ -39,13 +58,32 @@ const ModalDetails: React.FC<ModalDetailsProps> = ({ order, onClose }) => {
         )
         const data = await (await response).json();
         console.log(data);
+        if (data) {
+            Swal.fire({
+                icon: "success",
+                title: "Token verificado",
+                text: "El token es correcto",
+                showConfirmButton: false,
+                timer: 1500
+            })
+            onClose();
+
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "Token incorrecto",
+                text: "El token es incorrecto",
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
     };
 
     if (!order) return null;
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
-            <div className="relative bg-gradient-to-br from-white to-gray-100 p-8 rounded-3xl shadow-2xl w-full max-w-lg">
+            <div className="relative bg-gradient-to-br from-white to-gray-100 p-6 rounded-3xl shadow-2xl w-full max-w-md max-h-[80vh] overflow-auto">
                 {/* Botón de cierre */}
                 <button
                     onClick={onClose}
@@ -99,7 +137,7 @@ const ModalDetails: React.FC<ModalDetailsProps> = ({ order, onClose }) => {
                     </p>
                 </div>
                 <div className="mb-6 p-4 border border-gray-200 rounded-lg bg-blue-50 shadow-inner space-y-3">
-                    <h3 className="text-lg font-semibold text-blue-700">Status del servicio</h3>
+                    <h3 className="text-lg font-semibold text-blue-700">Estado del servicio</h3>
                     <p className="text-sm text-gray-700">
                         <strong>Estado:</strong> {order.orderDetail.status}
                     </p>
@@ -118,10 +156,10 @@ const ModalDetails: React.FC<ModalDetailsProps> = ({ order, onClose }) => {
                         />
                     </div>
                     :
-                    (<>
+                    (<> {handleDateExpiration(order.orderDetail.endTime) ?
                         <div className="mb-6">
                             <label className="block text-gray-700 font-medium mb-2" htmlFor="token">
-                                Ingrese un token
+                                Debes ingresar el token para finalizar el servicio antes del :{order.orderDetail.endTime.toLocaleString("es-ES").split(",")[0]} a las 23:59hs
                             </label>
                             <input
                                 type="text"
@@ -132,15 +170,23 @@ const ModalDetails: React.FC<ModalDetailsProps> = ({ order, onClose }) => {
                                 placeholder="Escriba el token aquí"
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
                             />
+                            {/* Botón de acción */}
+                            <button
+                                onClick={handleOnClick}
+                                className="w-full bg-blue-600 text-white text-center py-2 mt-4 px-4 rounded-lg hover:bg-blue-700 transition duration-200"
+                            >
+                                Confirmar
+                            </button>
                         </div>
+                        :
+                        <div className="mb-6">
+                            <label className="block text-gray-700 font-medium mb-2" htmlFor="token">
+                                El token ya expiro.
+                            </label>
+                        </div>
+                    }
 
-                        {/* Botón de acción */}
-                        <button
-                            onClick={handleOnClick}
-                            className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200"
-                        >
-                            Confirmar
-                        </button>
+
                     </>
                     )}
 

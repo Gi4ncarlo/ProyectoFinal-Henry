@@ -54,8 +54,8 @@ const ContactView = () => {
   
 
   return (
-    <div className="min-h-screen grid grid-cols-1 place-items-center lg:grid-cols-2 bg-[url('/images/fondo_contacto.jpg')] bg-cover bg-center pt-16 lg:pt-24">
-      <div className="container bg-white m-auto mt-8 p-4 max-w-full shadow-sm rounded-sm lg:m-0 lg:p-8 lg:max-w-lg lg:shadow-lg lg:rounded-lg">
+    <div className="min-h-screen grid grid-cols-1 place-items-center lg:grid-cols-2 bg-[url('/images/fondo_contacto.webp')] bg-cover bg-center pt-16 lg:pt-24">
+      <div className="container bg-white m-auto mt-8 p-4 max-w-full shadow-sm rounded-sm lg:m-2 lg:p-8 lg:max-w-lg lg:shadow-lg lg:rounded-lg">
         <h2 className="text-4xl font-extrabold mb-6 text-center text-[#263238]">Sugerencias</h2>
         <p className="mb-6 text-[#263238] text-center font-nunito text-sm lg:text-lg">
           Por favor llene el formulario para enviar tus sugerencias.

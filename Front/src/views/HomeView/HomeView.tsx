@@ -44,31 +44,32 @@ const Home: React.FC = () => {
   //     const fetchedServices = await getServicesProvided();
   //     setServices(fetchedServices);
   //   } catch (error) {
-    //     console.error('Error fetching services:', error);
-    //   }
-    // };
-    
-    //   fetchServices();
-    // }, [isMounted]);
-    const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
-    useEffect(() => {
-      const checkUserSession = async () => {
-        // 1. Verificar si hay un token en localStorage
-        const userSession = localStorage.getItem("userSession");
-        if (userSession) {
-          const tokenData = JSON.parse(userSession);
-          if (tokenData?.token) {
-            setIsUserLoggedIn(true);
-            return; // Usuario ya logueado, no seguimos.
-          }
+  //     console.error('Error fetching services:', error);
+  //   }
+  // };
+
+  //   fetchServices();
+  // }, [isMounted]);
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+ 
+  useEffect(() => {
+    const checkUserSession = async () => {
+      // 1. Verificar si hay un token en localStorage
+      const userSession = localStorage.getItem("userSession");
+      if (userSession) {
+        const tokenData = JSON.parse(userSession);
+        if (tokenData?.token) {
+          setIsUserLoggedIn(true);
+          return; // Usuario ya logueado, no seguimos.
         }
-        if(isUserLoggedIn) return
-    
-        setIsUserLoggedIn(false);
-      };
-      checkUserSession();
+      }
+      if (isUserLoggedIn) return
+
+      setIsUserLoggedIn(false);
+    };
+    checkUserSession();
   }, []);
-  
+
   const handleSearch = () => {
     if (selectedService) {
       router.push(`/gardener/${selectedService}`);
@@ -81,7 +82,7 @@ const Home: React.FC = () => {
         id="hero"
         className="w-full h-screen flex flex-col items-center justify-center relative text-white"
         style={{
-          backgroundImage: "url('/images/fondo_home.jpg')",
+          backgroundImage: "url('/images/fondo_home.webp')",
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -107,10 +108,10 @@ const Home: React.FC = () => {
         id="about"
         className="w-full py-20 bg-white text-gray-800 flex flex-col items-center justify-center"
       >
-        <h2 className="text-3xl md:text-4xl font-semibold mb-6">
+        <h2 className="text-3xl md:text-4xl font-semibold mb-6 text-[#263238]">
           Sobre Nosotros
         </h2>
-        <p className="text-lg md:text-xl mb-6 px-4 md:w-2/3 lg:w-1/2 text-center">
+        <p className="text-lg md:text-xl mb-6 px-4 md:w-2/3 lg:w-1/2 text-center text-[#263238]">
           En Vicnasol Jardinería, nos especializamos en crear y mantener
           hermosos jardines que alegran los espacios. Nuestro equipo de
           profesionales está comprometido con la excelencia y la
@@ -123,12 +124,12 @@ const Home: React.FC = () => {
         id="services"
         className="w-full py-20 bg-gradient-to-b from-green-500 to-green-700 text-white flex flex-col items-center"
         style={{
-          backgroundImage: "url('/images/fondo_home.jpg')",
+          backgroundImage: "url('/images/fondo_home.webp')",
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
       >
-        <h2 className="text-3xl md:text-4xl font-semibold mb-10 text-center">
+        <h2 className="text-3xl md:text-4xl font-semibold mb-10 text-center text-[#263238]">
           Nuestros Servicios
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-4 md:px-10 lg:px-20">
@@ -136,8 +137,8 @@ const Home: React.FC = () => {
           <div className="bg-white text-gray-800 p-6 rounded-lg shadow-lg transform transition-transform hover:scale-105">
             <div className="flex items-center justify-center mb-4">
             </div>
-            <h3 className="text-xl font-semibold mb-4 text-center">Mantenimiento</h3>
-            <p className="text-center">
+            <h3 className="text-xl font-semibold mb-4 text-center text-[#263238]">Mantenimiento</h3>
+            <p className="text-center text-[#263238]">
               Servicios regulares de mantenimiento para mantener tu jardín en perfectas
               condiciones durante todo el año.
             </p>
@@ -146,8 +147,8 @@ const Home: React.FC = () => {
           <div className="bg-white text-gray-800 p-6 rounded-lg shadow-lg transform transition-transform hover:scale-105">
             <div className="flex items-center justify-center mb-4">
             </div>
-            <h3 className="text-xl font-semibold mb-4 text-center">Diseño</h3>
-            <p className="text-center">
+            <h3 className="text-xl font-semibold mb-4 text-center text-[#263238] ">Diseño</h3>
+            <p className="text-center text-[#263238] ">
               Creamos diseños personalizados que se adaptan a tus gustos y al entorno
               de tu espacio.
             </p>
@@ -156,8 +157,8 @@ const Home: React.FC = () => {
           <div className="bg-white text-gray-800 p-6 rounded-lg shadow-lg transform transition-transform hover:scale-105">
             <div className="flex items-center justify-center mb-4">
             </div>
-            <h3 className="text-xl font-semibold mb-4 text-center">Instalación</h3>
-            <p className="text-center">
+            <h3 className="text-xl font-semibold mb-4 text-center text-[#263238]">Instalación</h3>
+            <p className="text-center text-[#263238]">
               Realizamos instalaciones completas, desde césped hasta sistemas de riego.
             </p>
           </div>
@@ -169,8 +170,8 @@ const Home: React.FC = () => {
         id="contact"
         className="w-full py-20 bg-white text-gray-800 flex flex-col items-center justify-center"
       >
-        <h2 className="text-3xl md:text-4xl font-semibold mb-6">Contáctanos</h2>
-        <p className="text-lg md:text-xl mb-6 px-4 md:w-2/3 lg:w-1/2 text-center">
+        <h2 className="text-3xl md:text-4xl font-semibold mb-6 text-[#263238]">Contáctanos</h2>
+        <p className="text-lg md:text-xl mb-6 px-4 md:w-2/3 lg:w-1/2 text-center text-[#263238]">
           ¿Listo para transformar tu jardín? Ponte en contacto con nosotros
           hoy mismo para obtener una cotización.
         </p>
@@ -181,6 +182,7 @@ const Home: React.FC = () => {
           Enviar Mensaje
         </a>
       </section>
+      
     </div>
   );
 };

@@ -1,12 +1,14 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpException,
   HttpStatus,
   Param,
   ParseUUIDPipe,
+  Patch,
   Post,
   Res,
   UseGuards
@@ -20,6 +22,7 @@ import { AuthGuard } from '../auth/auth.guard';
 import { Role } from '../user/enums/role.enum';
 import { ServiceProvided } from './entities/serviceProvided.entity';
 import { ServiceProvidedService } from './serviceProvided.service';
+import { UpdateServiceProvidedDto } from './Dtos/serviceProvided.dto';
 
 @ApiTags('serviceDetails')
 @ApiBearerAuth()
@@ -83,21 +86,36 @@ export class ServiceProvidedController {
     }
   }
 
-  // @UseGuards(AuthGuard)
-  // @Patch('/:id')
-  // async updateServiceProvided(
-  //   @Res() res: Response, 
-  //   @Param('id', ParseUUIDPipe) id: string, 
-  //   @Body() updateServiceProvidedDto: UpdateServiceProvidedDto,
-  // ) {
-  //   try {
-  //     const data = await this.serviceProvidedService.updateServiceProvidedService(id, updateServiceProvidedDto);
-  //     return res.status(200).json({
-  //       service: data,
-  //       message: 'Servicio actualizado con exito'
-  //     });
-  //   } catch (error) {
-  //     return res.status(400).json(error);
-  //   }
-  // }
+  @UseGuards(AuthGuard)
+  @HttpCode(200)
+  @Roles(Role.Admin)
+  @Patch('/:id')
+  async updateServiceProvided(
+    @Res() res: Response, 
+    @Param('id', ParseUUIDPipe) id: string, 
+    @Body() updateServiceProvidedDto: UpdateServiceProvidedDto,
+  ) {
+    try {
+      const data = await this.serviceProvidedService.updateServiceProvided(id, updateServiceProvidedDto);
+      return res.status(200).json({
+        service: data,
+        message: 'Servicio actualizado con exito'
+      });
+    } catch (error) {
+      return res.status(400).json(error);
+    }
+  }
+
+  @UseGuards(AuthGuard)
+  @HttpCode(200)
+  @Roles(Role.Admin)
+  @Delete('/:id')
+  async deleteServiceProvided(@Res() res: Response, @Param('id', ParseUUIDPipe) id: string) {
+    try {
+      const data = await this.serviceProvidedService.deleteServiceProvided(id);
+      return res.status(200).json(data);
+    } catch (error) {
+      return res.status(400).json(error);
+    }
+  }
 }

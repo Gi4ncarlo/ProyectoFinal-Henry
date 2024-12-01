@@ -1,12 +1,13 @@
-import { Controller, Post, Body, HttpCode, HttpStatus, HttpException } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus, HttpException, Param } from '@nestjs/common';
 import { MailService } from './mail.service';
 import { SendMailDto } from './dto/send-mail.dto';
 
 @Controller('mail')
 export class MailController {
-  constructor(private readonly mailService: MailService) {}
+  constructor(
+    private readonly mailService: MailService,
+  ) {}
 
- 
   @Post('welcome')
   @HttpCode(HttpStatus.OK)
   async sendWelcomeEmail(@Body() payload: SendMailDto) {
@@ -22,15 +23,15 @@ export class MailController {
   @Post('send')
   async sendMail(@Body() body: { email: string; phone: string; message: string }) {
     const { email, phone, message } = body;
-  
+
     console.log("estoy dentro del controlador de email");
-    
+
     const subject = `Sugerencia enviada por ${email}`;
     const text = `Detalles:
     - Email: ${email}
     - Teléfono: ${phone}
     - Mensaje: ${message}`;
-  
+
     try {
       await this.mailService.sendMail(email, subject, text);
       return { message: `Correo enviado correctamente a hpfinal21@gmail.com` };
@@ -44,6 +45,5 @@ export class MailController {
       );
     }
   }
-  
 
 }

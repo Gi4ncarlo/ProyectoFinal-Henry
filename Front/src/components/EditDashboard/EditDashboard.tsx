@@ -141,7 +141,7 @@ const EditDashboard: React.FC = () => {
 
 
                             {/* Muestra el campo y el botón de edición */}
-                            <p className="mb-2">
+                            <p className="mb-2 text-[#263238]">
                                 <strong>{label}:</strong> {value}
                             </p>
                             <button
@@ -158,18 +158,18 @@ const EditDashboard: React.FC = () => {
                                         type="text"
                                         value={editedValue}
                                         onChange={(e) => setEditedValue(e.target.value)}
-                                        className="p-2 border border-gray-300 rounded w-full"
+                                        className="p-2 border border-gray-300 rounded text-[#263238] w-full"
                                     />
                                     <div className="flex space-x-4 mt-4">
                                         <button
                                             onClick={handleSaveClick}
-                                            className="bg-green-500 hover:bg-green-600 text-white p-2 rounded"
+                                            className="bg-green-500 hover:bg-green-600 text-[#263238] p-2 rounded"
                                         >
                                             Guardar
                                         </button>
                                         <button
                                             onClick={handleCancelClick}
-                                            className="bg-red-500 hover:bg-red-600 text-white p-2 rounded"
+                                            className="bg-red-500 hover:bg-red-600 text-[#263238] p-2 rounded"
                                         >
                                             Cancelar
                                         </button>

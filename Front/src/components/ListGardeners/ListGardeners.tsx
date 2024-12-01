@@ -9,6 +9,9 @@ import { useRouter } from "next/navigation";
 import { FaSearch } from "react-icons/fa";
 import EditGardenerForm from "../EditGardenerForm/EditGardenerForm";
 import CardGardener from "../CardGardener/CardGardener";
+import { Spin, Flex } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
+import Swal from 'sweetalert2';
 
 const Dropdown: React.FC<{ filter: string; onChange: (value: string) => void }> = ({
   filter,
@@ -32,10 +35,10 @@ const Dropdown: React.FC<{ filter: string; onChange: (value: string) => void }> 
     <div className="relative w-48">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full bg-white border border-gray-300 rounded-md shadow-sm px-4 py-2 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-400"
+        className="w-full bg-white border border-gray-300 rounded-md shadow-sm px-4 py-2 text-left text-slate-400 cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-400"
       >
         {options.find((opt) => opt.value === filter)?.label || "Ordenar por"}
-        <span className="float-right">▼</span>
+        <span className="float-right text-[#263238]">▼</span>
       </button>
       {isOpen && (
         <div className="absolute mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-10">
@@ -54,6 +57,7 @@ const Dropdown: React.FC<{ filter: string; onChange: (value: string) => void }> 
           ))}
         </div>
       )}
+
     </div>
   );
 };
@@ -113,53 +117,77 @@ const ListGardeners: React.FC = () => {
     }
   };
 
-  {/*Fn para eliminar un jardinero */}
-  const handleDelete = async (id: number) => {
-    const confirmed = window.confirm("¿Estás seguro de que quieres eliminar este jardinero?");
-    if (!confirmed) return;
+  {/*Fn para eliminar un jardinero */ }
+const handleDelete = async (id: number) => {
+  const { isConfirmed } = await Swal.fire({
+    title: "¿Estás seguro?",
+    text: "No podrás revertir esta acción.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "Sí, eliminar",
+    cancelButtonText: "Cancelar"
+  });
 
-    try {
-      const token =
-        typeof window !== "undefined"
-          ? JSON.parse(localStorage.getItem("userSession") || "{}").token
-          : null;
+  if (!isConfirmed) return;
 
-      if (!token) {
-        throw new Error("Usuario no autenticado");
-      }
+  try {
+    const token =
+      typeof window !== "undefined"
+        ? JSON.parse(localStorage.getItem("userSession") || "{}").token
+        : null;
 
-      await deleteGardener(token, id);
-
-      // Actualizar la lista de jardineros después de eliminar
-      setProviders((prev) => prev.filter((gardener) => gardener.id !== id));
-      alert("Jardinero eliminado exitosamente.");
-    } catch (error: any) {
-      alert(error.message || "Error al eliminar el jardinero.");
+    if (!token) {
+      throw new Error("Usuario no autenticado");
     }
+
+    await deleteGardener(token, id);
+
+    // Actualizar la lista de jardineros después de eliminar
+    setProviders((prev) => prev.filter((gardener) => gardener.id !== id));
+
+    await Swal.fire({
+      icon: "success",
+      title: "Eliminado",
+      text: "El jardinero fue eliminado exitosamente.",
+      timer: 3000,
+      showConfirmButton: false
+    });
+  } catch (error: any) {
+    await Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: error.message || "Hubo un problema al eliminar el jardinero.",
+      timer: 3000,
+      showConfirmButton: false
+    });
+  }
+};
+
+
+  {/*fn para editar un jardinero */ }
+  const handleEdit = (gardener: IServiceProvider) => {
+    setEditGardener(gardener);
   };
 
-{/*fn para editar un jardinero */}
-const handleEdit = (gardener: IServiceProvider) => {
-  setEditGardener(gardener);
-};
+  const handleSaveEdit = (updatedGardener: IServiceProvider) => {
+    setProviders((prev) =>
+      prev.map((gardener) =>
+        gardener.id === updatedGardener.id ? updatedGardener : gardener
+      )
+    );
+    setEditGardener(null);
+  };
 
-const handleSaveEdit = (updatedGardener: IServiceProvider) => {
-  setProviders((prev) =>
-    prev.map((gardener) =>
-      gardener.id === updatedGardener.id ? updatedGardener : gardener
-    )
-  );
-  setEditGardener(null);
-};
-
-const handleCancelEdit = () => {
-  setEditGardener(null);
-};
+  const handleCancelEdit = () => {
+    setEditGardener(null);
+  };
 
 
   useEffect(() => {
     const fetchProviders = async () => {
-      setLoading(true);
+      //setLoading(true);
       try {
         const order = filter === "ASC" || filter === "DESC" ? filter : "ASC";
         const calification = isNaN(Number(filter)) ? undefined : Number(filter);
@@ -173,7 +201,7 @@ const handleCancelEdit = () => {
             ? JSON.parse(localStorage.getItem("userSession") || "{}").token
             : null;
 
-        const gardeners = await getGardenersDB(token, order, calification, searchTerm, availability);
+        const gardeners = await getGardenersDB(token, order, calification, searchTerm,) //availability);
         setProviders(gardeners.data || []);
       } catch (error: any) {
         setError(error.message || "Error al cargar los Jardineros");
@@ -202,11 +230,15 @@ const handleCancelEdit = () => {
 
 
     return (
-      <div className="container min-h-screen px-6 py-12 mx-auto">
-        <h1 className="text-2xl text-center mt-24 bold text-[#FF5722]">
-          Cargando ...
-        </h1>
-      </div>
+      <div className="flex flex-col items-center justify-center h-screen w-screen">
+      {/* Spinner */}
+      <div className="w-16 h-16 border-4 border-green-300 border-t-green-500 rounded-full animate-spin mb-4"></div>
+
+      {/* Texto */}
+      <h2 className="text-xl font-semibold text-[#263238]">
+        Cargando la informacion..
+      </h2>
+    </div>
     );
     
     if (error) return <div>{error}</div>;
@@ -215,7 +247,7 @@ const handleCancelEdit = () => {
       <div className="mx-auto mt-24">
         {providers.length === 0 ? (
           <div className="text-center mb-8 mx-auto">
-            <h1 className="text-2xl font-bold mb-4">No hay jardineros</h1>
+            <h1 className="text-2xl font-bold mb-4">No se encontraron Jardineros</h1>
             <button
               className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
               onClick={() => setSearchTerm("")}
@@ -225,7 +257,8 @@ const handleCancelEdit = () => {
           </div>
         ) : (
           <>
-            <div className="flex justify-between items-center bg-white p-4 shadow-sm rounded-lg mb-4">
+            <div className="flex justify-between items-center text-orange-950 bg-white p-3 shadow-sm rounded-lg mb-4">
+              <h2>Jardineros Disponibles</h2>
               <div className="relative w-1/2">
                 <input
                   type="text"
@@ -285,26 +318,25 @@ const handleCancelEdit = () => {
                 className={`px-4 py-2 bg-[#8BC34A] text-white rounded ${
                   currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
                 }`}
-              >
-                Página anterior
-              </button>
-              <button
-                onClick={handleNextPage}
-                disabled={currentPage * itemsPerPage >= providers.length}
-                className={`px-4 py-2 bg-[#8BC34A] text-white rounded ${
-                  currentPage * itemsPerPage >= providers.length
-                    ? "opacity-50 cursor-not-allowed"
-                    : ""
+            >
+              Página anterior
+            </button>
+            <button
+              onClick={handleNextPage}
+              disabled={currentPage * itemsPerPage >= providers.length}
+              className={`px-4 py-2 bg-[#8BC34A] text-white rounded ${currentPage * itemsPerPage >= providers.length
+                  ? "opacity-50 cursor-not-allowed"
+                  : ""
                 }`}
-              >
-                Página siguiente
-              </button>
-            </div>
-          </>
-        )}
-      </div>
-    );
-  }
+            >
+              Página siguiente
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
 
 
 export default ListGardeners;

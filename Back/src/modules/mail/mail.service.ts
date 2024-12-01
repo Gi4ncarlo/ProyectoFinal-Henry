@@ -72,4 +72,48 @@ export class MailService {
     }
  
   }
+
+  async sendOrderConfirmationEmail(to: string, username: string, order: any): Promise<void> {
+    try {
+      const serviceDetails = order.serviceProvided
+        .map(service => `<li>${service.detailService} - $${service.price}</li>`)
+        .join('');
+  
+      const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to,
+        subject: 'Confirmación de tu Orden en Vicnasol',
+        html: `
+          <div style="font-family: Arial, sans-serif; color: #2e5234; padding: 20px; line-height: 1.6;">
+            <h1 style="color: #263238;">¡Tu orden ha sido confirmada, ${username}!</h1>
+            <p>Gracias por confiar en <strong>Vicnasol</strong>. Aquí tienes los detalles de tu orden:</p>
+            <ul style="list-style: none; padding: 0;">
+              <li><strong>Fecha:</strong> ${new Date(order.date).toLocaleDateString()}</li>
+              <li><strong>Estado:</strong> ${order.isApproved ? 'Aprobada ✅' : 'Pendiente ⏳'}</li>
+              <li><strong>Jardinero:</strong> ${order.gardener.name} (${order.gardener.email})</li>
+              <li><strong>Servicios:</strong>
+                <ul>
+                  ${serviceDetails}
+                </ul>
+              </li>
+            </ul>
+            <div style="text-align: center; margin: 20px 0;">
+              <a href="http://localhost:3001/dashboard/userDashboard" 
+                 style="background-color: #4CAF50; color: #fff; padding: 10px 20px; text-decoration: none; 
+                 border-radius: 5px; font-size: 16px;">Ver mi Orden</a>
+            </div>
+            <p style="color: #263238;">Si tienes alguna duda, no dudes en contactarnos.</p>
+            <p style="color: #263238;">El equipo de <strong>Vicnasol</strong></p>
+          </div>
+        `,
+      };
+  
+      await this.transporter.sendMail(mailOptions);
+      console.log('Confirmation email sent successfully');
+    } catch (error: any) {
+      console.error('Error sending confirmation email:', error.message);
+      throw new Error(error.message);
+    }
+  }
+  
 }

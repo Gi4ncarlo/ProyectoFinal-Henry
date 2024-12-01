@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { HiMenu, HiX } from "react-icons/hi";
 import { IUserSession } from "@/interfaces/IUserSession";
@@ -16,6 +16,7 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.localStorage) {
@@ -59,11 +60,11 @@ export default function Navbar() {
       if (result.isConfirmed) {
         localStorage.removeItem("userSession");
         Swal.fire("Sesión cerrada!", "Hasta pronto!", "success");
-      }
+        setUserData(null);
+        setIsAuthenticated(false);
+        router.push("/");
+      } 
     });
-    setUserData(null);
-    setIsAuthenticated(false);
-    router.push("/");
   };
 
 
@@ -85,9 +86,26 @@ export default function Navbar() {
     setIsMenuOpen(!isMenuOpen);
   };
 
+
+  const handleClickOutside = (event: any) => {
+    // Cierra el menú si haces clic fuera
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setShowDropdown(false);
+    }
+  };
+
+  useEffect(() => {
+    // Añadir el evento al montar el componente
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      // Eliminar el evento al desmontar el componente
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <nav
-      className={`fixed z-10 top-0 w-full transition-all duration-500 ${isScrolled
+      className={`fixed z-20 top-0 w-full transition-all duration-500 ${isScrolled
         ? "bg-gradient-to-r from-[#4CAF50] to-[#388E3C] shadow-lg"
         : "bg-gradient-to-r from-[#4CAF50] to-[#8BC34A]"
         }`}
@@ -166,32 +184,43 @@ export default function Navbar() {
           >
             {/* Avatar del usuario */}
             {userData?.user?.profileImageUrl ? (
-              <img
-                src={userData.user.profileImageUrl}
-                alt="Avatar"
-                className="w-10 h-10 rounded-full border-2 border-gray-300 hover:border-blue-500 transition duration-200"
-              />
+              <div className="relative w-10 h-10">
+                <Image
+                  src={userData.user.profileImageUrl}
+                  alt="Avatar"
+                  className="rounded-full border-2 border-gray-300 hover:border-green-500 transition duration-200"
+                  fill // Asegura que ocupe el contenedor
+                  sizes="40px" // Tamaño esperado
+                />
+              </div>
             ) : (
-              <img
-                src="https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2281862025.jpg"
-                alt="Avatar"
-                className="w-10 h-10 rounded-full border-2 border-gray-300 hover:border-blue-500 transition duration-200"
-              />
+              <div className="relative w-10 h-10">
+                <Image
+                  src="https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2281862025.jpg"
+                  alt="Avatar"
+                  className="rounded-full border-2 border-gray-300 hover:border-green-500 transition duration-200"
+                  fill
+                  sizes="40px"
+                />
+              </div>
             )}
           </div>
 
           {/* Dropdown Menu */}
           {showDropdown && (
             <div
+              ref={dropdownRef} 
               className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg py-2 border border-gray-200 z-50"
               onClick={Dropdown}
             >
               {isAuthenticated ? (
                 <div>
                   <Link href="/dashboard">
-                    <div className="block px-4 py-2 hover:bg-gray-300 text-gray-700 transition duration-150">
+
+                    <button className="block px-4 py-2 text-left w-full hover:bg-gray-300 text-gray-700 transition duration-150">
                       Mi Cuenta
-                    </div>
+                    </button>
+
                   </Link>
                   <button
                     className="block px-4 py-2 text-left w-full hover:bg-gray-300 text-gray-700 transition duration-150"

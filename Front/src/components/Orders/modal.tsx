@@ -43,7 +43,7 @@ const Modal = ({ show, onClose, orderDetail } : any) => {
                         readOnly
                         className="w-full bg-gray-700 text-center text-gray-200 p-3 rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400"
                     />
-                    <p className="text-xs text-gray-400 mt-2 text-center">Puedes seleccionar y copiar el token.</p>
+                    <p className="text-xs text-gray-400 mt-2 text-center">Proporciona este token para confirmar el servicio terminado</p>
                 </div>
             </div>
         </div>

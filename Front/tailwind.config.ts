@@ -12,14 +12,20 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
-        playfair: 'var(--font-playfair)',
-        lora: 'var(--font-lora)',
-        nunito: ['Nunito', 'serif'],
-        lato: ['Lato', 'serif'],
-        roboto: ['Roboto', 'serif'],
-        cinzel: ['Cinzel', 'serif'],
+        h1: ['Bree Serif', 'serif'], // Títulos principales
+        h2: ['Bree Serif', 'serif'], // Subtítulos (H2)
+        subtitle: ['Nunito', 'sans-serif'], // H3 y H4
+        navbar: ['Raleway', 'sans-serif'], // Navbar
+        body: ['Open Sans', 'sans-serif'], // Párrafos
+        button: ['Oswald', 'sans-serif'], // Botones
+        footer: ['Quattrocento', 'serif'], // Footer
       },
+      colors: {
+        primary: "#2E7D32", // Verde primario
+        secondary: "#F4F9F4", // Blanco verdoso
+        dark: "#263238", // Color oscuro para texto
+      },
+      
     },
   },
   plugins: [],

@@ -6,11 +6,20 @@ import { message } from "antd";
 // Obtiene el token del almacenamiento local
 const getAuthToken = (): string | null => {
   try {
-    const token = localStorage.getItem("token");
-    if (!token) {
+    const tokenData = localStorage.getItem("userSession");
+
+    if (!tokenData) {
       message.error("No se encontró el token de autenticación. Inicia sesión nuevamente.");
+      return null;
     }
-    return token;
+
+    const parsedToken: { token?: string } = JSON.parse(tokenData);
+    if (!parsedToken || !parsedToken.token) {
+      message.error("Token inválido o no encontrado.");
+      return null;
+    }
+    
+    return parsedToken.token; // Regresa solo el valor del token
   } catch (error) {
     console.error("Error al acceder a localStorage:", error);
     message.error("Error al verificar el token de autenticación.");
@@ -27,43 +36,40 @@ export const fetchReservedDays = async (gardenerId: string): Promise<Set<string>
     return new Set<string>();
   }
 
-  let token = null;
-
-  if (typeof window !== "undefined") {
-    const storedToken = localStorage.getItem("userSession");
-    token = storedToken ? JSON.parse(storedToken) : null;
-  }
-
-  if (!token || !token.token) {
-    console.error("Token is missing or invalid.");
-    throw new Error("Token is missing or invalid.");
+  const token = getAuthToken();
+  if (!token) {
+    console.error("Token es inválido o no se encuentra.");
+    throw new Error("Token es inválido o no se encuentra.");
   }
 
   try {
-    // Realizar la solicitud al API usando fetch
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/gardener/${gardenerId}/reservedDays`,
       {
         method: "GET",
         headers: {
-          "Authorization": `Bearer ${token.token}`,
-          "Content-Type": "application/json", // Asegúrate de enviar el tipo de contenido correcto
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
       }
     );
 
-
-    // Verificar si la respuesta es exitosa
     if (!response.ok) {
-      throw new Error("Error en la solicitud al servidor.");
+      throw new Error(`Error en la solicitud al servidor: ${response.status}`);
     }
 
     const data = await response.json();
-    console.log("Días reservados desde el API:", data.reservedDays.toLocaleString());
+    console.log("Respuesta del servidor:", data);
 
-    // Filtrar y formatear las fechas
+    const reservedDays = Array.isArray(data) ? data : data.reservedDays;
+
+    if (!Array.isArray(reservedDays)) {
+      console.error("Estructura de datos inesperada", data);
+      throw new Error("Estructura de datos inesperada en la respuesta del servidor.");
+    }
+
     const formattedDays = new Set<string>(
-      data.reservedDays
+      reservedDays
         .filter((day: unknown): day is string => typeof day === "string")
         .map((day: string) => dayjs(day).format("YYYY-MM-DD"))
     );
@@ -72,10 +78,11 @@ export const fetchReservedDays = async (gardenerId: string): Promise<Set<string>
     return formattedDays;
   } catch (error) {
     console.error("Error al obtener los días reservados:", error);
-    message.error("No se pudieron cargar los días reservados. Intenta nuevamente.");
-    return new Set<string>();
+    message.error("No se pudieron cargar los días reservados.");
+    return new Set<string>(); // Devolver un Set vacío en caso de error
   }
 };
+
 
 // Deshabilitar fechas pasadas y reservadas
 export const disabledDate = (current: dayjs.Dayjs, reservedDays: Set<string>): boolean => {

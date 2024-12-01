@@ -1,18 +1,20 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import ProviderCard from "../ProviderCard/ProviderCard";
 import { IServiceProvider } from "@/interfaces/IServiceProvider";
 import { getGardenersDB } from "@/helpers/gardeners.helpers";
 import { useRouter } from "next/navigation";
 import { FaSearch } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 const Dropdown: React.FC<{ filter: string; onChange: (value: string) => void }> = ({
   filter,
   onChange,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement | null>(null); // Referencia para el contenedor del Dropdown
 
   const options = [
     { value: "ASC", label: "A-Z" },
@@ -24,14 +26,29 @@ const Dropdown: React.FC<{ filter: string; onChange: (value: string) => void }> 
     { value: "5", label: "⭐⭐⭐⭐⭐" },
   ];
 
+  const handleClickOutside = (event: MouseEvent) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      setIsOpen(false); // Cierra el menú si haces clic fuera
+    }
+  };
+
+  useEffect(() => {
+    // Agregar evento para detectar clics fuera del Dropdown
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      // Eliminar evento para evitar fugas de memoria
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div className="relative w-48">
+    <div className="relative w-48" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-full bg-white border border-gray-300 rounded-md shadow-sm px-4 py-2 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-400"
       >
         {options.find((opt) => opt.value === filter)?.label || "Ordenar por"}
-        <span className="float-right">▼</span>
+        <span className="float-right text-[#263238]">Filtrar por ▼</span>
       </button>
       {isOpen && (
         <div className="absolute mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-10">
@@ -75,6 +92,11 @@ const ProviderCardList: React.FC = () => {
         const parsedSession = JSON.parse(storedSession);
         setTOKEN(parsedSession.token);
       } else {
+        Swal.fire({  
+          icon: "error",
+          title: "Oops...",
+          text: "Inicia sesión para acceder a esta sección",
+        })
         router.push("/login");
       }
 
@@ -139,11 +161,15 @@ const ProviderCardList: React.FC = () => {
 
   if (loading)
     return (
-      <div className="container min-h-screen px-6 py-12 mx-auto">
-        <h1 className="text-2xl text-center mt-24 bold text-[#FF5722]">
-          Cargando ...
-        </h1>
-      </div>
+      <div className="flex flex-col items-center justify-center h-screen w-screen">
+      {/* Spinner */}
+      <div className="w-16 h-16 border-4 border-green-300 border-t-green-500 rounded-full animate-spin mb-4"></div>
+
+      {/* Texto */}
+      <h2 className="text-xl font-semibold text-[#263238]">
+          Cargando la informacion..
+      </h2>
+  </div>
     );
   if (error) return <div>{error}</div>;
 
@@ -207,7 +233,7 @@ const ProviderCardList: React.FC = () => {
                     : ""
                 }`}
               >
-              Página siguiente
+                Página siguiente
             </button>
         </div>
         </>

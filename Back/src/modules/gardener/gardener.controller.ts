@@ -49,44 +49,43 @@ export class GardenerController {
     @Res() res: Response
   ) {
     try {
-      console.log("Body recibido en el controlador:", day);
-
-      if (!day?.date) {
-        return res.status(400).json({ message: 'El campo "date" es requerido' });
-      }
-
-      // Validar formato de la fecha 'YYYY-MM-DD'
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(day.date)) {
-        return res.status(400).json({ message: 'El campo "date" debe estar en formato YYYY-MM-DD' });
-      }
-
-      console.log(`Gardener ID: ${gardenerId}, Day: ${day.date}`);
-
+      if (!day?.date) return res.status(400).json({ message: 'El campo "date" es requerido' });
+      
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(day.date)) return res.status(400).json({ message: 'El campo "date" debe estar en formato YYYY-MM-DD' });
       const response = await this.gardenerService.reserveDay(gardenerId, day);
       return res.status(200).json(response);
     } catch (error) {
-      console.error("Error en el controlador:", error);
       return res.status(500).json({ message: 'Error interno', error });
     }
   }
-
 
   @Get(':gardenerId/reservedDays')
   @UseGuards(AuthGuard)
   @HttpCode(200)
   async getReservedDays(
     @Param('gardenerId', new ParseUUIDPipe()) gardenerId: string,
+    @Res() res: Response
   ) {
-    console.log(`Solicitud recibida para el jardinero: ${gardenerId}`);
-    const reservedDays = await this.gardenerService.getReservedDays(gardenerId);
-    return { reservedDays: reservedDays || [] };
+    try {
+      console.log(`Solicitud recibida para el jardinero: ${gardenerId}`);
+      const reservedDays = await this.gardenerService.getReservedDays(gardenerId);
+      return res.status(200).json(reservedDays ? reservedDays : []);
+      
+    } catch (error) {
+      return res.status(500).json({ message: 'Error interno', error });
+    }
   }
 
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Admin)
   @Post()
-  create(@Body() createGardenerDto: CreateGardenerDto) {
-    return this.gardenerService.create(createGardenerDto);
+  create(@Body() createGardenerDto: CreateGardenerDto, @Res() res: Response) {
+  try {
+     const newGardener = this.gardenerService.create(createGardenerDto);
+    return res.status(201).json(newGardener);    
+  } catch (error) {
+    throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
   }
 
   @UseGuards(AuthGuard)
@@ -122,13 +121,20 @@ export class GardenerController {
     description: 'Ordenar por (ASC or DESC)',
   })
   async findAll(
+    @Res() res: Response,
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
     @Query('name') name?: string,
     @Query('calification') calification?: number,
     @Query('order') order: 'ASC' | 'DESC' = 'ASC',
+    
   ) {
-    return this.gardenerService.findAll(page, limit, name, calification, order);
+    try {
+      const data = await this.gardenerService.findAll(page, limit, name, calification, order);
+      return res.status(200).json(data);
+    } catch (error) {
+      return res.status(500).json({ message: 'Error interno', error });
+    }
   }
 
   @UseGuards(AuthGuard)
@@ -149,22 +155,27 @@ export class GardenerController {
   async uploadProfileImage(
     @Param('id') id: string,
     @UploadedFile(new ImageUploadPipe()) file: Express.Multer.File,
+    @Res() res: Response
   ) {
-    const uploadFileDto: UploadFileDto = {
-      fieldname: file.fieldname,
-      originalname: file.originalname,
-      mimetype: file.mimetype,
-      size: file.size,
-      buffer: file.buffer,
-    };
-
-    const imageUrl = await this.fileUploadService.uploadFile(
-      uploadFileDto,
-      'gardener',
-    );
-    await this.gardenerService.updateProfileImage(id, imageUrl);
-
-    return { imageUrl };
+    try {
+      const uploadFileDto: UploadFileDto = {
+        fieldname: file.fieldname,
+        originalname: file.originalname,
+        mimetype: file.mimetype,
+        size: file.size,
+        buffer: file.buffer,
+      };
+  
+      const imageUrl = await this.fileUploadService.uploadFile(
+        uploadFileDto,
+        'gardener',
+      );
+      await this.gardenerService.updateProfileImage(id, imageUrl);
+  
+      return { imageUrl };
+    } catch (error) {
+      return res.status(500).json({ message: 'Error interno', error });
+    }
   }
 
 
@@ -174,29 +185,40 @@ export class GardenerController {
   async uploadCarrouselImages(
     @Param('id') id: string,
     @UploadedFile(new ImageUploadPipe()) file: Express.Multer.File,
+    @Res() res: Response
   ) {
-    const uploadFileDto: UploadFileDto = {
-      fieldname: file.fieldname,
-      originalname: file.originalname,
-      mimetype: file.mimetype,
-      size: file.size,
-      buffer: file.buffer,
-    };
-
-    const imageUrl = await this.fileUploadService.uploadFile(
-      uploadFileDto,
-      'gardener',
-    );
-    await this.gardenerService.uploadCarrouselImages(id, imageUrl);
-
-    return { imageUrl };
+    try {
+      
+      const uploadFileDto: UploadFileDto = {
+        fieldname: file.fieldname,
+        originalname: file.originalname,
+        mimetype: file.mimetype,
+        size: file.size,
+        buffer: file.buffer,
+      };
+  
+      const imageUrl = await this.fileUploadService.uploadFile(
+        uploadFileDto,
+        'gardener',
+      );
+      await this.gardenerService.uploadCarrouselImages(id, imageUrl);
+  
+      return { imageUrl };
+    } catch (error) {
+      return res.status(500).json({ message: 'Error interno', error });
+    }
   }
 
   @Get(':id/image')
   @HttpCode(200)
-  async getProfileImage(@Param('id') id: string) {
-    const gardener = await this.gardenerService.findOne(id);
-    return { imageUrl: gardener.profileImageUrl };
+  async getProfileImage(@Param('id') id: string, @Res() res: Response) {
+    try {
+      const gardener = await this.gardenerService.findOne(id);
+      return { imageUrl: gardener.profileImageUrl };
+      
+    } catch (error) {
+      return res.status(500).json({ message: 'Error interno', error });
+    }
   }
 
   @Get('carrousel/:id')
@@ -206,12 +228,17 @@ export class GardenerController {
     return { imageUrl: gardener.carrouselImages };
   }
 
+  @Patch("carrousel/:id")
+  @HttpCode(200)
+  async updateCarrouselImages(@Param('id') id: string, @Body() carrousel : string[]) {
+    return this.gardenerService.updateCarrouselImages(id, carrousel);
+  }
+
   @UseGuards(AuthGuard)
   @Get(':id/serviceProvided')
   @HttpCode(200)
-  getServiceProvided(@Param('id', new ParseUUIDPipe()) id: string) {
-    const servicesOfTheGardener =
-      this.gardenerService.findServicesProvidedByGardener(id);
+  async getServiceProvided(@Param('id', new ParseUUIDPipe()) id: string) {
+    const servicesOfTheGardener = await this.gardenerService.findServicesProvidedByGardener(id);
 
     if (!servicesOfTheGardener) {
       throw new HttpException(
@@ -258,6 +285,7 @@ export class GardenerController {
     @Param('id') id: string,
     @Body() updateGardenerDto: UpdateGardenerDto,
   ) {
+    console.log("Im here bro")
     return this.gardenerService.update(id, updateGardenerDto);
   }
 
