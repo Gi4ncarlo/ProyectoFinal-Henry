@@ -210,20 +210,20 @@ export default function Navbar() {
           {showDropdown && (
             <div
               ref={dropdownRef} 
-              className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg py-2 border border-gray-200 z-50"
+              className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg py-2 border-2 border-[#4CAF50] z-50"
               onClick={Dropdown}
             >
               {isAuthenticated ? (
                 <div>
                   <Link href="/dashboard">
 
-                    <button className="block px-4 py-2 text-left w-full hover:bg-gray-300 text-gray-700 transition duration-150">
+                    <button className="block px-4 py-2 text-left w-full hover:bg-[#CDDC39] text-gray-700 transition duration-150">
                       Mi Cuenta
                     </button>
 
                   </Link>
                   <button
-                    className="block px-4 py-2 text-left w-full hover:bg-gray-300 text-gray-700 transition duration-150"
+                    className="block px-4 py-2 text-left w-full hover:bg-[#CDDC39] text-gray-700 transition duration-150"
                     onClick={handleLogout}
                   >
                     Cerrar sesión
@@ -232,12 +232,12 @@ export default function Navbar() {
               ) : (
                 <div>
                   <Link href="/login">
-                    <div className="block px-4 py-2 hover:bg-gray-300 text-gray-700 transition duration-150">
+                    <div className="block px-4 py-2 hover:bg-[#CDDC39] text-gray-700 transition duration-150">
                       Iniciar Sesión
                     </div>
                   </Link>
                   <Link href="/preRegister">
-                    <div className="block px-4 py-2 hover:bg-gray-300 text-gray-700 transition duration-150">
+                    <div className="block px-4 py-2 hover:bg-[#CDDC39] text-gray-700 transition duration-150">
                       Registrarse
                     </div>
                   </Link>
