@@ -158,7 +158,7 @@ export default function LoginForm() {
           <button
             type="submit"
             disabled={Object.values(errors).some((error) => error !== "")}
-            className="w-full mt-4 p-2 bg-[#4caf50] text-white font-bold rounded hover:bg-[#388e3c]"
+            className="w-full mt-4 p-2 bg-[#4caf50] text-white font-bold rounded hover:bg-[#388e3c] hover:text-[#FFEB3B]"
           >
             Entrar
           </button>
@@ -168,7 +168,7 @@ export default function LoginForm() {
         <div className="mt-6">
           <Link
             href="/api/auth/login?returnTo=/loginGoogle"
-            className="w-full mt-4 p-2 bg-[#4caf50] text-white font-bold rounded hover:bg-[#388e3c] flex items-center justify-center"
+            className="w-full mt-4 p-2 bg-[#4caf50] text-white font-bold rounded hover:bg-[#388e3c] hover:text-[#FFEB3B] flex items-center justify-center"
           >
             <Image
               src="/images/LogoGoogle.webp"
@@ -182,8 +182,8 @@ export default function LoginForm() {
         </div>
         <div className="mt-6">
           <Link
-            href="/register"
-            className="w-full mt-4 p-2 bg-[#4caf50] text-white font-bold rounded hover:bg-[#388e3c] flex items-center justify-center"
+            href="/preRegister"
+            className="w-full mt-4 p-2 bg-[#4caf50] text-white font-bold rounded hover:bg-[#388e3c] hover:text-[#FFEB3B] flex items-center justify-center"
           >
             Registrarse
           </Link>
