@@ -172,8 +172,7 @@ const Home: React.FC = () => {
       >
         <h2 className="text-3xl md:text-4xl font-semibold mb-6 text-[#263238]">Contáctanos</h2>
         <p className="text-lg md:text-xl mb-6 px-4 md:w-2/3 lg:w-1/2 text-center text-[#263238]">
-          ¿Listo para transformar tu jardín? Ponte en contacto con nosotros
-          hoy mismo para obtener una cotización.
+          ¿Tenes alguna sugerencia? ¿Necesitas asesoramiento? ¡No dudes en contactarnos! 
         </p>
         <a
           href="/contacto"
