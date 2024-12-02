@@ -4,44 +4,50 @@ import Swal from "sweetalert2";
 interface ModalDetailsProps {
     order: any;
     onClose: () => void;
-
 }
 
 const ModalDetails: React.FC<ModalDetailsProps> = ({ order, onClose }) => {
     const [token, setToken] = useState("");
     const [userToken, setUserToken] = useState("");
 
-
-
     useEffect(() => {
         if (typeof window !== "undefined" && window.localStorage) {
-            const storedSession = JSON.parse(
-                localStorage.getItem("userSession") || ""
-            );
+            const storedSession = JSON.parse(localStorage.getItem("userSession") || "");
             setUserToken(storedSession.token);
         }
-    }, []);
+        const handleEsc = (event: KeyboardEvent) => {
+            if (event.key === "Escape") {
+                onClose();
+            }
+        };
+
+        document.addEventListener("keydown", handleEsc);
+
+        // Limpiar el evento cuando el componente se desmonte
+        return () => {
+            document.removeEventListener("keydown", handleEsc);
+        };
+    }, [onClose]);
+
+    const handleClickOutside = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        if (event.target === event.currentTarget) {
+            onClose(); 
+        }
+    };
+
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setToken(event.target.value);
     };
+
     const handleDateExpiration = (value: string) => {
-        const endTimeStr = value;  // Ejemplo de fecha en formato string
-        const [year, month, day] = endTimeStr.split("-").map(Number);  // Separa el string por "-" y convierte a número
-
-        // Crea el objeto Date
-        const endTimeDate = new Date(year, month - 1, day); // Los meses en JavaScript son 0-indexados
-
+        const endTimeStr = value;
+        const [year, month, day] = endTimeStr.split("-").map(Number);
+        const endTimeDate = new Date(year, month - 1, day);
         const currentDate = new Date();
-        console.log(endTimeDate, currentDate);
 
-        // Comparar las fechas
-        if (endTimeDate > currentDate) {
-            return true
-        } else {
-            return false
-        }
+        return endTimeDate > currentDate;
+    };
 
-    }
     const handleOnClick = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         console.log(token);
 
@@ -55,34 +61,37 @@ const ModalDetails: React.FC<ModalDetailsProps> = ({ order, onClose }) => {
                 },
                 body: JSON.stringify({ token }),
             }
-        )
-        const data = await (await response).json();
+        );
+        const data = await response.json();
         console.log(data);
+
         if (data.status === 200) {
             Swal.fire({
                 icon: "success",
                 title: "Token verificado",
                 text: "El token es correcto",
                 showConfirmButton: false,
-                timer: 1500
-            })
+                timer: 1500,
+            });
             onClose();
-
         } else {
             Swal.fire({
                 icon: "error",
                 title: "Token incorrecto",
                 text: "El token es incorrecto",
                 showConfirmButton: false,
-                timer: 1500
-            })
+                timer: 1500,
+            });
         }
     };
 
     if (!order) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
+        <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60"
+            onClick={handleClickOutside} 
+        >
             <div className="relative bg-gradient-to-br from-white to-gray-100 p-6 rounded-3xl shadow-2xl w-full max-w-md max-h-[80vh] overflow-auto">
                 {/* Botón de cierre */}
                 <button
@@ -101,12 +110,8 @@ const ModalDetails: React.FC<ModalDetailsProps> = ({ order, onClose }) => {
                     </svg>
                 </button>
 
-                {/* Encabezado */}
-                <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-                    Detalles de la solicitud
-                </h2>
-
-                {/* Información del pedido */}
+                {/* Contenido del modal */}
+                <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Detalles de la solicitud</h2>
                 <div className="mb-6 p-4 border border-gray-200 rounded-lg bg-gray-50 shadow-inner space-y-3">
                     <p className="text-sm text-gray-700">
                         <strong>Fecha del servicio:</strong>{" "}
@@ -144,7 +149,7 @@ const ModalDetails: React.FC<ModalDetailsProps> = ({ order, onClose }) => {
                 </div>
 
                 {/* Campo de entrada del token */}
-                <>{order.orderDetail.status === 'Finalizado' ?
+                <>{order.orderDetail.status === 'Finalizado' ? (
                     <div className="mt-8 bg-gray-800 text-white p-6 rounded-lg shadow">
                         <label htmlFor="token" className="block text-sm font-medium mb-2 text-center">Felicidades El Token es Valido</label>
                         <input
@@ -155,8 +160,8 @@ const ModalDetails: React.FC<ModalDetailsProps> = ({ order, onClose }) => {
                             className="w-full bg-gray-700 text-center text-gray-200 p-3 rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400"
                         />
                     </div>
-                    :
-                    (<> {handleDateExpiration(order.orderDetail.endTime) ?
+                ) : (
+                    handleDateExpiration(order.orderDetail.endTime) ? (
                         <div className="mb-6">
                             <label className="block text-gray-700 font-medium mb-2" htmlFor="token">
                                 Debes ingresar el token para finalizar el servicio antes del :{order.orderDetail.endTime.toLocaleString("es-ES").split(",")[0]} a las 23:59hs
@@ -178,18 +183,14 @@ const ModalDetails: React.FC<ModalDetailsProps> = ({ order, onClose }) => {
                                 Confirmar
                             </button>
                         </div>
-                        :
+                    ) : (
                         <div className="mb-6">
                             <label className="block text-gray-700 font-medium mb-2" htmlFor="token">
-                                El token ya expiro.
+                                El token ya expiró.
                             </label>
                         </div>
-                    }
-
-
-                    </>
-                    )}
-
+                    )
+                )}
                 </>
             </div>
         </div>

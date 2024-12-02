@@ -15,18 +15,18 @@ const OrderList = ({ order, getTasks }: any) => {
         setSelectedOrder(null); // Cierra el modal
 
         console.log("cerre el modal");
-        
+
         if (selectedOrder?.gardener.id) {
             console.log("dentro del if del modal");
-            
-          // Llama a la función pasada por props con el id de la orden seleccionada
-          await getTasks(selectedOrder.gardener.id);
+
+            // Llama a la función pasada por props con el id de la orden seleccionada
+            await getTasks(selectedOrder.gardener.id);
         }
-      };
+    };
 
 
     console.log("dentro de orders:", order);
-    
+
     return (
         <div className="py-16 px-6 bg-gray-50">
             <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
@@ -50,8 +50,8 @@ const OrderList = ({ order, getTasks }: any) => {
                         <div className="p-6 space-y-4">
                             <div className="space-y-2">
                                 <p className="text-sm text-gray-500">
-                                    <strong>Fecha contratada para el servicio:</strong> {orderItem.date.toString().slice(0, 10)}
-                                   
+                                    <strong>Fecha contratada para el servicio:</strong> {orderItem?.orderDetail?.startTime || "No disponible"}
+
                                 </p>
                                 <p className="text-sm text-gray-500">
                                     <strong>Servicios Solicitado/s:</strong>
@@ -71,12 +71,12 @@ const OrderList = ({ order, getTasks }: any) => {
                                 </p>
                                 <p className="text-sm text-gray-500">
                                     <strong>Estado de la Orden:</strong>{" "}
-                                    {orderItem.isApproved ? <span className="text-green-500">Aprobada</span> : <span className="text-red-500">Pendiente de pago</span> }
+                                    {orderItem.isApproved ? <span className="text-green-500">Aprobada</span> : <span className="text-red-500">Pendiente de pago</span>}
                                 </p>
                                 <p className="text-sm text-gray-500">
                                     <strong>Proceso del servicio:</strong>{" "}
                                     {orderItem.isApproved ?
-                                        <span className="text-green-500">{orderItem.orderDetail.status }</span>: <span className="text-red-500">Pendiente de pago</span> }
+                                        <span className="text-green-500">{orderItem.orderDetail.status}</span> : <span className="text-red-500">Pendiente de pago</span>}
                                 </p>
                             </div>
                             {orderItem.isApproved && (
