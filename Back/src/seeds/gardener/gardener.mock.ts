@@ -17,7 +17,7 @@ export const gardenersMock = [
         experience : "Experto en diseño y mantenimiento de jardines.",
         calification : 4,
         ubication : "Av. Siempre Viva 742",
-        profileImageUrl:"gardener/gnfmj6z3a7c0oncgr05i",
+        profileImageUrl:"gardener/i21jki2m58j7rrgh12rt",
         serviceProvided : [],
         serviceDeails : [],
         carrouselImages : ["gardener/ddttgxtap1qjag8y57lu", "gardener/qbvfjr6gceby8rxmhvul", "gardener/yevdpgdamzlcekvbpbda"]

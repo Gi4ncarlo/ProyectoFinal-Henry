@@ -18,11 +18,14 @@ export class AuthController {
 
   @Post('signup')
   @HttpCode(HttpStatus.CREATED)
-  async signUp(@Body() signUpUser: SignUpAuthDto, @Res() res : Response) {
+  async signUp(@Body() signUpUser: SignUpAuthDto, @Res() res: Response) {
     try {
       const user = await this.authService.signUp(signUpUser);
-      return res.status(HttpStatus.CREATED).send(user);
-    } catch (error) {      
+      return res.status(HttpStatus.CREATED).json({
+        user,
+        status: 201
+      });
+    } catch (error) {
       return res.status(HttpStatus.BAD_REQUEST).send(error);
     }
   }
