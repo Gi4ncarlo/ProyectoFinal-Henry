@@ -286,7 +286,19 @@ export class GardenerController {
     @Body() updateGardenerDto: UpdateGardenerDto,
   ) {
     console.log("Im here bro")
-    return this.gardenerService.update(id, updateGardenerDto);
+    return this.gardenerService.updateGardener(id, updateGardenerDto);
+  }
+
+
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Admin, Role.Gardener)
+  @Patch('/servicesEdit/:id')
+  updateGardenerServices(
+    @Param('id') id: string,
+    @Body() updateGardenerDto: UpdateGardenerDto,
+  ) {
+    console.log("Im here bro")
+    return this.gardenerService.updateServices(id, updateGardenerDto);
   }
 
   @UseGuards(AuthGuard, RolesGuard)

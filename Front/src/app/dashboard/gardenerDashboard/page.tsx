@@ -186,6 +186,7 @@ import { IService } from "@/interfaces/IService";
 import React, { useEffect, useState } from "react";
 import CarrouselGardener from "@/components/carrouselGardener/CarrouselGardener";
 import EditServicesGardener from "@/components/EditServicesGardener/EditServicesGardener";
+import Swal from "sweetalert2";
 
 const GardenerDashboard = () => {
   const [activeComponent, setActiveComponent] = useState<string>("perfil");
@@ -194,6 +195,18 @@ const GardenerDashboard = () => {
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [tasks, setTasks] = useState<any[]>([]);
   const [loader, setLoader] = useState(false);
+
+  const Toast = Swal.mixin({
+    toast: true,
+    position: "top",
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.onmouseenter = Swal.stopTimer;
+      toast.onmouseleave = Swal.resumeTimer;
+    }
+  });
 
   // Cargar la sesión del usuario desde localStorage
   useEffect(() => {
@@ -263,8 +276,9 @@ const GardenerDashboard = () => {
       }
 
       await updateProviderServices(userId, selectedServices);
-      alert("Servicios actualizados correctamente");
+      Toast.fire("Éxito", "Servicios actualizados correctamente", "success");
     } catch (error) {
+      Toast.fire("Error", "Hubo un problema al actualizar los servicios", "error");
       throw new Error("Error actualizando servicios");
     }
   };
