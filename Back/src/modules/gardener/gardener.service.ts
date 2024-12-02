@@ -119,9 +119,12 @@ export class GardenerService {
     }
   }
 
-  async update(id: string, updateGardenerDto: UpdateGardenerDto): Promise<Gardener> {
+  async updateServices(id: string, updateGardenerDto: UpdateGardenerDto): Promise<Gardener> {
     const { serviceProvided } = updateGardenerDto;
 
+    if (!Array.isArray(serviceProvided)) {
+      throw new BadRequestException('serviceProvided must be an array of service IDs');
+  }
     // Encuentra el jardinero existente
     const gardener = await this.gardenerRepository.findOne({
       where: { id },

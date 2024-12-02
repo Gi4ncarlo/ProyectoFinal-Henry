@@ -1,7 +1,7 @@
 
 "use client";
 import { postCarrouselImage, getCarrouselById } from "@/helpers/gardeners.helpers";
-import { userEdit } from "@/helpers/userEdit.helpers";
+import { gardenerEdit, userEdit } from "@/helpers/userEdit.helpers";
 import { IUserSession } from "@/interfaces/IUserSession";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -71,20 +71,37 @@ const EditDashboard: React.FC = () => {
         if (editingField && userSession) {
             const updatedData = { [editingField]: editedValue };
 
-            try {
-                const updatedUser = await userEdit(updatedData);
-
-                if (updatedUser) {
-                    const updatedSession = { ...userSession, user: updatedUser };
-                    localStorage.setItem("userSession", JSON.stringify(updatedSession));
-                    setUserSession(updatedSession);
-                    setEditingField(null);
-                    setEditedValue('');
-                    Swal.fire("Éxito", "Cambios guardados correctamente", "success");
+            if(userSession.user.role === 'gardener'){
+                
+                try {
+                    const updatedUser = await gardenerEdit(updatedData, TOKEN);
+                    if (updatedUser) {
+                        const updatedSession = { ...userSession, user: updatedUser };
+                        localStorage.setItem("userSession", JSON.stringify(updatedSession));
+                        setUserSession(updatedSession);
+                        setEditingField(null);
+                        setEditedValue('');
+                        Swal.fire("Éxito", "Cambios guardados correctamente", "success");
+                    }
+                } catch (error) {
+                    console.error("Error saving changes:", error);
+                    Swal.fire("Error", "Hubo un problema al guardar los cambios", "error");
                 }
-            } catch (error) {
-                console.error("Error saving changes:", error);
-                Swal.fire("Error", "Hubo un problema al guardar los cambios", "error");
+            }else{
+                try {
+                    const updatedUser = await userEdit(updatedData, TOKEN);
+                    if (updatedUser) {
+                        const updatedSession = { ...userSession, user: updatedUser };
+                        localStorage.setItem("userSession", JSON.stringify(updatedSession));
+                        setUserSession(updatedSession);
+                        setEditingField(null);
+                        setEditedValue('');
+                        Swal.fire("Éxito", "Cambios guardados correctamente", "success");
+                    }
+                } catch (error) {
+                    console.error("Error saving changes:", error);
+                    Swal.fire("Error", "Hubo un problema al guardar los cambios", "error");
+                }
             }
         }
     };

@@ -1,5 +1,5 @@
 "use client"
-import { userEdit } from '@/helpers/userEdit.helpers';
+import { gardenerServiceEdit, userEdit } from '@/helpers/userEdit.helpers';
 import { IUserSession } from '@/interfaces/IUserSession';
 import React, { useEffect, useState } from 'react'
 import Swal from 'sweetalert2';
@@ -34,7 +34,7 @@ const EditServicesGardener = () => {
             const updatedData = { [editingField]: editedValue };
 
             try {
-                const updatedUser = await userEdit(updatedData);
+                const updatedUser = await gardenerServiceEdit(updatedData);
 
                 if (updatedUser) {
                     const updatedSession = { ...userSession, user: updatedUser };

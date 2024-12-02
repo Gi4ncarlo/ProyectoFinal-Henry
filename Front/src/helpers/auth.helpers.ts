@@ -5,11 +5,13 @@ import { IServiceProps } from "@/interfaces/IServiceProps";
 const APIURL = process.env.NEXT_PUBLIC_API_URL;
 export async function register(dataUser: IRegisterProps): Promise<void> {
   try {
+    console.log("Register intro")
     const res = await fetch(`${APIURL}/auth/signup`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(dataUser),
     });
+    console.log(dataUser)
 
     // if (!res.ok) {
     //   const errorData = await res.json();
@@ -19,8 +21,15 @@ export async function register(dataUser: IRegisterProps): Promise<void> {
     //   throw new Error(errorData.message || "Register error");
     // }
     const response = await res.json(); //se trae solo la parte necesaria de todo el json
+    console.log(response)
+    if (response.ok) {
     return response;
+  }
+  else {
+    throw new Error(response.message);
+  }
   } catch (error: any) {
+    console.log("catch")
     throw new Error(error.message);
   }
 }
