@@ -1,7 +1,7 @@
-
 "use client";
-import { postCarrouselImage, getCarrouselById } from "@/helpers/gardeners.helpers";
-import { gardenerEdit, userEdit } from "@/helpers/userEdit.helpers";
+import { Upload, Button } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
+import { userEdit } from "@/helpers/userEdit.helpers";
 import { IUserSession } from "@/interfaces/IUserSession";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -11,9 +11,15 @@ const EditDashboard: React.FC = () => {
     const [userSession, setUserSession] = useState<IUserSession | null>(null);
     const [imageProfile, setImageProfile] = useState<string | null>(null);
     const [editingField, setEditingField] = useState<string | null>(null);
-    const [editedValue, setEditedValue] = useState<string>('');
-    const [carrousel, setCarrousel] = useState<string[]>([]);
-    const TOKEN = userSession?.token || '';
+    const [editedValue, setEditedValue] = useState<string>("");
+    const TOKEN = userSession?.token || "";
+
+    const editableFields = [
+        { label: "Nombre de usuario", field: "name", value: userSession?.user?.name || "" },
+        { label: "Edad", field: "age", value: userSession?.user?.age || "N/A" },
+        { label: "Teléfono", field: "phone", value: userSession?.user?.phone || "" },
+        { label: "Dirección", field: "address", value: userSession?.user?.address || "" },
+    ];
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -26,39 +32,39 @@ const EditDashboard: React.FC = () => {
         }
     }, []);
 
-    const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.target.files && event.target.files[0]) {
-            const file = event.target.files[0];
-            const formData = new FormData();
-            formData.append("file", file);
+    const handleImageUpload = async (file: File) => {
+        const formData = new FormData();
+        formData.append("file", file);
 
-            try {
-                const response = await fetch(
-                    `${process.env.NEXT_PUBLIC_API_URL}/${userSession?.user.role}/${userSession?.user?.id}/image`,
-                    {
-                        method: "POST",
-                        headers: {
-                            Authorization: `Bearer ${TOKEN}`,
-                        },
-                        body: formData,
-                    }
-                );
-
-                if (!response.ok) throw new Error("Error uploading image");
-
-                const data = await response.json();
-
-                if (userSession) {
-                    const updatedSession = { ...userSession, user: { ...userSession.user, profileImageUrl: data.imageUrl } };
-                    localStorage.setItem("userSession", JSON.stringify(updatedSession));
-                    setUserSession(updatedSession);
-                    setImageProfile(data.imageUrl);
+        try {
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_API_URL}/${userSession?.user?.role}/${userSession?.user?.id}/image`,
+                {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bearer ${TOKEN}`,
+                    },
+                    body: formData,
                 }
-                Swal.fire("Éxito", "Imagen subida correctamente", "success");
-            } catch (error) {
-                console.error("Error uploading image:", error);
-                Swal.fire("Error", "No se pudo subir la imagen", "error");
+            );
+
+            if (!response.ok) throw new Error("Error uploading image");
+
+            const data = await response.json();
+
+            if (userSession) {
+                const updatedSession = {
+                    ...userSession,
+                    user: { ...userSession.user, profileImageUrl: data.imageUrl },
+                };
+                localStorage.setItem("userSession", JSON.stringify(updatedSession));
+                setUserSession(updatedSession);
+                setImageProfile(data.imageUrl);
             }
+            Swal.fire("Éxito", "Imagen subida correctamente", "success");
+        } catch (error) {
+            console.error("Error uploading image:", error);
+            Swal.fire("Error", "No se pudo subir la imagen", "error");
         }
     };
 
@@ -71,44 +77,27 @@ const EditDashboard: React.FC = () => {
         if (editingField && userSession) {
             const updatedData = { [editingField]: editedValue };
 
-            if(userSession.user.role === 'gardener'){
-                
-                try {
-                    const updatedUser = await gardenerEdit(updatedData, TOKEN);
-                    if (updatedUser) {
-                        const updatedSession = { ...userSession, user: updatedUser };
-                        localStorage.setItem("userSession", JSON.stringify(updatedSession));
-                        setUserSession(updatedSession);
-                        setEditingField(null);
-                        setEditedValue('');
-                        Swal.fire("Éxito", "Cambios guardados correctamente", "success");
-                    }
-                } catch (error) {
-                    console.error("Error saving changes:", error);
-                    Swal.fire("Error", "Hubo un problema al guardar los cambios", "error");
+            try {
+                const updatedUser = await userEdit(updatedData,TOKEN);
+
+                if (updatedUser) {
+                    const updatedSession = { ...userSession, user: updatedUser };
+                    localStorage.setItem("userSession", JSON.stringify(updatedSession));
+                    setUserSession(updatedSession);
+                    setEditingField(null);
+                    setEditedValue("");
+                    Swal.fire("Éxito", "Cambios guardados correctamente", "success");
                 }
-            }else{
-                try {
-                    const updatedUser = await userEdit(updatedData, TOKEN);
-                    if (updatedUser) {
-                        const updatedSession = { ...userSession, user: updatedUser };
-                        localStorage.setItem("userSession", JSON.stringify(updatedSession));
-                        setUserSession(updatedSession);
-                        setEditingField(null);
-                        setEditedValue('');
-                        Swal.fire("Éxito", "Cambios guardados correctamente", "success");
-                    }
-                } catch (error) {
-                    console.error("Error saving changes:", error);
-                    Swal.fire("Error", "Hubo un problema al guardar los cambios", "error");
-                }
+            } catch (error) {
+                console.error("Error saving changes:", error);
+                Swal.fire("Error", "Hubo un problema al guardar los cambios", "error");
             }
         }
     };
 
     const handleCancelClick = () => {
         setEditingField(null);
-        setEditedValue('');
+        setEditedValue("");
     };
 
     return (
@@ -120,16 +109,17 @@ const EditDashboard: React.FC = () => {
                 <div className="text-center">
                     <h2 className="text-xl font-bold text-gray-800 mb-4">Opciones de perfil</h2>
                     <div className="mb-6">
-                        <label htmlFor="profileImageUrl" className="block text-sm font-medium text-gray-700 mb-2">
-                            Sube una imagen de perfil
-                        </label>
-                        <input
-                            id="profileImageUrl"
-                            type="file"
+                        <Upload
                             accept="image/*"
-                            onChange={handleImageUpload}
-                            className="p-2 border border-gray-300 rounded w-full"
-                        />
+                            showUploadList={false}
+                            customRequest={({ file, onSuccess }) => {
+                                handleImageUpload(file as File).then(() => {
+                                    if (onSuccess) onSuccess("ok");
+                                });
+                            }}
+                        >
+                            <Button style={{ backgroundColor: "#4CAF50", borderColor: "#263238", color: "white" }} icon={<UploadOutlined />}>Sube tu imagen</Button>
+                        </Upload>
                     </div>
                     <div className="flex items-center justify-center">
                         {imageProfile ? (
@@ -148,27 +138,18 @@ const EditDashboard: React.FC = () => {
 
                 {/* Campos de edición */}
                 <div>
-                    {[
-                        { label: "Nombre de usuario", field: "name", value: userSession?.user.name || "" },
-                        { label: "Edad", field: "age", value: userSession?.user.age || "N/A" },
-                        { label: "Teléfono", field: "phone", value: userSession?.user.phone || "" },
-                        { label: "Dirección", field: "address", value: userSession?.user.address || "" },
-                    ].map(({ label, field, value }) => (
-                        <div key={field} className="border p-4 mb-4 rounded">
-
-
-                            {/* Muestra el campo y el botón de edición */}
+                    {editableFields.map(({ label, field, value }) => (
+                        <div key={field} className="border p-4 mb-4 rounded border-[#263238]">
                             <p className="mb-2 text-[#263238]">
                                 <strong>{label}:</strong> {value}
                             </p>
                             <button
                                 onClick={() => handleEditClick(field, value)}
-                                className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded"
+                                className="bg-green-600 hover:bg-green-700 border-2 border-[#263238] text-white font-semibold py-2 px-4 rounded"
                             >
                                 Editar
                             </button>
 
-                            {/* Si el campo está en edición, muestra el input de edición debajo */}
                             {editingField === field && (
                                 <div className="mt-4">
                                     <input
