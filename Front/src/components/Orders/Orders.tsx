@@ -22,7 +22,7 @@ const DashboardUserCompo: React.FC = () => {
   const [imageProfile, setImageProfile] = useState<any>("");
   const [showModal, setShowModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null); // Para almacenar la orden seleccionada
-  const [status, setStatus] = useState<string>("");
+  const [status, setStatus] = useState<string | null>("");
   const [sortOrder, setSortOrder] = useState("asc");
   const [sortBy, setSortBy] = useState("startTime");
 
@@ -150,6 +150,9 @@ const DashboardUserCompo: React.FC = () => {
             // Ocultar el loader y restaurar el texto del botón
             loader.classList.add('hidden');
             submitText.classList.remove('hidden');
+            if(userSession?.user?.id && userSession?.token){
+            fetchOrders(userSession?.user?.id, userSession?.token);
+            }
           }
         });
       }
@@ -163,30 +166,30 @@ const DashboardUserCompo: React.FC = () => {
     const status = urlParams.get("status");
     const paymentId = urlParams.get("payment_id");
     const externalReference = urlParams.get("external_reference");
-
+    
+    setStatus(status);
     setParams({ status, paymentId, externalReference });
 
   }, []);
-  useEffect(() => {
-    if (params?.status === "approved") {
-      const fetchOrders = async () => {
-        fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/services-order/orderPay/${params.externalReference}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${TOKEN.token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-      };
-      fetchOrders();
-    }
-  }, [params]);
 
   useEffect(() => {
-    if (
+    if (params?.status === "approved" && params?.externalReference) {
+      // Marcar como aprobado y realizar fetch de órdenes actualizadas
+      fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/services-order/orderPay/${params.externalReference}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${TOKEN.token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      ).then(() => {
+        if (userSession?.user?.id && userSession.token) {
+          fetchOrders(userSession.user.id, userSession.token);
+        }
+      });
+    } else if (
       params?.status === "failure" ||
       params?.status === "rejected" ||
       params?.status === "null"
@@ -197,7 +200,7 @@ const DashboardUserCompo: React.FC = () => {
         icon: "error",
       });
     }
-  }, [])
+  }, [params]);
 
 
   useEffect(() => {
@@ -209,25 +212,8 @@ const DashboardUserCompo: React.FC = () => {
     }
   }, []);
 
-  useEffect(() => {
-    if (userSession?.user?.id && userSession.token) {
-      fetchOrders(userSession.user.id, userSession.token);
-    }
-  }, [userSession]);
 
-  const fetchOrders = async (id: number, token: string) => {
-    setLoading(true);
-    try {
-      const ordersData = await getuserOrdersDB(id, token);
-      setOrders(ordersData);
-      setError(null);
 
-    } catch (err) {
-      console.error("Error fetching orders:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const deleteOrders = async (id: string) => {
     try {
@@ -273,7 +259,7 @@ const DashboardUserCompo: React.FC = () => {
         window.location.href = data.paymentUrl.sandbox_init_point;
       }
       setStatus("approved");
-      // if (params?.status === "approved") {
+       if (params?.status === "approved") {
 
       await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/services-order/orderPay/${params.externalReference}`,
@@ -285,7 +271,10 @@ const DashboardUserCompo: React.FC = () => {
           },
         }
       );
-      //}
+      }
+      if(userSession?.user?.id && userSession?.token){
+        fetchOrders(userSession.user.id, userSession.token);
+      }
     } catch (error) {
       throw error;
     }
@@ -324,7 +313,7 @@ const DashboardUserCompo: React.FC = () => {
         return 0;
       }) : null;
 
-    setOrders(prevOrders =>
+    setOrders((prevOrders: any[]) =>
       [
         { ...prevOrders[0], servicesOrder: sortedOrders }
       ]
@@ -333,15 +322,30 @@ const DashboardUserCompo: React.FC = () => {
   useEffect(() => {
 
     sortOrders();
-    console.log(orders);
 
   }, [sortBy, sortOrder]);
+
+
+  const fetchOrders = async (id: number, token: string) => {
+    setLoading(true);
+    try {
+      setOrders([]);
+      const ordersData = await getuserOrdersDB(id, token);
+      setOrders(ordersData);
+      setError(null);
+
+    } catch (err) {
+      console.error("Error fetching orders:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (userSession?.user?.id && userSession.token) {
       fetchOrders(userSession.user.id, userSession.token);
     }
   }, [userSession, status]);
-
 
   if (loading) {
     return (
@@ -359,7 +363,6 @@ const DashboardUserCompo: React.FC = () => {
   if (error) {
     return <p>{error}</p>;
   }
-  console.log(orders[0].servicesOrder);
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center py-6 px-4">
