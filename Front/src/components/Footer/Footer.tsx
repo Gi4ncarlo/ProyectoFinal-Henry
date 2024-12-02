@@ -10,20 +10,17 @@ export default function Footer() {
           <li className="text-lg py-2">
             Transformando espacios verdes, cuidando cada detalle.
           </li>
-          <li className=" text-sm py-1">
-            🌿 Ubicación: Av. Las Flores 1234, Ciudad Jardín, Provincia Verde
-          </li>
           <li className="text-sm py-1">
             📞 Teléfono: +54 9 11 1234-5678
           </li>
           <li className="text-sm py-1">
-            📧 Correo electrónico: contact@vicnasol.com
+            📧 Correo electrónico: hpfinal21@gmail.com
           </li>
         </ul>
 
         {/* Derechos reservados */}
         <p className="text-center font-medium text-base lg:text-lg">
-          &copy; 2010 Vicnasol. Todos los derechos reservados.
+          &copy; Vicnasol <br></br> Te conectamos con lo que buscas !
         </p>
 
         {/* Redes sociales */}
@@ -71,7 +68,7 @@ export default function Footer() {
           {/* WhatsApp */}
           <li className="transform transition-transform duration-300 hover:scale-110">
             <Link
-              href="https://wa.me/5492944777103?text=Hello, I want information about your business"
+              href="https://wa.me/5492944777103?text=Hola, me gustaria saber mas sobre Vicnasol"
               target="_blank"
               rel="noopener noreferrer"
             >

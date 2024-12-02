@@ -186,6 +186,7 @@ import { IService } from "@/interfaces/IService";
 import React, { useEffect, useState } from "react";
 import CarrouselGardener from "@/components/carrouselGardener/CarrouselGardener";
 import EditServicesGardener from "@/components/EditServicesGardener/EditServicesGardener";
+import Swal from "sweetalert2";
 
 const GardenerDashboard = () => {
   const [activeComponent, setActiveComponent] = useState<string>("perfil");
@@ -194,6 +195,21 @@ const GardenerDashboard = () => {
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [tasks, setTasks] = useState<any[]>([]);
   const [loader, setLoader] = useState(false);
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortBy, setSortBy] = useState("startTime");
+
+
+  const Toast = Swal.mixin({
+    toast: true,
+    position: "top",
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.onmouseenter = Swal.stopTimer;
+      toast.onmouseleave = Swal.resumeTimer;
+    }
+  });
 
   // Cargar la sesión del usuario desde localStorage
   useEffect(() => {
@@ -212,6 +228,8 @@ const GardenerDashboard = () => {
       setActiveComponent("tareas");
       const taskData = await getTasks(id);
       setTasks(taskData);
+      console.log(taskData, "tareas");
+
       setLoader(false);
     } catch (error) {
       console.error("Error buscando las tareas:", error);
@@ -263,8 +281,9 @@ const GardenerDashboard = () => {
       }
 
       await updateProviderServices(userId, selectedServices);
-      alert("Servicios actualizados correctamente");
+      Toast.fire("Éxito", "Servicios actualizados correctamente", "success");
     } catch (error) {
+      Toast.fire("Error", "Hubo un problema al actualizar los servicios", "error");
       throw new Error("Error actualizando servicios");
     }
   };
@@ -276,6 +295,50 @@ const GardenerDashboard = () => {
     }
   }, [userSession]);
 
+  const handleSortChange = (event: any) => {
+    const { name, value } = event.target;
+
+    if (name === "sortBy") {
+      setSortBy(value); // Cambiar la propiedad por la que ordenar
+    } else {
+      setSortOrder(value); // Cambiar el orden de clasificación (asc o desc)
+    }
+  };
+  const sortOrders = () => {
+    const sortedOrders = Array.isArray(tasks)
+      ? [...tasks].sort((a, b) => {
+        // Determinar si estamos ordenando por startTime o isApproved
+        if (sortBy === "startTime") {
+          // Si startTime está presente, crear un objeto Date, si no, asignar Infinity
+          const dateA: any = a.orderDetail?.startTime ? new Date(a.orderDetail.startTime) : Infinity;
+          const dateB: any = b.orderDetail?.startTime ? new Date(b.orderDetail.startTime) : Infinity;
+
+          // Orden ascendente
+          if (sortOrder === "asc") {
+            return dateA === Infinity ? 1 : dateB === Infinity ? -1 : dateA.getTime() - dateB.getTime();
+          }
+          // Orden descendente
+          else {
+            return dateA === Infinity ? -1 : dateB === Infinity ? 1 : dateB.getTime() - dateA.getTime();
+          }
+        } else if (sortBy === "isApproved") {
+          const approvedA = a.isApproved ? 1 : 0;
+          const approvedB = b.isApproved ? 1 : 0;
+          return sortOrder === "asc" ? approvedB - approvedA : approvedA - approvedB;
+        }
+        return 0;
+      }) : null;
+    if (sortedOrders) {
+      setTasks(sortedOrders);
+    } 
+    
+  };
+  useEffect(() => {
+
+    sortOrders();
+    console.log(tasks);
+
+  }, [sortBy, sortOrder]);
   // Mostrar spinner mientras se cargan los datos
   if (loader) {
     return (
@@ -288,39 +351,36 @@ const GardenerDashboard = () => {
     );
   }
 
+
   return (
     <div>
       {/* Menú de navegación */}
       <nav className="flex justify-around bg-primary text-white p-4 rounded-md">
         <button
           onClick={() => fetchTasks(userSession?.user?.id.toString() || "")}
-          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${
-            activeComponent === "tareas" ? "opacity-75" : ""
-          }`}
+          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "tareas" ? "opacity-75" : ""
+            }`}
         >
           Tareas
         </button>
         <button
           onClick={() => setActiveComponent("calendario")}
-          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${
-            activeComponent === "calendario" ? "opacity-75" : ""
-          }`}
+          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "calendario" ? "opacity-75" : ""
+            }`}
         >
           Calendario
         </button>
         <button
           onClick={() => setActiveComponent("perfil")}
-          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${
-            activeComponent === "perfil" ? "opacity-75" : ""
-          }`}
+          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "perfil" ? "opacity-75" : ""
+            }`}
         >
           Mi Perfil
         </button>
         <button
           onClick={() => setActiveComponent("Editar Servicios")}
-          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${
-            activeComponent === "Editar Servicios" ? "opacity-75" : ""
-          }`}
+          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "Editar Servicios" ? "opacity-75" : ""
+            }`}
         >
           Editar Servicios
         </button>
@@ -333,6 +393,25 @@ const GardenerDashboard = () => {
             <h1 className="text-2xl font-bold text-[#263238] m-3 text-center">
               Tareas del Jardinero
             </h1>
+            <div className="w-full max-w-2xl mb-6">
+              <div className="flex items-center justify-between bg-white p-4 rounded-lg shadow-md">
+                <div>
+                  <label htmlFor="sortBy">Ordenar por: </label>
+                  <select id="sortBy" name="sortBy" value={sortBy} onChange={handleSortChange}>
+                    <option value="startTime">Fecha de inicio</option>
+                    <option value="isApproved">Aprobado</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label htmlFor="sortOrder">Orden: </label>
+                  <select id="sortOrder" name="sortOrder" value={sortOrder} onChange={handleSortChange}>
+                    <option value="asc">Ascendente</option>
+                    <option value="desc">Descendente</option>
+                  </select>
+                </div>
+              </div>
+            </div>
             <OrderList order={tasks} getTasks={fetchTasks} />
           </section>
         )}

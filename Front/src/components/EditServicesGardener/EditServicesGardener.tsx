@@ -1,5 +1,5 @@
 "use client"
-import { userEdit } from '@/helpers/userEdit.helpers';
+import { gardenerServiceEdit, userEdit } from '@/helpers/userEdit.helpers';
 import { IUserSession } from '@/interfaces/IUserSession';
 import React, { useEffect, useState } from 'react'
 import Swal from 'sweetalert2';
@@ -34,7 +34,7 @@ const EditServicesGardener = () => {
             const updatedData = { [editingField]: editedValue };
 
             try {
-                const updatedUser = await userEdit(updatedData);
+                const updatedUser = await gardenerServiceEdit(updatedData);
 
                 if (updatedUser) {
                     const updatedSession = { ...userSession, user: updatedUser };
@@ -65,7 +65,7 @@ const EditServicesGardener = () => {
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col items-start py-8 px-4">
-          <h2 className="text-xl font-semibold text-[#FF5722] mb-4">Información sobre tus servicios</h2>
+          <h2 className="text-xl font-semibold text-[#388E3C] mb-4">Información sobre tus servicios</h2>
           
           {/* Campos de edición */}
           <div className="w-full max-w-3xl">
