@@ -22,12 +22,9 @@ export async function register(dataUser: IRegisterProps): Promise<void> {
     // }
     const response = await res.json(); //se trae solo la parte necesaria de todo el json
     console.log(response)
-    if (response.ok) {
-    return response;
-  }
-  else {
-    throw new Error(response.message);
-  }
+    if (response.status === 201) return response.user;
+    else throw new Error(response.message);
+
   } catch (error: any) {
     console.log("catch")
     throw new Error(error.message);

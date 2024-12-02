@@ -15,7 +15,7 @@ const PreRegisterView = () => {
       ></div>
 
       {/* Contenido principal */}
-      <div className="relative z-10 text-center">
+      <div className="relative z-10 text-center min-h-screen pt-10">
         {/* Título */}
         <h1 className="text-4xl md:text-5xl font-extrabold text-[#263238] mb-10">
           Elige tu Rol
@@ -55,7 +55,7 @@ const PreRegisterView = () => {
               <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden shadow-lg transition-all group-hover:shadow-xl group-hover:shadow-gray-400">
                 <Image
                   className="object-cover h-full w-full transition-transform group-hover:scale-110"
-                  src="/images/gardeners.jpeg"
+                  src="/images/gardeners.webp"
                   alt="Jardinero"
                   width={384}
                   height={384}
