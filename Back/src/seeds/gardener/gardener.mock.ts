@@ -1,6 +1,7 @@
 import { Role } from "src/modules/user/enums/role.enum";
 import { serviceMock } from "../serviceSeed/service-mock";
-
+// mujer gardener/gnfmj6z3a7c0oncgr05i
+// hombre gardener/i21jki2m58j7rrgh12rt
 
 export const gardenersMock = [
     {
@@ -16,8 +17,7 @@ export const gardenersMock = [
         experience : "Experto en diseño y mantenimiento de jardines.",
         calification : 4,
         ubication : "Av. Siempre Viva 742",
-        costPerHour : 2000,
-        profileImageUrl:"gardener/i21jki2m58j7rrgh12rt",
+        profileImageUrl:"gardener/gnfmj6z3a7c0oncgr05i",
         serviceProvided : [],
         serviceDeails : [],
         carrouselImages : ["gardener/ddttgxtap1qjag8y57lu", "gardener/qbvfjr6gceby8rxmhvul", "gardener/yevdpgdamzlcekvbpbda"]
@@ -35,7 +35,6 @@ export const gardenersMock = [
         experience : "Especialista en poda y cuidado de césped.",
         calification : 3,
         ubication : "Los Robles 67",
-        costPerHour : 1800,
         profileImageUrl:"gardener/vja4j61zfcdl8qk1iccv",
         serviceProvided : [],
         serviceDeails : [],
@@ -54,8 +53,7 @@ export const gardenersMock = [
         experience : "Amplia experiencia en instalación de sistemas de riego y cuidado de plantas.",
         calification : 5,
         ubication : "Jardines del Valle 112",
-        costPerHour : 2200,
-        profileImageUrl:"gardener/gnfmj6z3a7c0oncgr05i",
+        profileImageUrl:"gardener/i21jki2m58j7rrgh12rt",
         serviceProvided : [],
         serviceDeails : [],
         carrouselImages : []
@@ -73,8 +71,7 @@ export const gardenersMock = [
         experience : "Profesional en diseño de jardines y paisajismo.",
         calification : 2,
         ubication : "Las Margaritas 23",
-        costPerHour : 2500,
-        profileImageUrl:"gardener/flkyg5ey9eamunc6fnid",
+        profileImageUrl:"gardener/gnfmj6z3a7c0oncgr05i",
         serviceProvided : [],
         serviceDeails : [],
         carrouselImages : []
@@ -92,10 +89,113 @@ export const gardenersMock = [
         experience : "Hábil jardinero con experiencia en mantenimiento de jardines.",
         calification : 1,
         ubication : "Pinos de la Colina 34",
-        costPerHour : 1900,
         profileImageUrl:"gardener/Perfil7.jpg",
         serviceProvided : [],
         serviceDeails : [],
         carrouselImages : []
     },
+
+
+    {
+        name: "María Zaira",
+        email: "maria.jardineria@gmail.com",
+        username: "MariaGardens",
+        password: "verde2024",
+        confirmPassword: "verde2024",
+        phone: "3415678901",
+        address: "Calle Córdoba 1234, Rosario",
+        age: 28,
+        role: Role.Gardener,
+        experience: "Especialista en plantas ornamentales y huertas urbanas.",
+        calification: 4,
+        ubication: "Calle Córdoba 1234, Rosario",
+        profileImageUrl: "",
+        serviceProvided: [],
+        serviceDeails: [],
+        carrouselImages: [
+            "gardener/ddttgxtap1qjag8y57lu", "gardener/qbvfjr6gceby8rxmhvul", "gardener/yevdpgdamzlcekvbpbda"
+        ],
+    },
+    {
+        name: "Carlos Fernández",
+        email: "cf.gardening.ba@gmail.com",
+        username: "CarlosNature",
+        password: "plantas2024",
+        confirmPassword: "plantas2024",
+        phone: "1156789012",
+        address: "Av. Rivadavia 4567, Buenos Aires",
+        age: 35,
+        role: Role.Gardener,
+        experience: "Experto en césped, poda y cuidado de árboles.",
+        calification: 4,
+        ubication: "Av. Rivadavia 4567, Buenos Aires",
+        profileImageUrl: "",
+        serviceProvided: [],
+        serviceDeails: [],
+        carrouselImages: [
+           "gardener/ddttgxtap1qjag8y57lu", "gardener/qbvfjr6gceby8rxmhvul", "gardener/yevdpgdamzlcekvbpbda"
+        ],
+    },
+    {
+        name: "Sofía Gómez",
+        email: "sofi.gomez.jardin@gmail.com",
+        username: "SofiaDesign",
+        password: "diseñoJ2024",
+        confirmPassword: "diseñoJ2024",
+        phone: "3416781234",
+        address: "Boulevard Oroño 5678, Rosario",
+        age: 31,
+        role: Role.Gardener,
+        experience: "Diseño de paisajes y jardines verticales.",
+        calification: 4,
+        ubication: "Boulevard Oroño 5678, Rosario",
+        profileImageUrl: "",
+        serviceProvided: [],
+        serviceDeails: [],
+        carrouselImages: [
+            "gardener/ddttgxtap1qjag8y57lu", "gardener/qbvfjr6gceby8rxmhvul", "gardener/yevdpgdamzlcekvbpbda"
+        ],
+    },
+    {
+        name: "Joaquín Martínez",
+        email: "jmartinez.green@gmail.com",
+        username: "GreenTouchJoaquin",
+        password: "verde123",
+        confirmPassword: "verde123",
+        phone: "1123456789",
+        address: "Calle Defensa 789, Buenos Aires",
+        age: 40,
+        role: Role.Gardener,
+        experience: "Paisajismo urbano y cuidado de plantas exóticas.",
+        calification: 3,
+        ubication: "Calle Defensa 789, Buenos Aires",
+        profileImageUrl: "gardener/flkyg5ey9eamunc6fnid",
+        serviceProvided: [],
+        serviceDeails: [],
+        carrouselImages: [
+            "gardener/ddttgxtap1qjag8y57lu", "gardener/qbvfjr6gceby8rxmhvul", "gardener/yevdpgdamzlcekvbpbda"
+        ],
+    },
+    {
+        name: "Luciana Silva",
+        email: "lucianasilva.jardines@gmail.com",
+        username: "LuJardines",
+        password: "flores456",
+        confirmPassword: "flores456",
+        phone: "3417890123",
+        address: "Av. Pellegrini 890, Rosario",
+        age: 27,
+        role: Role.Gardener,
+        experience: "Cuidado integral de jardines y terrazas.",
+        calification: 2,
+        ubication: "Av. Pellegrini 890, Rosario",
+        profileImageUrl: "",
+        serviceProvided: [],
+        serviceDeails: [],
+        carrouselImages: [
+          "gardener/ddttgxtap1qjag8y57lu", "gardener/qbvfjr6gceby8rxmhvul", "gardener/yevdpgdamzlcekvbpbda"
+        ],
+    },
+
+
 ];
