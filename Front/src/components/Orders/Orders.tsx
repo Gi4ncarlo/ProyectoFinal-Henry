@@ -22,7 +22,9 @@ const DashboardUserCompo: React.FC = () => {
   const [imageProfile, setImageProfile] = useState<any>("");
   const [showModal, setShowModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null); // Para almacenar la orden seleccionada
-  const [status , setStatus] = useState<string>("");
+  const [status, setStatus] = useState<string>("");
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortBy, setSortBy] = useState("startTime");
 
   const handleOpenModal = (order: any) => {
     setSelectedOrder(order); // Establecer la orden seleccionada
@@ -155,17 +157,6 @@ const DashboardUserCompo: React.FC = () => {
   };
 
 
-
-
-  const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedValue = event.target.value;
-
-  }
-
-  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedDate = event.target.value;
-  }
-
   useEffect(() => {
     // Usamos URLSearchParams para obtener los query params
     const urlParams = new URLSearchParams(window.location.search);
@@ -206,7 +197,7 @@ const DashboardUserCompo: React.FC = () => {
         icon: "error",
       });
     }
-  },[])
+  }, [])
 
 
   useEffect(() => {
@@ -230,7 +221,7 @@ const DashboardUserCompo: React.FC = () => {
       const ordersData = await getuserOrdersDB(id, token);
       setOrders(ordersData);
       setError(null);
-      
+
     } catch (err) {
       console.error("Error fetching orders:", err);
     } finally {
@@ -238,7 +229,7 @@ const DashboardUserCompo: React.FC = () => {
     }
   };
 
-  const deleteOrders = async (id : string) => {
+  const deleteOrders = async (id: string) => {
     try {
       await deleteOrder(id);
       Swal.fire({
@@ -282,25 +273,69 @@ const DashboardUserCompo: React.FC = () => {
         window.location.href = data.paymentUrl.sandbox_init_point;
       }
       setStatus("approved");
-     // if (params?.status === "approved") {
-       
-         await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/services-order/orderPay/${params.externalReference}`,
-            {
-              method: "GET",
-              headers: {
-                Authorization: `Bearer ${TOKEN.token}`,
-                "Content-Type": "application/json",
-              },
-            }
-          );
+      // if (params?.status === "approved") {
+
+      await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/services-order/orderPay/${params.externalReference}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${TOKEN.token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
       //}
     } catch (error) {
       throw error;
     }
   };
+  const handleSortChange = (event: any) => {
+    const { name, value } = event.target;
 
-  
+    if (name === "sortBy") {
+      setSortBy(value); // Cambiar la propiedad por la que ordenar
+    } else {
+      setSortOrder(value); // Cambiar el orden de clasificación (asc o desc)
+    }
+  };
+  const sortOrders = () => {
+    const sortedOrders = Array.isArray(orders[0]?.servicesOrder)
+      ? [...orders[0]?.servicesOrder].sort((a, b) => {
+        // Determinar si estamos ordenando por startTime o isApproved
+        if (sortBy === "startTime") {
+          // Si startTime está presente, crear un objeto Date, si no, asignar Infinity
+          const dateA: any = a.orderDetail?.startTime ? new Date(a.orderDetail.startTime) : Infinity;
+          const dateB: any = b.orderDetail?.startTime ? new Date(b.orderDetail.startTime) : Infinity;
+
+          // Orden ascendente
+          if (sortOrder === "asc") {
+            return dateA === Infinity ? 1 : dateB === Infinity ? -1 : dateA.getTime() - dateB.getTime();
+          }
+          // Orden descendente
+          else {
+            return dateA === Infinity ? -1 : dateB === Infinity ? 1 : dateB.getTime() - dateA.getTime();
+          }
+        } else if (sortBy === "isApproved") {
+          const approvedA = a.isApproved ? 1 : 0;
+          const approvedB = b.isApproved ? 1 : 0;
+          return sortOrder === "asc" ? approvedB - approvedA : approvedA - approvedB;
+        }
+        return 0;
+      }) : null;
+
+    setOrders(prevOrders =>
+      [
+        { ...prevOrders[0], servicesOrder: sortedOrders }
+      ]
+    );
+  };
+  useEffect(() => {
+
+    sortOrders();
+    console.log(orders);
+
+  }, [sortBy, sortOrder]);
   useEffect(() => {
     if (userSession?.user?.id && userSession.token) {
       fetchOrders(userSession.user.id, userSession.token);
@@ -311,14 +346,14 @@ const DashboardUserCompo: React.FC = () => {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center h-screen w-screen">
-      {/* Spinner */}
-      <div className="w-16 h-16 border-4 border-green-300 border-t-green-500 rounded-full animate-spin mb-4"></div>
+        {/* Spinner */}
+        <div className="w-16 h-16 border-4 border-green-300 border-t-green-500 rounded-full animate-spin mb-4"></div>
 
-      {/* Texto */}
-      <h2 className="text-xl font-semibold text-[#263238]">
-        Cargando la informacion..
-      </h2>
-    </div>);
+        {/* Texto */}
+        <h2 className="text-xl font-semibold text-[#263238]">
+          Cargando la informacion..
+        </h2>
+      </div>);
   }
 
   if (error) {
@@ -335,23 +370,20 @@ const DashboardUserCompo: React.FC = () => {
       {/* Barra de Filtros */}
       <div className="w-full max-w-2xl mb-6">
         <div className="flex items-center justify-between bg-white p-4 rounded-lg shadow-md">
-          <div className="flex flex-col sm:flex-row gap-4 w-full">
-            {/* Filtro por estado de la orden */}
-            <select
-              className="py-2 px-4 border border-gray-300 rounded-lg text-sm text-gray-700"
-              onChange={(e) => handleFilterChange(e)}
-            >
-              <option value="">Filtrar por Estado</option>
-              <option value="1">Aprobada</option>
-              <option value="0">No Aprobada</option>
+          <div>
+            <label htmlFor="sortBy">Ordenar por: </label>
+            <select id="sortBy" name="sortBy" value={sortBy} onChange={handleSortChange}>
+              <option value="startTime">Fecha de inicio</option>
+              <option value="isApproved">Aprobado</option>
             </select>
+          </div>
 
-            {/* Filtro por Fecha (opcional) */}
-            <input
-              type="date"
-              className="py-2 px-4 border border-gray-300 rounded-lg text-sm text-gray-700"
-              onChange={(e) => handleDateChange(e)}
-            />
+          <div>
+            <label htmlFor="sortOrder">Orden: </label>
+            <select id="sortOrder" name="sortOrder" value={sortOrder} onChange={handleSortChange}>
+              <option value="asc">Ascendente</option>
+              <option value="desc">Descendente</option>
+            </select>
           </div>
         </div>
       </div>
@@ -369,7 +401,7 @@ const DashboardUserCompo: React.FC = () => {
             >
               {!order.isApproved ? (
                 <button onClick={() => deleteOrders(order.id)} className="absolute top-4 right-4 text-white bg-red-600 rounded-full w-8 h-8 flex items-center justify-center">X</button>
-                
+
               ) : ""}
               {/* ID de la Orden y Detalles Generales */}
               <h2 className="text-2xl font-semibold text-gray-800 mb-4">
@@ -401,18 +433,18 @@ const DashboardUserCompo: React.FC = () => {
                 </div>
 
               </div>
-                {/* Información de la orden */}
-                <div className="flex flex-col space-y-6">
-                  <h1 className="text-gray-700 text-xl mt-6">
-                    <strong>Nº de Orden: </strong>
-                    {order.id}
-                  </h1>
-                  <p className="text-gray-700">
-                    <strong>Fecha de Orden:</strong> {order.date}
-                  </p>
-                  <strong>Fecha del Servicio:</strong>{" "}
-                  {order.orderDetail ? order.orderDetail.startTime : "No está definida"}
-                </div>
+              {/* Información de la orden */}
+              <div className="flex flex-col space-y-6">
+                <h1 className="text-gray-700 text-xl mt-6">
+                  <strong>Nº de Orden: </strong>
+                  {order.id}
+                </h1>
+                <p className="text-gray-700">
+                  <strong>Fecha de Orden:</strong> {order.date}
+                </p>
+                <strong>Fecha del Servicio:</strong>{" "}
+                {order.orderDetail ? order.orderDetail.startTime : "No está definida"}
+              </div>
 
               {/* Detalles del Servicio */}
               <div className="mt-6">
