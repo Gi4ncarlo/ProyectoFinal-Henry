@@ -324,7 +324,7 @@ const DashboardUserCompo: React.FC = () => {
         return 0;
       }) : null;
 
-    setOrders(prevOrders =>
+    setOrders((prevOrders: any[]) =>
       [
         { ...prevOrders[0], servicesOrder: sortedOrders }
       ]
