@@ -118,7 +118,7 @@ const EditDashboard: React.FC = () => {
                                 });
                             }}
                         >
-                            <Button style={{ backgroundColor: "#4CAF50", borderColor: "#263238", color: "white" }} icon={<UploadOutlined />}>Sube tu imagen</Button>
+                            <Button style={{ backgroundColor: "#4CAF50", borderColor: "#263238", color: "white" , padding: "20px"}} icon={<UploadOutlined />}>Sube tu imagen</Button>
                         </Upload>
                     </div>
                     <div className="flex items-center justify-center">
@@ -127,8 +127,8 @@ const EditDashboard: React.FC = () => {
                                 src={imageProfile}
                                 alt="Profile"
                                 className="rounded-full border-2 border-gray-200 shadow-md"
-                                width={150}
-                                height={150}
+                                width={250}
+                                height={250}
                             />
                         ) : (
                             <h1 className="text-gray-500 text-sm">SIN IMAGEN</h1>
