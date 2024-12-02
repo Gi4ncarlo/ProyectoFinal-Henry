@@ -64,22 +64,26 @@ const EditServicesGardener = () => {
 
 
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col items-start py-8 px-4">
-          <h2 className="text-xl font-semibold text-[#FF5722] mb-4">Información sobre tus servicios</h2>
+      <div >
+     
           
           {/* Campos de edición */}
-          <div className="w-full max-w-3xl">
+          <div className=" max-w-3xl">
+          <h2 className="text-xl font-semibold text-[#FF5722] mb-4">
+          Edita tu experiencia:
+        </h2>
             {[
               // { label: "Nombre de usuario", field: "name", value: userSession?.user.name || "" },
               // { label: "Edad", field: "age", value: userSession?.user.age || "N/A" },
               // { label: "Teléfono", field: "phone", value: userSession?.user.phone || "" },
               { label: "Experiencia", field: "experience", value: userSession?.user.experience || "" },
             ].map(({ label, field, value }) => (
-              <div key={field} className="border p-4 mb-4 rounded w-full">
+              <div key={field} className="border p-4 mb-4 rounded  w-full">
                 
                 {/* Muestra el campo y el botón de edición */}
                 <p className="mb-2 text-[#263238] text-left">
-                  <strong>{label}:</strong> {value}
+                  
+                  <strong></strong> {value}
                 </p>
                 <button
                   onClick={() => handleEditClick(field, value)}
@@ -91,12 +95,13 @@ const EditServicesGardener = () => {
                 {/* Si el campo está en edición, muestra el input de edición debajo */}
                 {editingField === field && (
                   <div className="mt-4">
-                    <input
-                      type="text"
-                      value={editedValue}
-                      onChange={(e) => setEditedValue(e.target.value)}
-                      className="p-2 border border-gray-300 rounded text-[#263238] w-full"
-                    />
+                   <input
+  type="text"
+  value={editedValue}
+  onChange={(e) => setEditedValue(e.target.value)}
+  className="block  p-3 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#4CAF50] bg-white"
+/>
+
                     <div className="flex space-x-4 mt-4">
                       <button
                         onClick={handleSaveClick}

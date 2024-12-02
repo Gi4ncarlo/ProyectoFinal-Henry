@@ -96,9 +96,9 @@ const CarrouselGardener = () => {
   }
 
   return (
-    <div className=" bg-[#F4F9F4] font-sans">
-      <div className="mt-8">
-        <h2 className="text-xl font-semibold text-[#388E3C] mb-4">
+    <div className="">
+       <div>
+    <h2 className="text-2xl font-semibold text-gray-700 mb-4">
           Carrusel de imágenes:
         </h2>
  
@@ -137,10 +137,11 @@ const CarrouselGardener = () => {
           Subir imagen al carrusel:
         </h2>
         <input
-          type="file"
-          onChange={uploadImage}
-          className="block w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4CAF50] bg-white"
-        />
+  type="file"
+  onChange={uploadImage}
+  className="block  w-full p-3 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#4CAF50] bg-white"
+/>
+
       </div>
     </div>
   );
