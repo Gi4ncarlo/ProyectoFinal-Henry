@@ -103,17 +103,17 @@ export class AuthService {
     );
 
     if (userFinded || gardenerFinded) {
-      throw new BadRequestException('User already exists');
+      throw new BadRequestException('El usuario ya existe');
     }
 
     if (signUpUser.password !== signUpUser.passwordConfirm) {
-      throw new HttpException('Password does not match', 400);
+      throw new HttpException('Las contraseñas no coinciden', 400);
     }
 
     signUpUser.password = await bcrypt.hash(signUpUser.password, 10);
 
     if (!signUpUser.password) {
-      throw new BadRequestException('Error at password hash');
+      throw new BadRequestException('Error al encriptar la contraseña');
     }
 
     let newUsers;    
