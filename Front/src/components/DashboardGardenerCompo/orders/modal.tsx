@@ -58,7 +58,7 @@ const ModalDetails: React.FC<ModalDetailsProps> = ({ order, onClose }) => {
         )
         const data = await (await response).json();
         console.log(data);
-        if (data) {
+        if (data.status === 200) {
             Swal.fire({
                 icon: "success",
                 title: "Token verificado",
