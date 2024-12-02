@@ -94,10 +94,10 @@ export default function RegisterForm() {
           icon: "success",
         });
         router.push("/login");
-      } catch (error) {
+      } catch (error:any) {
         Swal.fire({
           title: "Error",
-          text: "Ocurrió un problema al registrarte",
+          text: error.message,
           icon: "error",
         });
       } finally {
