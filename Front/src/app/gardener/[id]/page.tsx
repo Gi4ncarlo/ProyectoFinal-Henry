@@ -11,10 +11,12 @@ import { hireServices } from "@/helpers/order.helpers";
 import { IUserSession } from "@/interfaces/IUserSession";
 import Swal from "sweetalert2";
 import GardenerCalendar from "@/components/GardenerCalendar/GardenerCalendar";
-import GardenerMap from "@/components/GardenerMap/GardenerMap"; // Importa el componente GardenerMap
+import GardenerMap from "@/components/GardenerMap/GardenerMap";
 import { Rate } from "antd";
 import { fetchReviews } from "@/helpers/comments.helpers";
 import { Checkbox } from "antd";
+import { Carousel } from "antd";
+
 
 const ProviderDetail: React.FC = () => {
   const router = useRouter();
@@ -279,22 +281,23 @@ const ProviderDetail: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex snap-x snap-mandatory overflow-x-auto mt-6">
-            {carrousel?.map((image: string, index: number) => (
-              <div
-                key={index}
-                className="relative snap-center flex-none w-full"
-                style={{ maxWidth: "400px" }}
-              >
-                <Image
-                  src={image}
-                  alt={`Imagen ${index + 1}`}
-                  width={1920}
-                  height={1080}
-                  className="w-full h-full object-cover rounded-lg"
-                />
-              </div>
-            ))}
+          <div className="carousel-container my-6">
+            <Carousel autoplay effect="fade" arrows>
+              {carrousel.map((imageUrl, index) => (
+                <div
+                  key={index}
+                  className="w-full max-h-96 flex justify-center items-center overflow-hidden rounded-lg border-2 border-[#4CAF50]"
+                >
+                  <Image
+                    src={imageUrl}
+                    alt={`Imagen ${index + 1}`}
+                    width={1920}
+                    height={1080}
+                    className="object-cover"
+                  />
+                </div>
+              ))}
+            </Carousel>
           </div>
           {/* Agregar el componente GardenerMap aquí */}
           <div className="mt-10">
@@ -376,9 +379,7 @@ const ProviderDetail: React.FC = () => {
                         </span>
 
                         <span className="ml-2 text-sm text-gray-300">
-                          {new Date(
-                            review?.serviceOrder?.date
-                          ).toLocaleDateString()}
+                          {new Date(review?.serviceOrder?.date).toLocaleDateString()}
                         </span>
                       </div>
                       <p className="text-gray-600 mt-2">{review.comment}</p>
@@ -394,7 +395,7 @@ const ProviderDetail: React.FC = () => {
           <div className="mt-6 flex justify-center">
             <button
               onClick={handleHireClick}
-              className="mt-4 w-full bg-[#4CAF50] text-white py-2 px-4 rounded-lg hover:bg-[#45a049]"
+              className="mt-4 w-full bg-[#4CAF50] text-white py-2 px-4 rounded-lg hover:bg-[#45a049] hover:text-[#FFEB3B] transition duration-300 ease-in-out"
             >
               Contratar Servicios
             </button>
@@ -404,7 +405,7 @@ const ProviderDetail: React.FC = () => {
         <div className="flex items-center justify-center w-full mt-10">
           <button
             onClick={() => router.push("/gardener")}
-            className="px-6 py-3 mb-8 text-[#263238] bg-[#CDDC39] rounded-lg shadow-md hover:bg-[#8BC34A] focus:ring-4 focus:ring-[#689F38] transition-all"
+            className="px-6 py-3 mb-8 text-[#263238] bg-[#CDDC39] rounded-lg shadow-md hover:bg-[#8BC34A] focus:ring-4 focus:ring-[#FFEB3B] transition-all"
           >
             Volver a la lista de jardineros
           </button>
