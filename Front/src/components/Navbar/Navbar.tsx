@@ -41,6 +41,8 @@ export default function Navbar() {
       }).then((result) => {
         if (result.isConfirmed) {
           localStorage.removeItem("userSession");
+          localStorage.removeItem("filter")
+          localStorage.removeItem("searchTerm")
           router.push("/api/auth/logout?returnTo=/Home");
           Swal.fire("Sesión cerrada!", "Hasta pronto!", "success");
         }
@@ -59,6 +61,8 @@ export default function Navbar() {
     }).then((result) => {
       if (result.isConfirmed) {
         localStorage.removeItem("userSession");
+        localStorage.removeItem("filter")
+        localStorage.removeItem("searchTerm")
         Swal.fire("Sesión cerrada!", "Hasta pronto!", "success");
         setUserData(null);
         setIsAuthenticated(false);

@@ -17,7 +17,7 @@ const Dropdown: React.FC<{ filter: string; onChange: (value: string) => void }> 
   const dropdownRef = useRef<HTMLDivElement | null>(null); // Referencia para el contenedor del Dropdown
 
   const options = [
-    { value: "ASC", label: "A-Z" },
+    { value: "ASC", label: "Restaurar" },
     { value: "DESC", label: "Z-A" },
     { value: "1", label: "⭐" },
     { value: "2", label: "⭐⭐" },
@@ -45,10 +45,10 @@ const Dropdown: React.FC<{ filter: string; onChange: (value: string) => void }> 
     <div className="relative w-48" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full bg-white border border-gray-300 rounded-md shadow-sm px-4 py-2 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-400"
+        className="min-w-[150px] bg-white border border-gray-300 rounded-md shadow-sm px-4 py-2 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-400"
       >
-        {options.find((opt) => opt.value === filter)?.label || "Ordenar por"}
-        <span className="float-right text-[#263238]">Filtrar por ▼</span>
+        
+        <span className="float-right text-[#263238]">{options.find((opt) => opt.value === filter)?.label || "Ordenar por"} ▼</span>
       </button>
       {isOpen && (
         <div className="absolute mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-10">
@@ -124,7 +124,7 @@ const ProviderCardList: React.FC = () => {
 
   useEffect(() => {
     const fetchProviders = async () => {
-      setLoading(true);
+     // setLoading(true);
       try {
         const order = filter === "ASC" || filter === "DESC" ? filter : "ASC";
         const calification = isNaN(Number(filter)) ? undefined : Number(filter);
@@ -177,7 +177,7 @@ const ProviderCardList: React.FC = () => {
     <div className="mx-auto mt-24">
       {providers.length === 0 ? (
         <div className="text-center mb-8 mx-auto">
-          <h1 className="text-2xl font-bold mb-4">No hay jardineros</h1>
+          <h1 className="text-2xl font-bold mb-4 text-red-500">No hay jardineros</h1>
           <button
             className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
             onClick={() => setSearchTerm("")}
