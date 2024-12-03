@@ -19,6 +19,10 @@ const EditDashboard: React.FC = () => {
         { label: "Edad", field: "age", value: userSession?.user?.age || "N/A" },
         { label: "Teléfono", field: "phone", value: userSession?.user?.phone || "" },
         { label: "Dirección", field: "address", value: userSession?.user?.address || "" },
+        ...(userSession?.user?.role === "gardener"
+            ? [{ label: "Experiencia", field: "experience", value: userSession?.user?.experience || "" }]
+            : []),
+ 
     ];
 
     useEffect(() => {
@@ -105,6 +109,8 @@ const EditDashboard: React.FC = () => {
             <h1 className="text-3xl font-bold text-gray-800 mb-8">Datos de tu cuenta</h1>
 
             <div className="w-full max-w-4xl bg-white shadow-md rounded-lg p-6 space-y-10">
+
+
                 {/* Imagen de perfil */}
                 <div className="text-center">
                     <h2 className="text-xl font-bold text-gray-800 mb-4">Opciones de perfil</h2>
@@ -135,6 +141,7 @@ const EditDashboard: React.FC = () => {
                         )}
                     </div>
                 </div>
+
 
                 {/* Campos de edición */}
                 <div>

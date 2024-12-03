@@ -145,58 +145,68 @@ const ProviderDetail: React.FC = () => {
   };
 
   const handleHireClick = async () => {
+    // Verificar si no se han seleccionado servicios
+    if (selectedServices.length === 0) {
+        Swal.fire({
+            icon: "warning",
+            title: "Selecciona un servicio",
+            text: "Debes seleccionar al menos un servicio para continuar.",
+        });
+        return; // Detener ejecución si no hay servicios seleccionados
+    }
+
     if (!userSession || !userSession.user?.id) {
-      setError("No se encontró la sesión del usuario.");
-      return;
+        setError("No se encontró la sesión del usuario.");
+        return;
     }
 
     if (!gardener) {
-      setError("Información del jardinero no disponible.");
-      return;
-    }
-    if (selectedServices.length === 0) {
-      Swal.fire({
-        icon: "warning",
-        title: "Selecciona un servicio",
-        text: "Debes seleccionar al menos un servicio para continuar.",
-      });
+        setError("Información del jardinero no disponible.");
+        return;
     }
 
     if (!selectedDate) {
-      setError("Por favor, seleccione una fecha.");
-      return;
+        Swal.fire({
+            icon: "warning",
+            title: "Selecciona una fecha",
+            text: "Debes seleccionar una fecha para continuar.",
+        });
+        return; // Detener ejecución si no hay fecha seleccionada
     }
+
     setLoading(true);
 
     try {
-      const order = await hireServices({
-        date: selectedDate,
-        isApproved: false,
-        gardenerId: gardener.id.toString(),
-        userId: userSession.user.id.toString(),
-        serviceId: selectedServices,
-      });
-      setLoading(false);
-      // Mostrar mensaje de éxito con Swal
-      Swal.fire({
-        icon: "success",
-        title: "Servicios Contratados",
-        text: "Tu orden ha sido creada con éxito.",
-      });
+        const order = await hireServices({
+            date: selectedDate,
+            isApproved: false,
+            gardenerId: gardener.id.toString(),
+            userId: userSession.user.id.toString(),
+            serviceId: selectedServices,
+        });
+        setLoading(false);
 
-      setOrderService(order);
-      setSelectedServices([]);
-      setSelectedDate(null);
-      router.push("/dashboard/userDashboard");
+        // Mostrar mensaje de éxito con Swal
+        Swal.fire({
+            icon: "success",
+            title: "Servicios Contratados",
+            text: "Tu orden ha sido creada con éxito.",
+        });
+
+        setOrderService(order);
+        setSelectedServices([]);
+        setSelectedDate(null);
+        router.push("/dashboard/userDashboard");
     } catch (error) {
-      console.error("Error contratando servicios:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Hubo un problema al contratar los servicios. Inténtalo de nuevo.",
-      });
+        console.error("Error contratando servicios:", error);
+        Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Hubo un problema al contratar los servicios. Inténtalo de nuevo.",
+        });
     }
-  };
+};
+
 
   if (loading) {
     return (

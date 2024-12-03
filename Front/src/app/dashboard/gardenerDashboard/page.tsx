@@ -458,8 +458,7 @@ const GardenerDashboard = () => {
           {/* Carrusel de imágenes */}
           <CarrouselGardener />
       
-          {/* Editar experiencia */}
-          <EditServicesGardener />
+        
         </div>
       </div>
       

@@ -12,16 +12,13 @@ import { UploadOutlined } from "@ant-design/icons";
 import Swal from "sweetalert2";
 
 const CarrouselGardener = () => {
-  const [activeComponent, setActiveComponent] = useState<string>(""); // Controla el componente activo
   const [userSession, setUserSession] = useState<IUserSession | null>(null);
   const [carrousel, setCarrousel] = useState<any[]>([]);
   const [loader, setLoader] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.localStorage) {
-      const storedSession = JSON.parse(
-        localStorage.getItem("userSession") || ""
-      );
+      const storedSession = JSON.parse(localStorage.getItem("userSession") || "");
       setUserSession(storedSession);
     }
   }, []);
@@ -40,7 +37,10 @@ const CarrouselGardener = () => {
     }
   };
 
-  const uploadImage = async (file: File) => {
+  const uploadImage = async (e: any) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
     const formData = new FormData();
     formData.append("file", file);
     formData.append("upload_preset", "gardener");
@@ -52,12 +52,26 @@ const CarrouselGardener = () => {
       );
       console.log("respuesta en uploadImage", response);
 
-      await fetchCarrousel();
-      Swal.fire({
-        icon: "success",
-        title: "Éxito",
-        text: "Imagen subida correctamente",
-      });
+      // Asegúrate de que la respuesta tenga la URL de la imagen
+      if (response?.imageUrl) {
+        // Actualiza el estado carrousel con la nueva imagen
+        setCarrousel((prevCarrousel) => [...prevCarrousel, response.imageUrl]);
+
+        // Muestra el Swal.fire de éxito
+        Swal.fire({
+          icon: "success",
+          title: "Éxito",
+          text: "Imagen subida correctamente",
+        });
+      } else {
+        throw new Error("No se obtuvo la URL de la imagen");
+      }
+
+      // Actualiza el carrousel en el servidor si es necesario
+      const id = userSession?.user.id.toString();
+      if (id) {
+        await updateCarrousel(id, [...carrousel, response?.imageUrl]);
+      }
     } catch (error) {
       console.error("Error uploading image:", error);
       Swal.fire({
@@ -100,9 +114,9 @@ const CarrouselGardener = () => {
   }
 
   return (
-    <div className="">
-       <div>
-    <h2 className="text-2xl font-semibold text-gray-700 mb-4">
+    <div>
+      <div>
+        <h2 className="text-2xl font-semibold text-gray-700 mb-4">
           Carrusel de imágenes:
         </h2>
 
