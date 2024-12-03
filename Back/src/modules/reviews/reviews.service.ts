@@ -14,7 +14,7 @@ export class ReviewsService {
         private readonly servicesOrderRepository: Repository<ServicesOrderEntity>,
         @InjectRepository(Gardener)
         private readonly gardenerRepository: Repository<Gardener>,
-   
+
     ) { }
     async createReview(id: string, body: any) {
         console.log(body);
@@ -24,7 +24,7 @@ export class ReviewsService {
                 where: { id },
                 relations: ['user', 'gardener', 'serviceProvided', 'orderDetail', 'reviews'],
             })
-            if (order.reviews ) {
+            if (order.reviews) {
                 throw new HttpException('Order already has a review', HttpStatus.BAD_REQUEST)
             }
             if (!order) {
@@ -40,6 +40,7 @@ export class ReviewsService {
             const review = await this.reviewsRepository.create({
                 comment: body.comentario,
                 rate: Number(body.calificacion),
+                date: new Date().toLocaleDateString(),
                 gardener,
                 serviceOrder: order,
             })
@@ -64,13 +65,14 @@ export class ReviewsService {
         }
     }
 
-   
+
     // Método para obtener las reseñas de un jardinero específico
     async getReviewsByGardener(gardenerId: string) {
         try {
             const reviews = await this.reviewsRepository.find({
                 where: { gardener: { id: gardenerId } },
                 relations: ['gardener', 'serviceOrder'],
+                order: { date: 'ASC' },
             });
             return reviews;
         } catch (error) {
@@ -78,7 +80,7 @@ export class ReviewsService {
         }
     }
 
-   
+
 
 }
 

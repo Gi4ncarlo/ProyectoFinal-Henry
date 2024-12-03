@@ -346,7 +346,7 @@ const ProviderDetail: React.FC = () => {
                 </li>
               ))}
             </ul>
-            
+
             <div className="mt-4">
               <h3 className="text-xl bg-[#8BC34A] rounded-lg font-bold text-[#263238] flex justify-center py-2">
                 Total:{" "}
@@ -369,30 +369,32 @@ const ProviderDetail: React.FC = () => {
                 Reseñas de Clientes:
               </h2>
               {reviews.length > 0 ? (
-                <div className="mt-4">
+                <div className="mt-8 space-y-6">
                   {reviews.map((review) => (
-                    <div key={review.id} className="mb-4 border-b pb-4">
-                      <div className="flex items-center mt-3">
-                        <Rate
-                          allowHalf
-                          disabled
-                          defaultValue={review.rate}
-                          style={{ color: "#FFD700" }}
-                        />
-                        <span className="ml-2 text-sm text-gray-500">
-                          {review.rate.toFixed(1)}
-                        </span>
-
-                        <span className="ml-2 text-sm text-gray-300">
-                          {new Date(review?.serviceOrder?.date).toLocaleDateString()}
-                        </span>
+                    <div
+                      key={review.id}
+                      className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center">
+                          <Rate
+                            allowHalf
+                            disabled
+                            defaultValue={review.rate}
+                            style={{ color: "#FFD700" }}
+                          />
+                          <span className="ml-3 text-lg font-semibold text-gray-800 mt-1 ">
+                            {review.rate.toFixed(1)}
+                          </span>
+                        </div>
+                        <span className="text-sm text-gray-800 font-semibold mt-1">{review?.date}</span>
                       </div>
-                      <p className="text-gray-600 mt-2">{review.comment}</p>
+                      <p className="text-gray-700 mt-4 text-lg font-semibold text-[#263238] mt-1 ">{review.comment}</p>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-gray-500">No hay reseñas disponibles.</p>
+                <p className="text-center text-gray-500 text-lg italic">No hay reseñas disponibles.</p>
               )}
             </div>
           </div>

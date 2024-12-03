@@ -7,6 +7,14 @@ export class ReviewsEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string = uuid()
 
+    @Column(
+        {
+            type: "text",
+            nullable: true,
+        }
+    )
+    date: string
+
     @Column()
     comment: string
 
