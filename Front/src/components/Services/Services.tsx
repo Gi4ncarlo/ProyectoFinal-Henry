@@ -212,7 +212,7 @@ const Services = () => {
           {services.map((service) => (
             <div
               key={service.id}
-              className="bg-white border border-[#388E3C] rounded-lg shadow-md p-6 hover:shadow-lg transition"
+              className="bg-white border border-[#388E3C] rounded-lg shadow-md p-6 hover:shadow-lg hover:shadow-[#8BC34A] transition"
             >
               <div className="flex justify-end">
                 <button onClick={() => handleEditService(service)}>
