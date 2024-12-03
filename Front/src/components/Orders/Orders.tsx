@@ -389,13 +389,13 @@ const DashboardUserCompo: React.FC = () => {
         </div>
       </div>
 
-      {!orders[0].servicesOrder.length ? (
+      {!orders[0]?.servicesOrder?.length ? (
         <p className="text-xl mt-6 text-[#FF5722]">
           No se encontraron órdenes.
         </p>
       ) : (
         <div className="w-full max-w-7xl grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {orders[0].servicesOrder.map((order: any) => (
+          {orders[0]?.servicesOrder?.map((order: any) => (
             <div
               key={order.id}
               className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"

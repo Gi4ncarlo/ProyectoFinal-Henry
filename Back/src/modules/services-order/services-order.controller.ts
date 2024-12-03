@@ -34,8 +34,13 @@ export class ServicesOrderController {
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.User, Role.Admin)
   @Post()
-  create(@Body() createServicesOrderDto: CreateServiceOrderDto) {
-    return this.servicesOrderService.create(createServicesOrderDto);
+  create(@Body() createServicesOrderDto: CreateServiceOrderDto, @Res() res: Response) {
+    try {
+      const serviceOrder = this.servicesOrderService.create(createServicesOrderDto);
+      return res.status(201).json(serviceOrder);
+    } catch (error) {
+      return res.status(400).json(error);
+    }
   }
 
   @UseGuards(AuthGuard)
