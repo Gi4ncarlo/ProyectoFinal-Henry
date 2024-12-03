@@ -315,7 +315,7 @@ const handleDelete = async (id: number) => {
               <button
                 onClick={handlePreviousPage}
                 disabled={currentPage === 1}
-                className={`px-4 py-2 bg-[#8BC34A] text-white rounded ${
+                className={`px-4 py-2 bg-[#8BC34A] text-white rounded hover:bg-[#8BC34A] hover:text-[#263238] hover:shadow-lg hover:shadow-[#FFEB3B] ${
                   currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
                 }`}
             >
@@ -324,7 +324,7 @@ const handleDelete = async (id: number) => {
             <button
               onClick={handleNextPage}
               disabled={currentPage * itemsPerPage >= providers.length}
-              className={`px-4 py-2 bg-[#8BC34A] text-white rounded ${currentPage * itemsPerPage >= providers.length
+              className={`px-4 py-2 bg-[#4CAF50] text-white rounded hover:bg-[#8BC34A] hover:text-[#263238] hover:shadow-lg hover:shadow-[#FFEB3B] ${currentPage * itemsPerPage >= providers.length
                   ? "opacity-50 cursor-not-allowed"
                   : ""
                 }`}
