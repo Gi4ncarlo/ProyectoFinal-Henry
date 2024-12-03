@@ -16,11 +16,11 @@ const PreHomeView = () => {
       
       {/* Overlay y botón */}
       <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-center">
-        <h1 className="text-white text-4xl md:text-6xl font-bold mb-8">
+        <h1 className="text-gray-100 text-4xl md:text-6xl font-bold mb-8">
           ¡Bienvenido a Vicnasol!
         </h1>
         <Link href="/Home">
-          <button className="px-6 py-3 bg-white text-black font-semibold rounded-lg hover:bg-gray-200 transition duration-300">
+          <button className="px-6 py-3 bg-[#388E3C] text-gray-100 hover:text-[#FFEB3B] font-semibold rounded-lg hover:bg-[#4CAF50] transition duration-300">
             INGRESAR
           </button>
         </Link>
