@@ -37,7 +37,7 @@ export class ServicesOrderService {
 
     private readonly tokenService: TokenService,
 
-    private readonly mailService: MailService 
+    private readonly mailService: MailService
   ) { }
 
 
@@ -67,7 +67,8 @@ export class ServicesOrderService {
     }
 
     const newOrder = this.servicesOrderRepository.create({
-      date: date || new Date().toLocaleString(),
+      date: new Date().toLocaleDateString(),
+      serviceDate: date,
       isApproved,
       user: user || Admin,
       gardener,
@@ -176,8 +177,8 @@ export class ServicesOrderService {
       const newOrderDetail = await this.serviceDetailsRepository.create({
         serviceType: order.serviceProvided.map((service) => service.detailService),
         totalPrice: price,
-        startTime: order.date,
-        endTime: await this.obtenerFechaSiguiente(order.date),
+        startTime: order.serviceDate,
+        endTime: await this.obtenerFechaSiguiente(order.serviceDate),
         status: Status.Pending,
         servicesOrder: order,
         assignedGardener: order.gardener

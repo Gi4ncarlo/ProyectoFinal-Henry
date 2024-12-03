@@ -15,6 +15,14 @@ export class ServicesOrderEntity {
     @Column()
     date: string;
 
+    @Column(
+        {
+            type: "text",
+            nullable: true,
+        }
+    )
+    serviceDate: string;
+
     @Column({ default: false })
     isApproved: boolean;
 
