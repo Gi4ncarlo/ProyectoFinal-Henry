@@ -11,10 +11,12 @@ import { hireServices } from "@/helpers/order.helpers";
 import { IUserSession } from "@/interfaces/IUserSession";
 import Swal from "sweetalert2";
 import GardenerCalendar from "@/components/GardenerCalendar/GardenerCalendar";
-import GardenerMap from "@/components/GardenerMap/GardenerMap"; // Importa el componente GardenerMap
+import GardenerMap from "@/components/GardenerMap/GardenerMap";
 import { Rate } from "antd";
 import { fetchReviews } from "@/helpers/comments.helpers";
 import { Checkbox } from "antd";
+import { Carousel } from "antd";
+
 
 const ProviderDetail: React.FC = () => {
   const router = useRouter();
@@ -147,65 +149,65 @@ const ProviderDetail: React.FC = () => {
   const handleHireClick = async () => {
     // Verificar si no se han seleccionado servicios
     if (selectedServices.length === 0) {
-        Swal.fire({
-            icon: "warning",
-            title: "Selecciona un servicio",
-            text: "Debes seleccionar al menos un servicio para continuar.",
-        });
-        return; // Detener ejecución si no hay servicios seleccionados
+      Swal.fire({
+        icon: "warning",
+        title: "Selecciona un servicio",
+        text: "Debes seleccionar al menos un servicio para continuar.",
+      });
+      return; // Detener ejecución si no hay servicios seleccionados
     }
 
     if (!userSession || !userSession.user?.id) {
-        setError("No se encontró la sesión del usuario.");
-        return;
+      setError("No se encontró la sesión del usuario.");
+      return;
     }
 
     if (!gardener) {
-        setError("Información del jardinero no disponible.");
-        return;
+      setError("Información del jardinero no disponible.");
+      return;
     }
 
     if (!selectedDate) {
-        Swal.fire({
-            icon: "warning",
-            title: "Selecciona una fecha",
-            text: "Debes seleccionar una fecha para continuar.",
-        });
-        return; // Detener ejecución si no hay fecha seleccionada
+      Swal.fire({
+        icon: "warning",
+        title: "Selecciona una fecha",
+        text: "Debes seleccionar una fecha para continuar.",
+      });
+      return; // Detener ejecución si no hay fecha seleccionada
     }
 
     setLoading(true);
 
     try {
-        const order = await hireServices({
-            date: selectedDate,
-            isApproved: false,
-            gardenerId: gardener.id.toString(),
-            userId: userSession.user.id.toString(),
-            serviceId: selectedServices,
-        });
-        setLoading(false);
+      const order = await hireServices({
+        date: selectedDate,
+        isApproved: false,
+        gardenerId: gardener.id.toString(),
+        userId: userSession.user.id.toString(),
+        serviceId: selectedServices,
+      });
+      setLoading(false);
 
-        // Mostrar mensaje de éxito con Swal
-        Swal.fire({
-            icon: "success",
-            title: "Servicios Contratados",
-            text: "Tu orden ha sido creada con éxito.",
-        });
+      // Mostrar mensaje de éxito con Swal
+      Swal.fire({
+        icon: "success",
+        title: "Servicios Contratados",
+        text: "Tu orden ha sido creada con éxito.",
+      });
 
-        setOrderService(order);
-        setSelectedServices([]);
-        setSelectedDate(null);
-        router.push("/dashboard/userDashboard");
+      setOrderService(order);
+      setSelectedServices([]);
+      setSelectedDate(null);
+      router.push("/dashboard/userDashboard");
     } catch (error) {
-        console.error("Error contratando servicios:", error);
-        Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: "Hubo un problema al contratar los servicios. Inténtalo de nuevo.",
-        });
+      console.error("Error contratando servicios:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Hubo un problema al contratar los servicios. Inténtalo de nuevo.",
+      });
     }
-};
+  };
 
 
   if (loading) {
@@ -278,24 +280,24 @@ const ProviderDetail: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex snap-x snap-mandatory overflow-x-auto mt-6">
-              {carrousel?.map((image: string, index: number) => (
+          <div className="carousel-container my-6">
+            <Carousel autoplay effect="fade" arrows>
+              {carrousel.map((imageUrl, index) => (
                 <div
                   key={index}
-                  className="relative snap-center flex-none w-full"
-                  style={{ maxWidth: "400px" }}
+                  className="w-full max-h-96 flex justify-center items-center overflow-hidden rounded-lg border-2 border-[#4CAF50]"
                 >
                   <Image
-                    src={image}
+                    src={imageUrl}
                     alt={`Imagen ${index + 1}`}
                     width={1920}
                     height={1080}
-                    className="w-full h-full object-cover rounded-lg"
+                    className="object-cover"
                   />
                 </div>
-                ))}
-              </div>
-              
+              ))}
+            </Carousel>
+          </div>
           {/* Agregar el componente GardenerMap aquí */}
           <div className="mt-10">
             <GardenerMap location={coordinates} />
@@ -325,6 +327,12 @@ const ProviderDetail: React.FC = () => {
                     <Checkbox
                       checked={selectedServices.includes(service.id)}
                       onChange={() => handleServiceChange(service.id)}
+                      style={{
+                        backgroundColor: selectedServices.includes(service.id) ? '#4caf50' : '#e8f5e9',
+                        borderRadius: '6px',
+                        border: '2px solid #4caf50',
+                        height: '18px',
+                      }}
                     />
                   </div>
                 </li>
@@ -347,53 +355,53 @@ const ProviderDetail: React.FC = () => {
               />
             </div>
 
-          <div className="">
-            <h2 className="text-lg font-semibold text-[#263238]">
-              Reseñas de Clientes:
-            </h2>
-            {reviews.length > 0 ? (
-              <div className="mt-4">
-                {reviews.map((review) => (
-                  <div key={review.id} className="mb-4 border-b pb-4">
-                    <div className="flex items-center mt-3">
-                      <Rate
-                        allowHalf
-                        disabled
-                        defaultValue={review.rate}
-                        style={{ color: "#FFD700" }}
-                      />
-                      <span className="ml-2 text-sm text-gray-500">
-                        {review.rate.toFixed(1)}
-                      </span>
+            <div className="">
+              <h2 className="text-lg font-semibold text-[#263238]">
+                Reseñas de Clientes:
+              </h2>
+              {reviews.length > 0 ? (
+                <div className="mt-4">
+                  {reviews.map((review) => (
+                    <div key={review.id} className="mb-4 border-b pb-4">
+                      <div className="flex items-center mt-3">
+                        <Rate
+                          allowHalf
+                          disabled
+                          defaultValue={review.rate}
+                          style={{ color: "#FFD700" }}
+                        />
+                        <span className="ml-2 text-sm text-gray-500">
+                          {review.rate.toFixed(1)}
+                        </span>
 
-                      <span className="ml-2 text-sm text-gray-300">
-                        {new Date(review?.serviceOrder?.date).toLocaleDateString()}
-                      </span>
+                        <span className="ml-2 text-sm text-gray-300">
+                          {new Date(review?.serviceOrder?.date).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <p className="text-gray-600 mt-2">{review.comment}</p>
                     </div>
-                    <p className="text-gray-600 mt-2">{review.comment}</p>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-gray-500">No hay reseñas disponibles.</p>
-            )}
+                  ))}
+                </div>
+              ) : (
+                <p className="text-gray-500">No hay reseñas disponibles.</p>
+              )}
+            </div>
+          </div>
+
+          <div className="mt-6 flex justify-center">
+            <button
+              onClick={handleHireClick}
+              className="mt-4 w-full bg-[#4CAF50] text-white py-2 px-4 rounded-lg hover:bg-[#45a049] hover:text-[#FFEB3B] transition duration-300 ease-in-out"
+            >
+              Contratar Servicios
+            </button>
           </div>
         </div>
-
-              <div className="mt-6 flex justify-center">
-                <button
-                  onClick={handleHireClick}
-                  className="mt-4 w-full bg-[#4CAF50] text-white py-2 px-4 rounded-lg hover:bg-[#45a049]"
-                >
-                  Contratar Servicios
-                </button>
-              </div>
-            </div>
 
         <div className="flex items-center justify-center w-full mt-10">
           <button
             onClick={() => router.push("/gardener")}
-            className="px-6 py-3 mb-8 text-[#263238] bg-[#CDDC39] rounded-lg shadow-md hover:bg-[#8BC34A] focus:ring-4 focus:ring-[#689F38] transition-all"
+            className="px-6 py-3 mb-8 text-[#263238] bg-[#CDDC39] rounded-lg shadow-md hover:bg-[#8BC34A] focus:ring-4 focus:ring-[#FFEB3B] transition-all"
           >
             Volver a la lista de jardineros
           </button>
