@@ -209,7 +209,6 @@ const ProviderDetail: React.FC = () => {
     }
   };
 
-
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center h-screen w-screen">
@@ -245,7 +244,9 @@ const ProviderDetail: React.FC = () => {
           <div className="flex items-center">
             <Image
               className="rounded-full"
-              src={gardener.profileImageUrl || "/images/nuevo_usuarioGardener.webp"}
+              src={
+                gardener.profileImageUrl || "/images/nuevo_usuarioGardener.webp"
+              }
               alt={`${gardener.name}'s profile`}
               width={120}
               height={120}
@@ -311,35 +312,38 @@ const ProviderDetail: React.FC = () => {
               {services.map((service) => (
                 <li
                   key={service.id}
-                  className="flex justify-between items-center py-2 border-b border-gray-200"
+                  className="relative flex justify-between items-center py-3 px-4 rounded-lg border border-gray-200 hover:bg-gray-100 cursor-pointer transition-colors duration-300 my-1 h-[80px] "
+                  onClick={() => handleServiceChange(service.id)}
                 >
-                  <div className="flex-1 text-left">
-                    <span className="font-medium text-gray-800">
-                      {service.detailService}
-                    </span>
-                  </div>
-                  <div className="flex-1 text-center">
-                    <span className="font-semibold text-green-600">
-                      ${service.price}
-                    </span>
-                  </div>
-                  <div className="flex-1 text-right">
-                    <Checkbox
-                      checked={selectedServices.includes(service.id)}
-                      onChange={() => handleServiceChange(service.id)}
-                      style={{
-                        backgroundColor: selectedServices.includes(service.id) ? '#4caf50' : '#e8f5e9',
-                        borderRadius: '6px',
-                        border: '2px solid #4caf50',
-                        height: '18px',
-                      }}
-                    />
-                  </div>
+                  <label
+                    htmlFor={`service-${service.id}`}
+                    className="flex justify-between items-center w-full"
+                  >
+                    <div className="flex-1 text-left">
+                      <span className="font-medium text-gray-800">
+                        {service.detailService}
+                      </span>
+                    </div>
+                    <div className="flex-1 text-center">
+                      <span className="font-semibold text-green-600">
+                        ${service.price}
+                      </span>
+                    </div>
+                    <div className="flex-1 text-right">
+                      <input
+                        type="checkbox"
+                        id={`service-${service.id}`}
+                        checked={selectedServices.includes(service.id)}
+                        onChange={() => handleServiceChange(service.id)}
+                        className="w-5 h-5 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                      />
+                    </div>
+                  </label>
                 </li>
               ))}
             </ul>
             <div className="mt-4">
-              <h3 className="text-xl bg-[#8BC34A] rounded-lg font-bold text-[#263238] flex justify-center">
+              <h3 className="text-xl bg-[#8BC34A] rounded-lg font-bold text-[#263238] flex justify-center py-2">
                 Total:{" "}
                 <span className="text-[#263238]">${calculateTotal()}</span>
               </h3>

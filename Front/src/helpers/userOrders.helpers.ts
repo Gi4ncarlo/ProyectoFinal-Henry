@@ -27,6 +27,7 @@ export async function getuserOrdersDB(id: number, token: string) {
 
 
 export async function getAllUsers() {
+  const TOKEN = JSON.parse(localStorage.getItem("userSession") || "null")
   try {
   
     const response = await fetch(`${APIURL}/user`, {
