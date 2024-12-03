@@ -27,7 +27,7 @@ const GardenerCalendar: React.FC<GardenerCalendarProps> = ({
         setReservedDays(new Set(days));
         console.log("Días reservados:", days);
       } catch (error) {
-        message.error("Error al cargar los días reservados.");
+        throw new Error("Error al obtener los días reservados");
       } finally {
         setLoading(false); // Finaliza el loading después de la carga
       }

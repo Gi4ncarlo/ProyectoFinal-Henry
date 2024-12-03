@@ -13,6 +13,7 @@ export async function getuserOrdersDB(id: number, token: string) {
         "Authorization": `Bearer ${token}`, // Aquí se agrega el token
       },
     });
+    console.log(await res);
     if (!res.ok) {
       throw new Error("Error al obtener las órdenes");
     }
