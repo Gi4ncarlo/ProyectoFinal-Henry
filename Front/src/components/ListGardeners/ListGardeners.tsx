@@ -257,7 +257,7 @@ const handleDelete = async (id: number) => {
           </div>
         ) : (
           <>
-            <div className="flex justify-between items-center text-orange-950 bg-white p-3 shadow-sm rounded-lg mb-4">
+            <div className="flex justify-between items-center text-orange-950 bg-[#388E3C] p-3 shadow-sm rounded-lg mb-4">
               <h2>Jardineros Disponibles</h2>
               <div className="relative w-1/2">
                 <input
@@ -265,7 +265,7 @@ const handleDelete = async (id: number) => {
                   placeholder="Buscar jardinero..."
                   value={searchTerm}
                   onChange={handleSearch}
-                  className="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:outline-none"
+                  className="w-full pl-4 pr-10 py-2 border border-[#263238] rounded-lg focus:ring-2 focus:ring-green-400 focus:outline-none"
                 />
                 <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
               </div>
@@ -274,7 +274,7 @@ const handleDelete = async (id: number) => {
     
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mx-auto">
               {paginatedProviders.map((gardener) => (
-                <div key={gardener.id} className="relative bg-white shadow-md rounded-lg p-4 border border-gray-200">
+                <div key={gardener.id} className="relative bg-white shadow-md rounded-lg p-4 border border-[#4CAF50]">
                   {editGardener?.id === gardener.id ? (
                     <EditGardenerForm
                       gardener={editGardener}
