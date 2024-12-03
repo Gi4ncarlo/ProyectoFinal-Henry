@@ -5,7 +5,7 @@ import Services from "@/components/Services/Services";
 import ListGardeners from "@/components/ListGardeners/ListGardeners";
 
 const AdminDashboard = () => {
-  const [activeComponent, setActiveComponent] = useState<string>("");
+  const [activeComponent, setActiveComponent] = useState<string>("userList");
 
   return (
     <div className="">

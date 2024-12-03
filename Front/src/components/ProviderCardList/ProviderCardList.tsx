@@ -122,6 +122,15 @@ const ProviderCardList: React.FC = () => {
     }
   };
 
+  const handleClearFilters = () => {
+    setFilter("ASC");
+    setSearchTerm("");
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("filter");
+      localStorage.removeItem("searchTerm");
+    }
+  };
+
   useEffect(() => {
     const fetchProviders = async () => {
      // setLoading(true);
@@ -180,7 +189,7 @@ const ProviderCardList: React.FC = () => {
           <h1 className="text-2xl font-bold mb-4 text-red-500">No hay jardineros</h1>
           <button
             className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
-            onClick={() => setSearchTerm("")}
+            onClick={() => {handleClearFilters()}}
           >
             Back
           </button>

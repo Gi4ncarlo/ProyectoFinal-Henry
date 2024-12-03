@@ -147,66 +147,65 @@ const ProviderDetail: React.FC = () => {
   const handleHireClick = async () => {
     // Verificar si no se han seleccionado servicios
     if (selectedServices.length === 0) {
-        Swal.fire({
-            icon: "warning",
-            title: "Selecciona un servicio",
-            text: "Debes seleccionar al menos un servicio para continuar.",
-        });
-        return; // Detener ejecución si no hay servicios seleccionados
+      Swal.fire({
+        icon: "warning",
+        title: "Selecciona un servicio",
+        text: "Debes seleccionar al menos un servicio para continuar.",
+      });
+      return; // Detener ejecución si no hay servicios seleccionados
     }
 
     if (!userSession || !userSession.user?.id) {
-        setError("No se encontró la sesión del usuario.");
-        return;
+      setError("No se encontró la sesión del usuario.");
+      return;
     }
 
     if (!gardener) {
-        setError("Información del jardinero no disponible.");
-        return;
+      setError("Información del jardinero no disponible.");
+      return;
     }
 
     if (!selectedDate) {
-        Swal.fire({
-            icon: "warning",
-            title: "Selecciona una fecha",
-            text: "Debes seleccionar una fecha para continuar.",
-        });
-        return; // Detener ejecución si no hay fecha seleccionada
+      Swal.fire({
+        icon: "warning",
+        title: "Selecciona una fecha",
+        text: "Debes seleccionar una fecha para continuar.",
+      });
+      return; // Detener ejecución si no hay fecha seleccionada
     }
 
     setLoading(true);
 
     try {
-        const order = await hireServices({
-            date: selectedDate,
-            isApproved: false,
-            gardenerId: gardener.id.toString(),
-            userId: userSession.user.id.toString(),
-            serviceId: selectedServices,
-        });
-        setLoading(false);
+      const order = await hireServices({
+        date: selectedDate,
+        isApproved: false,
+        gardenerId: gardener.id.toString(),
+        userId: userSession.user.id.toString(),
+        serviceId: selectedServices,
+      });
+      setLoading(false);
 
-        // Mostrar mensaje de éxito con Swal
-        Swal.fire({
-            icon: "success",
-            title: "Servicios Contratados",
-            text: "Tu orden ha sido creada con éxito.",
-        });
+      // Mostrar mensaje de éxito con Swal
+      Swal.fire({
+        icon: "success",
+        title: "Servicios Contratados",
+        text: "Tu orden ha sido creada con éxito.",
+      });
 
-        setOrderService(order);
-        setSelectedServices([]);
-        setSelectedDate(null);
-        router.push("/dashboard/userDashboard");
+      setOrderService(order);
+      setSelectedServices([]);
+      setSelectedDate(null);
+      router.push("/dashboard/userDashboard");
     } catch (error) {
-        console.error("Error contratando servicios:", error);
-        Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: "Hubo un problema al contratar los servicios. Inténtalo de nuevo.",
-        });
+      console.error("Error contratando servicios:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Hubo un problema al contratar los servicios. Inténtalo de nuevo.",
+      });
     }
-};
-
+  };
 
   if (loading) {
     return (
@@ -243,7 +242,9 @@ const ProviderDetail: React.FC = () => {
           <div className="flex items-center">
             <Image
               className="rounded-full"
-              src={gardener.profileImageUrl || "/images/nuevo_usuarioGardener.webp"}
+              src={
+                gardener.profileImageUrl || "/images/nuevo_usuarioGardener.webp"
+              }
               alt={`${gardener.name}'s profile`}
               width={120}
               height={120}
@@ -279,22 +280,22 @@ const ProviderDetail: React.FC = () => {
           </div>
 
           <div className="flex snap-x snap-mandatory overflow-x-auto mt-6">
-              {carrousel?.map((image: string, index: number) => (
-                <div
-                  key={index}
-                  className="relative snap-center flex-none w-full"
-                  style={{ maxWidth: "400px" }}
-                >
-                  <Image
-                    src={image}
-                    alt={`Imagen ${index + 1}`}
-                    width={1920}
-                    height={1080}
-                    className="w-full h-full object-cover rounded-lg"
-                  />
-                </div>
-                ))}
+            {carrousel?.map((image: string, index: number) => (
+              <div
+                key={index}
+                className="relative snap-center flex-none w-full"
+                style={{ maxWidth: "400px" }}
+              >
+                <Image
+                  src={image}
+                  alt={`Imagen ${index + 1}`}
+                  width={1920}
+                  height={1080}
+                  className="w-full h-full object-cover rounded-lg"
+                />
               </div>
+            ))}
+          </div>
           {/* Agregar el componente GardenerMap aquí */}
           <div className="mt-10">
             <GardenerMap location={coordinates} />
@@ -308,29 +309,38 @@ const ProviderDetail: React.FC = () => {
               {services.map((service) => (
                 <li
                   key={service.id}
-                  className="flex justify-between items-center py-2 border-b border-gray-200"
+                  className="relative flex justify-between items-center py-3 px-4 rounded-lg border border-gray-200 hover:bg-gray-100 cursor-pointer transition-colors duration-300 my-1 h-[80px] "
+                  onClick={() => handleServiceChange(service.id)}
                 >
-                  <div className="flex-1 text-left">
-                    <span className="font-medium text-gray-800">
-                      {service.detailService}
-                    </span>
-                  </div>
-                  <div className="flex-1 text-center">
-                    <span className="font-semibold text-green-600">
-                      ${service.price}
-                    </span>
-                  </div>
-                  <div className="flex-1 text-right">
-                    <Checkbox
-                      checked={selectedServices.includes(service.id)}
-                      onChange={() => handleServiceChange(service.id)}
-                    />
-                  </div>
+                  <label
+                    htmlFor={`service-${service.id}`}
+                    className="flex justify-between items-center w-full"
+                  >
+                    <div className="flex-1 text-left">
+                      <span className="font-medium text-gray-800">
+                        {service.detailService}
+                      </span>
+                    </div>
+                    <div className="flex-1 text-center">
+                      <span className="font-semibold text-green-600">
+                        ${service.price}
+                      </span>
+                    </div>
+                    <div className="flex-1 text-right">
+                      <input
+                        type="checkbox"
+                        id={`service-${service.id}`}
+                        checked={selectedServices.includes(service.id)}
+                        onChange={() => handleServiceChange(service.id)}
+                        className="w-5 h-5 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                      />
+                    </div>
+                  </label>
                 </li>
               ))}
             </ul>
             <div className="mt-4">
-              <h3 className="text-xl bg-[#8BC34A] rounded-lg font-bold text-[#263238] flex justify-center">
+              <h3 className="text-xl bg-[#8BC34A] rounded-lg font-bold text-[#263238] flex justify-center py-2">
                 Total:{" "}
                 <span className="text-[#263238]">${calculateTotal()}</span>
               </h3>
@@ -346,48 +356,50 @@ const ProviderDetail: React.FC = () => {
               />
             </div>
 
-          <div className="">
-            <h2 className="text-lg font-semibold text-[#263238]">
-              Reseñas de Clientes:
-            </h2>
-            {reviews.length > 0 ? (
-              <div className="mt-4">
-                {reviews.map((review) => (
-                  <div key={review.id} className="mb-4 border-b pb-4">
-                    <div className="flex items-center mt-3">
-                      <Rate
-                        allowHalf
-                        disabled
-                        defaultValue={review.rate}
-                        style={{ color: "#FFD700" }}
-                      />
-                      <span className="ml-2 text-sm text-gray-500">
-                        {review.rate.toFixed(1)}
-                      </span>
+            <div className="">
+              <h2 className="text-lg font-semibold text-[#263238]">
+                Reseñas de Clientes:
+              </h2>
+              {reviews.length > 0 ? (
+                <div className="mt-4">
+                  {reviews.map((review) => (
+                    <div key={review.id} className="mb-4 border-b pb-4">
+                      <div className="flex items-center mt-3">
+                        <Rate
+                          allowHalf
+                          disabled
+                          defaultValue={review.rate}
+                          style={{ color: "#FFD700" }}
+                        />
+                        <span className="ml-2 text-sm text-gray-500">
+                          {review.rate.toFixed(1)}
+                        </span>
 
-                      <span className="ml-2 text-sm text-gray-300">
-                        {new Date(review?.serviceOrder?.date).toLocaleDateString()}
-                      </span>
+                        <span className="ml-2 text-sm text-gray-300">
+                          {new Date(
+                            review?.serviceOrder?.date
+                          ).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <p className="text-gray-600 mt-2">{review.comment}</p>
                     </div>
-                    <p className="text-gray-600 mt-2">{review.comment}</p>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-gray-500">No hay reseñas disponibles.</p>
-            )}
+                  ))}
+                </div>
+              ) : (
+                <p className="text-gray-500">No hay reseñas disponibles.</p>
+              )}
+            </div>
+          </div>
+
+          <div className="mt-6 flex justify-center">
+            <button
+              onClick={handleHireClick}
+              className="mt-4 w-full bg-[#4CAF50] text-white py-2 px-4 rounded-lg hover:bg-[#45a049]"
+            >
+              Contratar Servicios
+            </button>
           </div>
         </div>
-
-              <div className="mt-6 flex justify-center">
-                <button
-                  onClick={handleHireClick}
-                  className="mt-4 w-full bg-[#4CAF50] text-white py-2 px-4 rounded-lg hover:bg-[#45a049]"
-                >
-                  Contratar Servicios
-                </button>
-              </div>
-            </div>
 
         <div className="flex items-center justify-center w-full mt-10">
           <button
