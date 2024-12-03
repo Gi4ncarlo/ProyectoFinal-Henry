@@ -42,28 +42,48 @@ export default function LoginForm() {
       [name]: true,
     }));
   };
-
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const response = await login(dataUser);
-    if (response.status === 401) {
-      Swal.fire({
-        title: "Error",
-        text: "Email o contraseña incorrectos",
-        icon: "error",
-      });
-    } else {
+  
+    try {
+      const response = await login(dataUser);
+  
+      // Si la respuesta es exitosa, muestra mensaje de éxito y redirige
       Swal.fire({
         title: "Bienvenido!",
         text: "Ingresaste correctamente",
         icon: "success",
       });
+  
       const { token, user } = response;
       localStorage.setItem("userSession", JSON.stringify({ token, user }));
       router.push("/Home");
+    } catch (error: any) {
+      console.error("Error in handleSubmit:", error);
+  
+      // Verificar si el error tiene la respuesta de "isBanned" dentro de "response"
+      if (error?.response?.message === "El usuario esta baneado") {
+        Swal.fire({
+          title: "Acceso denegado",
+          text: "Estás baneado, no puedes ingresar",
+          icon: "warning",
+        });
+      } else if (error?.status === 401) {
+        Swal.fire({
+          title: "Error",
+          text: "Email o contraseña incorrectos",
+          icon: "error",
+        });
+      } else {
+        Swal.fire({
+          title: "Error",
+          text: error?.message || "Ocurrió un problema. Inténtalo nuevamente.",
+          icon: "error",
+        });
+      }
     }
   };
-
+  
   useEffect(() => {
     if (userSession) {
       if (typeof window !== "undefined") {
