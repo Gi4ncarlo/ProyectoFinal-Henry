@@ -236,8 +236,11 @@ const ProviderDetail: React.FC = () => {
         </h2>
       </div>
     );
+
   return (
+
     <div className="flex flex-col min-h-screen bg-[url('/images/fondoJardineros2.webp')] bg-cover bg-center">
+
       {/* Contenedor para centrar todo */}
       <div className="flex flex-col items-center justify-center flex-grow mx-4 md:mx-8 lg:mx-16">
         <div className="max-w-3xl mt-32 mb-14 p-6 bg-white rounded-lg shadow-lg">
@@ -299,6 +302,7 @@ const ProviderDetail: React.FC = () => {
               ))}
             </Carousel>
           </div>
+
           {/* Agregar el componente GardenerMap aquí */}
           <div className="mt-10">
             <GardenerMap location={coordinates} />
@@ -342,6 +346,7 @@ const ProviderDetail: React.FC = () => {
                 </li>
               ))}
             </ul>
+            
             <div className="mt-4">
               <h3 className="text-xl bg-[#8BC34A] rounded-lg font-bold text-[#263238] flex justify-center py-2">
                 Total:{" "}

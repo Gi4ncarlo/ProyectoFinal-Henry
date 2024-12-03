@@ -40,10 +40,10 @@ const Dropdown: React.FC<{ filter: string; onChange: (value: string) => void }> 
   }, []);
 
   return (
-    <div className="relative w-48" ref={dropdownRef}>
+    <div className="relative w-full max-w-[150px]" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="min-w-[150px] bg-white border border-gray-300 rounded-md shadow-sm px-4 py-2 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-400"
+        className="w-full bg-white border border-gray-300 rounded-md shadow-sm px-4 py-2 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-400"
       >
         <span className="float-right text-[#263238]">
           {options.find((opt) => opt.value === filter)?.label || "Ordenar por"} ▼
@@ -176,7 +176,7 @@ const ProviderCardList: React.FC = () => {
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="mx-auto mt-24">
+    <div className="mx-auto mt-24 px-4 max-w-7xl">
       {providers.length === 0 ? (
         <div className="text-center mb-8 mx-auto">
           <h1 className="text-2xl font-bold mb-4 text-red-500">No hay jardineros</h1>
@@ -190,7 +190,7 @@ const ProviderCardList: React.FC = () => {
       ) : (
         <>
           <div className="text-center mb-8 mx-auto">
-            <div className="relative w-1/2 mx-auto flex items-center mb-8">
+            <div className="relative w-full sm:w-3/4 lg:w-1/2 mx-auto flex items-center mb-8">
               <input
                 type="text"
                 placeholder="Buscar jardinero..."
@@ -204,7 +204,7 @@ const ProviderCardList: React.FC = () => {
           <div className="flex justify-end mb-4">
             <Dropdown filter={filter} onChange={handleFilter} />
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {paginatedProviders.map((gardener) => (
               <Link href={`/gardener/${gardener.id}`} key={gardener.id}>
                 <ProviderCard
@@ -216,7 +216,7 @@ const ProviderCardList: React.FC = () => {
               </Link>
             ))}
           </div>
-          <div className="flex justify-between mt-6 mb-8 items-center">
+          <div className="flex flex-col sm:flex-row justify-between mt-6 mb-8 items-center space-y-4 sm:space-y-0">
             <button
               onClick={handlePreviousPage}
               disabled={currentPage === 1}
@@ -260,6 +260,7 @@ const ProviderCardList: React.FC = () => {
 };
 
 export default ProviderCardList;
+
 
 
 

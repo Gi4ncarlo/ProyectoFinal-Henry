@@ -7,7 +7,7 @@ import {
 import { IUserSession } from "@/interfaces/IUserSession";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { Upload, Button } from "antd";
+import { Upload, Button, Carousel } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import Swal from "sweetalert2";
 
@@ -50,30 +50,24 @@ const CarrouselGardener = () => {
         formData,
         userSession?.user.id.toString()
       );
-      console.log("respuesta en uploadImage", response);
 
-      // Asegúrate de que la respuesta tenga la URL de la imagen
       if (response?.imageUrl) {
-        // Actualiza el estado carrousel con la nueva imagen
         setCarrousel((prevCarrousel) => [...prevCarrousel, response.imageUrl]);
-
-        // Muestra el Swal.fire de éxito
         Swal.fire({
           icon: "success",
           title: "Éxito",
           text: "Imagen subida correctamente",
         });
+
+        const id = userSession?.user.id.toString();
+        if (id) {
+          await updateCarrousel(id, [...carrousel, response.imageUrl]);
+        }
       } else {
         throw new Error("No se obtuvo la URL de la imagen");
       }
-
-      // Actualiza el carrousel en el servidor si es necesario
-      const id = userSession?.user.id.toString();
-      if (id) {
-        await updateCarrousel(id, [...carrousel, response?.imageUrl]);
-      }
     } catch (error) {
-      console.error("Error uploading image:", error);
+      console.error("Error al subir la imagen:", error);
       Swal.fire({
         icon: "error",
         title: "Error",
@@ -84,8 +78,9 @@ const CarrouselGardener = () => {
 
   const handleUpload = ({ file }: { file: any }) => {
     const convertedFile = file.originFileObj as File || file as File;
-    uploadImage(convertedFile); 
+    uploadImage(convertedFile);
   };
+
   useEffect(() => {
     if (userSession?.user?.id) {
       fetchCarrousel();
@@ -120,32 +115,30 @@ const CarrouselGardener = () => {
           Carrusel de imágenes:
         </h2>
 
-        <div className="relative w-full max-w-3xl mx-auto">
-          <div className="overflow-hidden rounded-lg shadow-lg bg-white">
-            <div className="flex snap-x snap-mandatory overflow-x-auto">
-              {carrousel?.map((image: string, index: number) => (
-                <div
-                  key={index}
-                  className="relative snap-center flex-none w-full"
-                  style={{ maxWidth: "400px" }}
-                >
-                  <Image
-                    src={image}
-                    alt={`Imagen ${index + 1}`}
-                    width={1920}
-                    height={1080}
-                    className="w-full h-full object-cover rounded-lg"
-                  />
-                  <button
+        {/* Carrusel con Ant Design */}
+        <div className="carousel-container my-6">
+          <Carousel autoplay effect="fade" arrows>
+            {carrousel.map((imageUrl, index) => (
+              <div
+                key={index}
+                className="w-full max-h-96 flex justify-center items-center overflow-hidden rounded-lg border-2 border-[#4CAF50]"
+              >
+                <Image
+                  src={imageUrl}
+                  alt={`Imagen ${index + 1}`}
+                  width={1920}
+                  height={1080}
+                  className="object-cover"
+                />
+                <button
                     onClick={() => handleDelete(index)}
                     className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600"
                   >
                     X
                   </button>
-                </div>
-              ))}
-            </div>
-          </div>
+              </div>
+            ))}
+          </Carousel>
         </div>
       </div>
 
@@ -157,7 +150,16 @@ const CarrouselGardener = () => {
           customRequest={({ file }) => handleUpload({ file })}
           showUploadList={false}
         >
-          <Button style={{ backgroundColor: "#4CAF50", borderColor: "#263238", color: "white" }} icon={<UploadOutlined />}>Sube tu imagen</Button>
+          <Button
+            style={{
+              backgroundColor: "#4CAF50",
+              borderColor: "#263238",
+              color: "white",
+            }}
+            icon={<UploadOutlined />}
+          >
+            Sube tu imagen
+          </Button>
         </Upload>
       </div>
     </div>
