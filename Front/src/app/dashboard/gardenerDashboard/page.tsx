@@ -358,28 +358,28 @@ const GardenerDashboard = () => {
       <nav className="flex justify-around bg-primary text-white p-4 rounded-md">
         <button
           onClick={() => fetchTasks(userSession?.user?.id.toString() || "")}
-          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "tareas" ? "opacity-75" : ""
+          className={`p-3 bg-[#8BC34A] hover:bg-[#CDDC39] text-white hover:text-[#263238] font-semibold py-2 px-4 rounded ${activeComponent === "tareas" ? "opacity-75" : ""
             }`}
         >
           Tareas
         </button>
         <button
           onClick={() => setActiveComponent("calendario")}
-          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "calendario" ? "opacity-75" : ""
+          className={`p-3 bg-[#8BC34A] hover:bg-[#CDDC39] text-white hover:text-[#263238] font-semibold py-2 px-4 rounded ${activeComponent === "calendario" ? "opacity-75" : ""
             }`}
         >
           Calendario
         </button>
         <button
           onClick={() => setActiveComponent("perfil")}
-          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "perfil" ? "opacity-75" : ""
+          className={`p-3 bg-[#8BC34A] hover:bg-[#CDDC39] text-white hover:text-[#263238] font-semibold py-2 px-4 rounded ${activeComponent === "perfil" ? "opacity-75" : ""
             }`}
         >
           Mi Perfil
         </button>
         <button
           onClick={() => setActiveComponent("Editar Servicios")}
-          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "Editar Servicios" ? "opacity-75" : ""
+          className={`p-3 bg-[#8BC34A] hover:bg-[#CDDC39] text-white hover:text-[#263238] font-semibold py-2 px-4 rounded ${activeComponent === "Editar Servicios" ? "opacity-75" : ""
             }`}
         >
           Editar Servicios
@@ -427,7 +427,7 @@ const GardenerDashboard = () => {
           {/* Servicios que Ofrezco */}
            <h1 className="text-2xl font-bold text-[#263238] mb-6">
               Servicios que Ofrezco
-            </h1> <section   className="block  w-full p-3 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#4CAF50] bg-white">
+            </h1> <section   className="block  w-full p-3 border border-[#4CAF50] rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#4CAF50] bg-white">
           
             {services.map((service) => (
               <div key={service.id} className="flex items-center">
@@ -448,7 +448,7 @@ const GardenerDashboard = () => {
             ))}
            <button
   onClick={saveServices}
-  className="mt-4 w-40 p-2 bg-[#4CAF50] text-white rounded hover:bg-[#388E3C] mx-auto block"
+  className="mt-4 w-40 p-2 bg-[#4CAF50] text-white rounded hover:bg-[#388E3C] hover:text-[#FFEB3B] mx-auto block"
 >
   Guardar Servicios
 </button>
