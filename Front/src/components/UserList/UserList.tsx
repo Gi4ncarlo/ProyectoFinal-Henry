@@ -142,7 +142,7 @@ function UserList() {
           {users.map((user) => (
             <div
               key={user.id}
-              className="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition"
+              className="bg-white shadow-md rounded-lg p-6 hover:shadow-lg hover:shadow-[#8BC34A] transition border-[#4CAF50] border-2"
             >
               <h2 className="font-semibold text-lg text-gray-800 mb-2">
                 {user.name}
