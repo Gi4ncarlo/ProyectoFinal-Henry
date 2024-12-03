@@ -1,6 +1,6 @@
 import { BadRequestException, HttpException, HttpStatus, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { CreateServiceOrderDto } from './dto/create-services-order.dto';
 import { UpdateServicesOrderDto } from './dto/update-services-order.dto';
 import { ServicesOrderEntity } from './entities/services-order.entity';
@@ -9,11 +9,12 @@ import { User } from '../user/entities/user.entity';
 import { ServiceProvided } from '../serviceProvided/entities/serviceProvided.entity';
 import { UserResponseDto } from '../user/dto/response-user.dto';
 import { AdminEntity } from '../admin/entities/admin.entity';
-import { ServiceDetailsService } from '../service-details/service-details.service';
 import { Status } from '../service-details/enum/status.enum';
 import { ServiceDetail } from '../service-details/entities/service-detail.entity';
 import { TokenService } from '../tokenServices/token.service';
 import { MailService } from '../mail/mail.service';
+import { GardenerService } from '../gardener/gardener.service';
+
 @Injectable()
 export class ServicesOrderService {
   constructor(
@@ -37,9 +38,10 @@ export class ServicesOrderService {
 
     private readonly tokenService: TokenService,
 
-    private readonly mailService: MailService
-  ) { }
+    private readonly mailService: MailService,
 
+    private readonly gardenerService: GardenerService,
+  ) { }
 
   async create(createServicesOrderDto: CreateServiceOrderDto): Promise<any> {
     const { date, isApproved, gardenerId, userId, serviceId } = createServicesOrderDto;
@@ -130,7 +132,6 @@ export class ServicesOrderService {
     throw new Error('Order not found after saving');
   }
 
-
   async findAll(page: number, limit: number): Promise<{ data: ServicesOrderEntity[]; count: number }> {
     const skip = (page - 1) * limit;
 
@@ -155,6 +156,7 @@ export class ServicesOrderService {
     }
     return order;
   }
+
   async obtenerFechaSiguiente(fechaInicial: string): Promise<string> {
     const [año, mes, dia] = fechaInicial.split('-').map(Number);
     const fecha = new Date(año, mes - 1, dia);
@@ -201,11 +203,11 @@ export class ServicesOrderService {
         }
       }
 
-
     } catch (error) {
       throw new HttpException(error, 400);
     }
   }
+
   async findAllByGardener(id: string) {
     const orders = await this.servicesOrderRepository.find({
       where: { gardener: { id } },
@@ -263,11 +265,26 @@ export class ServicesOrderService {
     return this.servicesOrderRepository.findOneBy({ id });
   }
 
-  async remove(id: string): Promise<void> {
-    const result = await this.servicesOrderRepository.delete(id);
-    if (result.affected === 0) {
-      throw new NotFoundException(`Orden de servicio con id ${id} no encontrada`);
-    }
-  }
-}
+  async remove(orderId: string): Promise<void> {
+    const order = await this.servicesOrderRepository.findOne({
+      where: { id: orderId },
+      relations: ['gardener'],
+    });
 
+    if (!order) {
+      throw new HttpException('Orden no encontrada', HttpStatus.NOT_FOUND);
+    }
+
+    const gardenerId = order.gardener.id;
+    const reservedDay = order.serviceDate;  
+
+    if (!reservedDay) {
+      throw new BadRequestException('No se ha especificado un día reservado para esta orden');
+    }
+
+    await this.gardenerService.cancelReservation(gardenerId, reservedDay);
+
+    await this.servicesOrderRepository.remove(order);
+  }
+
+}

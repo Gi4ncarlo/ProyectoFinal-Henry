@@ -12,12 +12,13 @@ import { AdminEntity } from '../admin/entities/admin.entity';
 import { ServiceDetail } from '../service-details/entities/service-detail.entity';
 import { TokenModule } from '../tokenServices/token.module';
 import { MailModule } from '../mail/mail.module';
+import { GardenerModule } from '../gardener/gardener.module';
 
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([ServicesOrderEntity,User, Gardener, ServiceProvided,AdminEntity,ServiceDetail]),
-    TokenModule,MailModule
+    TokenModule,MailModule,GardenerModule
   ],
   providers: [MercadoPagoService, ServicesOrderService],
   controllers: [MercadoPagoController],
