@@ -29,21 +29,33 @@ export async function register(dataUser: IRegisterProps): Promise<void> {
     console.log("catch")
     throw new Error(error.message);
   }
-}
-
-export async function login(dataUser: ILoginProps) {
+}export async function login(dataUser: ILoginProps) {
   try {
     const res = await fetch(`${APIURL}/auth/signin`, {
       method: "POST",
-      headers: { "content-type": "application/json" },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(dataUser),
     });
-    const response = await res.json(); //se trae solo la parte necesaria de todo el json
+
+    // Si la respuesta no es ok (es decir, si hay un error)
+    if (!res.ok) {
+      const errorResponse = await res.json(); // Obtén el mensaje de error del backend
+      const error = new Error(errorResponse.message || "Error al iniciar sesión");
+      // Agregar detalles adicionales al error
+      (error as any).status = res.status;
+      (error as any).response = errorResponse;
+      throw error;
+    }
+
+    // Procesar la respuesta si la solicitud fue exitosa
+    const response = await res.json();
     return response;
   } catch (error: any) {
-    throw new Error(error);
+    throw error; // Lanza el error con los detalles completos
   }
 }
+
+
 
 export async function registerService(dataService: IServiceProps): Promise<void> {
   try {
