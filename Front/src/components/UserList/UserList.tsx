@@ -75,10 +75,20 @@ function UserList() {
   };
 
   const handleDeleteUser = async (userId: string) => {
-    const confirmDelete = window.confirm("¿Estás seguro de que quieres eliminar este usuario?");
-    if (!confirmDelete) return;
-
     try {
+      const { isConfirmed } = await Swal.fire({
+        title: "¿Estás seguro que deseas eliminar el usuario?",
+        text: "No podrás revertir esto.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#4CAF50",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar"
+      });
+  
+      if (!isConfirmed) return;
+  
       const token = localStorage.getItem("userSession");
       if (token) {
         await deleteUser(userId);
@@ -97,7 +107,7 @@ function UserList() {
       Toast.fire({
         icon: "error",
         title: "Error al eliminar el usuario"
-      });      
+      });
     }
   };
   if (loading)
