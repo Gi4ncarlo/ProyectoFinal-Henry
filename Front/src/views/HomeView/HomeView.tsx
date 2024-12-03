@@ -96,7 +96,7 @@ const Home: React.FC = () => {
           </p>
           <a
             href="/servicios"
-            className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded"
+            className="bg-green-600 hover:bg-green-700 hover:text-[#FFEB3B] text-white font-semibold py-2 px-4 rounded"
           >
             Ver Servicios
           </a>
@@ -176,7 +176,7 @@ const Home: React.FC = () => {
         </p>
         <a
           href="/contacto"
-          className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded"
+          className="bg-green-600 hover:bg-green-700 hover:text-[#FFEB3B] text-white font-semibold py-2 px-4 rounded"
         >
           Enviar Mensaje
         </a>
