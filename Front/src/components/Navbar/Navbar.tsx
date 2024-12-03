@@ -202,7 +202,7 @@ export default function Navbar() {
                 <Image
                   src="https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2281862025.jpg"
                   alt="Avatar"
-                  className="rounded-full border-2 border-gray-300 hover:border-green-500 transition duration-200"
+                  className="rounded-full border-2 border-gray-400 hover:border-[#CDDC39] transition duration-200 hover:shadow-[#FFEB3B] hover:shadow-lg"
                   fill
                   sizes="40px"
                 />

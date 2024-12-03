@@ -96,7 +96,7 @@ const Home: React.FC = () => {
           </p>
           <a
             href="/servicios"
-            className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded"
+            className="bg-green-600 hover:bg-green-700 hover:text-[#FFEB3B] text-white font-semibold py-2 px-4 rounded"
           >
             Ver Servicios
           </a>
@@ -106,7 +106,7 @@ const Home: React.FC = () => {
       {/* ABOUT SECTION */}
       <section
         id="about"
-        className="w-full py-20 bg-white text-gray-800 flex flex-col items-center justify-center"
+        className="w-full py-20 bg-[#8BC34A] text-gray-800 flex flex-col items-center justify-center"
       >
         <h2 className="text-3xl md:text-4xl font-semibold mb-6 text-[#263238]">
           Sobre Nosotros
@@ -134,7 +134,7 @@ const Home: React.FC = () => {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-4 md:px-10 lg:px-20">
           {/* Bloque de Servicio */}
-          <div className="bg-white text-gray-800 p-6 rounded-lg shadow-lg transform transition-transform hover:scale-105">
+          <div className="bg-gray-100 text-gray-800 p-6 rounded-lg border-2 border-[#4CAF50] shadow-lg transform transition-transform hover:scale-105 hover:shadow-[#FFEB3B]">
             <div className="flex items-center justify-center mb-4">
             </div>
             <h3 className="text-xl font-semibold mb-4 text-center text-[#263238]">Mantenimiento</h3>
@@ -144,7 +144,7 @@ const Home: React.FC = () => {
             </p>
           </div>
           {/* Bloque de Diseño */}
-          <div className="bg-white text-gray-800 p-6 rounded-lg shadow-lg transform transition-transform hover:scale-105">
+          <div className="bg-gray-100 text-gray-800 p-6 rounded-lg border-2 border-[#4CAF50] shadow-lg transform transition-transform hover:scale-105 hover:shadow-[#FFEB3B]">
             <div className="flex items-center justify-center mb-4">
             </div>
             <h3 className="text-xl font-semibold mb-4 text-center text-[#263238] ">Diseño</h3>
@@ -154,7 +154,7 @@ const Home: React.FC = () => {
             </p>
           </div>
           {/* Bloque de Instalación */}
-          <div className="bg-white text-gray-800 p-6 rounded-lg shadow-lg transform transition-transform hover:scale-105">
+          <div className="bg-gray-100 text-gray-800 p-6 rounded-lg border-2 border-[#4CAF50] shadow-lg transform transition-transform hover:scale-105 hover:shadow-[#FFEB3B]">
             <div className="flex items-center justify-center mb-4">
             </div>
             <h3 className="text-xl font-semibold mb-4 text-center text-[#263238]">Instalación</h3>
@@ -168,7 +168,7 @@ const Home: React.FC = () => {
       {/* CONTACT SECTION */}
       <section
         id="contact"
-        className="w-full py-20 bg-white text-gray-800 flex flex-col items-center justify-center"
+        className="w-full py-20 bg-[#8BC34A] text-gray-800 flex flex-col items-center justify-center"
       >
         <h2 className="text-3xl md:text-4xl font-semibold mb-6 text-[#263238]">Contáctanos</h2>
         <p className="text-lg md:text-xl mb-6 px-4 md:w-2/3 lg:w-1/2 text-center text-[#263238]">
@@ -176,7 +176,7 @@ const Home: React.FC = () => {
         </p>
         <a
           href="/contacto"
-          className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded"
+          className="bg-green-600 hover:bg-green-700 hover:text-[#FFEB3B] text-white font-semibold py-2 px-4 rounded"
         >
           Enviar Mensaje
         </a>

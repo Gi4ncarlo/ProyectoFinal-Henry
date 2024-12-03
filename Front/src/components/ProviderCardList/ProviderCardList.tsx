@@ -43,7 +43,7 @@ const Dropdown: React.FC<{ filter: string; onChange: (value: string) => void }> 
     <div className="relative w-full max-w-[150px]" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full bg-white border border-gray-300 rounded-md shadow-sm px-4 py-2 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-400"
+        className="w-full bg-white border border-[#263238] rounded-md shadow-sm px-4 py-2 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-400"
       >
         <span className="float-right text-[#263238]">
           {options.find((opt) => opt.value === filter)?.label || "Ordenar por"} ▼
@@ -196,7 +196,7 @@ const ProviderCardList: React.FC = () => {
                 placeholder="Buscar jardinero..."
                 value={searchTerm}
                 onChange={handleSearch}
-                className="w-full pl-4 pr-12 py-2 text-lg rounded-full border border-gray-300 shadow-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+                className="w-full pl-4 pr-12 py-2 text-lg rounded-full border border-[#263238] shadow-lg focus:outline-none focus:ring-2 focus:ring-green-400"
               />
               <FaSearch className="absolute right-4 text-gray-500" />
             </div>
@@ -220,7 +220,7 @@ const ProviderCardList: React.FC = () => {
             <button
               onClick={handlePreviousPage}
               disabled={currentPage === 1}
-              className={`px-4 py-2 bg-[#8BC34A] text-white rounded ${
+              className={`px-4 py-2 bg-[#8BC34A] text-white rounded hover:shadow-lg hover:shadow-[#FFEB3B] hover:text-[#263238] ${
                 currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
               }`}
             >
@@ -233,7 +233,7 @@ const ProviderCardList: React.FC = () => {
                   key={page}
                   onClick={() => setCurrentPage(page)}
                   className={`px-3 py-1 rounded-full ${
-                    page === currentPage ? "bg-[#8BC34A] text-white" : "bg-gray-200"
+                    page === currentPage ? "bg-[#8BC34A] text-[#263238] hover:text-[#FFEB3B] hover:shadow-lg hover:shadow-[#FFEB3B]" : "bg-gray-200 text-[#263238] hover:text-[#4CAF50] hover:shadow-lg hover:shadow-[#FFEB3B]"
                   }`}
                 >
                   {page}
@@ -244,7 +244,7 @@ const ProviderCardList: React.FC = () => {
             <button
               onClick={handleNextPage}
               disabled={currentPage * itemsPerPage >= providers.length}
-              className={`px-4 py-2 bg-[#8BC34A] text-white rounded ${
+              className={`px-4 py-2 bg-[#8BC34A] text-white rounded hover:shadow-lg hover:shadow-[#FFEB3B] hover:text-[#263238] ${
                 currentPage * itemsPerPage >= providers.length
                   ? "opacity-50 cursor-not-allowed"
                   : ""

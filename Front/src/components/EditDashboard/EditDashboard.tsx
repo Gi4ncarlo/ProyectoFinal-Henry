@@ -146,13 +146,13 @@ const EditDashboard: React.FC = () => {
                 {/* Campos de edición */}
                 <div>
                     {editableFields.map(({ label, field, value }) => (
-                        <div key={field} className="border p-4 mb-4 rounded border-[#263238]">
+                        <div key={field} className="border p-4 mb-4 rounded border-[#4CAF50]">
                             <p className="mb-2 text-[#263238]">
                                 <strong>{label}:</strong> {value}
                             </p>
                             <button
                                 onClick={() => handleEditClick(field, value)}
-                                className="bg-green-600 hover:bg-green-700 border-2 border-[#263238] text-white font-semibold py-2 px-4 rounded"
+                                className="bg-green-600 hover:bg-green-700 text-white hover:text-[#FFEB3B] font-semibold py-2 px-4 rounded"
                             >
                                 Editar
                             </button>
