@@ -210,6 +210,9 @@ export class ServicesOrderService {
     const orders = await this.servicesOrderRepository.find({
       where: { gardener: { id } },
       relations: ['user', 'gardener', 'serviceProvided', 'orderDetail'],
+      order: {
+        serviceDate: 'ASC',
+      },
       select: {
         user: {
           id: true,

@@ -104,9 +104,15 @@ export class UserService {
     try {
       const user = await this.userRepository.findOne({
         where: { id: userId },
-        relations: ['servicesOrder', 'servicesOrder.gardener', 'servicesOrder.serviceProvided', 'servicesOrder.orderDetail','servicesOrder.reviews'],
+        relations: ['servicesOrder', 'servicesOrder.gardener', 'servicesOrder.serviceProvided', 'servicesOrder.orderDetail', 'servicesOrder.reviews'],
+        order: {
+          servicesOrder: {
+            serviceDate: 'ASC',
+          },
+        },
       });
-
+      console.log(user);
+      
       if (!user) {
         throw new NotFoundException('Usuario no encontrado');
       }
