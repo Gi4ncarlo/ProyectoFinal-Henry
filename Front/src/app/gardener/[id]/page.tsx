@@ -389,7 +389,7 @@ const ProviderDetail: React.FC = () => {
                         </div>
                         <span className="text-sm text-gray-800 font-semibold mt-1">{review?.date}</span>
                       </div>
-                      <p className="text-gray-700 mt-4 text-lg font-semibold text-[#263238] mt-1 ">{review.comment}</p>
+                      <p className="text-lg font-semibold text-[#263238] mt-1 ">{review.comment}</p>
                     </div>
                   ))}
                 </div>
