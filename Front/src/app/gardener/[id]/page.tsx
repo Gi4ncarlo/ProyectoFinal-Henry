@@ -295,6 +295,7 @@ const ProviderDetail: React.FC = () => {
                 </div>
                 ))}
               </div>
+              
           {/* Agregar el componente GardenerMap aquí */}
           <div className="mt-10">
             <GardenerMap location={coordinates} />
