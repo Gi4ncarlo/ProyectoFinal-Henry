@@ -127,7 +127,7 @@ const ModalDetails: React.FC<ModalDetailsProps> = ({ order, onClose }) => {
 
                 {/* Información del cliente */}
                 <div className="mb-6 p-4 border border-gray-200 rounded-lg bg-blue-50 shadow-inner space-y-3">
-                    <h3 className="text-lg font-semibold text-blue-700">Datos del cliente</h3>
+                    <h3 className="text-lg font-semibold text-[#263238]">Datos del cliente</h3>
                     <p className="text-sm text-gray-700">
                         <strong>Nombre:</strong> {order.user.name}
                     </p>
@@ -142,7 +142,7 @@ const ModalDetails: React.FC<ModalDetailsProps> = ({ order, onClose }) => {
                     </p>
                 </div>
                 <div className="mb-6 p-4 border border-gray-200 rounded-lg bg-blue-50 shadow-inner space-y-3">
-                    <h3 className="text-lg font-semibold text-blue-700">Estado del servicio</h3>
+                    <h3 className="text-lg font-semibold text-[#263238]">Estado del servicio</h3>
                     <p className="text-sm text-gray-700">
                         <strong>Estado:</strong> {order.orderDetail.status}
                     </p>
@@ -164,7 +164,7 @@ const ModalDetails: React.FC<ModalDetailsProps> = ({ order, onClose }) => {
                     handleDateExpiration(order.orderDetail.endTime) ? (
                         <div className="mb-6">
                             <label className="block text-gray-700 font-medium mb-2" htmlFor="token">
-                                Debes ingresar el token para finalizar el servicio antes del :{order.orderDetail.endTime.toLocaleString("es-ES").split(",")[0]} a las 23:59hs
+                                Debes ingresar el token para finalizar el servicio antes del : {order.orderDetail.endTime.toLocaleString("es-ES").split(",")[0]} a las 23:59hs
                             </label>
                             <input
                                 type="text"
@@ -178,7 +178,7 @@ const ModalDetails: React.FC<ModalDetailsProps> = ({ order, onClose }) => {
                             {/* Botón de acción */}
                             <button
                                 onClick={handleOnClick}
-                                className="w-full bg-blue-600 text-white text-center py-2 mt-4 px-4 rounded-lg hover:bg-blue-700 transition duration-200"
+                                className="w-full bg-[#4caf50] text-white text-center py-2 mt-4 px-4 rounded-lg hover:bg-[#388e3c] transition duration-200"
                             >
                                 Confirmar
                             </button>
