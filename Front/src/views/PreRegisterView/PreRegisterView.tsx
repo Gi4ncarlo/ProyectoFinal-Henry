@@ -29,7 +29,7 @@ const PreRegisterView = () => {
           {/* Cliente */}
           <div className="relative group hover:scale-105 transition-transform">
             <Link href="/register?role=user">
-              <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden shadow-lg transition-all group-hover:shadow-xl group-hover:shadow-gray-400">
+              <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden shadow-lg transition-all group-hover:shadow-xl group-hover:shadow-[#FFEB3B]">
                 <Image
                   className="object-cover h-full w-full transition-transform group-hover:scale-110"
                   src="/images/client.webp"
@@ -39,7 +39,7 @@ const PreRegisterView = () => {
                   priority
                 />
                 {/* Texto */}
-                <div className="absolute inset-0 flex items-center justify-center bg-black/50 text-white text-2xl md:text-3xl font-extrabold opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="absolute inset-0 flex items-center justify-center bg-black/50 text-[#FFEB3B] text-2xl md:text-3xl font-extrabold opacity-0 group-hover:opacity-100 transition-opacity">
                   Usuario
                 </div>
               </div>
@@ -52,7 +52,7 @@ const PreRegisterView = () => {
           {/* Jardinero */}
           <div className="relative group hover:scale-105 transition-transform">
             <Link href="/register?role=gardener">
-              <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden shadow-lg transition-all group-hover:shadow-xl group-hover:shadow-gray-400">
+              <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden shadow-lg transition-all group-hover:shadow-xl group-hover:shadow-[#FFEB3B]">
                 <Image
                   className="object-cover h-full w-full transition-transform group-hover:scale-110"
                   src="/images/gardeners.webp"
@@ -62,7 +62,7 @@ const PreRegisterView = () => {
                   priority
                 />
                 {/* Texto */}
-                <div className="absolute inset-0 flex items-center justify-center bg-black/50 text-white text-2xl md:text-3xl font-extrabold opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="absolute inset-0 flex items-center justify-center bg-black/50 text-[#FFEB3B] text-2xl md:text-3xl font-extrabold opacity-0 group-hover:opacity-100 transition-opacity">
                   Jardinero
                 </div>
               </div>
@@ -71,6 +71,17 @@ const PreRegisterView = () => {
               Registrarte como jardinero
             </p>
           </div>
+        </div>
+        <div className="mt-6">
+          <h2 className="text-lg md:text-xl font-semibold text-[#263238] mb-4">
+            ¿Ya tienes una cuenta?
+          </h2>
+          <Link
+            href="/login"
+            className="w-full mt-4 p-2 bg-[#4caf50] text-white font-bold rounded hover:bg-[#388e3c] hover:text-[#FFEB3B] flex items-center justify-center"
+          >
+            INICIAR SESIÓN
+          </Link>
         </div>
       </div>
     </div>
