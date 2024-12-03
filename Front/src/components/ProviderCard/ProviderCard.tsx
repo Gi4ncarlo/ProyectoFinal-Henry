@@ -17,7 +17,7 @@ const ProviderCard: React.FC<IProviderCardProps> = ({
       : 0;
 
   return (
-    <div className="w-full max-w-xs bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 cursor-pointer transform hover:scale-105 hover:shadow-2xl transition duration-300 ease-in-out h-[500px] flex flex-col hover:translate-y-2">
+    <div className="w-full max-w-xs bg-gray-100 border border-[#388E3C] rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 cursor-pointer transform hover:scale-105 hover:shadow-xl hover:shadow-[#FFEB3B] transition duration-300 ease-in-out h-[500px] flex flex-col hover:translate-y-2">
       {/* Imagen */}
       <div className="w-full min-h-[300px] overflow-hidden rounded-t-lg">
         <Image
