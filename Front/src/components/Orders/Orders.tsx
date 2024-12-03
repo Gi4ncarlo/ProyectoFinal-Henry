@@ -150,8 +150,8 @@ const DashboardUserCompo: React.FC = () => {
             // Ocultar el loader y restaurar el texto del botón
             loader.classList.add('hidden');
             submitText.classList.remove('hidden');
-            if(userSession?.user?.id && userSession?.token){
-            fetchOrders(userSession?.user?.id, userSession?.token);
+            if (userSession?.user?.id && userSession?.token) {
+              fetchOrders(userSession?.user?.id, userSession?.token);
             }
           }
         });
@@ -166,7 +166,7 @@ const DashboardUserCompo: React.FC = () => {
     const status = urlParams.get("status");
     const paymentId = urlParams.get("payment_id");
     const externalReference = urlParams.get("external_reference");
-    
+
     setStatus(status);
     setParams({ status, paymentId, externalReference });
 
@@ -252,6 +252,8 @@ const DashboardUserCompo: React.FC = () => {
         }
       );
       const data = await response.json();
+      console.log(data);
+      
       if (!response.ok) {
         throw new Error(data.message);
       }
@@ -259,20 +261,20 @@ const DashboardUserCompo: React.FC = () => {
         window.location.href = data.paymentUrl.sandbox_init_point;
       }
       setStatus("approved");
-       if (params?.status === "approved") {
+      if (params?.status === "approved") {
 
-      await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/services-order/orderPay/${params.externalReference}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${TOKEN.token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+        await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/services-order/orderPay/${params.externalReference}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${TOKEN.token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
       }
-      if(userSession?.user?.id && userSession?.token){
+      if (userSession?.user?.id && userSession?.token) {
         fetchOrders(userSession.user.id, userSession.token);
       }
     } catch (error) {
@@ -283,25 +285,21 @@ const DashboardUserCompo: React.FC = () => {
     const { name, value } = event.target;
 
     if (name === "sortBy") {
-      setSortBy(value); // Cambiar la propiedad por la que ordenar
+      setSortBy(value); 
     } else {
-      setSortOrder(value); // Cambiar el orden de clasificación (asc o desc)
+      setSortOrder(value); 
     }
   };
   const sortOrders = () => {
     const sortedOrders = Array.isArray(orders[0]?.servicesOrder)
       ? [...orders[0]?.servicesOrder].sort((a, b) => {
-        // Determinar si estamos ordenando por startTime o isApproved
         if (sortBy === "startTime") {
-          // Si startTime está presente, crear un objeto Date, si no, asignar Infinity
-          const dateA: any = a.orderDetail?.startTime ? new Date(a.orderDetail.startTime) : Infinity;
-          const dateB: any = b.orderDetail?.startTime ? new Date(b.orderDetail.startTime) : Infinity;
+          const dateA: any = a.serviceDate ? new Date(a.serviceDate) : Infinity;
+          const dateB: any = b.serviceDate ? new Date(b.serviceDate) : Infinity;
 
-          // Orden ascendente
           if (sortOrder === "asc") {
             return dateA === Infinity ? 1 : dateB === Infinity ? -1 : dateA.getTime() - dateB.getTime();
           }
-          // Orden descendente
           else {
             return dateA === Infinity ? -1 : dateB === Infinity ? 1 : dateB.getTime() - dateA.getTime();
           }
@@ -446,7 +444,7 @@ const DashboardUserCompo: React.FC = () => {
                   <strong>Fecha de Orden:</strong> {order.date}
                 </p>
                 <strong>Fecha del Servicio:</strong>{" "}
-                {order.orderDetail ? order.orderDetail.startTime : "No está definida"}
+                {order ? order?.serviceDate : "No está definida"}
               </div>
 
               {/* Detalles del Servicio */}

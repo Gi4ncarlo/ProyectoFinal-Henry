@@ -310,8 +310,8 @@ const GardenerDashboard = () => {
         // Determinar si estamos ordenando por startTime o isApproved
         if (sortBy === "startTime") {
           // Si startTime está presente, crear un objeto Date, si no, asignar Infinity
-          const dateA: any = a.orderDetail?.startTime ? new Date(a.orderDetail.startTime) : Infinity;
-          const dateB: any = b.orderDetail?.startTime ? new Date(b.orderDetail.startTime) : Infinity;
+          const dateA: any = a.serviceDate ? new Date(a.serviceDate) : Infinity;
+          const dateB: any = b.serviceDate ? new Date(b.serviceDate) : Infinity;
 
           // Orden ascendente
           if (sortOrder === "asc") {
