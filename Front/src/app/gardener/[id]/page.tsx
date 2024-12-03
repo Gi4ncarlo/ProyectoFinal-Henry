@@ -316,7 +316,7 @@ const ProviderDetail: React.FC = () => {
               {services.map((service) => (
                 <li
                   key={service.id}
-                  className="relative flex justify-between items-center py-3 px-4 rounded-lg border border-gray-200 hover:bg-gray-100 cursor-pointer transition-colors duration-300 my-1 h-[80px] "
+                  className="relative flex justify-between items-center py-3 px-4 rounded-lg border border-[#263238] hover:bg-gray-100 cursor-pointer transition-colors duration-300 my-1 h-[80px] "
                   onClick={() => handleServiceChange(service.id)}
                 >
                   <label
