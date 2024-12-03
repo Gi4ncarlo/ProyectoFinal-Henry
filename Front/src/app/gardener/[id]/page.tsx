@@ -233,7 +233,7 @@ const ProviderDetail: React.FC = () => {
           <div className="flex items-center">
             <Image
               className="rounded-full"
-              src={gardener.profileImageUrl || "/nuevo_usuarioGardener.jpg"}
+              src={gardener.profileImageUrl || "/images/nuevo_usuarioGardener.webp"}
               alt={`${gardener.name}'s profile`}
               width={120}
               height={120}
@@ -355,8 +355,8 @@ const ProviderDetail: React.FC = () => {
                         {review.rate.toFixed(1)}
                       </span>
 
-                      <span className="ml-2 text-sm text-gray-500">
-                        {new Date(review.serviceOrder.date).toLocaleDateString()}
+                      <span className="ml-2 text-sm text-gray-300">
+                        {new Date(review?.serviceOrder?.date).toLocaleDateString()}
                       </span>
                     </div>
                     <p className="text-gray-600 mt-2">{review.comment}</p>

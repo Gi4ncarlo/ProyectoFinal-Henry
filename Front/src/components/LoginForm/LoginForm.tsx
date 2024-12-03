@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+
 export default function LoginForm() {
   const router = useRouter();
   const initialState = {
@@ -20,7 +21,7 @@ export default function LoginForm() {
     token: string;
     user: any; // Cambia 'any' por el tipo adecuado si tienes uno para el usuario
   }
-  
+
   const [dataUser, setDataUser] = useState<ILoginProps>(initialState);
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<ILoginErrors>(initialState);
@@ -157,7 +158,7 @@ export default function LoginForm() {
           <button
             type="submit"
             disabled={Object.values(errors).some((error) => error !== "")}
-            className="w-full mt-4 p-2 bg-[#4caf50] text-white font-bold rounded hover:bg-[#388e3c]"
+            className="w-full mt-4 p-2 bg-[#4caf50] text-white font-bold rounded hover:bg-[#388e3c] hover:text-[#FFEB3B]"
           >
             Entrar
           </button>
@@ -166,8 +167,8 @@ export default function LoginForm() {
         {/* Botón para iniciar sesión con Google */}
         <div className="mt-6">
           <Link
-            href= "/api/auth/login?returnTo=/loginGoogle"
-            className="w-full flex items-center justify-center p-2 bg-[#4caf50] text-white font-bold rounded hover:bg-[#388e3c]"
+            href="/api/auth/login?returnTo=/loginGoogle"
+            className="w-full mt-4 p-2 bg-[#4caf50] text-white font-bold rounded hover:bg-[#388e3c] hover:text-[#FFEB3B] flex items-center justify-center"
           >
             <Image
               src="/images/LogoGoogle.webp"
@@ -177,6 +178,14 @@ export default function LoginForm() {
               className="mr-2 rounded-full bg-white"
             />
             Entrar con Google
+          </Link>
+        </div>
+        <div className="mt-6">
+          <Link
+            href="/preRegister"
+            className="w-full mt-4 p-2 bg-[#4caf50] text-white font-bold rounded hover:bg-[#388e3c] hover:text-[#FFEB3B] flex items-center justify-center"
+          >
+            Registrarse
           </Link>
         </div>
       </div>

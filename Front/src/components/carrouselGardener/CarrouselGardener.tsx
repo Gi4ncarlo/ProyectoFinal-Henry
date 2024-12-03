@@ -7,6 +7,8 @@ import {
 import { IUserSession } from "@/interfaces/IUserSession";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
+import { Upload, Button } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
 import Swal from "sweetalert2";
 
 const CarrouselGardener = () => {
@@ -37,9 +39,8 @@ const CarrouselGardener = () => {
       console.error("Error buscando el carrousel:", error);
     }
   };
-  const uploadImage = async (e: any) => {
-    const file = e.target.files[0];
-    //if (!file) return;
+
+  const uploadImage = async (file: File) => {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("upload_preset", "gardener");
@@ -50,21 +51,27 @@ const CarrouselGardener = () => {
         userSession?.user.id.toString()
       );
       console.log("respuesta en uploadImage", response);
-   
-      //if (response) {
+
       await fetchCarrousel();
-        Swal.fire({
-          icon: "success",
-          title: " Éxito",
-          text: "Imagen subida correctamente",
-        });
-      //}
+      Swal.fire({
+        icon: "success",
+        title: "Éxito",
+        text: "Imagen subida correctamente",
+      });
     } catch (error) {
       console.error("Error uploading image:", error);
-      alert("Error al subir la imagen.");
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Error al subir la imagen.",
+      });
     }
   };
 
+  const handleUpload = ({ file }: { file: any }) => {
+    const convertedFile = file.originFileObj as File || file as File;
+    uploadImage(convertedFile); 
+  };
   useEffect(() => {
     if (userSession?.user?.id) {
       fetchCarrousel();
@@ -81,18 +88,15 @@ const CarrouselGardener = () => {
     }
   };
 
-  if(loader){
+  if (loader) {
     return (
       <div className="flex flex-col items-center justify-center h-screen w-screen">
-      {/* Spinner */}
-      <div className="w-16 h-16 border-4 border-green-300 border-t-green-500 rounded-full animate-spin mb-4"></div>
-  
-      {/* Texto */}
-      <h2 className="text-xl font-semibold text-[#263238]">
-        Cargando la informacion..
-      </h2>
-    </div>
-    )
+        <div className="w-16 h-16 border-4 border-green-300 border-t-green-500 rounded-full animate-spin mb-4"></div>
+        <h2 className="text-xl font-semibold text-[#263238]">
+          Cargando la información...
+        </h2>
+      </div>
+    );
   }
 
   return (
@@ -101,7 +105,7 @@ const CarrouselGardener = () => {
     <h2 className="text-2xl font-semibold text-gray-700 mb-4">
           Carrusel de imágenes:
         </h2>
- 
+
         <div className="relative w-full max-w-3xl mx-auto">
           <div className="overflow-hidden rounded-lg shadow-lg bg-white">
             <div className="flex snap-x snap-mandatory overflow-x-auto">
@@ -131,17 +135,16 @@ const CarrouselGardener = () => {
         </div>
       </div>
 
-      {/* Subir nueva imagen */}
       <div className="mt-8">
-        <h2 className="text-xl font-semibold text-[#FF5722] mb-4">
+        <h2 className="text-xl font-semibold text-[#388E3C] mb-4">
           Subir imagen al carrusel:
         </h2>
-        <input
-  type="file"
-  onChange={uploadImage}
-  className="block  w-full p-3 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#4CAF50] bg-white"
-/>
-
+        <Upload
+          customRequest={({ file }) => handleUpload({ file })}
+          showUploadList={false}
+        >
+          <Button style={{ backgroundColor: "#4CAF50", borderColor: "#263238", color: "white" }} icon={<UploadOutlined />}>Sube tu imagen</Button>
+        </Upload>
       </div>
     </div>
   );

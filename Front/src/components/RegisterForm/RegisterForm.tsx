@@ -94,10 +94,10 @@ export default function RegisterForm() {
           icon: "success",
         });
         router.push("/login");
-      } catch (error) {
+      } catch (error:any) {
         Swal.fire({
           title: "Error",
-          text: "Ocurrió un problema al registrarte",
+          text: error.message,
           icon: "error",
         });
       } finally {
@@ -291,7 +291,7 @@ export default function RegisterForm() {
         <button
             type="submit"
             disabled={isSubmitting}
-            className={`w-full p-2 mt-4 text-white bg-[#4CAF50] rounded-lg focus:outline-none ${
+            className={`w-full p-2 mt-4 text-white bg-[#4CAF50] hover:text-[#FFEB3B] rounded-lg focus:outline-none ${
               isSubmitting ? 'cursor-not-allowed opacity-70' : 'hover:bg-[#388E3C]'
             }`}
           >

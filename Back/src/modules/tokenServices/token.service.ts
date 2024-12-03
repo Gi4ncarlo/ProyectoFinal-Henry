@@ -19,7 +19,7 @@ export class TokenService {
         return await nanoid(num);
     }
 
-    async checkToken(body, id: string): Promise<boolean> {
+    async checkToken(body, id: string) {
         const order = await this.orderService.findOne(
             {
                 where: { id },
@@ -33,7 +33,11 @@ export class TokenService {
         detail.status = Status.Finished;
         detail.gardenerToken = body.token;
         await this.serviceDetail.save(detail);
-        return true;
+        return {
+            message: 'El token es correcto',
+            status: 200,
+            body
+        };
 
     }
 
