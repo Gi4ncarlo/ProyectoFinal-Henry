@@ -22,7 +22,7 @@ const EditDashboard: React.FC = () => {
         ...(userSession?.user?.role === "gardener"
             ? [{ label: "Experiencia", field: "experience", value: userSession?.user?.experience || "" }]
             : []),
- 
+
     ];
 
     useEffect(() => {
@@ -56,7 +56,7 @@ const EditDashboard: React.FC = () => {
 
             const data = await response.json();
 
-            
+
             if (userSession) {
                 const updatedSession = {
                     ...userSession,
@@ -65,11 +65,11 @@ const EditDashboard: React.FC = () => {
                 localStorage.setItem("userSession", JSON.stringify(updatedSession));
 
                 window.dispatchEvent(new StorageEvent('storage', { key: 'userSession', newValue: JSON.stringify(updatedSession) }));
-                
+
                 setImageProfile(data.imageUrl);
                 setUserSession(updatedSession);
                 console.log("Que trae userSession: ", updatedSession);
-                
+
             }
             Swal.fire("Éxito", "Imagen subida correctamente", "success");
         } catch (error) {
@@ -77,19 +77,28 @@ const EditDashboard: React.FC = () => {
             Swal.fire("Error", "No se pudo subir la imagen", "error");
         }
     };
-    
-    
+
+
     const handleEditClick = (field: string, currentValue: string) => {
         setEditingField(field);
         setEditedValue(currentValue);
     };
 
+
+
+
     const handleSaveClick = async () => {
         if (editingField && userSession) {
+            // Validar que el valor no esté vacío o no sea un valor inválido
+            if (editedValue === "" || editedValue === null || editedValue === undefined) {
+                Swal.fire("Error", "El campo no puede estar vacío", "error");
+                return;
+            }
+
             const updatedData = { [editingField]: editedValue };
 
             try {
-                const updatedUser = await userEdit(updatedData,TOKEN);
+                const updatedUser = await userEdit(updatedData, TOKEN);
 
                 if (updatedUser) {
                     const updatedSession = { ...userSession, user: updatedUser };
@@ -105,6 +114,7 @@ const EditDashboard: React.FC = () => {
             }
         }
     };
+
 
     const handleCancelClick = () => {
         setEditingField(null);
@@ -129,7 +139,7 @@ const EditDashboard: React.FC = () => {
                                 });
                             }}
                         >
-                            <Button style={{ backgroundColor: "#4CAF50", borderColor: "#263238", color: "white" , padding: "20px"}} icon={<UploadOutlined />}>Sube tu imagen</Button>
+                            <Button style={{ backgroundColor: "#4CAF50", borderColor: "#263238", color: "white", padding: "20px" }} icon={<UploadOutlined />}>Sube tu imagen</Button>
                         </Upload>
                     </div>
                     <div className="flex items-center justify-center">
@@ -154,14 +164,17 @@ const EditDashboard: React.FC = () => {
                             <p className="mb-2 text-[#263238]">
                                 <strong>{label}:</strong> {value}
                             </p>
-                            <button
-                                onClick={() => handleEditClick(field, value)}
-                                className="bg-green-600 hover:bg-green-700 text-white hover:text-[#FFEB3B] font-semibold py-2 px-4 rounded"
-                            >
-                                Editar
-                            </button>
 
-                            {editingField === field && (
+                            {editingField !== field ? (
+                                // Mostrar botón "Editar" solo si no está en edición
+                                <button
+                                    onClick={() => handleEditClick(field, value)}
+                                    className="bg-green-600 hover:bg-green-700 text-white hover:text-[#FFEB3B] font-semibold py-2 px-4 rounded"
+                                >
+                                    Editar
+                                </button>
+                            ) : (
+                                // Mostrar input y botones de "Guardar" y "Cancelar" si está en edición
                                 <div className="mt-4">
                                     <input
                                         type="text"
@@ -172,7 +185,11 @@ const EditDashboard: React.FC = () => {
                                     <div className="flex space-x-4 mt-4">
                                         <button
                                             onClick={handleSaveClick}
-                                            className="bg-green-500 hover:bg-green-600 text-[#263238] p-2 rounded"
+                                            disabled={editedValue === "" || editedValue === null || editedValue === undefined}
+                                            className={`${editedValue === "" || editedValue === null || editedValue === undefined
+                                                    ? "bg-gray-300 cursor-not-allowed"
+                                                    : "bg-green-500 hover:bg-green-600"
+                                                } text-[#263238] p-2 rounded`} 
                                         >
                                             Guardar
                                         </button>
@@ -186,6 +203,7 @@ const EditDashboard: React.FC = () => {
                                 </div>
                             )}
                         </div>
+
                     ))}
                 </div>
             </div>
