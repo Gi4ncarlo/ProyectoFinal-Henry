@@ -60,7 +60,13 @@ export class ServiceDetail {
   @JoinColumn()
   servicesOrder: ServicesOrderEntity;
 
-  @ManyToOne(() => Gardener, (gardener) => gardener.serviceDetails, { nullable: false })
+  @ManyToOne(() => Gardener, (gardener) => gardener.serviceDetails,
+    {
+      nullable: false,
+      onDelete: 'CASCADE'
+    },
+
+  )
   @JoinColumn()
   assignedGardener: Gardener;
 

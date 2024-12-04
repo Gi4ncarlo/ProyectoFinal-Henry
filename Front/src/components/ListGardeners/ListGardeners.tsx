@@ -142,7 +142,10 @@ const handleDelete = async (id: number) => {
       throw new Error("Usuario no autenticado");
     }
 
-    await deleteGardener(token, id);
+    const response = await deleteGardener(token, id);
+    if (!response) {
+      throw new Error("Error al eliminar el jardinero");
+    }
 
     // Actualizar la lista de jardineros después de eliminar
     setProviders((prev) => prev.filter((gardener) => gardener.id !== id));

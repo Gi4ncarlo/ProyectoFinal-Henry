@@ -50,7 +50,7 @@ export class GardenerController {
   ) {
     try {
       if (!day?.date) return res.status(400).json({ message: 'El campo "date" es requerido' });
-      
+
       if (!/^\d{4}-\d{2}-\d{2}$/.test(day.date)) return res.status(400).json({ message: 'El campo "date" debe estar en formato YYYY-MM-DD' });
       const response = await this.gardenerService.reserveDay(gardenerId, day);
       return res.status(200).json(response);
@@ -70,7 +70,7 @@ export class GardenerController {
       console.log(`Solicitud recibida para el jardinero: ${gardenerId}`);
       const reservedDays = await this.gardenerService.getReservedDays(gardenerId);
       return res.status(200).json(reservedDays ? reservedDays : []);
-      
+
     } catch (error) {
       return res.status(500).json({ message: 'Error interno', error });
     }
@@ -80,12 +80,12 @@ export class GardenerController {
   @Roles(Role.Admin)
   @Post()
   create(@Body() createGardenerDto: CreateGardenerDto, @Res() res: Response) {
-  try {
-     const newGardener = this.gardenerService.create(createGardenerDto);
-    return res.status(201).json(newGardener);    
-  } catch (error) {
-    throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
-  }
+    try {
+      const newGardener = this.gardenerService.create(createGardenerDto);
+      return res.status(201).json(newGardener);
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @UseGuards(AuthGuard)
@@ -127,7 +127,7 @@ export class GardenerController {
     @Query('name') name?: string,
     @Query('calification') calification?: number,
     @Query('order') order: 'ASC' | 'DESC' = 'ASC',
-    
+
   ) {
     try {
       const data = await this.gardenerService.findAll(page, limit, name, calification, order);
@@ -165,13 +165,13 @@ export class GardenerController {
         size: file.size,
         buffer: file.buffer,
       };
-  
+
       const imageUrl = await this.fileUploadService.uploadFile(
         uploadFileDto,
         'gardener',
       );
       await this.gardenerService.updateProfileImage(id, imageUrl);
-  
+
       return { imageUrl };
     } catch (error: any) {
       throw new Error(error.message);
@@ -188,7 +188,7 @@ export class GardenerController {
     @Res() res: Response
   ) {
     try {
-      
+
       const uploadFileDto: UploadFileDto = {
         fieldname: file.fieldname,
         originalname: file.originalname,
@@ -196,13 +196,13 @@ export class GardenerController {
         size: file.size,
         buffer: file.buffer,
       };
-  
+
       const imageUrl = await this.fileUploadService.uploadFile(
         uploadFileDto,
         'gardener',
       );
       await this.gardenerService.uploadCarrouselImages(id, imageUrl);
-  
+
       return { imageUrl };
     } catch (error) {
       return res.status(500).json({ message: 'Error interno', error });
@@ -215,7 +215,7 @@ export class GardenerController {
     try {
       const gardener = await this.gardenerService.findOne(id);
       return { imageUrl: gardener.profileImageUrl };
-      
+
     } catch (error) {
       return res.status(500).json({ message: 'Error interno', error });
     }
@@ -230,7 +230,7 @@ export class GardenerController {
 
   @Patch("carrousel/:id")
   @HttpCode(200)
-  async updateCarrouselImages(@Param('id') id: string, @Body() carrousel : string[]) {
+  async updateCarrouselImages(@Param('id') id: string, @Body() carrousel: string[]) {
     return this.gardenerService.updateCarrouselImages(id, carrousel);
   }
 
@@ -305,8 +305,14 @@ export class GardenerController {
   @Roles(Role.Admin)
   @HttpCode(200)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.gardenerService.remove(id);
+  async remove(@Param('id', new ParseUUIDPipe()) id: string, @Res() res: Response) {
+    try {
+      const userDeleted = await this.gardenerService.remove(id);
+      return res.status(200).json({ status: 200, userDeleted });
+
+    } catch (error) {
+      return res.status(500).json({ message: 'Error interno', error, status: 500 });
+    }
   }
 
   @Get()

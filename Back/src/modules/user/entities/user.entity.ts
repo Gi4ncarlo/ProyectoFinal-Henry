@@ -46,7 +46,11 @@ export class User {
   })
   isGoogle: boolean
 
-  @OneToMany(() => ServicesOrderEntity, (serviceOrders) => serviceOrders.user)
+  @OneToMany(() => ServicesOrderEntity,
+    (serviceOrders) => serviceOrders.user,
+    {
+      onDelete: 'CASCADE',
+    })
   servicesOrder: ServicesOrderEntity[];
 
   @Column({ type: 'text', nullable: true })
