@@ -155,7 +155,7 @@ export class GardenerController {
   async uploadProfileImage(
     @Param('id') id: string,
     @UploadedFile(new ImageUploadPipe()) file: Express.Multer.File,
-    @Res() res: Response
+    // @Res() res: Response
   ) {
     try {
       const uploadFileDto: UploadFileDto = {
@@ -173,8 +173,8 @@ export class GardenerController {
       await this.gardenerService.updateProfileImage(id, imageUrl);
   
       return { imageUrl };
-    } catch (error) {
-      return res.status(500).json({ message: 'Error interno', error });
+    } catch (error: any) {
+      throw new Error(error.message);
     }
   }
 

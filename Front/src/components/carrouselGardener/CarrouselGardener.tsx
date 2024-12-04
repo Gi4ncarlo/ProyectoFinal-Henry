@@ -13,7 +13,7 @@ import Swal from "sweetalert2";
 
 const CarrouselGardener = () => {
   const [userSession, setUserSession] = useState<IUserSession | null>(null);
-  const [carrousel, setCarrousel] = useState<any[]>([]);
+  const [carrousel, setCarrousel] = useState<string[]>([]);
   const [loader, setLoader] = useState(false);
 
   useEffect(() => {
@@ -30,43 +30,63 @@ const CarrouselGardener = () => {
       if (id) {
         const carrouselData = await getCarrouselById(id);
         setCarrousel(carrouselData?.imageUrl || []);
-        setLoader(false);
       }
     } catch (error) {
       console.error("Error buscando el carrousel:", error);
+    } finally {
+      setLoader(false);
     }
   };
 
-  const uploadImage = async (e: any) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
+  const uploadImage = async (file: File) => {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("upload_preset", "gardener");
 
+    const temporaryImageUrl = URL.createObjectURL(file);
+    Swal.fire({
+      icon: "success",
+      title: "Imagen Subida",
+      text: "Tu imagen se ha agregado correctamente al carrusel.",
+      timer: 1500,
+      showConfirmButton: false,
+    });
+
     try {
+      setCarrousel((prevCarrousel) => [...prevCarrousel, temporaryImageUrl]);
+
       const response = await postCarrouselImage(
         formData,
         userSession?.user.id.toString()
       );
+      
 
       if (response?.imageUrl) {
-        setCarrousel((prevCarrousel) => [...prevCarrousel, response.imageUrl]);
-        Swal.fire({
-          icon: "success",
-          title: "Éxito",
-          text: "Imagen subida correctamente",
-        });
+        const newImageUrl = response.imageUrl;
+
+        setCarrousel((prevCarrousel) =>
+          prevCarrousel.map((url) =>
+            url === temporaryImageUrl ? newImageUrl : url
+          )
+        );
 
         const id = userSession?.user.id.toString();
         if (id) {
-          await updateCarrousel(id, [...carrousel, response.imageUrl]);
+          await updateCarrousel(id, [
+            ...carrousel.filter((url) => url !== temporaryImageUrl),
+            newImageUrl,
+          ]);
         }
       } else {
+        setCarrousel((prevCarrousel) =>
+          prevCarrousel.filter((url) => url !== temporaryImageUrl)
+        );
         throw new Error("No se obtuvo la URL de la imagen");
       }
     } catch (error) {
+      setCarrousel((prevCarrousel) =>
+        prevCarrousel.filter((url) => url !== temporaryImageUrl)
+      );
       console.error("Error al subir la imagen:", error);
       Swal.fire({
         icon: "error",
@@ -78,6 +98,36 @@ const CarrouselGardener = () => {
 
   const handleUpload = ({ file }: { file: any }) => {
     const convertedFile = file.originFileObj as File || file as File;
+
+    if (!convertedFile) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "No se seleccionó ningún archivo.",
+      });
+      return;
+    }
+
+    const allowedTypes = ["image/jpg", "image/jpeg", "image/png", "image/gif", "image/webp"];
+    if (!allowedTypes.includes(convertedFile.type)) {
+      Swal.fire({
+        icon: "error",
+        title: "Tipo de archivo inválido",
+        text: "Solo se permiten imágenes JPG, JPEG, PNG, GIF o WEBP.",
+      });
+      return;
+    }
+
+    const maxSize = 2 * 1024 * 1024;
+    if (convertedFile.size > maxSize) {
+      Swal.fire({
+        icon: "error",
+        title: "Archivo muy grande",
+        text: "El archivo no debe superar los 2MB.",
+      });
+      return;
+    }
+
     uploadImage(convertedFile);
   };
 
@@ -88,6 +138,13 @@ const CarrouselGardener = () => {
   }, [userSession]);
 
   const handleDelete = async (index: number) => {
+    Swal.fire({
+      icon: "success",
+      title: "Imagen Eliminada",
+      text: "La imagen ha sido eliminada del carrusel",
+      timer: 1500,
+      showConfirmButton: false,
+    });
     const updatedCarrousel = carrousel.filter((_, i) => i !== index);
     setCarrousel(updatedCarrousel);
 
@@ -95,8 +152,9 @@ const CarrouselGardener = () => {
     if (id) {
       await updateCarrousel(id, updatedCarrousel);
     }
-  };
 
+  };
+  
   if (loader) {
     return (
       <div className="flex flex-col items-center justify-center h-screen w-screen">
@@ -115,7 +173,6 @@ const CarrouselGardener = () => {
           Carrusel de imágenes:
         </h2>
 
-        {/* Carrusel con Ant Design */}
         <div className="carousel-container my-6">
           <Carousel autoplay effect="fade" arrows>
             {carrousel.map((imageUrl, index) => (
@@ -131,11 +188,11 @@ const CarrouselGardener = () => {
                   className="object-cover"
                 />
                 <button
-                    onClick={() => handleDelete(index)}
-                    className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600"
-                  >
-                    X
-                  </button>
+                  onClick={() => handleDelete(index)}
+                  className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600"
+                >
+                  X
+                </button>
               </div>
             ))}
           </Carousel>
