@@ -11,7 +11,7 @@ export const getGardenersDB = async (
 ): Promise<{ data: IServiceProvider[] }> => {
   if (!token) {
     console.error("Token is missing or invalid.");
-    return { data: [] }; 
+    return { data: [] };
   }
   const params = new URLSearchParams();
   params.append("order", order);
@@ -48,7 +48,7 @@ export const getTasks = async (id: string) => {
   });
   const data = await response.json();
   console.log(data);
-  
+
   return data;
 }
 
@@ -63,7 +63,7 @@ export async function getProviderById(id: string): Promise<IServiceProvider | nu
 
   if (!TOKEN || !TOKEN.token) {
     console.error("Token is missing or invalid.");
-    return null; 
+    return null;
   }
 
   try {
@@ -81,7 +81,7 @@ export async function getProviderById(id: string): Promise<IServiceProvider | nu
     const response = await res.json();
 
     if (response && typeof response === "object" && !Array.isArray(response)) {
-      return response.data || response; 
+      return response.data || response;
     } else {
       throw new Error("Invalid data format, expected object in 'data'");
     }
@@ -94,14 +94,14 @@ export async function getProviderById(id: string): Promise<IServiceProvider | nu
 
 export async function getCarrouselById(id: string) {
   try {
- 
+
     let TOKEN = null;
     if (typeof window !== "undefined") {
       const storedToken = localStorage.getItem("userSession");
       TOKEN = storedToken ? JSON.parse(storedToken) : null;
     }
 
-   
+
     if (!TOKEN?.token) {
       console.error("Token is missing or invalid.");
       return null;
@@ -122,208 +122,211 @@ export async function getCarrouselById(id: string) {
       throw new Error(`Error con el jardinero ${id}: ${res.status} ${res.statusText}`);
     }
 
- 
+
     const response = await res.json();
 
 
     if (response && typeof response === "object" && !Array.isArray(response)) {
-      return response.data || response; 
+      return response.data || response;
     } else {
       throw new Error("Formato invalido.");
     }
   } catch (error: any) {
     console.error(`Error con el jardinero ${id}:`, error.message || error);
-    return null; 
+    return null;
   }
 }
 
-  export async function postCarrouselImage(formData: FormData, id : string | undefined) {
-    try {
-      let TOKEN = null;
-      if (typeof window !== "undefined") {
-        const storedToken = localStorage.getItem("userSession");
-        TOKEN = storedToken ? JSON.parse(storedToken) : null;
-      }
-  
-      if (!TOKEN?.token) {
-        console.error("Token is missing or invalid.");
-        return null;
-      }
-  
-      const res = await fetch(`${APIURL}/gardener/carrousel/${id}`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${TOKEN.token}`,
-        },
-        body: formData,
-      });
-  
-      if (!res.ok) {
-        throw new Error(`Error al subir la imagen: ${res.status} ${res.statusText}`);
-      }
-  
-      const response = await res.json();
-  
-      if (response && typeof response === "object" && !Array.isArray(response)) {
-        return response.data || response; 
-      } else {
-        throw new Error("Formato invalido.");
-      } 
-    } catch (error: any) {
-      console.error("Error al subir la imagen:", error.message || error);
+export async function postCarrouselImage(formData: FormData, id: string | undefined) {
+  try {
+    let TOKEN = null;
+    if (typeof window !== "undefined") {
+      const storedToken = localStorage.getItem("userSession");
+      TOKEN = storedToken ? JSON.parse(storedToken) : null;
+    }
+
+    if (!TOKEN?.token) {
+      console.error("Token is missing or invalid.");
       return null;
     }
-  }
-  export async function updateCarrousel(id: string, carrousel: string[]) {
-    try {
-      let TOKEN = null;
-      if (typeof window !== "undefined") {
-        const storedToken = localStorage.getItem("userSession");
-        TOKEN = storedToken ? JSON.parse(storedToken) : null;
-      }
-  
-      if (!TOKEN?.token) {
-        console.error("Token is missing or invalid.");
-        return null;
-      }
-  
-      const res = await fetch(`${APIURL}/gardener/carrousel/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json", // Indica que el cuerpo es JSON
-          Authorization: `Bearer ${TOKEN.token}`,
-        },
-        body: JSON.stringify(carrousel), // Serializa el arreglo a JSON
-      });
-  
-      if (!res.ok) {
-        throw new Error(`Error al modificar el carrousel: ${res.status} ${res.statusText}`);
-      }
-  
-      const response = await res.json();
-  
-      if (response && typeof response === "object" && !Array.isArray(response)) {
-        return response.data || response; 
-      } else {
-        throw new Error("Formato inválido.");
-      }
-    } catch (error: any) {
-      console.error("Error al modificar el carrousel:", error.message || error);
-      return null;
-    }
-  }
-  
-  
-  export const updateProviderServices = async (gardenerId: string, serviceIds: string[]): Promise<IServiceProvider> => {
-    try {
-      let TOKEN = null;
-      if (typeof window !== "undefined") {
-        const storedToken = localStorage.getItem("userSession");
-        TOKEN = storedToken ? JSON.parse(storedToken) : null;
-      }
-  
-      if (!TOKEN?.token) {
-        console.error("Token is missing or invalid.");
-        throw new Error("Unauthorized");
-      }
-      console.log("Que estoy recibiendo en serviceIds: ", serviceIds);
-      
-      const response = await fetch(`${APIURL}/gardener/${gardenerId}`, {
-        method: 'PATCH',
-        headers: {
-          'Authorization': `Bearer ${TOKEN.token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ serviceProvided: serviceIds }),
-      });
-  
-      if (!response.ok) {
-        throw new Error(`Error al actualizar los servicios del proveedor con ID ${gardenerId}`);
-      }
-  
-      const updatedProvider = await response.json();
-      return updatedProvider;
-    } catch (error) {
-      console.error('Error al actualizar los servicios del proveedor:', error);
-      throw error;
-    }
-  };
-  
 
-  export const getProviderServices = async (gardenerId: string): Promise<IService[]> => {
-    try {
-      let TOKEN = null;
-      if (typeof window !== "undefined") {
-        const storedToken = localStorage.getItem("userSession");
-        TOKEN = storedToken ? JSON.parse(storedToken) : null;
-      }
-  
-      if (!TOKEN?.token) {
-        console.error("Token is missing or invalid.");
-      }
-
-      const response = await fetch(`${APIURL}/gardener/${gardenerId}/serviceProvided`, {
-        headers: {
-          'Authorization': `Bearer ${TOKEN?.token}`,
-        },
-      });
-  
-      if (!response.ok) {
-        throw new Error(`Error al obtener los servicios del proveedor con ID ${gardenerId}`);
-      }
-  
-      const services = await response.json();
-      return services;
-    } catch (error) {
-      console.error('Error al obtener los servicios del proveedor:', error);
-      throw error;
-    }
-  };
-
-  export const deleteGardener = async (token: string, id: number): Promise<void> => {
-    if (!token) {
-      throw new Error("Token is missing or invalid.");
-    }
-  
-    const response = await fetch(`${APIURL}/gardener/${id}`, {
-      method: "DELETE",
+    const res = await fetch(`${APIURL}/gardener/carrousel/${id}`, {
+      method: "POST",
       headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
+        Authorization: `Bearer ${TOKEN.token}`,
       },
+      body: formData,
     });
-  
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "Error al eliminar el jardinero");
+
+    if (!res.ok) {
+      throw new Error(`Error al subir la imagen: ${res.status} ${res.statusText}`);
     }
-  };
-  
-  
-  
-  export const updateGardener = async (
-    token: string,
-    id: number,
-    updateGardenerDto: Partial<IServiceProvider>
-  ): Promise<IServiceProvider> => {
-    if (!token) {
-      throw new Error("Token inválido o ausente");
+
+    const response = await res.json();
+
+    if (response && typeof response === "object" && !Array.isArray(response)) {
+      return response.data || response;
+    } else {
+      throw new Error("Formato invalido.");
     }
-  
-    const response = await fetch(`${APIURL}/gardener/${id}`, {
+  } catch (error: any) {
+    console.error("Error al subir la imagen:", error.message || error);
+    return null;
+  }
+}
+export async function updateCarrousel(id: string, carrousel: string[]) {
+  try {
+    let TOKEN = null;
+    if (typeof window !== "undefined") {
+      const storedToken = localStorage.getItem("userSession");
+      TOKEN = storedToken ? JSON.parse(storedToken) : null;
+    }
+
+    if (!TOKEN?.token) {
+      console.error("Token is missing or invalid.");
+      return null;
+    }
+
+    const res = await fetch(`${APIURL}/gardener/carrousel/${id}`, {
       method: "PATCH",
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json", // Indica que el cuerpo es JSON
+        Authorization: `Bearer ${TOKEN.token}`,
       },
-      body: JSON.stringify(updateGardenerDto),
+      body: JSON.stringify(carrousel), // Serializa el arreglo a JSON
     });
-  
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || "Error al actualizar el jardinero");
+
+    if (!res.ok) {
+      throw new Error(`Error al modificar el carrousel: ${res.status} ${res.statusText}`);
     }
-  
-    return response.json();
-  };
+
+    const response = await res.json();
+
+    if (response && typeof response === "object" && !Array.isArray(response)) {
+      return response.data || response;
+    } else {
+      throw new Error("Formato inválido.");
+    }
+  } catch (error: any) {
+    console.error("Error al modificar el carrousel:", error.message || error);
+    return null;
+  }
+}
+
+
+export const updateProviderServices = async (gardenerId: string, serviceIds: string[]): Promise<IServiceProvider> => {
+  try {
+    let TOKEN = null;
+    if (typeof window !== "undefined") {
+      const storedToken = localStorage.getItem("userSession");
+      TOKEN = storedToken ? JSON.parse(storedToken) : null;
+    }
+
+    if (!TOKEN?.token) {
+      console.error("Token is missing or invalid.");
+      throw new Error("Unauthorized");
+    }
+    console.log("Que estoy recibiendo en serviceIds: ", serviceIds);
+
+    const response = await fetch(`${APIURL}/gardener/${gardenerId}`, {
+      method: 'PATCH',
+      headers: {
+        'Authorization': `Bearer ${TOKEN.token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ serviceProvided: serviceIds }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error al actualizar los servicios del proveedor con ID ${gardenerId}`);
+    }
+
+    const updatedProvider = await response.json();
+    return updatedProvider;
+  } catch (error) {
+    console.error('Error al actualizar los servicios del proveedor:', error);
+    throw error;
+  }
+};
+
+
+export const getProviderServices = async (gardenerId: string): Promise<IService[]> => {
+  try {
+    let TOKEN = null;
+    if (typeof window !== "undefined") {
+      const storedToken = localStorage.getItem("userSession");
+      TOKEN = storedToken ? JSON.parse(storedToken) : null;
+    }
+
+    if (!TOKEN?.token) {
+      console.error("Token is missing or invalid.");
+    }
+
+    const response = await fetch(`${APIURL}/gardener/${gardenerId}/serviceProvided`, {
+      headers: {
+        'Authorization': `Bearer ${TOKEN?.token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error al obtener los servicios del proveedor con ID ${gardenerId}`);
+    }
+
+    const services = await response.json();
+    return services;
+  } catch (error) {
+    console.error('Error al obtener los servicios del proveedor:', error);
+    throw error;
+  }
+};
+
+export const deleteGardener = async (token: string, id: number): Promise<any> => {
+  if (!token) {
+    throw new Error("Token is missing or invalid.");
+  }
+
+  const response = await fetch(`${APIURL}/gardener/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  const data = await response.json();
+
+  if (data.status === 200) {
+    return true
+  } else {
+    return false
+  }
+};
+
+
+
+export const updateGardener = async (
+  token: string,
+  id: number,
+  updateGardenerDto: Partial<IServiceProvider>
+): Promise<IServiceProvider> => {
+  if (!token) {
+    throw new Error("Token inválido o ausente");
+  }
+
+  const response = await fetch(`${APIURL}/gardener/${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(updateGardenerDto),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || "Error al actualizar el jardinero");
+  }
+
+  return response.json();
+};
 

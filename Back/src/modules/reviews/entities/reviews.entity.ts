@@ -21,7 +21,7 @@ export class ReviewsEntity {
     @Column()
     rate: number
 
-    @ManyToMany(() => Gardener, (gardener) => gardener.reviews)
+    @ManyToMany(() => Gardener, (gardener) => gardener.reviews,{ onDelete: "CASCADE" })
     @JoinTable()
     gardener: Gardener
 
