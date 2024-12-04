@@ -40,6 +40,9 @@ const EditDashboard: React.FC = () => {
         const formData = new FormData();
         formData.append("file", file);
 
+        console.log("Que ocurre fuera del proceso con userSession: ", userSession);
+        console.log("Que respuesta obtengo: ", formData);
+
         try {
             const response = await fetch(
                 `${process.env.NEXT_PUBLIC_API_URL}/${userSession?.user?.role}/${userSession?.user?.id}/image`,
@@ -54,7 +57,10 @@ const EditDashboard: React.FC = () => {
 
             if (!response.ok) throw new Error("Error uploading image");
 
+            console.log("Que respuesta obtengo: ", response);
             const data = await response.json();
+
+            console.log("Que trae userSession: ", userSession);
 
             if (userSession) {
                 const updatedSession = {
