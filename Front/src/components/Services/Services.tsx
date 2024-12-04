@@ -14,6 +14,8 @@ import { validateServiceForm } from "@/helpers/validateService";
 import { registerService } from "@/helpers/auth.helpers";
 import Swal from "sweetalert2";
 import EditServiceModal from "./editServicesModal";
+import { Tooltip } from 'antd';
+
 
 const Services = () => {
   const [services, setServices] = useState<IService[]>([]); // Servicios disponibles
@@ -216,14 +218,18 @@ const Services = () => {
             >
               <div className="flex justify-end">
                 <button onClick={() => handleEditService(service)}>
+                <Tooltip title="Editar" color="#263238">
                   <span className="text-lg font-bold mr-2">✏️</span>
+                </Tooltip>
                 </button>
+                <Tooltip title="Eliminar" color="#263238">
                 <button
                   onClick={() => handleServiceClick(service)}
                   className="my-2 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-full justify-end text-sm"
                 >
                   X
                 </button>
+                </Tooltip>
               </div>
               <h2 className="font-semibold text-lg text-green-700 mb-2">
                 {service.detailService}
