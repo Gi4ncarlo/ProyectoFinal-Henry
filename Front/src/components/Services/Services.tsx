@@ -114,19 +114,40 @@ const Services = () => {
 
   const handleServiceClick = async (service: IService) => {
     try {
-      setLoading(true);
-      const deleted = await deleteService(service.id);
-      if (deleted) {
+      const result = await Swal.fire({
+        title: "¿Estás seguro?",
+        text: "Esta acción eliminará el servicio permanentemente.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, eliminar",
+        confirmButtonColor: "#d33",
+        cancelButtonText: "Cancelar",
+        cancelButtonColor: "#3085d6",
+      });
+  
+      if (result.isConfirmed) {
+        setLoading(true);
+        const deleted = await deleteService(service.id);
+        if (deleted) {
+          Swal.fire({
+            title: "Hecho!",
+            text: "Servicio eliminado con éxito",
+            icon: "success",
+            confirmButtonColor: "#4CAF50",
+          });
+          const serviceData = await getAllServices();
+          setServices(serviceData);
+        }
+      } else {
         Swal.fire({
-          title: "Hecho!",
-          text: "Servicio eliminado con éxito",
-          icon: "success",
+          title: "Cancelado",
+          text: "El servicio no fue eliminado",
+          icon: "info",
+          confirmButtonColor: "#4CAF50",
         });
-        const serviceData = await getAllServices();
-        setServices(serviceData);
       }
     } catch (error) {
-      console.error("Error fetching services:", error);
+      console.error("Error al eliminar el servicio:", error);
       Swal.fire({
         title: "Error!",
         text: "Error al eliminar el servicio",
@@ -136,6 +157,7 @@ const Services = () => {
       setLoading(false);
     }
   };
+  
 
   const handleEditService = (service: IService) => {
     setSelectedService(service);
