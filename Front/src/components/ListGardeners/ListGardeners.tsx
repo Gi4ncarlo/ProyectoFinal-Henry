@@ -247,7 +247,7 @@ const handleDelete = async (id: number) => {
     if (error) return <div>{error}</div>;
     
     return (
-      <div className="mx-auto mt-24">
+      <div className="mx-auto mt-2">
         {providers.length === 0 ? (
           <div className="text-center mb-8 mx-auto">
             <h1 className="text-2xl font-bold mb-4">No se encontraron Jardineros</h1>
