@@ -99,7 +99,7 @@ export class MailService {
               </li>
             </ul>
             <div style="text-align: center; margin: 20px 0;">
-              <a href="http://localhost:3001/dashboard/userDashboard" 
+              <a href="https://vicnasol-henry.vercel.app/dashboard" 
                  style="background-color: #4CAF50; color: #fff; padding: 10px 20px; text-decoration: none; 
                  border-radius: 5px; font-size: 16px;">Ver mi Orden</a>
             </div>
@@ -137,7 +137,7 @@ export class MailService {
             </ul>
             <p>Te pedimos disculpas por cualquier inconveniente. Si tienes preguntas o necesitas ayuda, no dudes en contactarnos.</p>
             <div style="text-align: center; margin: 20px 0;">
-              <a href="http://localhost:3001/dashboard/userDashboard" 
+              <a href="https://vicnasol-henry.vercel.app/dashboard" 
                  style="background-color: #4CAF50; color: #fff; padding: 10px 20px; text-decoration: none; 
                  border-radius: 5px; font-size: 16px;">Ver mi Historial de Órdenes</a>
             </div>
@@ -181,7 +181,7 @@ export class MailService {
             </ul>
             <p>Gracias por completar tu pago. Estamos emocionados de empezar a trabajar en tu orden.</p>
             <div style="text-align: center; margin: 20px 0;">
-              <a href="http://localhost:3001/dashboard/userDashboard" 
+              <a href="https://vicnasol-henry.vercel.app/dashboard" 
                  style="background-color: #4CAF50; color: #fff; padding: 10px 20px; text-decoration: none; 
                  border-radius: 5px; font-size: 16px;">Ver mi Orden</a>
             </div>
