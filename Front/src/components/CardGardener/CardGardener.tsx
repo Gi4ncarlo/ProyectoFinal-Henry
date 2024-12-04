@@ -16,11 +16,11 @@ const CardGardener: React.FC<IProviderCardProps> = ({
       : 0;
 
   return (
-    <div className="w-full max-w-xs bg-white dark:bg-gray-800 cursor-pointer ease-in-out h-[500px] flex flex-col items-center p-4  ">
+    <div className="w-full max-w-xs bg-white dark:bg-gray-800 ease-in-out h-[500px] flex flex-col items-center p-4  ">
       {/* Imagen */}
       <div className="w-full min-h-[300px] overflow-hidden rounded-t-lg">
         <Image
-          className="object-cover w-full h-full"
+          className="object-cover w-full h-full rounded"
           src={profileImageUrl || '/images/nuevo_usuarioGardener.webp'}
           alt={`${name} image`}
           width={1920}

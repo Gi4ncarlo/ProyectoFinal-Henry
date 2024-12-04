@@ -30,7 +30,7 @@ import { Response } from 'express';
 @Controller('services-order')
 export class ServicesOrderController {
   constructor(private readonly servicesOrderService: ServicesOrderService,
-    
+
   ) { }
 
   @UseGuards(AuthGuard, RolesGuard)
@@ -91,14 +91,19 @@ export class ServicesOrderController {
 
   @Delete(':orderId')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.Admin,Role.User)
-  async deleteOrder(@Param('orderId') orderId: string, @Res() res: Response) {
+  @Roles(Role.Admin, Role.User)
+  async deleteOrder(@Param('orderId', ParseUUIDPipe) orderId: string, @Res() res: Response) {
     try {
+      console.log(`Intentando eliminar la orden con ID: ${orderId}`);
       await this.servicesOrderService.remove(orderId);
       return res.status(200).json({ message: 'Orden eliminada con éxito' });
     } catch (error) {
-      return res.status(500).json({ message: 'Error interno', error });
+      console.error('Error al eliminar la orden:', error);
+
+      const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+      return res.status(500).json({ message: 'Error interno al eliminar la orden', error: errorMessage });
     }
   }
+
 
 }

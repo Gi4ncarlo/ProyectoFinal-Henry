@@ -11,13 +11,13 @@ const UserDashboard = () => {
         <nav className="flex justify-around bg-primary text-white p-4 rounded-md">
         <button
           onClick={() => setActiveComponent("orders")}
-          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "orders" ? "opacity-75" : ""}`}
+          className={`p-3 bg-[#8BC34A] hover:bg-[#CDDC39] text-white hover:text-[#263238] font-semibold py-2 px-4 rounded ${activeComponent === "orders" ? "opacity-75" : ""}`}
         >
           Órdenes
         </button>
         <button
           onClick={() => setActiveComponent("userProfile")}
-          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "userProfile" ? "opacity-75" : ""}`}
+          className={`p-3 bg-[#8BC34A] hover:bg-[#CDDC39] text-white hover:text-[#263238] font-semibold py-2 px-4 rounded ${activeComponent === "userProfile" ? "opacity-75" : ""}`}
         >
           Perfil de Usuario
         </button>

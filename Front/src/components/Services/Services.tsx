@@ -14,6 +14,8 @@ import { validateServiceForm } from "@/helpers/validateService";
 import { registerService } from "@/helpers/auth.helpers";
 import Swal from "sweetalert2";
 import EditServiceModal from "./editServicesModal";
+import { Tooltip } from 'antd';
+
 
 const Services = () => {
   const [services, setServices] = useState<IService[]>([]); // Servicios disponibles
@@ -112,19 +114,40 @@ const Services = () => {
 
   const handleServiceClick = async (service: IService) => {
     try {
-      setLoading(true);
-      const deleted = await deleteService(service.id);
-      if (deleted) {
+      const result = await Swal.fire({
+        title: "¿Estás seguro?",
+        text: "Esta acción eliminará el servicio permanentemente.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, eliminar",
+        confirmButtonColor: "#d33",
+        cancelButtonText: "Cancelar",
+        cancelButtonColor: "#3085d6",
+      });
+  
+      if (result.isConfirmed) {
+        setLoading(true);
+        const deleted = await deleteService(service.id);
+        if (deleted) {
+          Swal.fire({
+            title: "Hecho!",
+            text: "Servicio eliminado con éxito",
+            icon: "success",
+            confirmButtonColor: "#4CAF50",
+          });
+          const serviceData = await getAllServices();
+          setServices(serviceData);
+        }
+      } else {
         Swal.fire({
-          title: "Hecho!",
-          text: "Servicio eliminado con éxito",
-          icon: "success",
+          title: "Cancelado",
+          text: "El servicio no fue eliminado",
+          icon: "info",
+          confirmButtonColor: "#4CAF50",
         });
-        const serviceData = await getAllServices();
-        setServices(serviceData);
       }
     } catch (error) {
-      console.error("Error fetching services:", error);
+      console.error("Error al eliminar el servicio:", error);
       Swal.fire({
         title: "Error!",
         text: "Error al eliminar el servicio",
@@ -134,6 +157,7 @@ const Services = () => {
       setLoading(false);
     }
   };
+  
 
   const handleEditService = (service: IService) => {
     setSelectedService(service);
@@ -216,14 +240,18 @@ const Services = () => {
             >
               <div className="flex justify-end">
                 <button onClick={() => handleEditService(service)}>
+                <Tooltip title="Editar" color="#263238">
                   <span className="text-lg font-bold mr-2">✏️</span>
+                </Tooltip>
                 </button>
+                <Tooltip title="Eliminar" color="#263238">
                 <button
                   onClick={() => handleServiceClick(service)}
                   className="my-2 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-full justify-end text-sm"
                 >
                   X
                 </button>
+                </Tooltip>
               </div>
               <h2 className="font-semibold text-lg text-green-700 mb-2">
                 {service.detailService}

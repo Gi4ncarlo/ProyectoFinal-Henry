@@ -198,7 +198,10 @@ const ProviderDetail: React.FC = () => {
       setOrderService(order);
       setSelectedServices([]);
       setSelectedDate(null);
-      router.push("/dashboard/userDashboard");
+      setTimeout(() => {
+        router.push("/dashboard/userDashboard?update=true");
+        
+      },1250)
     } catch (error) {
       console.error("Error contratando servicios:", error);
       Swal.fire({
@@ -275,11 +278,11 @@ const ProviderDetail: React.FC = () => {
               <Rate
                 allowHalf
                 disabled
-                defaultValue={gardener.calification}
+                defaultValue={gardener?.calification}
                 style={{ color: "#FFD700" }} // Color dorado para las estrellas
               />
               <span className="ml-2 text-sm text-gray-500">
-                {gardener.calification.toFixed(1)}
+                {gardener?.calification?.toFixed(1)}
               </span>
             </div>
           </div>

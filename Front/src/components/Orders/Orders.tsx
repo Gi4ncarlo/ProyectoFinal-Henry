@@ -325,6 +325,8 @@ const DashboardUserCompo: React.FC = () => {
 
 
   const fetchOrders = async (id: number, token: string) => {
+    console.log("recibi la id: ", id);
+    
     setLoading(true);
     try {
       setOrders([]);
@@ -338,12 +340,27 @@ const DashboardUserCompo: React.FC = () => {
       setLoading(false);
     }
   };
+  
+  const queryParams = new URLSearchParams(window.location.search);
+  const shouldUpdate = queryParams.get("update");
 
+  console.log(shouldUpdate);
+  
   useEffect(() => {
     if (userSession?.user?.id && userSession.token) {
       fetchOrders(userSession.user.id, userSession.token);
     }
   }, [userSession, status]);
+
+useEffect(() => {
+
+  if (userSession?.user?.id && userSession.token) {
+    fetchOrders(userSession.user.id, userSession.token);
+  }
+}, [shouldUpdate, userSession]);
+
+  console.log("orders: ", orders);
+  
 
   if (loading) {
     return (

@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { format } from 'date-fns';
 import * as nodemailer from 'nodemailer';
 
 @Injectable()
@@ -112,6 +113,44 @@ export class MailService {
       console.log('Confirmation email sent successfully');
     } catch (error: any) {
       console.error('Error sending confirmation email:', error.message);
+      throw new Error(error.message);
+    }
+  }
+  
+  async sendOrderCancellationEmail(to: string, username: string, order: any): Promise<void> {
+    try {
+      // Formatear la fecha al formato yyyy-MM-dd
+      const formattedDate = format(new Date(order.date), 'yyyy-MM-dd');
+  
+      const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to,
+        subject: 'Cancelación de tu Orden en Vicnasol',
+        html: `
+          <div style="font-family: Arial, sans-serif; color: #2e5234; padding: 20px; line-height: 1.6;">
+            <h1 style="color: #263238;">Tu orden ha sido cancelada, ${username}</h1>
+            <p>Nos comunicamos para informarte que la siguiente orden ha sido cancelada:</p>
+            <ul style="list-style: none; padding: 0;">
+              <li><strong>Fecha:</strong> ${formattedDate}</li>
+              <li><strong>Estado:</strong> Cancelada ❌</li>
+              <li><strong>Jardinero:</strong> ${order.gardener.name} (${order.gardener.email})</li>
+            </ul>
+            <p>Te pedimos disculpas por cualquier inconveniente. Si tienes preguntas o necesitas ayuda, no dudes en contactarnos.</p>
+            <div style="text-align: center; margin: 20px 0;">
+              <a href="http://localhost:3001/dashboard/userDashboard" 
+                 style="background-color: #4CAF50; color: #fff; padding: 10px 20px; text-decoration: none; 
+                 border-radius: 5px; font-size: 16px;">Ver mi Historial de Órdenes</a>
+            </div>
+            <p style="color: #263238;">Gracias por tu atención.</p>
+            <p style="color: #263238;">El equipo de <strong>Vicnasol</strong></p>
+          </div>
+        `,
+      };
+  
+      await this.transporter.sendMail(mailOptions);
+      console.log('Cancellation email sent successfully');
+    } catch (error: any) {
+      console.error('Error sending cancellation email:', error.message);
       throw new Error(error.message);
     }
   }

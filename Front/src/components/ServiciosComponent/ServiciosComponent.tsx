@@ -154,7 +154,7 @@ const ServicesComponent = () => {
                   {service.description}
                 </p>
               </div>
-              <div className="relative grid grid-cols-2 grid-rows-2 gap-2 lg:p-6 lg:shadow-xl lg:rounded-lg hover:shadow-2xl hover:scale-105 transition-all">
+              <div className="relative grid grid-cols-2 grid-rows-2 gap-2 lg:p-6 lg:shadow-xl lg:rounded-lg hover:shadow-2xl hover:shadow-[#388E3C] hover:scale-105 transition-all">
                 {service.images?.map((image, i) => (
                   <Image
                     key={i}
@@ -162,7 +162,7 @@ const ServicesComponent = () => {
                     alt={service.title}
                     width={1920}
                     height={1080}
-                    className="rounded-lg shadow-md hover:scale-105 transition-all min-h-[200px]"
+                    className="rounded-lg shadow-md hover:scale-105 transition-all min-h-[200px] border-2 border-[#263238]"
                   />
                 ))}
               </div>

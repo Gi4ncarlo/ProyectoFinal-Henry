@@ -268,23 +268,44 @@ export class ServicesOrderService {
   async remove(orderId: string): Promise<void> {
     const order = await this.servicesOrderRepository.findOne({
       where: { id: orderId },
-      relations: ['gardener'],
+      relations: ['gardener', 'user'],
     });
-
+  
     if (!order) {
       throw new HttpException('Orden no encontrada', HttpStatus.NOT_FOUND);
     }
-
+  
+    if (!order.gardener || !order.gardener.id) {
+      throw new BadRequestException('La orden no tiene un jardinero asociado');
+    }
+  
+    if (!order.user || !order.user.email) {
+      throw new BadRequestException('La orden no tiene un usuario asociado');
+    }
+  
     const gardenerId = order.gardener.id;
-    const reservedDay = order.serviceDate;  
-
+    const reservedDay = order.serviceDate;
+  
     if (!reservedDay) {
       throw new BadRequestException('No se ha especificado un día reservado para esta orden');
     }
-
-    await this.gardenerService.cancelReservation(gardenerId, reservedDay);
-
-    await this.servicesOrderRepository.remove(order);
+  
+    try {
+      console.log(`Cancelando la reserva para jardinero ID: ${gardenerId} en el día ${reservedDay}`);
+      await this.gardenerService.cancelReservation(gardenerId, reservedDay);
+  
+      console.log(`Enviando correo de cancelación al usuario: ${order.user.email}`);
+      await this.mailService.sendOrderCancellationEmail(order.user.email, order.user.name, order);
+  
+      console.log(`Eliminando la orden con ID: ${orderId}`);
+      await this.servicesOrderRepository.remove(order);
+    } catch (error) {
+      console.error('Error durante la eliminación de la orden:', error);
+      throw new HttpException(
+        'Error interno al procesar la eliminación de la orden',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
-
+    
 }

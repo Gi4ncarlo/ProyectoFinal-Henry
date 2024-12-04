@@ -36,7 +36,7 @@ export class ServicesOrderEntity {
     serviceProvided: ServiceProvided[];
 
     // Relación con la entidad Gardener (Muchos a Uno)
-    @ManyToOne(() => Gardener, (gardener) => gardener.servicesOrder)
+    @ManyToOne(() => Gardener, (gardener) => gardener.servicesOrder,{ onDelete: "CASCADE" })
     @JoinColumn()
     gardener: Gardener;
 

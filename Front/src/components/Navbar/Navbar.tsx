@@ -142,7 +142,7 @@ export default function Navbar() {
               alt="Logo VICNASOL"
               width={40}
               height={40}
-              className="object-contain rounded-full"
+              className="object-contain rounded-full hover:shadow-lg hover:shadow-[#FFEB3B]"
               priority={true}
             />
           </Link>
@@ -198,9 +198,9 @@ export default function Navbar() {
                 <Image
                   src={profileImageUrl}
                   alt="Avatar"
-                  className="rounded-full border-2 border-gray-300 hover:border-green-500 transition duration-200"
-                  fill
-                  sizes="40px"
+                  className="rounded-full border-2 border-gray-300 hover:border-[#388E3C] transition duration-200 hover:shadow-lg hover:shadow-[#FFEB3B]"
+                  fill // Asegura que ocupe el contenedor
+                  sizes="40px" // Tamaño esperado
                 />
               </div>
             ) : (
