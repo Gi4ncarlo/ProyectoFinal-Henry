@@ -138,7 +138,7 @@ const EditDashboard: React.FC = () => {
                             <Image
                                 src={imageProfile}
                                 alt="Profile"
-                                className="rounded-full border-2 border-gray-200 shadow-md"
+                                className="rounded-full border-2 border-[#388E3C] shadow-md"
                                 width={250}
                                 height={250}
                             />
