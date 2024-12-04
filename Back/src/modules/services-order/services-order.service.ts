@@ -211,7 +211,7 @@ export class ServicesOrderService {
   async findAllByGardener(id: string) {
     const orders = await this.servicesOrderRepository.find({
       where: { gardener: { id } },
-      relations: ['user', 'gardener', 'serviceProvided', 'orderDetail'],
+      relations: ['user', 'gardener', 'serviceProvided', 'orderDetail','reviews'],
       order: {
         serviceDate: 'ASC',
       },
