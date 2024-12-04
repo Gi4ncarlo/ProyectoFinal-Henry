@@ -172,10 +172,14 @@ export class ServicesOrderService {
     try {
       const order = await this.findOne(id);
       if (!order) throw new NotFoundException(`Orden de servicio con id ${id} no encontrada`);
+  
       if (order.orderDetail) throw new BadRequestException('La orden de servicio ya fue pagada');
+  
       order.isApproved = true;
+  
       let price = 0;
-      order.serviceProvided.map((service) => price += service.price)
+      order.serviceProvided.map((service) => price += service.price);
+  
       const newOrderDetail = await this.serviceDetailsRepository.create({
         serviceType: order.serviceProvided.map((service) => service.detailService),
         totalPrice: price,
@@ -184,29 +188,37 @@ export class ServicesOrderService {
         status: Status.Pending,
         servicesOrder: order,
         assignedGardener: order.gardener
-      })
-      newOrderDetail.userToken = await this.tokenService.generateToken(6)
+      });
+  
+      newOrderDetail.userToken = await this.tokenService.generateToken(6);
+  
       await this.serviceDetailsRepository.save(newOrderDetail);
+  
       order.orderDetail = newOrderDetail;
       await this.servicesOrderRepository.save(order);
-      const { assignedGardener, servicesOrder, ...rest } = newOrderDetail
-      const { orderDetail, user, gardener, serviceProvided, ...ord } = order
-      const { password, ...userWithoutPassword } = user
-
+  
+      const { assignedGardener, servicesOrder, ...rest } = newOrderDetail;
+      const { orderDetail, user, gardener, serviceProvided, ...ord } = order;
+      const { password, ...userWithoutPassword } = user;
+  
+      await this.mailService.sendPaymentConfirmationEmail(user.email, user.username, order);
+  
       return {
-        message: 'detalle de servicio generado exitosamente',
+        message: 'Detalle de servicio generado exitosamente',
         data: {
           order: ord,
-          datail: rest,
+          detail: rest,
           user: userWithoutPassword,
           gardener,
         }
-      }
-
+      };
+  
     } catch (error) {
+      // Manejo de errores
       throw new HttpException(error, 400);
     }
   }
+  
 
   async findAllByGardener(id: string) {
     const orders = await this.servicesOrderRepository.find({

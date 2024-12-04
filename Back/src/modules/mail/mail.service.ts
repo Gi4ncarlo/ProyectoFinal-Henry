@@ -154,5 +154,51 @@ export class MailService {
       throw new Error(error.message);
     }
   }
+
+  async sendPaymentConfirmationEmail(to: string, username: string, order: any): Promise<void> {
+    try {
+      // Formatear la fecha al formato yyyy-MM-dd
+      const formattedDate = format(new Date(order.date), 'yyyy-MM-dd');
+  
+      const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to,
+        subject: 'Confirmación de Pago en Vicnasol',
+        html: `
+          <div style="font-family: Arial, sans-serif; color: #2e5234; padding: 20px; line-height: 1.6;">
+            <h1 style="color: #263238;">¡Tu pago ha sido confirmado, ${username}!</h1>
+            <p>Nos complace informarte que hemos recibido tu pago para la siguiente orden:</p>
+            <ul style="list-style: none; padding: 0;">
+              <li><strong>Fecha del pago:</strong> ${formattedDate}</li>
+              <li><strong>Estado:</strong> Pagado ✅</li>
+              <li><strong>Jardinero:</strong> ${order.gardener.name} (${order.gardener.email})</li>
+              <li><strong>Servicios:</strong>
+                <ul>
+                  ${order.serviceProvided
+                    .map(service => `<li>${service.detailService} - $${service.price}</li>`)
+                    .join('')}
+                </ul>
+              </li>
+            </ul>
+            <p>Gracias por completar tu pago. Estamos emocionados de empezar a trabajar en tu orden.</p>
+            <div style="text-align: center; margin: 20px 0;">
+              <a href="http://localhost:3001/dashboard/userDashboard" 
+                 style="background-color: #4CAF50; color: #fff; padding: 10px 20px; text-decoration: none; 
+                 border-radius: 5px; font-size: 16px;">Ver mi Orden</a>
+            </div>
+            <p style="color: #263238;">Si tienes alguna duda, no dudes en contactarnos.</p>
+            <p style="color: #263238;">El equipo de <strong>Vicnasol</strong></p>
+          </div>
+        `,
+      };
+  
+      await this.transporter.sendMail(mailOptions);
+      console.log('Payment confirmation email sent successfully');
+    } catch (error: any) {
+      console.error('Error sending payment confirmation email:', error.message);
+      throw new Error(error.message);
+    }
+  }
+  
   
 }
