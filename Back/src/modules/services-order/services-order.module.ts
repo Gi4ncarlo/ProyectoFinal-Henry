@@ -11,12 +11,14 @@ import { Gardener } from '../gardener/entities/gardener.entity';
 import { AdminEntity } from '../admin/entities/admin.entity';
 import { TokenModule } from '../tokenServices/token.module';
 import { MailModule } from '../mail/mail.module'; // Importar correctamente el MailModule
+import { GardenerModule } from '../gardener/gardener.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([ServicesOrderEntity, ServiceDetail, ServiceProvided, User, Gardener, AdminEntity]),
     TokenModule,
-    MailModule, // Asegúrate de importar el MailModule aquí
+    MailModule, 
+    GardenerModule
   ],
   controllers: [ServicesOrderController],
   providers: [ServicesOrderService],
