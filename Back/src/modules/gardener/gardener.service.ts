@@ -46,8 +46,8 @@ export class GardenerService {
       const gardener = await this.gardenerRepository.findOne({ where: { id } });
 
       if (!gardener) throw new HttpException('Jardinero no encontrado.', HttpStatus.NOT_FOUND);
-      const formattedReservedDays = gardener.reservedDays.map((day) => day)
-      if (!formattedReservedDays) throw new HttpException('No hay dias reservados', HttpStatus.NOT_FOUND);
+      const formattedReservedDays = gardener?.reservedDays?.map((day) => day)
+      if (!formattedReservedDays) return [];
 
       return formattedReservedDays;
 
