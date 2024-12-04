@@ -40,9 +40,6 @@ const EditDashboard: React.FC = () => {
         const formData = new FormData();
         formData.append("file", file);
 
-        console.log("Que ocurre fuera del proceso con userSession: ", userSession);
-        console.log("Que respuesta obtengo: ", formData);
-
         try {
             const response = await fetch(
                 `${process.env.NEXT_PUBLIC_API_URL}/${userSession?.user?.role}/${userSession?.user?.id}/image`,
@@ -57,19 +54,22 @@ const EditDashboard: React.FC = () => {
 
             if (!response.ok) throw new Error("Error uploading image");
 
-            console.log("Que respuesta obtengo: ", response);
             const data = await response.json();
 
-            console.log("Que trae userSession: ", userSession);
-
+            
             if (userSession) {
                 const updatedSession = {
                     ...userSession,
                     user: { ...userSession.user, profileImageUrl: data.imageUrl },
                 };
                 localStorage.setItem("userSession", JSON.stringify(updatedSession));
-                setUserSession(updatedSession);
+
+                window.dispatchEvent(new StorageEvent('storage', { key: 'userSession', newValue: JSON.stringify(updatedSession) }));
+                
                 setImageProfile(data.imageUrl);
+                setUserSession(updatedSession);
+                console.log("Que trae userSession: ", updatedSession);
+                
             }
             Swal.fire("Éxito", "Imagen subida correctamente", "success");
         } catch (error) {
@@ -77,7 +77,8 @@ const EditDashboard: React.FC = () => {
             Swal.fire("Error", "No se pudo subir la imagen", "error");
         }
     };
-
+    
+    
     const handleEditClick = (field: string, currentValue: string) => {
         setEditingField(field);
         setEditedValue(currentValue);
@@ -115,8 +116,6 @@ const EditDashboard: React.FC = () => {
             <h1 className="text-3xl font-bold text-gray-800 mb-8">Datos de tu cuenta</h1>
 
             <div className="w-full max-w-4xl bg-white shadow-md rounded-lg p-6 space-y-10">
-
-
                 {/* Imagen de perfil */}
                 <div className="text-center">
                     <h2 className="text-xl font-bold text-gray-800 mb-4">Opciones de perfil</h2>
@@ -147,7 +146,6 @@ const EditDashboard: React.FC = () => {
                         )}
                     </div>
                 </div>
-
 
                 {/* Campos de edición */}
                 <div>

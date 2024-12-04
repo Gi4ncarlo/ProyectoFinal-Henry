@@ -16,7 +16,12 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null); // Nuevo estado
   const dropdownRef = useRef<HTMLDivElement | null>(null);
+
+  function updateProfileImageUrl(url: string) {
+    setProfileImageUrl(url);
+  }
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.localStorage) {
@@ -24,6 +29,7 @@ export default function Navbar() {
       if (storedUserData) {
         setUserData(storedUserData);
         setIsAuthenticated(true);
+        setProfileImageUrl(storedUserData.user.profileImageUrl); // Actualiza la URL del perfil
       }
     }
   }, [pathname]);
@@ -41,8 +47,8 @@ export default function Navbar() {
       }).then((result) => {
         if (result.isConfirmed) {
           localStorage.removeItem("userSession");
-          localStorage.removeItem("filter")
-          localStorage.removeItem("searchTerm")
+          localStorage.removeItem("filter");
+          localStorage.removeItem("searchTerm");
           router.push("/api/auth/logout?returnTo=/Home");
           Swal.fire("Sesión cerrada!", "Hasta pronto!", "success");
         }
@@ -61,16 +67,15 @@ export default function Navbar() {
     }).then((result) => {
       if (result.isConfirmed) {
         localStorage.removeItem("userSession");
-        localStorage.removeItem("filter")
-        localStorage.removeItem("searchTerm")
+        localStorage.removeItem("filter");
+        localStorage.removeItem("searchTerm");
         Swal.fire("Sesión cerrada!", "Hasta pronto!", "success");
         setUserData(null);
         setIsAuthenticated(false);
         router.push("/");
-      } 
+      }
     });
   };
-
 
   const Dropdown = () => {
     setShowDropdown(!showDropdown);
@@ -90,32 +95,46 @@ export default function Navbar() {
     setIsMenuOpen(!isMenuOpen);
   };
 
-
   const handleClickOutside = (event: any) => {
-    // Cierra el menú si haces clic fuera
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
       setShowDropdown(false);
     }
   };
 
   useEffect(() => {
-    // Añadir el evento al montar el componente
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      // Eliminar el evento al desmontar el componente
       document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === "userSession") {
+        const storedUserData = JSON.parse(event.newValue || "null");
+        if (storedUserData) {
+          setUserData(storedUserData);
+          updateProfileImageUrl(storedUserData.user.profileImageUrl); // Actualiza la imagen del perfil
+        }
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
 
   return (
     <nav
-      className={`fixed z-20 top-0 w-full transition-all duration-500 ${isScrolled
-        ? "bg-gradient-to-r from-[#4CAF50] to-[#388E3C] shadow-lg"
-        : "bg-gradient-to-r from-[#4CAF50] to-[#8BC34A]"
-        }`}
+      className={`fixed z-20 top-0 w-full transition-all duration-500 ${
+        isScrolled
+          ? "bg-gradient-to-r from-[#4CAF50] to-[#388E3C] shadow-lg"
+          : "bg-gradient-to-r from-[#4CAF50] to-[#8BC34A]"
+      }`}
     >
       <div className="container flex items-center justify-between mx-auto px-4 py-3">
-        {/* Logo + Text */}
         <div className="flex items-center space-x-3">
           <Link href="/Home">
             <Image
@@ -134,7 +153,6 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Links (Desktop) */}
         <ul className="hidden lg:flex items-center space-x-6 text-white font-medium">
           <li className="hover:text-[#FFEB3B]">
             <Link href="/servicios">Servicios</Link>
@@ -148,21 +166,14 @@ export default function Navbar() {
           <li className="hover:text-[#FFEB3B]">
             <Link href="/gardener">Lista de Jardineros</Link>
           </li>
-          {/* {userData?.user.role === "admin" ? (
-            <li className="hover:text-[#FFEB3B]">
-              <Link href="/registerService">Registrar un nuevo servicio</Link>
-            </li>
-          ) : null} */}
         </ul>
 
-        {/* Mobile menu icon */}
         <div className="lg:hidden">
           <button onClick={toggleMenu} className="text-white text-2xl">
             {isMenuOpen ? <HiX /> : <HiMenu />}
           </button>
         </div>
 
-        {/* Mobile Menu */}
         {isMenuOpen && (
           <ul className="absolute top-16 right-4 bg-[#388E3C] text-white text-sm font-medium rounded-lg shadow-lg lg:hidden">
             <li className="px-4 py-2 hover:bg-[#4CAF50]">
@@ -180,17 +191,12 @@ export default function Navbar() {
           </ul>
         )}
 
-        {/* User Menu */}
         <div className="relative">
-          <div
-            className="flex items-center space-x-2 cursor-pointer"
-            onClick={Dropdown}
-          >
-            {/* Avatar del usuario */}
-            {userData?.user?.profileImageUrl ? (
+          <div className="flex items-center space-x-2 cursor-pointer" onClick={Dropdown}>
+            {profileImageUrl ? (
               <div className="relative w-10 h-10">
                 <Image
-                  src={userData.user.profileImageUrl}
+                  src={profileImageUrl}
                   alt="Avatar"
                   className="rounded-full border-2 border-gray-300 hover:border-[#388E3C] transition duration-200 hover:shadow-lg hover:shadow-[#FFEB3B]"
                   fill // Asegura que ocupe el contenedor
@@ -210,21 +216,18 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* Dropdown Menu */}
           {showDropdown && (
             <div
-              ref={dropdownRef} 
+              ref={dropdownRef}
               className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg py-2 border-2 border-[#4CAF50] z-50"
               onClick={Dropdown}
             >
               {isAuthenticated ? (
                 <div>
                   <Link href="/dashboard">
-
                     <button className="block px-4 py-2 text-left w-full hover:bg-[#CDDC39] text-gray-700 transition duration-150">
                       Mi Cuenta
                     </button>
-
                   </Link>
                   <button
                     className="block px-4 py-2 text-left w-full hover:bg-[#CDDC39] text-gray-700 transition duration-150"
@@ -240,7 +243,7 @@ export default function Navbar() {
                       Iniciar Sesión
                     </div>
                   </Link>
-                  <Link href="/preRegister">
+                  <Link href="/register">
                     <div className="block px-4 py-2 hover:bg-[#CDDC39] text-gray-700 transition duration-150">
                       Registrarse
                     </div>
@@ -254,3 +257,4 @@ export default function Navbar() {
     </nav>
   );
 }
+
