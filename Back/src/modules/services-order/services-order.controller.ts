@@ -29,13 +29,20 @@ import { Response } from 'express';
 @ApiBearerAuth()
 @Controller('services-order')
 export class ServicesOrderController {
-  constructor(private readonly servicesOrderService: ServicesOrderService) { }
+  constructor(private readonly servicesOrderService: ServicesOrderService,
+    
+  ) { }
 
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.User, Role.Admin)
   @Post()
-  create(@Body() createServicesOrderDto: CreateServiceOrderDto) {
-    return this.servicesOrderService.create(createServicesOrderDto);
+  create(@Body() createServicesOrderDto: CreateServiceOrderDto, @Res() res: Response) {
+    try {
+      const serviceOrder = this.servicesOrderService.create(createServicesOrderDto);
+      return res.status(201).json(serviceOrder);
+    } catch (error) {
+      return res.status(400).json(error);
+    }
   }
 
   @UseGuards(AuthGuard)
@@ -82,11 +89,16 @@ export class ServicesOrderController {
     return this.servicesOrderService.update(id, updateServicesOrderDto);
   }
 
+  @Delete(':orderId')
   @UseGuards(AuthGuard, RolesGuard)
-  @HttpCode(200)
-  @Roles(Role.Admin, Role.User)
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.servicesOrderService.remove(id);
+  @Roles(Role.Admin,Role.User)
+  async deleteOrder(@Param('orderId') orderId: string, @Res() res: Response) {
+    try {
+      await this.servicesOrderService.remove(orderId);
+      return res.status(200).json({ message: 'Orden eliminada con éxito' });
+    } catch (error) {
+      return res.status(500).json({ message: 'Error interno', error });
+    }
   }
+
 }

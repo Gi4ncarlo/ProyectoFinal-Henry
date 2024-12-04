@@ -35,7 +35,7 @@ export const gardenersMock = [
         experience : "Especialista en poda y cuidado de césped.",
         calification : 3,
         ubication : "Los Robles 67",
-        profileImageUrl:"gardener/vja4j61zfcdl8qk1iccv",
+        profileImageUrl:"gardener/gnfmj6z3a7c0oncgr05i",
         serviceProvided : [],
         serviceDeails : [],
         carrouselImages : ["gardener/ddttgxtap1qjag8y57lu", "gardener/qbvfjr6gceby8rxmhvul", "gardener/yevdpgdamzlcekvbpbda"]

@@ -150,8 +150,8 @@ const DashboardUserCompo: React.FC = () => {
             // Ocultar el loader y restaurar el texto del botón
             loader.classList.add('hidden');
             submitText.classList.remove('hidden');
-            if(userSession?.user?.id && userSession?.token){
-            fetchOrders(userSession?.user?.id, userSession?.token);
+            if (userSession?.user?.id && userSession?.token) {
+              fetchOrders(userSession?.user?.id, userSession?.token);
             }
           }
         });
@@ -166,7 +166,7 @@ const DashboardUserCompo: React.FC = () => {
     const status = urlParams.get("status");
     const paymentId = urlParams.get("payment_id");
     const externalReference = urlParams.get("external_reference");
-    
+
     setStatus(status);
     setParams({ status, paymentId, externalReference });
 
@@ -252,6 +252,8 @@ const DashboardUserCompo: React.FC = () => {
         }
       );
       const data = await response.json();
+      console.log(data);
+      
       if (!response.ok) {
         throw new Error(data.message);
       }
@@ -259,20 +261,20 @@ const DashboardUserCompo: React.FC = () => {
         window.location.href = data.paymentUrl.sandbox_init_point;
       }
       setStatus("approved");
-       if (params?.status === "approved") {
+      if (params?.status === "approved") {
 
-      await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/services-order/orderPay/${params.externalReference}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${TOKEN.token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+        await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/services-order/orderPay/${params.externalReference}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${TOKEN.token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
       }
-      if(userSession?.user?.id && userSession?.token){
+      if (userSession?.user?.id && userSession?.token) {
         fetchOrders(userSession.user.id, userSession.token);
       }
     } catch (error) {
@@ -283,25 +285,21 @@ const DashboardUserCompo: React.FC = () => {
     const { name, value } = event.target;
 
     if (name === "sortBy") {
-      setSortBy(value); // Cambiar la propiedad por la que ordenar
+      setSortBy(value); 
     } else {
-      setSortOrder(value); // Cambiar el orden de clasificación (asc o desc)
+      setSortOrder(value); 
     }
   };
   const sortOrders = () => {
     const sortedOrders = Array.isArray(orders[0]?.servicesOrder)
       ? [...orders[0]?.servicesOrder].sort((a, b) => {
-        // Determinar si estamos ordenando por startTime o isApproved
         if (sortBy === "startTime") {
-          // Si startTime está presente, crear un objeto Date, si no, asignar Infinity
-          const dateA: any = a.orderDetail?.startTime ? new Date(a.orderDetail.startTime) : Infinity;
-          const dateB: any = b.orderDetail?.startTime ? new Date(b.orderDetail.startTime) : Infinity;
+          const dateA: any = a.serviceDate ? new Date(a.serviceDate) : Infinity;
+          const dateB: any = b.serviceDate ? new Date(b.serviceDate) : Infinity;
 
-          // Orden ascendente
           if (sortOrder === "asc") {
             return dateA === Infinity ? 1 : dateB === Infinity ? -1 : dateA.getTime() - dateB.getTime();
           }
-          // Orden descendente
           else {
             return dateA === Infinity ? -1 : dateB === Infinity ? 1 : dateB.getTime() - dateA.getTime();
           }
@@ -327,6 +325,8 @@ const DashboardUserCompo: React.FC = () => {
 
 
   const fetchOrders = async (id: number, token: string) => {
+    console.log("recibi la id: ", id);
+    
     setLoading(true);
     try {
       setOrders([]);
@@ -340,12 +340,27 @@ const DashboardUserCompo: React.FC = () => {
       setLoading(false);
     }
   };
+  
+  const queryParams = new URLSearchParams(window.location.search);
+  const shouldUpdate = queryParams.get("update");
 
+  console.log(shouldUpdate);
+  
   useEffect(() => {
     if (userSession?.user?.id && userSession.token) {
       fetchOrders(userSession.user.id, userSession.token);
     }
   }, [userSession, status]);
+
+useEffect(() => {
+
+  if (userSession?.user?.id && userSession.token) {
+    fetchOrders(userSession.user.id, userSession.token);
+  }
+}, [shouldUpdate, userSession]);
+
+  console.log("orders: ", orders);
+  
 
   if (loading) {
     return (
@@ -391,13 +406,13 @@ const DashboardUserCompo: React.FC = () => {
         </div>
       </div>
 
-      {!orders[0].servicesOrder.length ? (
+      {!orders[0]?.servicesOrder?.length ? (
         <p className="text-xl mt-6 text-[#FF5722]">
           No se encontraron órdenes.
         </p>
       ) : (
         <div className="w-full max-w-7xl grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {orders[0].servicesOrder.map((order: any) => (
+          {orders[0]?.servicesOrder?.map((order: any) => (
             <div
               key={order.id}
               className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
@@ -446,7 +461,7 @@ const DashboardUserCompo: React.FC = () => {
                   <strong>Fecha de Orden:</strong> {order.date}
                 </p>
                 <strong>Fecha del Servicio:</strong>{" "}
-                {order.orderDetail ? order.orderDetail.startTime : "No está definida"}
+                {order ? order?.serviceDate : "No está definida"}
               </div>
 
               {/* Detalles del Servicio */}

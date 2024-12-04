@@ -310,8 +310,8 @@ const GardenerDashboard = () => {
         // Determinar si estamos ordenando por startTime o isApproved
         if (sortBy === "startTime") {
           // Si startTime está presente, crear un objeto Date, si no, asignar Infinity
-          const dateA: any = a.orderDetail?.startTime ? new Date(a.orderDetail.startTime) : Infinity;
-          const dateB: any = b.orderDetail?.startTime ? new Date(b.orderDetail.startTime) : Infinity;
+          const dateA: any = a.serviceDate ? new Date(a.serviceDate) : Infinity;
+          const dateB: any = b.serviceDate ? new Date(b.serviceDate) : Infinity;
 
           // Orden ascendente
           if (sortOrder === "asc") {
@@ -358,28 +358,28 @@ const GardenerDashboard = () => {
       <nav className="flex justify-around bg-primary text-white p-4 rounded-md">
         <button
           onClick={() => fetchTasks(userSession?.user?.id.toString() || "")}
-          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "tareas" ? "opacity-75" : ""
+          className={`p-3 bg-[#8BC34A] hover:bg-[#CDDC39] text-white hover:text-[#263238] font-semibold py-2 px-4 rounded ${activeComponent === "tareas" ? "opacity-75" : ""
             }`}
         >
           Tareas
         </button>
         <button
           onClick={() => setActiveComponent("calendario")}
-          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "calendario" ? "opacity-75" : ""
+          className={`p-3 bg-[#8BC34A] hover:bg-[#CDDC39] text-white hover:text-[#263238] font-semibold py-2 px-4 rounded ${activeComponent === "calendario" ? "opacity-75" : ""
             }`}
         >
           Calendario
         </button>
         <button
           onClick={() => setActiveComponent("perfil")}
-          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "perfil" ? "opacity-75" : ""
+          className={`p-3 bg-[#8BC34A] hover:bg-[#CDDC39] text-white hover:text-[#263238] font-semibold py-2 px-4 rounded ${activeComponent === "perfil" ? "opacity-75" : ""
             }`}
         >
           Mi Perfil
         </button>
         <button
           onClick={() => setActiveComponent("Editar Servicios")}
-          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "Editar Servicios" ? "opacity-75" : ""
+          className={`p-3 bg-[#8BC34A] hover:bg-[#CDDC39] text-white hover:text-[#263238] font-semibold py-2 px-4 rounded ${activeComponent === "Editar Servicios" ? "opacity-75" : ""
             }`}
         >
           Editar Servicios
@@ -421,42 +421,47 @@ const GardenerDashboard = () => {
         {activeComponent === "calendario" && <CalendarGardener id={userSession?.user?.id.toString() || ""} />}
 
         {activeComponent === "Editar Servicios" && (
-          <section>
-            <h1 className="text-2xl font-bold text-[#263238] mb-6">
+        <div className="min-h-screen bg-gray-100 flex flex-col items-center">
+        <div className="w-full max-w-6xl p-6 bg-white shadow-lg rounded-lg space-y-8">
+          
+          {/* Servicios que Ofrezco */}
+           <h1 className="text-2xl font-bold text-[#263238] mb-6">
               Servicios que Ofrezco
-            </h1>
-            <div className="space-y-4">
-              {services.map((service) => (
-                <div key={service.id} className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id={service.id}
-                    checked={selectedServices.includes(service.id)}
-                    onChange={() => handleServiceChange(service.id)}
-                    className="mr-3"
-                  />
-                  <label htmlFor={service.id} className="flex-grow">
-                    <span className="font-semibold">{service.detailService}</span>
-                    <span className="text-sm text-gray-500 ml-2">
-                      (${service.price} - {service.categories.join(", ")})
-                    </span>
-                  </label>
-                </div>
-              ))}
-              <button
-                onClick={saveServices}
-                className="mt-4 w-full p-2 bg-[#4CAF50] text-white rounded hover:bg-[#388E3C]"
-              >
-                Guardar Servicios
-              </button>
-              <div>
-                <CarrouselGardener />
+            </h1> <section   className="block  w-full p-3 border border-[#4CAF50] rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#4CAF50] bg-white">
+          
+            {services.map((service) => (
+              <div key={service.id} className="flex items-center">
+                <input
+                  type="checkbox"
+                  id={service.id}
+                  checked={selectedServices.includes(service.id)}
+                  onChange={() => handleServiceChange(service.id)}
+                  className="mr-3"
+                />
+                <label htmlFor={service.id} className="flex-grow">
+                  <span className="font-semibold">{service.detailService}</span>
+                  <span className="text-sm text-gray-500 ml-2">
+                    (${service.price} - {service.categories.join(", ")})
+                  </span>
+                </label>
               </div>
-              <div>
-                <EditServicesGardener />
-              </div>
-            </div>
+            ))}
+           <button
+  onClick={saveServices}
+  className="mt-4 w-40 p-2 bg-[#4CAF50] text-white rounded hover:bg-[#388E3C] hover:text-[#FFEB3B] mx-auto block"
+>
+  Guardar Servicios
+</button>
+
           </section>
+      
+          {/* Carrusel de imágenes */}
+          <CarrouselGardener />
+      
+        
+        </div>
+      </div>
+      
         )}
       </main>
     </div>

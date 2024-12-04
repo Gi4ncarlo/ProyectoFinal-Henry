@@ -5,7 +5,7 @@ import Services from "@/components/Services/Services";
 import ListGardeners from "@/components/ListGardeners/ListGardeners";
 
 const AdminDashboard = () => {
-  const [activeComponent, setActiveComponent] = useState<string>("");
+  const [activeComponent, setActiveComponent] = useState<string>("userList");
 
   return (
     <div className="">
@@ -15,20 +15,20 @@ const AdminDashboard = () => {
       </div>
         <button
           onClick={() => setActiveComponent("userList")}
-          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "userList" ? "opacity-75" : ""}`}
+          className={`p-3 bg-[#8BC34A] hover:bg-[#CDDC39] text-white hover:text-[#263238] font-semibold py-2 px-4 rounded ${activeComponent === "userList" ? "opacity-75" : ""}`}
 
         >
           Usuarios
         </button>
         <button
           onClick={() => setActiveComponent("services")}
-          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "services" ? "opacity-75" : ""}`}
+          className={`p-3 bg-[#8BC34A] hover:bg-[#CDDC39] text-white hover:text-[#263238] font-semibold py-2 px-4 rounded ${activeComponent === "services" ? "opacity-75" : ""}`}
         >
           Servicios
         </button>
         <button
           onClick={() => setActiveComponent("listGardeners")}
-          className={`p-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded ${activeComponent === "listGardeners" ? "opacity-75" : ""}`}
+          className={`p-3 bg-[#8BC34A] hover:bg-[#CDDC39] text-white hover:text-[#263238] font-semibold py-2 px-4 rounded ${activeComponent === "listGardeners" ? "opacity-75" : ""}`}
         >
           Jardineros
         </button>

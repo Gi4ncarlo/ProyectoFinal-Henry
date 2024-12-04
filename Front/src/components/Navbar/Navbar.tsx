@@ -41,6 +41,8 @@ export default function Navbar() {
       }).then((result) => {
         if (result.isConfirmed) {
           localStorage.removeItem("userSession");
+          localStorage.removeItem("filter")
+          localStorage.removeItem("searchTerm")
           router.push("/api/auth/logout?returnTo=/Home");
           Swal.fire("Sesión cerrada!", "Hasta pronto!", "success");
         }
@@ -59,6 +61,8 @@ export default function Navbar() {
     }).then((result) => {
       if (result.isConfirmed) {
         localStorage.removeItem("userSession");
+        localStorage.removeItem("filter")
+        localStorage.removeItem("searchTerm")
         Swal.fire("Sesión cerrada!", "Hasta pronto!", "success");
         setUserData(null);
         setIsAuthenticated(false);
@@ -119,7 +123,7 @@ export default function Navbar() {
               alt="Logo VICNASOL"
               width={40}
               height={40}
-              className="object-contain rounded-full"
+              className="object-contain rounded-full hover:shadow-lg hover:shadow-[#FFEB3B]"
               priority={true}
             />
           </Link>
@@ -188,7 +192,7 @@ export default function Navbar() {
                 <Image
                   src={userData.user.profileImageUrl}
                   alt="Avatar"
-                  className="rounded-full border-2 border-gray-300 hover:border-green-500 transition duration-200"
+                  className="rounded-full border-2 border-gray-300 hover:border-[#388E3C] transition duration-200 hover:shadow-lg hover:shadow-[#FFEB3B]"
                   fill // Asegura que ocupe el contenedor
                   sizes="40px" // Tamaño esperado
                 />
@@ -198,7 +202,7 @@ export default function Navbar() {
                 <Image
                   src="https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2281862025.jpg"
                   alt="Avatar"
-                  className="rounded-full border-2 border-gray-300 hover:border-green-500 transition duration-200"
+                  className="rounded-full border-2 border-gray-400 hover:border-[#CDDC39] transition duration-200 hover:shadow-[#FFEB3B] hover:shadow-lg"
                   fill
                   sizes="40px"
                 />
@@ -210,20 +214,20 @@ export default function Navbar() {
           {showDropdown && (
             <div
               ref={dropdownRef} 
-              className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg py-2 border border-gray-200 z-50"
+              className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg py-2 border-2 border-[#4CAF50] z-50"
               onClick={Dropdown}
             >
               {isAuthenticated ? (
                 <div>
                   <Link href="/dashboard">
 
-                    <button className="block px-4 py-2 text-left w-full hover:bg-gray-300 text-gray-700 transition duration-150">
+                    <button className="block px-4 py-2 text-left w-full hover:bg-[#CDDC39] text-gray-700 transition duration-150">
                       Mi Cuenta
                     </button>
 
                   </Link>
                   <button
-                    className="block px-4 py-2 text-left w-full hover:bg-gray-300 text-gray-700 transition duration-150"
+                    className="block px-4 py-2 text-left w-full hover:bg-[#CDDC39] text-gray-700 transition duration-150"
                     onClick={handleLogout}
                   >
                     Cerrar sesión
@@ -232,12 +236,12 @@ export default function Navbar() {
               ) : (
                 <div>
                   <Link href="/login">
-                    <div className="block px-4 py-2 hover:bg-gray-300 text-gray-700 transition duration-150">
+                    <div className="block px-4 py-2 hover:bg-[#CDDC39] text-gray-700 transition duration-150">
                       Iniciar Sesión
                     </div>
                   </Link>
                   <Link href="/preRegister">
-                    <div className="block px-4 py-2 hover:bg-gray-300 text-gray-700 transition duration-150">
+                    <div className="block px-4 py-2 hover:bg-[#CDDC39] text-gray-700 transition duration-150">
                       Registrarse
                     </div>
                   </Link>

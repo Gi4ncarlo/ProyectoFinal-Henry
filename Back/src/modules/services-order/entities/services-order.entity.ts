@@ -15,6 +15,14 @@ export class ServicesOrderEntity {
     @Column()
     date: string;
 
+    @Column(
+        {
+            type: "text",
+            nullable: true,
+        }
+    )
+    serviceDate: string;
+
     @Column({ default: false })
     isApproved: boolean;
 
@@ -28,7 +36,7 @@ export class ServicesOrderEntity {
     serviceProvided: ServiceProvided[];
 
     // Relación con la entidad Gardener (Muchos a Uno)
-    @ManyToOne(() => Gardener, (gardener) => gardener.servicesOrder)
+    @ManyToOne(() => Gardener, (gardener) => gardener.servicesOrder,{ onDelete: "CASCADE" })
     @JoinColumn()
     gardener: Gardener;
 

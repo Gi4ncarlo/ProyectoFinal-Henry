@@ -7,13 +7,21 @@ export class ReviewsEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string = uuid()
 
+    @Column(
+        {
+            type: "text",
+            nullable: true,
+        }
+    )
+    date: string
+
     @Column()
     comment: string
 
     @Column()
     rate: number
 
-    @ManyToMany(() => Gardener, (gardener) => gardener.reviews)
+    @ManyToMany(() => Gardener, (gardener) => gardener.reviews,{ onDelete: "CASCADE" })
     @JoinTable()
     gardener: Gardener
 

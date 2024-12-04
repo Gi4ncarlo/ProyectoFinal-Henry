@@ -14,10 +14,10 @@ const Dropdown: React.FC<{ filter: string; onChange: (value: string) => void }> 
   onChange,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement | null>(null); // Referencia para el contenedor del Dropdown
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const options = [
-    { value: "ASC", label: "A-Z" },
+    { value: "ASC", label: "Restaurar" },
     { value: "DESC", label: "Z-A" },
     { value: "1", label: "⭐" },
     { value: "2", label: "⭐⭐" },
@@ -28,27 +28,26 @@ const Dropdown: React.FC<{ filter: string; onChange: (value: string) => void }> 
 
   const handleClickOutside = (event: MouseEvent) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-      setIsOpen(false); // Cierra el menú si haces clic fuera
+      setIsOpen(false);
     }
   };
 
   useEffect(() => {
-    // Agregar evento para detectar clics fuera del Dropdown
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      // Eliminar evento para evitar fugas de memoria
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
   return (
-    <div className="relative w-48" ref={dropdownRef}>
+    <div className="relative w-full max-w-[150px]" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full bg-white border border-gray-300 rounded-md shadow-sm px-4 py-2 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-400"
+        className="w-full bg-white border border-[#263238] rounded-md shadow-sm px-4 py-2 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-400"
       >
-        {options.find((opt) => opt.value === filter)?.label || "Ordenar por"}
-        <span className="float-right text-[#263238]">Filtrar por ▼</span>
+        <span className="float-right text-[#263238]">
+          {options.find((opt) => opt.value === filter)?.label || "Ordenar por"} ▼
+        </span>
       </button>
       {isOpen && (
         <div className="absolute mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-10">
@@ -80,8 +79,8 @@ const ProviderCardList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
 
-  const [currentPage, setCurrentPage] = useState<number>(1); // Estado para manejar la página actual
-  const itemsPerPage = 8; // Límite de cards por página
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const itemsPerPage = 8;
 
   const router = useRouter();
 
@@ -92,11 +91,11 @@ const ProviderCardList: React.FC = () => {
         const parsedSession = JSON.parse(storedSession);
         setTOKEN(parsedSession.token);
       } else {
-        Swal.fire({  
+        Swal.fire({
           icon: "error",
           title: "Oops...",
           text: "Inicia sesión para acceder a esta sección",
-        })
+        });
         router.push("/login");
       }
 
@@ -107,7 +106,6 @@ const ProviderCardList: React.FC = () => {
 
   const handleFilter = (newFilter: string) => {
     setFilter(newFilter);
-
     if (typeof window !== "undefined") {
       localStorage.setItem("filter", newFilter);
     }
@@ -116,15 +114,22 @@ const ProviderCardList: React.FC = () => {
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newSearchTerm = e.target.value;
     setSearchTerm(newSearchTerm);
-
     if (typeof window !== "undefined") {
       localStorage.setItem("searchTerm", newSearchTerm);
     }
   };
 
+  const handleClearFilters = () => {
+    setFilter("ASC");
+    setSearchTerm("");
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("filter");
+      localStorage.removeItem("searchTerm");
+    }
+  };
+
   useEffect(() => {
     const fetchProviders = async () => {
-      setLoading(true);
       try {
         const order = filter === "ASC" || filter === "DESC" ? filter : "ASC";
         const calification = isNaN(Number(filter)) ? undefined : Number(filter);
@@ -162,25 +167,22 @@ const ProviderCardList: React.FC = () => {
   if (loading)
     return (
       <div className="flex flex-col items-center justify-center h-screen w-screen">
-      {/* Spinner */}
-      <div className="w-16 h-16 border-4 border-green-300 border-t-green-500 rounded-full animate-spin mb-4"></div>
-
-      {/* Texto */}
-      <h2 className="text-xl font-semibold text-[#263238]">
-          Cargando la informacion..
-      </h2>
-  </div>
+        <div className="w-16 h-16 border-4 border-green-300 border-t-green-500 rounded-full animate-spin mb-4"></div>
+        <h2 className="text-xl font-semibold text-[#263238]">
+          Cargando la información...
+        </h2>
+      </div>
     );
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="mx-auto mt-24">
+    <div className="mx-auto mt-24 px-4 max-w-7xl">
       {providers.length === 0 ? (
         <div className="text-center mb-8 mx-auto">
-          <h1 className="text-2xl font-bold mb-4">No hay jardineros</h1>
+          <h1 className="text-2xl font-bold mb-4 text-red-500">No hay jardineros</h1>
           <button
             className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
-            onClick={() => setSearchTerm("")}
+            onClick={() => {handleClearFilters()}}
           >
             Back
           </button>
@@ -188,13 +190,13 @@ const ProviderCardList: React.FC = () => {
       ) : (
         <>
           <div className="text-center mb-8 mx-auto">
-            <div className="relative w-1/2 mx-auto flex items-center mb-8">
+            <div className="relative w-full sm:w-3/4 lg:w-1/2 mx-auto flex items-center mb-8">
               <input
                 type="text"
                 placeholder="Buscar jardinero..."
                 value={searchTerm}
                 onChange={handleSearch}
-                className="w-full pl-4 pr-12 py-2 text-lg rounded-full border border-gray-300 shadow-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+                className="w-full pl-4 pr-12 py-2 text-lg rounded-full border border-[#263238] shadow-lg focus:outline-none focus:ring-2 focus:ring-green-400"
               />
               <FaSearch className="absolute right-4 text-gray-500" />
             </div>
@@ -202,7 +204,7 @@ const ProviderCardList: React.FC = () => {
           <div className="flex justify-end mb-4">
             <Dropdown filter={filter} onChange={handleFilter} />
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {paginatedProviders.map((gardener) => (
               <Link href={`/gardener/${gardener.id}`} key={gardener.id}>
                 <ProviderCard
@@ -214,28 +216,43 @@ const ProviderCardList: React.FC = () => {
               </Link>
             ))}
           </div>
-          <div className="flex justify-between mt-6 mb-8">
-              <button
-                onClick={handlePreviousPage}
-                disabled={currentPage === 1}
-                className={`px-4 py-2 bg-[#8BC34A] text-white rounded ${
-                  currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-              >
-                Página anterior
-              </button>
-              <button
-                onClick={handleNextPage}
-                disabled={currentPage * itemsPerPage >= providers.length}
-                className={`px-4 py-2 bg-[#8BC34A] text-white rounded ${
-                  currentPage * itemsPerPage >= providers.length
-                    ? "opacity-50 cursor-not-allowed"
-                    : ""
-                }`}
-              >
-                Página siguiente
+          <div className="flex flex-col sm:flex-row justify-between mt-6 mb-8 items-center space-y-4 sm:space-y-0">
+            <button
+              onClick={handlePreviousPage}
+              disabled={currentPage === 1}
+              className={`px-4 py-2 bg-[#8BC34A] text-white rounded hover:shadow-lg hover:shadow-[#FFEB3B] hover:text-[#263238] ${
+                currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+            >
+              Página anterior
             </button>
-        </div>
+
+            <div className="flex space-x-2">
+              {Array.from({ length: Math.ceil(providers.length / itemsPerPage) }, (_, index) => index + 1).map((page) => (
+                <button
+                  key={page}
+                  onClick={() => setCurrentPage(page)}
+                  className={`px-3 py-1 rounded-full ${
+                    page === currentPage ? "bg-[#8BC34A] text-[#263238] hover:text-[#FFEB3B] hover:shadow-lg hover:shadow-[#FFEB3B]" : "bg-gray-200 text-[#263238] hover:text-[#4CAF50] hover:shadow-lg hover:shadow-[#FFEB3B]"
+                  }`}
+                >
+                  {page}
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={handleNextPage}
+              disabled={currentPage * itemsPerPage >= providers.length}
+              className={`px-4 py-2 bg-[#8BC34A] text-white rounded hover:shadow-lg hover:shadow-[#FFEB3B] hover:text-[#263238] ${
+                currentPage * itemsPerPage >= providers.length
+                  ? "opacity-50 cursor-not-allowed"
+                  : ""
+              }`}
+            >
+              Página siguiente
+            </button>
+          </div>
         </>
       )}
     </div>
@@ -243,6 +260,7 @@ const ProviderCardList: React.FC = () => {
 };
 
 export default ProviderCardList;
+
 
 
 

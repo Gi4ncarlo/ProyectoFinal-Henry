@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateGardenerDto } from './dto/create-gardener.dto';
 import { UpdateGardenerDto } from './dto/update-gardener.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -6,7 +6,6 @@ import { Gardener } from './entities/gardener.entity';
 import { Repository } from 'typeorm';
 import { ServiceProvided } from '../serviceProvided/entities/serviceProvided.entity';
 import { In } from 'typeorm';
-import { format } from 'date-fns';
 
 @Injectable()
 export class GardenerService {
@@ -47,8 +46,8 @@ export class GardenerService {
       const gardener = await this.gardenerRepository.findOne({ where: { id } });
 
       if (!gardener) throw new HttpException('Jardinero no encontrado.', HttpStatus.NOT_FOUND);
-      const formattedReservedDays = gardener.reservedDays.map((day) => day)
-      if (!formattedReservedDays) throw new HttpException('No hay dias reservados', HttpStatus.NOT_FOUND);
+      const formattedReservedDays = gardener?.reservedDays?.map((day) => day)
+      if (!formattedReservedDays) return [];
 
       return formattedReservedDays;
 
@@ -240,5 +239,23 @@ export class GardenerService {
     await this.gardenerRepository.save(gardener);
     return gardener;
   }
+
+  async cancelReservation(gardenerId: string, day: string): Promise<void> {
+    try {
+      const gardener = await this.gardenerRepository.findOne({ where: { id: gardenerId } });
+      if (!gardener) throw new NotFoundException('Jardinero no encontrado');
+  
+      if (!gardener.reservedDays || gardener.reservedDays.length === 0) {
+        throw new BadRequestException('No hay días reservados para este jardinero');
+      }
+  
+      gardener.reservedDays = gardener.reservedDays.filter((reservedDay) => reservedDay !== day);
+  
+      await this.gardenerRepository.save(gardener);
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+  
 }
 

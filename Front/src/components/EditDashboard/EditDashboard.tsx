@@ -19,6 +19,10 @@ const EditDashboard: React.FC = () => {
         { label: "Edad", field: "age", value: userSession?.user?.age || "N/A" },
         { label: "Teléfono", field: "phone", value: userSession?.user?.phone || "" },
         { label: "Dirección", field: "address", value: userSession?.user?.address || "" },
+        ...(userSession?.user?.role === "gardener"
+            ? [{ label: "Experiencia", field: "experience", value: userSession?.user?.experience || "" }]
+            : []),
+ 
     ];
 
     useEffect(() => {
@@ -36,6 +40,9 @@ const EditDashboard: React.FC = () => {
         const formData = new FormData();
         formData.append("file", file);
 
+        console.log("Que ocurre fuera del proceso con userSession: ", userSession);
+        console.log("Que respuesta obtengo: ", formData);
+
         try {
             const response = await fetch(
                 `${process.env.NEXT_PUBLIC_API_URL}/${userSession?.user?.role}/${userSession?.user?.id}/image`,
@@ -50,7 +57,10 @@ const EditDashboard: React.FC = () => {
 
             if (!response.ok) throw new Error("Error uploading image");
 
+            console.log("Que respuesta obtengo: ", response);
             const data = await response.json();
+
+            console.log("Que trae userSession: ", userSession);
 
             if (userSession) {
                 const updatedSession = {
@@ -105,6 +115,8 @@ const EditDashboard: React.FC = () => {
             <h1 className="text-3xl font-bold text-gray-800 mb-8">Datos de tu cuenta</h1>
 
             <div className="w-full max-w-4xl bg-white shadow-md rounded-lg p-6 space-y-10">
+
+
                 {/* Imagen de perfil */}
                 <div className="text-center">
                     <h2 className="text-xl font-bold text-gray-800 mb-4">Opciones de perfil</h2>
@@ -126,7 +138,7 @@ const EditDashboard: React.FC = () => {
                             <Image
                                 src={imageProfile}
                                 alt="Profile"
-                                className="rounded-full border-2 border-gray-200 shadow-md"
+                                className="rounded-full border-2 border-[#388E3C] shadow-md"
                                 width={250}
                                 height={250}
                             />
@@ -136,16 +148,17 @@ const EditDashboard: React.FC = () => {
                     </div>
                 </div>
 
+
                 {/* Campos de edición */}
                 <div>
                     {editableFields.map(({ label, field, value }) => (
-                        <div key={field} className="border p-4 mb-4 rounded border-[#263238]">
+                        <div key={field} className="border p-4 mb-4 rounded border-[#4CAF50]">
                             <p className="mb-2 text-[#263238]">
                                 <strong>{label}:</strong> {value}
                             </p>
                             <button
                                 onClick={() => handleEditClick(field, value)}
-                                className="bg-green-600 hover:bg-green-700 border-2 border-[#263238] text-white font-semibold py-2 px-4 rounded"
+                                className="bg-green-600 hover:bg-green-700 text-white hover:text-[#FFEB3B] font-semibold py-2 px-4 rounded"
                             >
                                 Editar
                             </button>

@@ -11,12 +11,12 @@ export class MercadoPagoController {
   ) { }
 
   @Get('create-payment/:id')
-  async payments(@Param('id', new ParseUUIDPipe()) id: string ,@Res() res: Response) {
+  async payments(@Param('id', new ParseUUIDPipe()) id: string, @Res() res: Response) {
     try {
       const payment = await this.mercadoPagoService.createPayment(id);
       return res.status(200).json(payment);
     } catch (error) {
-      throw new HttpException(error, 400);
+      return res.status(400).json(error);
     }
   }
 }

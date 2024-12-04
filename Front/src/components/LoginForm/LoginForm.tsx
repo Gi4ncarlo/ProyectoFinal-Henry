@@ -42,28 +42,48 @@ export default function LoginForm() {
       [name]: true,
     }));
   };
-
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const response = await login(dataUser);
-    if (response.status === 401) {
-      Swal.fire({
-        title: "Error",
-        text: "Email o contraseña incorrectos",
-        icon: "error",
-      });
-    } else {
+  
+    try {
+      const response = await login(dataUser);
+  
+      // Si la respuesta es exitosa, muestra mensaje de éxito y redirige
       Swal.fire({
         title: "Bienvenido!",
         text: "Ingresaste correctamente",
         icon: "success",
       });
+  
       const { token, user } = response;
       localStorage.setItem("userSession", JSON.stringify({ token, user }));
       router.push("/Home");
+    } catch (error: any) {
+      console.error("Error in handleSubmit:", error);
+  
+      // Verificar si el error tiene la respuesta de "isBanned" dentro de "response"
+      if (error?.response?.message === "El usuario esta baneado") {
+        Swal.fire({
+          title: "Acceso denegado",
+          text: "Estás baneado, no puedes ingresar",
+          icon: "warning",
+        });
+      } else if (error?.status === 401) {
+        Swal.fire({
+          title: "Error",
+          text: "Email o contraseña incorrectos",
+          icon: "error",
+        });
+      } else {
+        Swal.fire({
+          title: "Error",
+          text: error?.message || "Ocurrió un problema. Inténtalo nuevamente.",
+          icon: "error",
+        });
+      }
     }
   };
-
+  
   useEffect(() => {
     if (userSession) {
       if (typeof window !== "undefined") {
@@ -158,7 +178,7 @@ export default function LoginForm() {
           <button
             type="submit"
             disabled={Object.values(errors).some((error) => error !== "")}
-            className="w-full mt-4 p-2 bg-[#4caf50] text-white font-bold rounded hover:bg-[#388e3c]"
+            className="w-full mt-4 p-2 bg-[#4caf50] text-white font-bold rounded hover:bg-[#388e3c] hover:text-[#FFEB3B]"
           >
             Entrar
           </button>
@@ -168,7 +188,7 @@ export default function LoginForm() {
         <div className="mt-6">
           <Link
             href="/api/auth/login?returnTo=/loginGoogle"
-            className="w-full mt-4 p-2 bg-[#4caf50] text-white font-bold rounded hover:bg-[#388e3c] flex items-center justify-center"
+            className="w-full mt-4 p-2 bg-[#4caf50] text-white font-bold rounded hover:bg-[#388e3c] hover:text-[#FFEB3B] flex items-center justify-center"
           >
             <Image
               src="/images/LogoGoogle.webp"
@@ -182,8 +202,8 @@ export default function LoginForm() {
         </div>
         <div className="mt-6">
           <Link
-            href="/register"
-            className="w-full mt-4 p-2 bg-[#4caf50] text-white font-bold rounded hover:bg-[#388e3c] flex items-center justify-center"
+            href="/preRegister"
+            className="w-full mt-4 p-2 bg-[#4caf50] text-white font-bold rounded hover:bg-[#388e3c] hover:text-[#FFEB3B] flex items-center justify-center"
           >
             Registrarse
           </Link>

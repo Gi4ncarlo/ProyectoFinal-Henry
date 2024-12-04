@@ -50,7 +50,7 @@ const OrderList = ({ order, getTasks }: any) => {
                         <div className="p-6 space-y-4">
                             <div className="space-y-2">
                                 <p className="text-sm text-gray-500">
-                                    <strong>Fecha contratada para el servicio:</strong> {orderItem?.orderDetail?.startTime || "No disponible"}
+                                    <strong>Fecha contratada para el servicio:</strong> {orderItem?.serviceDate || "No disponible"}
 
                                 </p>
                                 <p className="text-sm text-gray-500">

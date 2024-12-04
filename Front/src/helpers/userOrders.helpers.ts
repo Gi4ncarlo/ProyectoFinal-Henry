@@ -1,16 +1,13 @@
-
-
 const APIURL: string = process.env.NEXT_PUBLIC_API_URL as string;
 const TOKEN = JSON.parse(localStorage.getItem("userSession") || "null")
 
-// Función para obtener las órdenes de un usuario
 export async function getuserOrdersDB(id: number, token: string) {
   try {
     const res = await fetch(`${APIURL}/user/${id}/orders`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`, // Aquí se agrega el token
+        "Authorization": `Bearer ${token}`, 
       },
     });
     if (!res.ok) {
@@ -19,14 +16,13 @@ export async function getuserOrdersDB(id: number, token: string) {
     const orders = await res.json();
     return orders;
   } catch (error) {
-    console.error(error);  // Agrega un log para verificar errores
+    console.error(error);  
     throw new Error(error instanceof Error ? error.message : "Error desconocido");
   }
 }
 
-
-
 export async function getAllUsers() {
+  const TOKEN = JSON.parse(localStorage.getItem("userSession") || "null")
   try {
   
     const response = await fetch(`${APIURL}/user`, {
@@ -50,10 +46,6 @@ export async function getAllUsers() {
     throw error; 
   }
 }
-
-
-
-
 
 export async function banUser(userId: string,  isBanned: boolean) {
   const response = await fetch(`${APIURL}/user/${userId}/ban`, {
@@ -89,7 +81,6 @@ if (!response.ok) {
   }
   return await response.json();
 }
-
 
 export async function deleteOrder(orderId: string) {
   const response = await fetch(`${APIURL}/services-order/${orderId}`, {
