@@ -53,11 +53,13 @@ export class ServicesOrderController {
   ) {
     return await this.servicesOrderService.findAll(page, limit);
   }
+
   @UseGuards(AuthGuard)
   @Get('orderPay/:id')
   async orderPay(@Param('id', new ParseUUIDPipe()) id: string) {
     return await this.servicesOrderService.orderPay(id);
   }
+
   @UseGuards(AuthGuard)
   @Get(':id')
   async findOne(@Param('id', new ParseUUIDPipe()) id: string) {
@@ -69,6 +71,7 @@ export class ServicesOrderController {
 
     return serviceOrder;
   }
+  
   @UseGuards(AuthGuard)
   @Get('gardener/:id')
   async findAllByGardener(@Param('id', new ParseUUIDPipe()) id: string, @Res() res: Response) {
