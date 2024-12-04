@@ -157,7 +157,6 @@ export class MailService {
 
   async sendPaymentConfirmationEmail(to: string, username: string, order: any): Promise<void> {
     try {
-      // Formatear la fecha al formato yyyy-MM-dd
       const formattedDate = format(new Date(order.date), 'yyyy-MM-dd');
   
       const mailOptions = {
@@ -191,7 +190,6 @@ export class MailService {
           </div>
         `,
       };
-  
       await this.transporter.sendMail(mailOptions);
       console.log('Payment confirmation email sent successfully');
     } catch (error: any) {
@@ -199,6 +197,4 @@ export class MailService {
       throw new Error(error.message);
     }
   }
-  
-  
 }

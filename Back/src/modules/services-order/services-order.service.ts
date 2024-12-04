@@ -170,6 +170,7 @@ export class ServicesOrderService {
 
   async orderPay(id: string) {
     try {
+      // Buscar la orden
       const order = await this.findOne(id);
       if (!order) throw new NotFoundException(`Orden de servicio con id ${id} no encontrada`);
   
