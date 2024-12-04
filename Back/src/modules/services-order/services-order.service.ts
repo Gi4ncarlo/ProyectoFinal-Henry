@@ -170,12 +170,21 @@ export class ServicesOrderService {
 
   async orderPay(id: string) {
     try {
+      // Buscar la orden
       const order = await this.findOne(id);
       if (!order) throw new NotFoundException(`Orden de servicio con id ${id} no encontrada`);
+  
+      // Verificar si la orden ya fue pagada
       if (order.orderDetail) throw new BadRequestException('La orden de servicio ya fue pagada');
+  
+      // Marcar la orden como aprobada
       order.isApproved = true;
+  
+      // Calcular el precio total de los servicios
       let price = 0;
-      order.serviceProvided.map((service) => price += service.price)
+      order.serviceProvided.map((service) => price += service.price);
+  
+      // Crear el detalle de servicio
       const newOrderDetail = await this.serviceDetailsRepository.create({
         serviceType: order.serviceProvided.map((service) => service.detailService),
         totalPrice: price,
@@ -184,29 +193,43 @@ export class ServicesOrderService {
         status: Status.Pending,
         servicesOrder: order,
         assignedGardener: order.gardener
-      })
-      newOrderDetail.userToken = await this.tokenService.generateToken(6)
+      });
+  
+      // Generar token para la orden
+      newOrderDetail.userToken = await this.tokenService.generateToken(6);
+  
+      // Guardar el detalle del servicio
       await this.serviceDetailsRepository.save(newOrderDetail);
+  
+      // Asociar el detalle de servicio con la orden
       order.orderDetail = newOrderDetail;
       await this.servicesOrderRepository.save(order);
-      const { assignedGardener, servicesOrder, ...rest } = newOrderDetail
-      const { orderDetail, user, gardener, serviceProvided, ...ord } = order
-      const { password, ...userWithoutPassword } = user
-
+  
+      // Preparar la respuesta para la API
+      const { assignedGardener, servicesOrder, ...rest } = newOrderDetail;
+      const { orderDetail, user, gardener, serviceProvided, ...ord } = order;
+      const { password, ...userWithoutPassword } = user;
+  
+      // Enviar el correo de confirmación de pago
+      await this.mailService.sendPaymentConfirmationEmail(user.email, user.username, order);
+  
+      // Retornar la respuesta
       return {
-        message: 'detalle de servicio generado exitosamente',
+        message: 'Detalle de servicio generado exitosamente',
         data: {
           order: ord,
-          datail: rest,
+          detail: rest,
           user: userWithoutPassword,
           gardener,
         }
-      }
-
+      };
+  
     } catch (error) {
+      // Manejo de errores
       throw new HttpException(error, 400);
     }
   }
+  
 
   async findAllByGardener(id: string) {
     const orders = await this.servicesOrderRepository.find({
