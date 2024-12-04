@@ -178,6 +178,8 @@ const ProviderDetail: React.FC = () => {
 
     setLoading(true);
 
+
+
     try {
       const order = await hireServices({
         date: selectedDate,
@@ -200,8 +202,8 @@ const ProviderDetail: React.FC = () => {
       setSelectedDate(null);
       setTimeout(() => {
         router.push("/dashboard/userDashboard?update=true");
-        
-      },1250)
+
+      }, 1250)
     } catch (error) {
       console.error("Error contratando servicios:", error);
       Swal.fire({
@@ -393,7 +395,7 @@ const ProviderDetail: React.FC = () => {
                         <span className="text-sm text-gray-800 font-semibold mt-1">{review?.date}</span>
                       </div>
                       <p className="text-lg font-semibold text-[#263238] mt-1 ">{review.comment}</p>
-                 
+
                     </div>
                   ))}
                 </div>
@@ -403,14 +405,16 @@ const ProviderDetail: React.FC = () => {
             </div>
           </div>
 
-          <div className="mt-6 flex justify-center">
-            <button
-              onClick={handleHireClick}
-              className="mt-4 w-full bg-[#4CAF50] text-white py-2 px-4 rounded-lg hover:bg-[#45a049] hover:text-[#FFEB3B] transition duration-300 ease-in-out"
-            >
-              Contratar Servicios
-            </button>
-          </div>
+          {userSession?.user?.role !== "gardener" && (
+            <div className="mt-6 flex justify-center">
+              <button
+                onClick={handleHireClick}
+                className="mt-4 w-full bg-[#4CAF50] text-white py-2 px-4 rounded-lg hover:bg-[#45a049] hover:text-[#FFEB3B] transition duration-300 ease-in-out"
+              >
+                Contratar Servicios
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="flex items-center justify-center w-full mt-10">
