@@ -170,12 +170,17 @@ export class ServicesOrderService {
 
   async orderPay(id: string) {
     try {
+      // Buscar la orden
       const order = await this.findOne(id);
       if (!order) throw new NotFoundException(`Orden de servicio con id ${id} no encontrada`);
+  
       if (order.orderDetail) throw new BadRequestException('La orden de servicio ya fue pagada');
+  
       order.isApproved = true;
+  
       let price = 0;
-      order.serviceProvided.map((service) => price += service.price)
+      order.serviceProvided.map((service) => price += service.price);
+  
       const newOrderDetail = await this.serviceDetailsRepository.create({
         serviceType: order.serviceProvided.map((service) => service.detailService),
         totalPrice: price,
@@ -184,29 +189,37 @@ export class ServicesOrderService {
         status: Status.Pending,
         servicesOrder: order,
         assignedGardener: order.gardener
-      })
-      newOrderDetail.userToken = await this.tokenService.generateToken(6)
+      });
+  
+      newOrderDetail.userToken = await this.tokenService.generateToken(6);
+  
       await this.serviceDetailsRepository.save(newOrderDetail);
+  
       order.orderDetail = newOrderDetail;
       await this.servicesOrderRepository.save(order);
-      const { assignedGardener, servicesOrder, ...rest } = newOrderDetail
-      const { orderDetail, user, gardener, serviceProvided, ...ord } = order
-      const { password, ...userWithoutPassword } = user
-
+  
+      const { assignedGardener, servicesOrder, ...rest } = newOrderDetail;
+      const { orderDetail, user, gardener, serviceProvided, ...ord } = order;
+      const { password, ...userWithoutPassword } = user;
+  
+      await this.mailService.sendPaymentConfirmationEmail(user.email, user.username, order);
+  
       return {
-        message: 'detalle de servicio generado exitosamente',
+        message: 'Detalle de servicio generado exitosamente',
         data: {
           order: ord,
-          datail: rest,
+          detail: rest,
           user: userWithoutPassword,
           gardener,
         }
-      }
-
+      };
+  
     } catch (error) {
+      // Manejo de errores
       throw new HttpException(error, 400);
     }
   }
+  
 
   async findAllByGardener(id: string) {
     const orders = await this.servicesOrderRepository.find({
@@ -268,23 +281,44 @@ export class ServicesOrderService {
   async remove(orderId: string): Promise<void> {
     const order = await this.servicesOrderRepository.findOne({
       where: { id: orderId },
-      relations: ['gardener'],
+      relations: ['gardener', 'user'],
     });
-
+  
     if (!order) {
       throw new HttpException('Orden no encontrada', HttpStatus.NOT_FOUND);
     }
-
+  
+    if (!order.gardener || !order.gardener.id) {
+      throw new BadRequestException('La orden no tiene un jardinero asociado');
+    }
+  
+    if (!order.user || !order.user.email) {
+      throw new BadRequestException('La orden no tiene un usuario asociado');
+    }
+  
     const gardenerId = order.gardener.id;
-    const reservedDay = order.serviceDate;  
-
+    const reservedDay = order.serviceDate;
+  
     if (!reservedDay) {
       throw new BadRequestException('No se ha especificado un día reservado para esta orden');
     }
-
-    await this.gardenerService.cancelReservation(gardenerId, reservedDay);
-
-    await this.servicesOrderRepository.remove(order);
+  
+    try {
+      console.log(`Cancelando la reserva para jardinero ID: ${gardenerId} en el día ${reservedDay}`);
+      await this.gardenerService.cancelReservation(gardenerId, reservedDay);
+  
+      console.log(`Enviando correo de cancelación al usuario: ${order.user.email}`);
+      await this.mailService.sendOrderCancellationEmail(order.user.email, order.user.name, order);
+  
+      console.log(`Eliminando la orden con ID: ${orderId}`);
+      await this.servicesOrderRepository.remove(order);
+    } catch (error) {
+      console.error('Error durante la eliminación de la orden:', error);
+      throw new HttpException(
+        'Error interno al procesar la eliminación de la orden',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
-
+    
 }

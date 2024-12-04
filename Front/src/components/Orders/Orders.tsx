@@ -430,7 +430,7 @@ useEffect(() => {
                 <div className="flex justify-center items-center">
                   <Image
                     className="rounded-full w-28 h-28 object-cover"
-                    src={order.gardener.profileImageUrl || "/default-profile.jpg"}
+                    src={order.gardener.profileImageUrl || "/images/nuevo_usuarioGardener.webp"}
                     alt={`${order.gardener.name}'s profile`}
                     width={120}
                     height={120}

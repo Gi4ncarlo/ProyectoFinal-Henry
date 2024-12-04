@@ -78,7 +78,6 @@ const ProviderCardList: React.FC = () => {
   const [filter, setFilter] = useState<string>("ASC");
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
-
   const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 8;
 
@@ -131,6 +130,10 @@ const ProviderCardList: React.FC = () => {
   useEffect(() => {
     const fetchProviders = async () => {
       try {
+        setCurrentPage(1);
+      
+        setLoading(true);
+
         const order = filter === "ASC" || filter === "DESC" ? filter : "ASC";
         const calification = isNaN(Number(filter)) ? undefined : Number(filter);
 
@@ -148,8 +151,10 @@ const ProviderCardList: React.FC = () => {
       }
     };
 
-    fetchProviders();
-  }, [filter, searchTerm]);
+    if (TOKEN) {
+      fetchProviders();
+    }
+  }, [filter, searchTerm, TOKEN]);
 
   const handleNextPage = () => {
     setCurrentPage((prev) => prev + 1);
@@ -260,7 +265,6 @@ const ProviderCardList: React.FC = () => {
 };
 
 export default ProviderCardList;
-
 
 
 
