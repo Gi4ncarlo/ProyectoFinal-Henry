@@ -106,7 +106,7 @@ const Home: React.FC = () => {
       {/* ABOUT SECTION */}
       <section
         id="about"
-        className="w-full py-20 bg-[#8BC34A] text-gray-800 flex flex-col items-center justify-center"
+        className="w-full py-20 bg-gray-100 text-gray-800 flex flex-col items-center justify-center"
       >
         <h2 className="text-3xl md:text-4xl font-semibold mb-6 text-[#263238]">
           Sobre Nosotros
@@ -168,7 +168,7 @@ const Home: React.FC = () => {
       {/* CONTACT SECTION */}
       <section
         id="contact"
-        className="w-full py-20 bg-[#8BC34A] text-gray-800 flex flex-col items-center justify-center"
+        className="w-full py-20 bg-gray-100 text-gray-800 flex flex-col items-center justify-center"
       >
         <h2 className="text-3xl md:text-4xl font-semibold mb-6 text-[#263238]">Contáctanos</h2>
         <p className="text-lg md:text-xl mb-6 px-4 md:w-2/3 lg:w-1/2 text-center text-[#263238]">
