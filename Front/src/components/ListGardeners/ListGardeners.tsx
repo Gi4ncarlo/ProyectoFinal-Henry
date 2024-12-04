@@ -1,16 +1,14 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Link from "next/link";
-import ProviderCard from "../ProviderCard/ProviderCard";
+
 import { IServiceProvider } from "@/interfaces/IServiceProvider";
 import { deleteGardener, getGardenersDB } from "@/helpers/gardeners.helpers";
 import { useRouter } from "next/navigation";
 import { FaSearch } from "react-icons/fa";
 import EditGardenerForm from "../EditGardenerForm/EditGardenerForm";
 import CardGardener from "../CardGardener/CardGardener";
-import { Spin, Flex } from 'antd';
-import { LoadingOutlined } from '@ant-design/icons';
+
 import Swal from 'sweetalert2';
 
 const Dropdown: React.FC<{ filter: string; onChange: (value: string) => void }> = ({
@@ -27,8 +25,8 @@ const Dropdown: React.FC<{ filter: string; onChange: (value: string) => void }> 
     { value: "3", label: "⭐⭐⭐" },
     { value: "4", label: "⭐⭐⭐⭐" },
     { value: "5", label: "⭐⭐⭐⭐⭐" },
-    { value: "AVAILABLE", label: "Disponibles" },
-    { value: "NOT_AVAILABLE", label: "No disponibles" },
+    // { value: "AVAILABLE", label: "Disponibles" },
+    // { value: "NOT_AVAILABLE", label: "No disponibles" },
   ];
 
   return (
@@ -117,56 +115,56 @@ const ListGardeners: React.FC = () => {
     }
   };
 
-  {/*Fn para eliminar un jardinero */ }
-const handleDelete = async (id: number) => {
-  const { isConfirmed } = await Swal.fire({
-    title: "¿Estás seguro?",
-    text: "No podrás revertir esta acción.",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#d33",
-    cancelButtonColor: "#3085d6",
-    confirmButtonText: "Sí, eliminar",
-    cancelButtonText: "Cancelar"
-  });
-
-  if (!isConfirmed) return;
-
-  try {
-    const token =
-      typeof window !== "undefined"
-        ? JSON.parse(localStorage.getItem("userSession") || "{}").token
-        : null;
-
-    if (!token) {
-      throw new Error("Usuario no autenticado");
-    }
-
-    const response = await deleteGardener(token, id);
-    if (!response) {
-      throw new Error("Error al eliminar el jardinero");
-    }
-
-    // Actualizar la lista de jardineros después de eliminar
-    setProviders((prev) => prev.filter((gardener) => gardener.id !== id));
-
-    await Swal.fire({
-      icon: "success",
-      title: "Eliminado",
-      text: "El jardinero fue eliminado exitosamente.",
-      timer: 3000,
-      showConfirmButton: false
+  const handleDelete = async (id: number) => {
+    const { isConfirmed } = await Swal.fire({
+      title: "¿Estás seguro?",
+      text: "No podrás revertir esta acción.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar"
     });
-  } catch (error: any) {
-    await Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: error.message || "Hubo un problema al eliminar el jardinero.",
-      timer: 3000,
-      showConfirmButton: false
-    });
-  }
-};
+  
+    if (!isConfirmed) return;
+  
+    try {
+      const token =
+        typeof window !== "undefined"
+          ? JSON.parse(localStorage.getItem("userSession") || "{}").token
+          : null;
+  
+      if (!token) {
+        throw new Error("Usuario no autenticado");
+      }
+  
+      console.log('Token recibido en handleDelete:', token);
+  
+      await deleteGardener(token, id);  // Llamada a la función de eliminación
+  
+      // Actualizar la lista de jardineros después de eliminar
+      setProviders((prev) => prev.filter((gardener) => gardener.id !== id));
+  
+      await Swal.fire({
+        icon: "success",
+        title: "Eliminado",
+        text: "El jardinero fue eliminado exitosamente.",
+        timer: 3000,
+        showConfirmButton: false
+      });
+    } catch (error: any) {
+      console.log('Error al eliminar jardinero:', error); // Log detallado del error
+      await Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: error.message || "Hubo un problema al eliminar el jardinero.",
+        timer: 3000,
+        showConfirmButton: false
+      });
+    }
+  };
+  
 
 
   {/*fn para editar un jardinero */ }

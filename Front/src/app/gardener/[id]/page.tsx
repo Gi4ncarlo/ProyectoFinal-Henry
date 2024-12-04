@@ -14,7 +14,7 @@ import GardenerCalendar from "@/components/GardenerCalendar/GardenerCalendar";
 import GardenerMap from "@/components/GardenerMap/GardenerMap";
 import { Rate } from "antd";
 import { fetchReviews } from "@/helpers/comments.helpers";
-import { Checkbox } from "antd";
+
 import { Carousel } from "antd";
 
 
@@ -393,6 +393,7 @@ const ProviderDetail: React.FC = () => {
                         <span className="text-sm text-gray-800 font-semibold mt-1">{review?.date}</span>
                       </div>
                       <p className="text-lg font-semibold text-[#263238] mt-1 ">{review.comment}</p>
+                 
                     </div>
                   ))}
                 </div>
