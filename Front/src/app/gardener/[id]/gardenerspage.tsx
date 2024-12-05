@@ -5,7 +5,7 @@ import ProviderDetail from "./page";
 
 const gardenersPage = () => {
   return (
-    <div className="flex">
+    <div className="flex ">
       <ProviderDetail />
     </div>
   );

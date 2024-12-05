@@ -87,7 +87,7 @@ const Home: React.FC = () => {
           backgroundPosition: "center",
         }}
       >
-        <div className="bg-black bg-opacity-50 w-full h-full flex flex-col items-center justify-center">
+        <div className="bg-black bg-opacity-50 w-full h-full flex flex-col items-center justify-center px-6 lg:px-0">
           <h1 className="text-4xl md:text-6xl font-bold mb-4">
             Bienvenido a Vicnasol Jardinería
           </h1>

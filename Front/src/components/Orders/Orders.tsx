@@ -383,13 +383,12 @@ useEffect(() => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center py-6 px-4">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center py-6 lg:px-4">
+      <h1 className="text-3xl font-bold text-gray-800 mb-6 px-4">
         Bienvenido a su historial de Operaciones
       </h1>
-
       {/* Barra de Filtros */}
-      <div className="w-full max-w-2xl mb-6">
+      {/* <div className="w-full max-w-2xl mb-6">
         <div className="flex items-center justify-between bg-white p-4 rounded-lg shadow-md">
           <div>
             <label htmlFor="sortBy">Ordenar por: </label>
@@ -407,7 +406,38 @@ useEffect(() => {
             </select>
           </div>
         </div>
-      </div>
+      </div> */}
+
+<div className="flex items-center justify-between bg-white p-4 rounded-lg shadow-md w-full sm:w-auto mb-6">
+  <div>
+    <label htmlFor="sortBy">Ordenar por: </label>
+    <select
+      id="sortBy"
+      name="sortBy"
+      value={sortBy}
+      onChange={handleSortChange}
+      className="w-full sm:w-auto"
+    >
+      <option value="startTime">Fecha de inicio</option>
+      <option value="isApproved">Aprobado</option>
+    </select>
+  </div>
+
+  <div>
+    <label htmlFor="sortOrder">Orden: </label>
+    <select
+      id="sortOrder"
+      name="sortOrder"
+      value={sortOrder}
+      onChange={handleSortChange}
+      className="w-full sm:w-auto"
+    >
+      <option value="asc">Ascendente</option>
+      <option value="desc">Descendente</option>
+    </select>
+  </div>
+</div>
+
 
       {!orders[0]?.servicesOrder?.length ? (
         <p className="text-xl mt-6 text-[#FF5722]">
@@ -445,7 +475,7 @@ useEffect(() => {
                   <p className="text-gray-700">
                     <strong>Dirección:</strong> {order.gardener.address}
                   </p>
-                  <p className="text-gray-700">
+                  <p className="text-gray-700 truncate">
                     <strong>Email:</strong> {order.gardener.email}
                   </p>
                   <p className="text-gray-700">
