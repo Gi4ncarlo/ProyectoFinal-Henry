@@ -1,14 +1,11 @@
 "use client";
 
 import { deleteOrder, getuserOrdersDB } from "@/helpers/userOrders.helpers";
-import { IOrderProps } from "@/interfaces/IOrdersProps";
 import { IUserSession } from "@/interfaces/IUserSession";
-
 import Image from "next/image";
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import Modal from "./modal";
-import { format } from "date-fns";
 import { fetchComments } from "@/helpers/comments.helpers";
 
 // Componente para mostrar las órdenes del usuario
@@ -19,7 +16,6 @@ const DashboardUserCompo: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [userSession, setUserSession] = useState<IUserSession | null>(null);
   const TOKEN = JSON.parse(localStorage.getItem("userSession") || "null");
-  const [imageProfile, setImageProfile] = useState<any>("");
   const [showModal, setShowModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null); // Para almacenar la orden seleccionada
   const [status, setStatus] = useState<string | null>("");
@@ -389,25 +385,36 @@ useEffect(() => {
       </h1>
 
       {/* Barra de Filtros */}
-      <div className="w-full max-w-2xl mb-6">
-        <div className="flex items-center justify-between bg-white p-4 rounded-lg shadow-md">
-          <div>
-            <label htmlFor="sortBy">Ordenar por: </label>
-            <select id="sortBy" name="sortBy" value={sortBy} onChange={handleSortChange}>
-              <option value="startTime">Fecha de inicio</option>
-              <option value="isApproved">Aprobado</option>
-            </select>
-          </div>
+      <div className="flex items-center justify-between bg-white p-4 rounded-lg shadow-md w-full sm:w-auto ">
+  <div>
+    <label htmlFor="sortBy">Ordenar por: </label>
+    <select
+      id="sortBy"
+      name="sortBy"
+      value={sortBy}
+      onChange={handleSortChange}
+      className="w-full sm:w-auto"
+    >
+      <option value="startTime">Fecha de inicio</option>
+      <option value="isApproved">Aprobado</option>
+    </select>
+  </div>
 
-          <div>
-            <label htmlFor="sortOrder">Orden: </label>
-            <select id="sortOrder" name="sortOrder" value={sortOrder} onChange={handleSortChange}>
-              <option value="asc">Ascendente</option>
-              <option value="desc">Descendente</option>
-            </select>
-          </div>
-        </div>
-      </div>
+  <div>
+    <label htmlFor="sortOrder">Orden: </label>
+    <select
+      id="sortOrder"
+      name="sortOrder"
+      value={sortOrder}
+      onChange={handleSortChange}
+      className="w-full sm:w-auto"
+    >
+      <option className="p-2" value="asc">Ascendente</option>
+      <option className="p-2" value="desc">Descendente</option>
+    </select>
+  </div>
+</div>
+
 
       {!orders[0]?.servicesOrder?.length ? (
         <p className="text-xl mt-6 text-[#FF5722]">
@@ -445,9 +452,10 @@ useEffect(() => {
                   <p className="text-gray-700">
                     <strong>Dirección:</strong> {order.gardener.address}
                   </p>
-                  <p className="text-gray-700">
-                    <strong>Email:</strong> {order.gardener.email}
-                  </p>
+                  <p className="text-gray-700 break-all">
+  <strong>Email:</strong> {order.gardener.email}
+</p>
+
                   <p className="text-gray-700">
                     <strong>Teléfono:</strong> {order.gardener.phone}
                   </p>
@@ -498,7 +506,7 @@ useEffect(() => {
               <div className="mt-6 flex justify-between items-center">
                 <div className="flex items-center gap-2">
                   <span
-                    className={`inline-block px-4 py-2 rounded-full text-white font-semibold ${order.isApproved ? "bg-green-500" : "bg-red-500"
+                    className={`py-2 px-4 bg-[#4caf50] text-white text-sm font-medium rounded-lg hover:bg-[#388e3c] transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#388e3c] w-full text-center flex justify-center items-center ${order.isApproved ? "bg-green-500" : "bg-red-500"
                       }`}
                   >
                     {order.isApproved ? `Aprobada: Estado del trabajo ${order.orderDetail.status}` : "No Aprobada"}
