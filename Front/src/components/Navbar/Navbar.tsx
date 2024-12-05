@@ -243,7 +243,7 @@ export default function Navbar() {
                       Iniciar Sesión
                     </div>
                   </Link>
-                  <Link href="/register">
+                  <Link href="/preRegister">
                     <div className="block px-4 py-2 hover:bg-[#CDDC39] text-gray-700 transition duration-150">
                       Registrarse
                     </div>

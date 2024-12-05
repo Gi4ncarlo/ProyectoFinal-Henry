@@ -16,10 +16,10 @@ export default function Footer() {
             <li>
               📧 Correo:{" "}
               <a
-                href="mailto:contact@vicnasol.com"
+                href="mailto:hpfinal21@gmail.com"
                 className="underline hover:text-gray-200"
               >
-                contact@vicnasol.com
+                hpfinal21@gmail.com
               </a>
             </li>
           </ul>

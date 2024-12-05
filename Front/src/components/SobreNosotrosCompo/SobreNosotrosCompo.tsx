@@ -59,7 +59,7 @@ const SobreNosotrosCompo = () => {
                 name: "Lucas Badino",
                 role: "Backend Developer",
                 github: "https://github.com/lucasbadino",
-                linkedin: "",
+                linkedin: "https://www.linkedin.com/in/lucas-badino-9973ba143",
               },
               {
                 name: "Pablo Ricci",

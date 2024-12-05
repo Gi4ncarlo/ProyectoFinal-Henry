@@ -216,6 +216,7 @@ const DashboardUserCompo: React.FC = () => {
 
 
   const deleteOrders = async (id: string) => {
+    setLoading(true);
     try {
       await deleteOrder(id);
       Swal.fire({
@@ -236,6 +237,8 @@ const DashboardUserCompo: React.FC = () => {
         confirmButtonText: "OK",
       })
 
+    }finally{
+      setLoading(false);
     }
   }
 

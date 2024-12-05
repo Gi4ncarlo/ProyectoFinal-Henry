@@ -108,7 +108,15 @@ const Services = () => {
         text: "Servicio agregado con éxito",
         icon: "success",
       });
-      router.push("/Home"); // Redirigir a la lista de servicios
+      router.push("/dashboard"); 
+      const serviceData = await getAllServices();
+      setServices(serviceData);
+    }else{
+      Swal.fire({
+        title: "Error!",
+        text: "No se pudo agregar el servicio",
+        icon: "error",
+      });
     }
   };
 
@@ -364,7 +372,7 @@ const Services = () => {
           <button
             type="submit"
             disabled={Object.values(errors).some((error) => error !== "")}
-            className="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 transition"
+            className="text-white bg-green-700 hover:bg-green-800 hover:cursor-pointer focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 transition"
           >
             Agregar Servicio
           </button>
