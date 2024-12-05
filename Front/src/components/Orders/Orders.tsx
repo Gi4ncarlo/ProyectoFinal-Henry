@@ -475,7 +475,7 @@ useEffect(() => {
                   <p className="text-gray-700">
                     <strong>Dirección:</strong> {order.gardener.address}
                   </p>
-                  <p className="text-gray-700">
+                  <p className="text-gray-700 truncate">
                     <strong>Email:</strong> {order.gardener.email}
                   </p>
                   <p className="text-gray-700">
