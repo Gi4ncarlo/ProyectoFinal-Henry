@@ -27,24 +27,24 @@ export default function Footer() {
 
         {/* Navegación */}
         <div className="text-center lg:text-left space-y-2">
-        <p className="text-xl font-bold">
+          <p className="text-xl font-bold">
             Navega por nuestra pagína
           </p>
           <ul className="text-sm space-y-1">
-
-            <li>
-              <Link href="/sobreNosotros" className="hover:underline">
-                Sobre Nosotros
-              </Link>
-            </li>
             <li>
               <Link href="/servicios" className="hover:underline">
                 Servicios
               </Link>
             </li>
             <li>
+              <Link href="/sobreNosotros" className="hover:underline">
+                Sobre Nosotros
+              </Link>
+            </li>
+
+            <li>
               <Link href="/contacto" className="hover:underline">
-              Enviar Sugerencia
+                Enviar Sugerencia
               </Link>
             </li>
           </ul>
