@@ -38,7 +38,17 @@ export const validateRegisterForm = (value: IRegisterProps): IRegisterErrors => 
             tempErrors.age = "La edad debe ser un número positivo.";
         }
     }
-    
+
+
+    const age = Number(value.age);
+
+    if (isNaN(age)) {
+        tempErrors.age = "La edad debe ser un número válido";
+    } else if (age < 18) {
+        tempErrors.age = "La edad debe ser al menos 18 años";
+    } else if (age > 150) {
+        tempErrors.age = "La edad no puede ser mayor a 150 años";
+    }
   if (!value.address) {
     tempErrors.address = "La dirección es requerida.";
   }
