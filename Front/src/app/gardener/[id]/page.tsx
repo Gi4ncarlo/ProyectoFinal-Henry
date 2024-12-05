@@ -314,43 +314,39 @@ const ProviderDetail: React.FC = () => {
           </div>
 
           <div className="mt-6">
-            <h2 className="text-lg font-semibold text-[#263238]">
-              Servicios Disponibles:
-            </h2>
-            <ul className="mt-4">
-              {services.map((service) => (
-                <li
-                  key={service.id}
-                  className="relative flex justify-between items-center py-3 px-4 rounded-lg border border-[#263238] hover:bg-gray-100 cursor-pointer transition-colors duration-300 my-1 h-[80px] "
-                  onClick={() => handleServiceChange(service.id)}
-                >
-                  <label
-                    htmlFor={`service-${service.id}`}
-                    className="flex justify-between items-center w-full"
-                  >
-                    <div className="flex-1 text-left">
-                      <span className="font-medium text-gray-800">
-                        {service.detailService}
-                      </span>
-                    </div>
-                    <div className="flex-1 text-center">
-                      <span className="font-semibold text-green-600">
-                        ${service.price}
-                      </span>
-                    </div>
-                    <div className="flex-1 text-right">
-                      <input
-                        type="checkbox"
-                        id={`service-${service.id}`}
-                        checked={selectedServices.includes(service.id)}
-                        onChange={() => handleServiceChange(service.id)}
-                        className="w-5 h-5 text-green-600 border-gray-300 rounded focus:ring-green-500"
-                      />
-                    </div>
-                  </label>
-                </li>
-              ))}
-            </ul>
+          <h2 className="text-lg font-semibold text-[#263238]">
+  Servicios Disponibles:
+</h2>
+<ul className="mt-4">
+  {services.map((service) => (
+    <li
+      key={service.id}
+      className="relative flex justify-between items-center py-3 px-4 rounded-lg border border-[#263238] hover:bg-gray-100 cursor-pointer transition-colors duration-300 my-1 h-[80px]"
+      onClick={() => handleServiceChange(service.id)}
+    >
+      <div className="flex justify-between items-center w-full">
+        <div className="flex-1 text-left">
+          <span className="font-medium text-gray-800">
+            {service.detailService}
+          </span>
+        </div>
+        <div className="flex-1 text-center">
+          <span className="font-semibold text-green-600">${service.price}</span>
+        </div>
+        <div className="flex-1 text-right">
+          <input
+            type="checkbox"
+            id={`service-${service.id}`}
+            checked={selectedServices.includes(service.id)}
+            onChange={() => handleServiceChange(service.id)}
+            className="w-5 h-5 text-green-600 border-gray-300 rounded focus:ring-green-500"
+            onClick={(e) => e.stopPropagation()} // Evita el conflicto con el evento del <li>
+          />
+        </div>
+      </div>
+    </li>
+  ))}
+</ul>
 
             <div className="mt-4">
               <h3 className="text-xl bg-[#8BC34A] rounded-lg font-bold text-[#263238] flex justify-center py-2">

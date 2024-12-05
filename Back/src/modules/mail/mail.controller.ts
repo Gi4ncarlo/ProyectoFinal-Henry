@@ -21,10 +21,9 @@ export class MailController {
   }
 
   @Post('send')
+  @HttpCode(HttpStatus.OK)
   async sendMail(@Body() body: { email: string; phone: string; message: string }) {
     const { email, phone, message } = body;
-
-    console.log("estoy dentro del controlador de email");
 
     const subject = `Sugerencia enviada por ${email}`;
     const text = `Detalles:
