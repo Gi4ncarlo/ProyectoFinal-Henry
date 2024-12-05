@@ -79,6 +79,8 @@ const ProviderCardList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(0);
+  const [totalProviders, setTotalProviders] = useState<number>(0);
   const itemsPerPage = 8;
 
   const router = useRouter();
@@ -108,6 +110,7 @@ const ProviderCardList: React.FC = () => {
     if (typeof window !== "undefined") {
       localStorage.setItem("filter", newFilter);
     }
+    setCurrentPage(1); // Reset to first page on filter change
   };
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -116,11 +119,13 @@ const ProviderCardList: React.FC = () => {
     if (typeof window !== "undefined") {
       localStorage.setItem("searchTerm", newSearchTerm);
     }
+    setCurrentPage(1); // Reset to first page on search
   };
 
   const handleClearFilters = () => {
     setFilter("ASC");
     setSearchTerm("");
+    setCurrentPage(1);
     if (typeof window !== "undefined") {
       localStorage.removeItem("filter");
       localStorage.removeItem("searchTerm");
@@ -130,8 +135,6 @@ const ProviderCardList: React.FC = () => {
   useEffect(() => {
     const fetchProviders = async () => {
       try {
-        setCurrentPage(1);
-      
         setLoading(true);
 
         const order = filter === "ASC" || filter === "DESC" ? filter : "ASC";
@@ -142,8 +145,17 @@ const ProviderCardList: React.FC = () => {
             ? JSON.parse(localStorage.getItem("userSession") || "{}").token
             : null;
 
-        const gardeners = await getGardenersDB(token, order, calification, searchTerm);
-        setProviders(gardeners.data || []);
+        const result = await getGardenersDB(
+          token, 
+          order, 
+          calification, 
+          searchTerm, 
+          currentPage
+        );
+
+        setProviders(result.data);
+        setTotalPages(result.totalPages);
+        setTotalProviders(result.totalCount);
       } catch (error: any) {
         setError(error.message || "Error al cargar los Jardineros");
       } finally {
@@ -154,20 +166,7 @@ const ProviderCardList: React.FC = () => {
     if (TOKEN) {
       fetchProviders();
     }
-  }, [filter, searchTerm, TOKEN]);
-
-  const handleNextPage = () => {
-    setCurrentPage((prev) => prev + 1);
-  };
-
-  const handlePreviousPage = () => {
-    setCurrentPage((prev) => Math.max(prev - 1, 1));
-  };
-
-  const paginatedProviders = providers.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  }, [currentPage, filter, searchTerm, TOKEN]);
 
   if (loading)
     return (
@@ -178,6 +177,7 @@ const ProviderCardList: React.FC = () => {
         </h2>
       </div>
     );
+
   if (error) return <div>{error}</div>;
 
   return (
@@ -187,9 +187,9 @@ const ProviderCardList: React.FC = () => {
           <h1 className="text-2xl font-bold mb-4 text-red-500">No hay jardineros</h1>
           <button
             className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
-            onClick={() => {handleClearFilters()}}
+            onClick={handleClearFilters}
           >
-            Back
+            Volver
           </button>
         </div>
       ) : (
@@ -210,7 +210,7 @@ const ProviderCardList: React.FC = () => {
             <Dropdown filter={filter} onChange={handleFilter} />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {paginatedProviders.map((gardener) => (
+            {providers.map((gardener) => (
               <Link href={`/gardener/${gardener.id}`} key={gardener.id}>
                 <ProviderCard
                   name={gardener.name}
@@ -223,7 +223,7 @@ const ProviderCardList: React.FC = () => {
           </div>
           <div className="flex flex-col sm:flex-row justify-between mt-6 mb-8 items-center space-y-4 sm:space-y-0">
             <button
-              onClick={handlePreviousPage}
+              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
               className={`px-4 py-2 bg-[#8BC34A] text-white rounded hover:shadow-lg hover:shadow-[#FFEB3B] hover:text-[#263238] ${
                 currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
@@ -233,12 +233,14 @@ const ProviderCardList: React.FC = () => {
             </button>
 
             <div className="flex space-x-2">
-              {Array.from({ length: Math.ceil(providers.length / itemsPerPage) }, (_, index) => index + 1).map((page) => (
+              {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
                 <button
                   key={page}
                   onClick={() => setCurrentPage(page)}
                   className={`px-3 py-1 rounded-full ${
-                    page === currentPage ? "bg-[#8BC34A] text-[#263238] hover:text-[#FFEB3B] hover:shadow-lg hover:shadow-[#FFEB3B]" : "bg-gray-200 text-[#263238] hover:text-[#4CAF50] hover:shadow-lg hover:shadow-[#FFEB3B]"
+                    page === currentPage 
+                      ? "bg-[#8BC34A] text-[#263238] hover:text-[#FFEB3B] hover:shadow-lg hover:shadow-[#FFEB3B]" 
+                      : "bg-gray-200 text-[#263238] hover:text-[#4CAF50] hover:shadow-lg hover:shadow-[#FFEB3B]"
                   }`}
                 >
                   {page}
@@ -247,12 +249,10 @@ const ProviderCardList: React.FC = () => {
             </div>
 
             <button
-              onClick={handleNextPage}
-              disabled={currentPage * itemsPerPage >= providers.length}
+              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
               className={`px-4 py-2 bg-[#8BC34A] text-white rounded hover:shadow-lg hover:shadow-[#FFEB3B] hover:text-[#263238] ${
-                currentPage * itemsPerPage >= providers.length
-                  ? "opacity-50 cursor-not-allowed"
-                  : ""
+                currentPage === totalPages ? "opacity-50 cursor-not-allowed" : ""
               }`}
             >
               Página siguiente
@@ -265,6 +265,5 @@ const ProviderCardList: React.FC = () => {
 };
 
 export default ProviderCardList;
-
 
 

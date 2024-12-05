@@ -7,24 +7,40 @@ export const getGardenersDB = async (
   token: string,
   order: "ASC" | "DESC" = "ASC",
   calification?: number,
-  name?: string
-): Promise<{ data: IServiceProvider[] }> => {
+  name?: string,
+  page: number = 1,
+  limit: number = 8
+): Promise<{ 
+  data: IServiceProvider[], 
+  totalCount: number, 
+  currentPage: number, 
+  totalPages: number 
+}> => {
   if (!token) {
     console.error("Token is missing or invalid.");
-    return { data: [] };
+    return { 
+      data: [], 
+      totalCount: 0, 
+      currentPage: 1, 
+      totalPages: 0 
+    };
   }
+  
   const params = new URLSearchParams();
   params.append("order", order);
+  params.append("page", page.toString());
+  params.append("limit", limit.toString());
+  
   if (calification) params.append("calification", calification.toString());
-  if (name) params.append("name", name.toString());
+  if (name) params.append("name", name);
 
   const response = await fetch(`${APIURL}/gardener?${params.toString()}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
-  const data = await response.json();
-  return data;
+  
+  return await response.json();
 };
 
 export const getTasks = async (id: string) => {
