@@ -131,8 +131,13 @@ export class GardenerController {
   ) {
     try {
       const data = await this.gardenerService.findAll(page, limit, name, calification, order);
-      return res.status(200).json(data);
-    } catch (error) {
+      return res.status(200).json({
+        data: data.data,
+        totalCount: data.count,
+        currentPage: page,
+        totalPages: Math.ceil(data.count / limit)
+      });
+    }  catch (error) {
       return res.status(500).json({ message: 'Error interno', error });
     }
   }
