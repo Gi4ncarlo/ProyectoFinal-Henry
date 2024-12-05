@@ -28,6 +28,8 @@ const ContactView = () => {
         body: JSON.stringify(formData), 
       });
   
+      console.log("response", response);
+      
       if (!response.ok) {
         const errorMessage = await response.json();
         throw new Error(errorMessage.message || 'Error al enviar el correo.');
