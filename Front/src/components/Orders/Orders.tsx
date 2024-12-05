@@ -383,8 +383,8 @@ useEffect(() => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center py-6 px-4">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center py-6 lg:px-4">
+      <h1 className="text-3xl font-bold text-gray-800 mb-6 px-4">
         Bienvenido a su historial de Operaciones
       </h1>
 
