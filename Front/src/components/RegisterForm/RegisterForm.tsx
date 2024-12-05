@@ -1,8 +1,8 @@
 'use client';
 
-import { checkEmailBeforeRegister, register } from '@/helpers/auth.helpers';
+import { register } from '@/helpers/auth.helpers';
 import { validateRegisterForm } from '@/helpers/validate';
-import { IRegisterErrors, IRegisterProps } from '@/interfaces/IRegisterProps';
+import { IRegisterProps } from '@/interfaces/IRegisterProps';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
@@ -149,9 +149,6 @@ export default function RegisterForm() {
         priority
         quality={100}
       />
-
-
-
       <div className="relative w-full max-w-screen-md mx-auto p-6 border rounded-lg shadow-lg bg-white z-9 overflow-y-auto max-h-[90vh]">
         <h2 className="text-2xl font-bold text-center mb-4 text-[#4CAF50]">{title}</h2>
         <p className="text-[#263238] text-center mb-6">Crea tu cuenta y disfruta de nuestros servicios</p>
@@ -235,7 +232,6 @@ export default function RegisterForm() {
               <span className="text-red-500 text-sm">{errors.password}</span>
             )}
           </div>
-
           {/* Confirmar Contraseña */}
           <div>
             <label htmlFor="passwordConfirm" className="block text-sm font-medium text-[#263238]">Confirmar Contraseña</label>
@@ -253,8 +249,6 @@ export default function RegisterForm() {
               <span className="text-red-500 text-sm">{errors.passwordConfirm}</span>
             )}
           </div>
-
-    
           {/* Edad */}
           <div>
             <label htmlFor="age" className="block text-sm font-medium text-[#263238]">Edad</label>
