@@ -8,8 +8,9 @@ import { IUserSession } from "@/interfaces/IUserSession";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { Upload, Button, Carousel } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
+import { LeftCircleOutlined, RightCircleOutlined, UploadOutlined } from "@ant-design/icons";
 import Swal from "sweetalert2";
+import { Color } from "antd/es/color-picker";
 
 const CarrouselGardener = () => {
   const [userSession, setUserSession] = useState<IUserSession | null>(null);
@@ -166,6 +167,18 @@ const CarrouselGardener = () => {
     );
   }
 
+  const RightArrow = () => {
+    return (
+        <Button size="large"/>
+    )
+}
+
+const LeftArrow = () => {
+    return (
+        <Button size="large"/>
+    )
+}
+
   return (
     <div>
       <div>
@@ -174,7 +187,13 @@ const CarrouselGardener = () => {
         </h2>
 
         <div className="carousel-container my-6">
-          <Carousel autoplay effect="fade" arrows>
+          <Carousel
+            autoplay
+            effect="scrollx"
+            arrows
+            prevArrow={LeftArrow()}
+            nextArrow={RightArrow()}
+          >
             {carrousel.map((imageUrl, index) => (
               <div
                 key={index}
