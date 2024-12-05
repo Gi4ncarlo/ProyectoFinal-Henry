@@ -17,7 +17,6 @@ import { fetchReviews } from "@/helpers/comments.helpers";
 
 import { Carousel } from "antd";
 
-
 const ProviderDetail: React.FC = () => {
   const router = useRouter();
   const params = useParams();
@@ -178,8 +177,6 @@ const ProviderDetail: React.FC = () => {
 
     setLoading(true);
 
-
-
     try {
       const order = await hireServices({
         date: selectedDate,
@@ -202,8 +199,7 @@ const ProviderDetail: React.FC = () => {
       setSelectedDate(null);
       setTimeout(() => {
         router.push("/dashboard/userDashboard?update=true");
-
-      }, 1250)
+      }, 1250);
     } catch (error) {
       console.error("Error contratando servicios:", error);
       Swal.fire({
@@ -242,196 +238,200 @@ const ProviderDetail: React.FC = () => {
       </div>
     );
 
-    return (
-      <div className="flex flex-col min-h-screen bg-[url('/images/fondoJardineros2.webp')] bg-cover bg-center mx-auto">
-        {/* Contenedor principal */}
-        <div className="mx-auto w-3/4 lg:w-full">
-          <div className="max-w-3xl mt-16 sm:mt-20 lg:mt-32 mb-10 sm:mb-14 p-4 sm:p-6 bg-white rounded-lg shadow-lg mx-auto">
-            <div className="flex flex-col sm:flex-row items-center">
-              <Image
-                className="rounded-full"
-                src={
-                  gardener.profileImageUrl || "/images/nuevo_usuarioGardener.webp"
-                }
-                alt={`${gardener.name}'s profile`}
-                width={120}
-                height={120}
+  return (
+    <div className="flex flex-col min-h-screen bg-[url('/images/fondoJardineros2.webp')] bg-cover bg-center mx-auto">
+      {/* Contenedor principal */}
+      <div className="mx-auto w-3/4 lg:w-full">
+        <div className="max-w-3xl mt-16 sm:mt-20 lg:mt-32 mb-10 sm:mb-14 p-4 sm:p-6 bg-white rounded-lg shadow-lg mx-auto">
+          <div className="flex flex-col sm:flex-row items-center">
+            <Image
+              className="rounded-full"
+              src={
+                gardener.profileImageUrl || "/images/nuevo_usuarioGardener.webp"
+              }
+              alt={`${gardener.name}'s profile`}
+              width={120}
+              height={120}
+            />
+            <div className="mt-4 sm:mt-0 sm:ml-6 text-center sm:text-left">
+              <h1 className="text-xl sm:text-2xl font-bold text-[#263238]">
+                {gardener.name}
+              </h1>
+              <p className="text-[#8BC34A]">@{gardener.username}</p>
+            </div>
+          </div>
+
+          <div className="mt-6 text-center md:text-left">
+            <h2 className="text-base sm:text-lg font-semibold text-[#263238]">
+              Experiencia:
+            </h2>
+            <p className="text-sm sm:text-base text-gray-600">
+              {gardener.experience}
+            </p>
+
+            <h2 className="text-base sm:text-lg font-semibold text-[#263238] mt-4">
+              Puntuación:
+            </h2>
+            <div className="lg:flex items-center mt-3 block">
+              <Rate
+                allowHalf
+                disabled
+                defaultValue={gardener?.calification}
+                style={{ color: "#FFD700" }}
               />
-              <div className="mt-4 sm:mt-0 sm:ml-6 text-center sm:text-left">
-                <h1 className="text-xl sm:text-2xl font-bold text-[#263238]">
-                  {gardener.name}
-                </h1>
-                <p className="text-[#8BC34A]">@{gardener.username}</p>
-              </div>
+              <span className="ml-2 text-sm sm:text-base text-gray-500">
+                {gardener?.calification?.toFixed(1)}
+              </span>
             </div>
-    
-            <div className="mt-6 text-center md:text-left">
-              <h2 className="text-base sm:text-lg font-semibold text-[#263238]">
-                Experiencia:
-              </h2>
-              <p className="text-sm sm:text-base text-gray-600">
-                {gardener.experience}
-              </p>
-    
-              <h2 className="text-base sm:text-lg font-semibold text-[#263238] mt-4">
-                Puntuación:
-              </h2>
-              <div className="lg:flex items-center mt-3 block">
-                <Rate
-                  allowHalf
-                  disabled
-                  defaultValue={gardener?.calification}
-                  style={{ color: "#FFD700" }}
-                />
-                <span className="ml-2 text-sm sm:text-base text-gray-500">
-                  {gardener?.calification?.toFixed(1)}
-                </span>
-              </div>
-            </div>
-    
-            {/* Carrusel */}
-            <div className="carousel-container my-6 w-full mx-auto">
-              <Carousel autoplay effect="fade" arrows>
-                {carrousel.map((imageUrl, index) => (
-                  <div
-                    key={index}
-                    className="mx-auto max-h-36 sm:max-h-96 flex justify-center items-center overflow-hidden rounded-lg border-2 border-[#4CAF50]"
-                  >
-                    <Image
-                      src={imageUrl}
-                      alt={`Imagen ${index + 1}`}
-                      width={1920}
-                      height={1080}
-                      className="object-cover"
-                    />
+          </div>
+
+          {/* Carrusel */}
+          <div className="carousel-container my-6 w-full mx-auto">
+            <Carousel autoplay effect="fade" arrows>
+              {carrousel.map((imageUrl, index) => (
+                <div
+                  key={index}
+                  className="mx-auto max-h-36 sm:max-h-96 flex justify-center items-center overflow-hidden rounded-lg border-2 border-[#4CAF50]"
+                >
+                  <Image
+                    src={imageUrl}
+                    alt={`Imagen ${index + 1}`}
+                    width={1920}
+                    height={1080}
+                    className="object-cover"
+                  />
+                </div>
+              ))}
+            </Carousel>
+          </div>
+
+          {/* Mapa */}
+          <div className="mt-8 w-full mx-auto">
+            <GardenerMap location={coordinates} />
+          </div>
+
+          {/* Servicios */}
+          <ul className="mt-4 space-y-2">
+            {services.map((service) => (
+              <li
+                key={service.id}
+                className="py-3 px-4 rounded-lg border border-[#263238] hover:bg-gray-100 transition-colors duration-300 cursor-pointer"
+              >
+                {/* Hacer que todo el li sea clickeable */}
+                <label
+                  htmlFor={`service-${service.id}`}
+                  className="flex justify-between items-center w-full cursor-pointer"
+                >
+                  <div className="flex-1 text-left">
+                    <span className="font-medium text-sm sm:text-base text-gray-800">
+                      {service.detailService}
+                    </span>
                   </div>
-                ))}
-              </Carousel>
-            </div>
-    
-            {/* Mapa */}
-            <div className="mt-8 w-full mx-auto">
-              <GardenerMap location={coordinates} />
-            </div>
-    
-            {/* Servicios */}
-            <div className="mt-6">
-              <h2 className="text-base sm:text-lg font-semibold text-[#263238]">
-                Servicios Disponibles:
-              </h2>
-              <ul className="mt-4 space-y-2">
-                {services.map((service) => (
-                  <li
-                    key={service.id}
-                    className="flex justify-between items-center py-3 px-4 rounded-lg border border-[#263238] hover:bg-gray-100 transition-colors duration-300"
+                  <div className="flex-1 text-center">
+                    <span className="font-semibold text-green-600">
+                      ${service.price}
+                    </span>
+                  </div>
+                  {/* Checkbox oculto pero funcional */}
+                  <div className="flex-1 text-right">
+                    <input
+                      type="checkbox"
+                      id={`service-${service.id}`}
+                      checked={selectedServices.includes(service.id)}
+                      onChange={() => handleServiceChange(service.id)}
+                      className="hidden" // Oculta el checkbox visualmente
+                    />
+                    {/* Indicar visualmente el estado del checkbox */}
+                    <span
+                      className={`w-5 h-5 inline-block border-2 rounded ${
+                        selectedServices.includes(service.id)
+                          ? "bg-green-600 border-green-600"
+                          : "border-gray-300"
+                      }`}
+                    ></span>
+                  </div>
+                </label>
+              </li>
+            ))}
+          </ul>
+
+          {/* Calendario */}
+          <div className="mt-6">
+            <h2 className="text-base sm:text-lg font-semibold text-[#263238]">
+              Calendario de Disponibilidad:
+            </h2>
+            <GardenerCalendar
+              gardenerId={gardener.id.toString()}
+              onDateSelect={handleDateSelect}
+            />
+          </div>
+
+          {/* Reseñas */}
+          <div className="mt-6">
+            <h2 className="text-base sm:text-lg font-semibold text-[#263238]">
+              Reseñas de Clientes:
+            </h2>
+            {reviews.length > 0 ? (
+              <div className="mt-6 space-y-4">
+                {reviews.map((review) => (
+                  <div
+                    key={review.id}
+                    className="bg-white p-4 sm:p-6 rounded-lg shadow-md"
                   >
-                    <div className="flex-1 text-left">
-                      <span className="font-medium text-sm sm:text-base text-gray-800">
-                        {service.detailService}
-                      </span>
-                    </div>
-                    <div className="flex-1 text-center">
-                      <span className="font-semibold text-green-600">
-                        ${service.price}
-                      </span>
-                    </div>
-                    <div className="flex-1 text-right">
-                      <input
-                        type="checkbox"
-                        id={`service-${service.id}`}
-                        checked={selectedServices.includes(service.id)}
-                        onChange={() => handleServiceChange(service.id)}
-                        className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 border-gray-300 rounded focus:ring-green-500"
-                      />
-                    </div>
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-4 text-center">
-                <h3 className="text-lg bg-[#8BC34A] rounded-lg font-bold text-[#263238] flex justify-center py-2">
-                  Total: <span>${calculateTotal()}</span>
-                </h3>
-              </div>
-            </div>
-    
-            {/* Calendario */}
-            <div className="mt-6">
-              <h2 className="text-base sm:text-lg font-semibold text-[#263238]">
-                Calendario de Disponibilidad:
-              </h2>
-              <GardenerCalendar
-                gardenerId={gardener.id.toString()}
-                onDateSelect={handleDateSelect}
-              />
-            </div>
-    
-            {/* Reseñas */}
-            <div className="mt-6">
-              <h2 className="text-base sm:text-lg font-semibold text-[#263238]">
-                Reseñas de Clientes:
-              </h2>
-              {reviews.length > 0 ? (
-                <div className="mt-6 space-y-4">
-                  {reviews.map((review) => (
-                    <div
-                      key={review.id}
-                      className="bg-white p-4 sm:p-6 rounded-lg shadow-md"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center">
-                          <Rate
-                            allowHalf
-                            disabled
-                            defaultValue={review.rate}
-                            style={{ color: "#FFD700" }}
-                          />
-                          <span className="ml-2 text-sm sm:text-base font-semibold text-gray-800">
-                            {review.rate.toFixed(1)}
-                          </span>
-                        </div>
-                        <span className="text-xs sm:text-sm text-gray-500">
-                          {review?.date}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <Rate
+                          allowHalf
+                          disabled
+                          defaultValue={review.rate}
+                          style={{ color: "#FFD700" }}
+                        />
+                        <span className="ml-2 text-sm sm:text-base font-semibold text-gray-800">
+                          {review.rate.toFixed(1)}
                         </span>
                       </div>
-                      <p className="text-sm sm:text-base text-gray-800 mt-2">
-                        {review.comment}
-                      </p>
+                      <span className="text-xs sm:text-sm text-gray-500">
+                        {review?.date}
+                      </span>
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-center text-gray-500 text-sm sm:text-base italic">
-                  No hay reseñas disponibles.
-                </p>
-              )}
-            </div>
-    
-            {/* Botón de Contratar */}
-            {userSession?.user?.role !== "gardener" && (
-              <div className="mt-6 flex justify-center">
-                <button
-                  onClick={handleHireClick}
-                  className="w-full sm:w-auto bg-[#4CAF50] text-white py-2 px-4 rounded-lg hover:bg-[#45a049] transition duration-300"
-                >
-                  Contratar Servicios
-                </button>
+                    <p className="text-sm sm:text-base text-gray-800 mt-2">
+                      {review.comment}
+                    </p>
+                  </div>
+                ))}
               </div>
+            ) : (
+              <p className="text-center text-gray-500 text-sm sm:text-base italic">
+                No hay reseñas disponibles.
+              </p>
             )}
           </div>
-    
-          {/* Botón de Volver */}
-          <div className="flex items-center justify-center w-full my-8">
-            <button
-              onClick={() => router.push("/gardener")}
-              className="px-4 sm:px-6 py-2 sm:py-3 text-[#263238] bg-[#CDDC39] rounded-lg shadow-md hover:bg-[#8BC34A] transition-all"
-            >
-              Volver a la lista de jardineros
-            </button>
-          </div>
+
+          {/* Botón de Contratar */}
+          {userSession?.user?.role !== "gardener" && (
+            <div className="mt-6 flex justify-center">
+              <button
+                onClick={handleHireClick}
+                className="w-full sm:w-auto bg-[#4CAF50] text-white py-2 px-4 rounded-lg hover:bg-[#45a049] transition duration-300"
+              >
+                Contratar Servicios
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Botón de Volver */}
+        <div className="flex items-center justify-center w-full my-8">
+          <button
+            onClick={() => router.push("/gardener")}
+            className="px-4 sm:px-6 py-2 sm:py-3 text-[#263238] bg-[#CDDC39] rounded-lg shadow-md hover:bg-[#8BC34A] transition-all"
+          >
+            Volver a la lista de jardineros
+          </button>
         </div>
       </div>
-    );
-    
+    </div>
+  );
 };
 
 export default ProviderDetail;
