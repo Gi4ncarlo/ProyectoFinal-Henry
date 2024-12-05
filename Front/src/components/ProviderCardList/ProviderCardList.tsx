@@ -76,11 +76,12 @@ const ProviderCardList: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [TOKEN, setTOKEN] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>("ASC");
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [searchTerm, setSearchTerm] = useState<any>();
   const [loading, setLoading] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [totalProviders, setTotalProviders] = useState<number>(0);
+  const [inputSave, setInputSave] = useState<string>("");
   const itemsPerPage = 8;
 
   const router = useRouter();
@@ -110,16 +111,15 @@ const ProviderCardList: React.FC = () => {
     if (typeof window !== "undefined") {
       localStorage.setItem("filter", newFilter);
     }
-    setCurrentPage(1); // Reset to first page on filter change
+    setCurrentPage(1); 
   };
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newSearchTerm = e.target.value;
-    setSearchTerm(newSearchTerm);
+  const handleSearch = () => {
+    setSearchTerm(inputSave)
     if (typeof window !== "undefined") {
-      localStorage.setItem("searchTerm", newSearchTerm);
+      localStorage.setItem("searchTerm", inputSave);
     }
-    setCurrentPage(1); // Reset to first page on search
+    setCurrentPage(1); 
   };
 
   const handleClearFilters = () => {
@@ -182,7 +182,7 @@ const ProviderCardList: React.FC = () => {
 
   return (
     <div className="mx-auto mt-24 px-4 max-w-7xl">
-      {providers.length === 0 ? (
+      {providers?.length === undefined ? (
         <div className="text-center mb-8 mx-auto">
           <h1 className="text-2xl font-bold mb-4 text-red-500">No hay jardineros</h1>
           <button
@@ -197,20 +197,24 @@ const ProviderCardList: React.FC = () => {
           <div className="text-center mb-8 mx-auto">
             <div className="relative w-full sm:w-3/4 lg:w-1/2 mx-auto flex items-center mb-8">
               <input
+                id="inputBusqueda"
                 type="text"
                 placeholder="Buscar jardinero..."
-                value={searchTerm}
-                onChange={handleSearch}
+                value={inputSave}
+                onChange={(e) => setInputSave(e.target.value)}
                 className="w-full pl-4 pr-12 py-2 text-lg rounded-full border border-[#263238] shadow-lg focus:outline-none focus:ring-2 focus:ring-green-400"
               />
+              <button
+              onClick={handleSearch}>
               <FaSearch className="absolute right-4 text-gray-500" />
+              </button>
             </div>
           </div>
           <div className="flex justify-end mb-4">
             <Dropdown filter={filter} onChange={handleFilter} />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {providers.map((gardener) => (
+            {providers?.map((gardener) => (
               <Link href={`/gardener/${gardener.id}`} key={gardener.id}>
                 <ProviderCard
                   name={gardener.name}
@@ -262,6 +266,7 @@ const ProviderCardList: React.FC = () => {
       )}
     </div>
   );
+
 };
 
 export default ProviderCardList;

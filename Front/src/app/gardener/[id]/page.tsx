@@ -12,7 +12,7 @@ import { IUserSession } from "@/interfaces/IUserSession";
 import Swal from "sweetalert2";
 import GardenerCalendar from "@/components/GardenerCalendar/GardenerCalendar";
 import GardenerMap from "@/components/GardenerMap/GardenerMap";
-import { Rate } from "antd";
+import { Button, Rate } from "antd";
 import { fetchReviews } from "@/helpers/comments.helpers";
 
 import { Carousel } from "antd";
@@ -242,6 +242,18 @@ const ProviderDetail: React.FC = () => {
       </div>
     );
 
+    const RightArrow = () => {
+      return (
+          <Button size="large"/>
+      )
+  }
+  
+    const LeftArrow = () => {
+      return (
+          <Button size="large"/>
+      )
+  }
+
   return (
 
     <div className="flex flex-col min-h-screen bg-[url('/images/fondoJardineros2.webp')] bg-cover bg-center">
@@ -290,7 +302,12 @@ const ProviderDetail: React.FC = () => {
           </div>
 
           <div className="carousel-container my-6">
-            <Carousel autoplay effect="fade" arrows>
+            <Carousel 
+            autoplay 
+            effect="scrollx"             
+            arrows
+            prevArrow={LeftArrow()}
+            nextArrow={RightArrow()}>
               {carrousel.map((imageUrl, index) => (
                 <div
                   key={index}
