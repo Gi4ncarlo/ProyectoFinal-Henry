@@ -193,6 +193,7 @@ const LeftArrow = () => {
     arrows
     prevArrow={LeftArrow()}
     nextArrow={RightArrow()}
+    key={carrousel.length} // Forzar re-renderización
   >
     {carrousel.map((imageUrl, index) => (
       <div
