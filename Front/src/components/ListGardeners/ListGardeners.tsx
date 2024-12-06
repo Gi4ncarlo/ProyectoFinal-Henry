@@ -232,14 +232,16 @@ const ListGardeners: React.FC = () => {
 
     return (
       <div className="flex flex-col items-center justify-center h-screen w-screen">
-      {/* Spinner */}
-      <div className="w-16 h-16 border-4 border-green-300 border-t-green-500 rounded-full animate-spin mb-4"></div>
+  {/* Spinner */}
+  <div className="w-16 h-16 border-4 border-green-300 border-t-green-500 rounded-full animate-spin mb-4"></div>
 
-      {/* Texto */}
-      <h2 className="text-xl font-semibold text-[#263238]">
-        Cargando la informacion..
-      </h2>
-    </div>
+  {/* Texto */}
+  <h2 className="text-xl font-semibold text-[#263238] text-center">
+    Cargando la información...
+  </h2>
+</div>
+
+    
     );
     
     if (error) return <div>{error}</div>;
@@ -258,20 +260,23 @@ const ListGardeners: React.FC = () => {
           </div>
         ) : (
           <>
-            <div className="flex justify-between items-center text-orange-950 bg-[#388E3C] p-3 shadow-sm rounded-lg mb-4">
-              <h2>Jardineros Disponibles</h2>
-              <div className="relative w-1/2">
-                <input
-                  type="text"
-                  placeholder="Buscar jardinero..."
-                  value={searchTerm}
-                  onChange={handleSearch}
-                  className="w-full pl-4 pr-10 py-2 border border-[#263238] rounded-lg focus:ring-2 focus:ring-green-400 focus:outline-none"
-                />
-                <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-              </div>
-              <Dropdown filter={filter} onChange={handleFilter} />
-            </div>
+         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-[#388E3C] p-3 shadow-sm rounded-lg mb-4">
+  <h2 className="text-white text-lg sm:text-xl">Jardineros Disponibles</h2>
+  
+  <div className="w-full sm:w-1/2 relative">
+    <input
+      type="text"
+      placeholder="Buscar jardinero..."
+      value={searchTerm}
+      onChange={handleSearch}
+      className="w-full pl-4 pr-10 py-2 border border-[#263238] rounded-lg focus:ring-2 focus:ring-green-400 focus:outline-none"
+    />
+    <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+  </div>
+
+  <Dropdown filter={filter} onChange={handleFilter} />
+</div>
+
     
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mx-auto">
               {providers.map((gardener) => (

@@ -178,30 +178,33 @@ function UserList() {
                 <p className="text-gray-600">Estado: {user.isBanned ? "Baneado" : "Activo"}</p>
                 <p className="text-gray-600">Rol: {user.role}</p>
   
-                {/* Botón de banear/desbanear */}
-                <button
-                  onClick={() => handleBanUnbanUser(user.id, user.isBanned)}
-                  className={`mt-4 px-4 py-2 rounded-md font-medium transition ${user.isBanned
-                      ? "bg-red-500 text-white hover:bg-red-600"
-                      : "bg-green-500 text-white hover:bg-green-600"
-                    } disabled:bg-gray-400 disabled:cursor-not-allowed`}
-                  disabled={banningUserId !== null}
-                >
-                  {banningUserId === user.id
-                    ? "Procesando..."
-                    : user.isBanned
-                      ? "Desbanear"
-                      : "Banear"}
-                </button>
-  
-                {/* Botón de eliminar */}
-                <button
-                  onClick={() => handleDeleteUser(user.id)}
-                  className="mt-4 px-4 py-2 m-4 rounded-md font-medium bg-red-700 text-white hover:bg-red-800 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
-                  disabled={banningUserId !== null}
-                >
-                  Eliminar
-                </button>
+                <div className="flex flex-col space-y-4">
+  {/* Botón de banear/desbanear */}
+  <button
+    onClick={() => handleBanUnbanUser(user.id, user.isBanned)}
+    className={`px-4 py-2 rounded-md font-medium transition ${user.isBanned
+      ? "bg-red-500 text-white hover:bg-red-600"
+      : "bg-green-500 text-white hover:bg-green-600"
+      } disabled:bg-gray-400 disabled:cursor-not-allowed`}
+    disabled={banningUserId !== null}
+  >
+    {banningUserId === user.id
+      ? "Procesando..."
+      : user.isBanned
+        ? "Desbanear"
+        : "Banear"}
+  </button>
+
+  {/* Botón de eliminar */}
+  <button
+    onClick={() => handleDeleteUser(user.id)}
+    className="px-4 py-2 rounded-md font-medium bg-red-700 text-white hover:bg-red-800 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
+    disabled={banningUserId !== null}
+  >
+    Eliminar
+  </button>
+</div>
+
               </div>
             ))}
           </div>
