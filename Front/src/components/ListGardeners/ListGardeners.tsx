@@ -225,6 +225,16 @@ const ListGardeners: React.FC = () => {
     fetchProviders();
   }, [currentPage, filter, searchTerm]);
 
+  const handleClearFilters = () => {
+    setFilter("ASC");
+    setSearchTerm("");
+    setCurrentPage(1);
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("filter");
+      localStorage.removeItem("searchTerm");
+    }
+  };
+
 
 
   if (loading)
@@ -248,14 +258,14 @@ const ListGardeners: React.FC = () => {
     
     return (
       <div className="mx-auto mt-2">
-        {providers.length === 0 ? (
+        {providers?.length === undefined ? (
           <div className="text-center mb-8 mx-auto">
-            <h1 className="text-2xl font-bold mb-4">No se encontraron Jardineros</h1>
+            <h1 className="text-2xl text-[#388E3C] font-bold mb-4">No se encontraron Jardineros</h1>
             <button
               className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
-              onClick={() => setSearchTerm("")}
+              onClick={handleClearFilters}
             >
-              Back
+              Volver
             </button>
           </div>
         ) : (
@@ -279,7 +289,7 @@ const ListGardeners: React.FC = () => {
 
     
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mx-auto">
-              {providers.map((gardener) => (
+              {providers?.map((gardener) => (
                 <div key={gardener.id} className="relative bg-white shadow-md rounded-lg p-4 border border-[#4CAF50]">
                   {editGardener?.id === gardener.id ? (
                     <EditGardenerForm
